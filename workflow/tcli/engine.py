@@ -53,7 +53,9 @@ def calc_deadlines(txn_id: str, anchor: date, data: dict):
                 base = resolved.get(ref)
                 if not base:
                     continue
-                days = cont.get(DL_KEY.get(did), dl.get("default_offset_days", dl.get("fixed_days", 0)))
+                days = cont.get(DL_KEY.get(did)) or dl.get("default_offset_days") or dl.get("fixed_days", 0)
+                if days is None:
+                    continue
                 biz = dl.get("day_type") == "business_days"
                 if dl.get("direction") == "before":
                     days = -abs(days)
@@ -171,4 +173,7 @@ def extract(pdf_path: str, form_type: str | None = None) -> dict:
             {"type": "text", "text": prompt},
         ]}],
     )
-    return json.loads(resp.content[0].text)
+    text = resp.content[0].text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
+    return json.loads(text)
