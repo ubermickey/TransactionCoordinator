@@ -67,12 +67,42 @@ def status(txn_id: str = typer.Option(None, "--txn")):
         t = db.txn(c, tid)
     gs = engine.gate_rows(tid)
     dls = engine.deadline_rows(tid)
+    data = json.loads(t["data"])
     v = sum(1 for g in gs if g["status"] == "verified")
-    con.print(Panel(
-        f"[bold]{t['address']}[/]\nPhase: {t['phase']}  |  ID: {tid}\n"
-        f"Gates: {v}/{len(gs)} verified  |  Deadlines: {len(dls)} tracked",
-        title="Status",
-    ))
+    today = date.today()
+
+    lines = [f"[bold]{t['address']}[/]", f"Phase: {t['phase']}  |  ID: {tid}"]
+    if p := (data.get("parties") or {}):
+        lines.append(f"Buyer: {p.get('buyer','?')}  |  Seller: {p.get('seller','?')}")
+    if f := (data.get("financial") or {}):
+        if pr := f.get("purchase_price"):
+            lines.append(f"Price: ${pr:,.0f}")
+    lines.append(f"Gates: {v}/{len(gs)} verified  |  Deadlines: {len(dls)} tracked")
+
+    # Next 3 deadlines
+    upcoming = []
+    for d in dls:
+        if not d["due"]:
+            continue
+        due = date.fromisoformat(d["due"])
+        delta = (due - today).days
+        if delta >= 0:
+            upcoming.append((d["name"], d["due"], delta))
+    if upcoming:
+        lines.append("")
+        for name, due_str, delta in upcoming[:3]:
+            color = "red" if delta <= 1 else "yellow" if delta <= 5 else "dim"
+            lines.append(f"  [{color}]{due_str}[/] {name} ({delta}d)")
+
+    # Next pending gate
+    for g in gs:
+        if g["status"] == "pending":
+            info = rules.gate(g["gid"])
+            if info:
+                lines.append(f"\nNext gate: [bold]{g['gid']}[/] {info['name']}")
+                break
+
+    con.print(Panel("\n".join(lines), title="Status"))
 
 
 # ── Deadlines ────────────────────────────────────────────────────────────────
@@ -121,6 +151,28 @@ def gates(txn_id: str = typer.Option(None, "--txn")):
             style=style,
         )
     con.print(tbl)
+
+
+@app.command()
+def info(gate_id: str):
+    """Show full details for a verification gate (no sign-off)."""
+    g = rules.gate(gate_id)
+    if not g:
+        con.print(f"[red]Unknown gate: {gate_id}[/]")
+        raise typer.Exit(1)
+    con.print(f"\n[bold]{g['id']} — {g['name']}[/]  ({g['type']})")
+    con.print(f"\n[red]Legal basis:[/] {g['legal_basis']['statute']}")
+    con.print(f"[red]Obligation:[/] {g['legal_basis']['obligation']}")
+    con.print(f"[red]Liability:[/]  {g['legal_basis']['liability']}")
+    con.print(f"\n[yellow]What you verify:[/]")
+    for item in g.get("what_agent_verifies", []):
+        con.print(f"  \u2610 {item}")
+    con.print(f"\n[green]AI prepares:[/]")
+    for item in g.get("ai_prepares", []):
+        con.print(f"  - {item}")
+    con.print(f"\n[dim]Cannot proceed until: {g.get('cannot_proceed_until', '?')}[/]")
+    if g.get("notes"):
+        con.print(f"\n[bold]Note:[/] {g['notes']}")
 
 
 @app.command()
@@ -322,7 +374,7 @@ def form_diff(form_file: Path):
             con.print(f"  - {flag}")
 
 
-# ── List ─────────────────────────────────────────────────────────────────────
+# ── List & Delete ────────────────────────────────────────────────────────────
 
 @app.command(name="list")
 def list_txns():
@@ -336,10 +388,29 @@ def list_txns():
     tbl.add_column("ID")
     tbl.add_column("Address")
     tbl.add_column("Phase")
+    tbl.add_column("Gates", justify="right")
     tbl.add_column("Created")
     for r in rows:
-        tbl.add_row(r["id"], r["address"], r["phase"], r["created"])
+        gs = engine.gate_rows(r["id"])
+        v = sum(1 for g in gs if g["status"] == "verified")
+        tbl.add_row(r["id"], r["address"], r["phase"], f"{v}/{len(gs)}", r["created"])
     con.print(tbl)
+
+
+@app.command()
+def delete(txn_id: str):
+    """Delete a transaction and its gates/deadlines."""
+    with db.conn() as c:
+        t = db.txn(c, txn_id)
+    if not t:
+        con.print(f"[red]Not found: {txn_id}[/]")
+        raise typer.Exit(1)
+    if typer.confirm(f"Delete {t['address']} ({txn_id})?"):
+        with db.conn() as c:
+            c.execute("DELETE FROM deadlines WHERE txn=?", (txn_id,))
+            c.execute("DELETE FROM gates WHERE txn=?", (txn_id,))
+            c.execute("DELETE FROM txns WHERE id=?", (txn_id,))
+        con.print(f"[green]Deleted {txn_id}[/]")
 
 
 if __name__ == "__main__":
