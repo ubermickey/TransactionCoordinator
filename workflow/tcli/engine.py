@@ -159,21 +159,42 @@ def _build_prompt(form_template: dict | None = None) -> str:
     return prompt
 
 
+def _parse_json(text: str) -> dict:
+    """Extract JSON from Claude response (handles fences, prose, etc.)."""
+    text = text.strip()
+    if "```" in text:
+        text = text.split("```")[1]
+        if text.startswith("json"):
+            text = text[4:]
+        text = text.strip()
+    if not text.startswith("{"):
+        start = text.find("{")
+        end = text.rfind("}") + 1
+        if start >= 0 and end > start:
+            text = text[start:end]
+    return json.loads(text)
+
+
 def extract(pdf_path: str, form_type: str | None = None) -> dict:
-    import anthropic
+    import anthropic, time
 
     template = rules.form_template(form_type) if form_type else None
     prompt = _build_prompt(template)
     data = base64.b64encode(open(pdf_path, "rb").read()).decode()
-    resp = anthropic.Anthropic().messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=4096,
-        messages=[{"role": "user", "content": [
-            {"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": data}},
-            {"type": "text", "text": prompt},
-        ]}],
-    )
-    text = resp.content[0].text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1].rsplit("```", 1)[0].strip()
-    return json.loads(text)
+    client = anthropic.Anthropic()
+    msg = [{"role": "user", "content": [
+        {"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": data}},
+        {"type": "text", "text": prompt},
+    ]}]
+
+    for attempt in range(3):
+        try:
+            resp = client.messages.create(model="claude-sonnet-4-20250514", max_tokens=4096, messages=msg)
+            return _parse_json(resp.content[0].text)
+        except anthropic.RateLimitError:
+            wait = 30 * (attempt + 1)
+            print(f"  Rate limited — waiting {wait}s (attempt {attempt + 1}/3)")
+            time.sleep(wait)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Could not parse Claude response as JSON: {e}")
+    raise RuntimeError("Rate limit exceeded after 3 retries")
