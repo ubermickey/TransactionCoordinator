@@ -16,6 +16,15 @@
 # Every gate maps to a specific legal obligation so you know WHY you're
 # verifying, not just WHAT.
 #
+# Review overlay:
+#   When a gate triggers, AI generates a PRIVATE review copy containing
+#   ONLY the pages you need to verify, with color-coded highlighting on
+#   the specific fields requiring your attention. The highlighting is
+#   AGENT-ONLY — it never appears on the original document and no other
+#   party ever sees it. See workflow/agent_review_overlay.yaml for the
+#   full overlay specification including highlight colors, page filtering
+#   rules, and the per-gate highlighting definitions.
+#
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -44,6 +53,14 @@ gates:
       - "Identifies if dual agency situation exists"
       - "Flags if disclosure timing is at risk"
     cannot_proceed_until: "Agent confirms agency disclosure is accurate and properly timed"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-001"
+      pages_sent: "Only pages with agency checkboxes and signature blocks"
+      key_highlights:
+        - "Agency relationship selection [RED]"
+        - "Dual agency consent if applicable [RED]"
+        - "Agent/broker identification [YELLOW]"
+        - "Disclosure timing [BLUE/REVIEWABLE]"
 
   - id: GATE-002
     phase: PRE_CONTRACT
@@ -64,6 +81,9 @@ gates:
       - "Cross-references property age and type against common issues"
     cannot_proceed_until: "Agent confirms visual inspection completed and findings documented"
     notes: "This is YOUR personal legal duty. An inspector's report does NOT satisfy this obligation. You must physically inspect."
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-002"
+      note: "No document overlay — this gate requires physical inspection. AI provides a property-specific checklist instead."
 
   - id: GATE-003
     phase: PRE_CONTRACT
@@ -85,6 +105,14 @@ gates:
       - "Cross-references disclosures against property age, location, and NHD report"
       - "Flags inconsistencies for agent review"
     cannot_proceed_until: "Agent confirms disclosures reviewed and any red flags addressed"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-003"
+      pages_sent: "Only pages with disclosure questions and seller responses"
+      key_highlights:
+        - "Blank/unanswered fields [RED]"
+        - "Yes answers indicating known issues [ORANGE]"
+        - "TDS vs SPQ contradictions [RED]"
+        - "Contradictions with agent visual inspection [RED]"
 
   - id: GATE-004
     phase: PRE_CONTRACT
@@ -104,6 +132,13 @@ gates:
       - "Verifies report covers all required zones (flood, fire, earthquake fault, seismic hazard, wildfire state responsibility, dam inundation)"
       - "Flags if property is in any hazard zone"
     cannot_proceed_until: "Agent confirms NHD reviewed and accurate"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-004"
+      pages_sent: "Summary page + hazard zone determination pages only"
+      key_highlights:
+        - "Each hazard zone determination [YELLOW]"
+        - "Any zone marked IN [RED]"
+        - "Property address on report [YELLOW]"
 
   # --- FAIR HOUSING ---
 
@@ -151,6 +186,15 @@ gates:
       - "Compares contingency periods against typical timelines"
       - "Identifies any terms that conflict with each other"
     cannot_proceed_until: "Agent confirms all terms verified and client informed"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-010"
+      pages_sent: "Pages with material terms, financials, contingency elections, special terms"
+      key_highlights:
+        - "Purchase price [YELLOW]"
+        - "All contingency periods [BLUE/REVIEWABLE]"
+        - "Contingency waivers [RED]"
+        - "Close of escrow date [BLUE/REVIEWABLE]"
+        - "Non-standard addendum language [ORANGE]"
 
   - id: GATE-011
     phase: CONTRACT_EXECUTION
@@ -170,6 +214,14 @@ gates:
       - "Monitors delivery deadline"
       - "Alerts if deposit not confirmed by deadline"
     cannot_proceed_until: "Agent confirms deposit handled per contract and trust fund rules"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-011"
+      pages_sent: "RPA deposit section + escrow receipt"
+      key_highlights:
+        - "Deposit amount [YELLOW]"
+        - "Delivery deadline [BLUE/REVIEWABLE]"
+        - "Escrow company [YELLOW]"
+        - "Receipt confirmation [RED]"
 
   - id: GATE-012
     phase: CONTRACT_EXECUTION
@@ -193,6 +245,13 @@ gates:
       - "Flags any undelivered items"
       - "Records delivery timestamps from DocuSign"
     cannot_proceed_until: "Agent confirms all required disclosures delivered and documented"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-012"
+      pages_sent: "AI-generated delivery status summary (single page)"
+      key_highlights:
+        - "Delivered disclosures [GREEN]"
+        - "Undelivered disclosures [RED]"
+        - "Jurisdiction-specific disclosures [PURPLE]"
 
   # ---------------------------------------------------------------------------
   # PHASE 3: INSPECTION
@@ -218,6 +277,14 @@ gates:
       - "Cross-references findings against seller disclosures for contradictions"
       - "Flags findings that may require updated TDS"
     cannot_proceed_until: "Agent confirms inspection findings reviewed and client informed"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-020"
+      pages_sent: "Only pages with safety, structural, and functional findings — cosmetic-only pages excluded"
+      key_highlights:
+        - "Safety hazards [RED]"
+        - "Structural issues [RED]"
+        - "Major system deficiencies [ORANGE]"
+        - "Contradictions with seller disclosures [RED]"
 
   - id: GATE-021
     phase: INSPECTION
@@ -237,6 +304,13 @@ gates:
       - "Tracks repair negotiation status"
       - "Compares repair agreement against original request"
     cannot_proceed_until: "Agent confirms repair terms verified and client approved"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-021"
+      pages_sent: "All pages with repair items and response terms"
+      key_highlights:
+        - "Each repair item [YELLOW]"
+        - "Seller response per item [ORANGE]"
+        - "Repair deadline [BLUE/REVIEWABLE]"
 
   - id: GATE-022
     phase: INSPECTION
@@ -260,6 +334,14 @@ gates:
     cannot_proceed_until: "Agent confirms client made informed contingency decision"
     deadline_type: REVIEWABLE
     default_offset_days: 17
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-022"
+      pages_sent: "CR-1 signature page + AI-generated outstanding items summary"
+      key_highlights:
+        - "Contingency being removed [RED]"
+        - "Buyer signature [RED]"
+        - "Removal date [BLUE/REVIEWABLE]"
+        - "Unresolved inspection items [ORANGE]"
 
   # ---------------------------------------------------------------------------
   # PHASE 4: APPRAISAL
@@ -284,6 +366,13 @@ gates:
       - "Identifies appraisal report errors (wrong bed/bath count, wrong sq ft)"
       - "Calculates financial impact of low appraisal"
     cannot_proceed_until: "Agent confirms appraisal reviewed and client informed"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-030"
+      pages_sent: "Value opinion summary + property details + comparable sales pages"
+      key_highlights:
+        - "Appraised value vs purchase price [YELLOW or RED if gap]"
+        - "Property details accuracy [ORANGE]"
+        - "Comparable sales [YELLOW]"
 
   - id: GATE-031
     phase: APPRAISAL
@@ -305,6 +394,14 @@ gates:
     cannot_proceed_until: "Agent confirms client made informed appraisal contingency decision"
     deadline_type: REVIEWABLE
     default_offset_days: 17
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-031"
+      pages_sent: "CR-1 signature page + AI appraisal summary"
+      key_highlights:
+        - "Contingency being removed [RED]"
+        - "Value gap if any [RED]"
+        - "Buyer signature [RED]"
+        - "Removal date [BLUE/REVIEWABLE]"
 
   # ---------------------------------------------------------------------------
   # PHASE 5: FINANCING
@@ -350,6 +447,14 @@ gates:
     cannot_proceed_until: "Agent confirms client made informed loan contingency decision"
     deadline_type: REVIEWABLE
     default_offset_days: 17
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-041"
+      pages_sent: "CR-1 signature page + AI loan status summary"
+      key_highlights:
+        - "Contingency being removed [RED]"
+        - "Loan approval status [ORANGE if not fully approved]"
+        - "Outstanding conditions [ORANGE]"
+        - "Buyer signature [RED]"
 
   # ---------------------------------------------------------------------------
   # PHASE 6: TITLE & ESCROW
@@ -377,6 +482,16 @@ gates:
       - "Identifies easements and summarizes their impact"
       - "Cross-references CC&Rs against client's intended use"
     cannot_proceed_until: "Agent confirms title report reviewed and client informed of all exceptions"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-050"
+      pages_sent: "Summary page + exception pages (liens, easements, CC&Rs)"
+      key_highlights:
+        - "Liens [RED]"
+        - "Easements [ORANGE]"
+        - "CC&Rs [ORANGE]"
+        - "Non-standard exceptions [RED]"
+        - "Standard exceptions [GREEN]"
+        - "Tax status [YELLOW]"
 
   - id: GATE-051
     phase: TITLE_ESCROW
@@ -401,6 +516,14 @@ gates:
     deadline_type: FIXED
     fixed_period_days: 5
     fixed_basis: "From delivery of HOA documents to buyer"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-051"
+      pages_sent: "Financial summary + litigation disclosure + special assessment pages only"
+      key_highlights:
+        - "Special assessments [RED]"
+        - "Reserve fund health [ORANGE if <50% funded]"
+        - "Pending litigation [RED]"
+        - "5-day review deadline [BLUE/FIXED]"
 
   # ---------------------------------------------------------------------------
   # PHASE 7: PRE-CLOSING
@@ -425,6 +548,14 @@ gates:
       - "Flags any removals that occurred after their deadline"
       - "Verifies all CR-1 signatures via DocuSign validation"
     cannot_proceed_until: "Agent confirms all contingencies accounted for"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-060"
+      pages_sent: "AI-generated single-page contingency matrix"
+      key_highlights:
+        - "Removed contingencies with CR-1 on file [GREEN]"
+        - "Missing CR-1 [RED]"
+        - "Late removals [ORANGE]"
+        - "Waived contingencies [YELLOW]"
 
   - id: GATE-061
     phase: PRE_CLOSING
@@ -451,6 +582,16 @@ gates:
     deadline_type: FIXED
     fixed_period_days: 3
     fixed_basis: "Must be delivered 3 business days before closing (federal TRID)"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-061"
+      pages_sent: "Financial pages of closing disclosure (typically pages 1-3)"
+      key_highlights:
+        - "Purchase price vs contract [YELLOW]"
+        - "Loan amount vs approval [YELLOW]"
+        - "Transfer taxes by jurisdiction [PURPLE]"
+        - "Measure ULA if applicable [PURPLE]"
+        - "Net to seller / cash to close [RED]"
+        - "Any AI-calculated discrepancy [RED]"
 
   - id: GATE-062
     phase: PRE_CLOSING
@@ -496,6 +637,14 @@ gates:
       - "Flags missing compliance items"
       - "Calculates all applicable taxes and fees"
     cannot_proceed_until: "Agent confirms all jurisdiction compliance items verified"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-063"
+      pages_sent: "AI-generated jurisdiction compliance checklist"
+      key_highlights:
+        - "CA retrofit requirements [PURPLE]"
+        - "City-specific requirements [PURPLE]"
+        - "Missing compliance certificates [RED]"
+        - "Transfer tax calculations [PURPLE]"
 
   # ---------------------------------------------------------------------------
   # PHASE 8: CLOSING
@@ -521,6 +670,14 @@ gates:
       - "Verifies all required documents are present in the closing package"
       - "Confirms escrow funding status"
     cannot_proceed_until: "Agent confirms all closing documents verified"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-070"
+      pages_sent: "Grant deed + signature pages of each closing document"
+      key_highlights:
+        - "Grant deed names, vesting, legal description [RED]"
+        - "Notarization [RED]"
+        - "Signature completeness [GREEN or RED if missing]"
+        - "Funding confirmation [RED]"
 
   - id: GATE-071
     phase: CLOSING
@@ -540,6 +697,13 @@ gates:
       - "Verifies disbursement against settlement statement"
       - "Generates closing confirmation communication"
     cannot_proceed_until: "Agent confirms recording and disbursement verified"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-071"
+      pages_sent: "Recording confirmation page + disbursement summary"
+      key_highlights:
+        - "Recording number [RED]"
+        - "Disbursement vs closing disclosure [YELLOW]"
+        - "Commission amount [YELLOW]"
 
   # ---------------------------------------------------------------------------
   # PHASE 9: POST-CLOSING
@@ -565,6 +729,13 @@ gates:
       - "Generates missing document report if any gaps"
       - "Sets 3-year retention reminder"
     cannot_proceed_until: "Agent confirms file is complete and archived"
+    review_overlay:
+      reference: "agent_review_overlay.yaml → gate_overlays → GATE-080"
+      pages_sent: "AI-generated file completeness report (single page)"
+      key_highlights:
+        - "Documents on file [GREEN]"
+        - "Missing documents [RED]"
+        - "Retention period [BLUE]"
 
 # =============================================================================
 # GATE SUMMARY

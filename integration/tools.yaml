@@ -21,6 +21,21 @@ google_drive:
   api: "Google Drive API v3, Google Sheets API v4, Google Apps Script"
   automation_level: HIGH
 
+  # --- AGENT PRIVATE REVIEW FOLDER (separate from transaction folders) ---
+  agent_private_folder:
+    root: "Agent Private/Reviews/{year}/{address}"
+    permissions: "Agent ONLY — no shared access, no link sharing, never visible to any other party"
+    subfolders:
+      - path: "Pending"
+        description: "Review copies awaiting agent verification — highlighted, filtered pages"
+      - path: "Completed"
+        description: "Review copies after agent sign-off — archived with timestamp"
+      - path: "Flagged"
+        description: "Review copies with unresolved RED items"
+    naming: "{address}_{gate_id}_{document_type}_REVIEW.pdf"
+    note: "See workflow/agent_review_overlay.yaml for full overlay specification"
+
+  # --- SHARED TRANSACTION FOLDERS (original clean documents) ---
   folder_structure_template:
     root: "Transactions/{year}/{address}"
     subfolders:
@@ -68,6 +83,31 @@ google_drive:
       action: "AI classifies document type and moves to correct subfolder"
       automation: AUTO
       fallback: "If classification confidence < 70%, place in root folder and flag for agent"
+
+    - id: GD-AUTO-006
+      name: Generate Agent Review Copy
+      trigger: "AGENT_GATE triggered on a document"
+      action:
+        - "AI identifies which pages require agent verification for this gate"
+        - "AI extracts only those pages from the original document"
+        - "AI applies color-coded highlight overlays per gate_overlays rules"
+        - "AI adds margin annotations explaining each highlighted item"
+        - "AI generates summary cover page with verification checklist"
+        - "Review copy saved to Agent Private/Reviews/{year}/{address}/Pending/"
+        - "Original document is NEVER modified"
+        - "Notification sent to agent with direct link to review copy"
+      automation: AUTO
+      privacy: "Review copy is AGENT-ONLY — never shared, never uploaded to SkySlope"
+      reference: "See workflow/agent_review_overlay.yaml for highlight colors, page filtering, and per-gate rules"
+
+    - id: GD-AUTO-007
+      name: Archive Completed Review Copy
+      trigger: "Agent signs off on a gate"
+      action:
+        - "Move review copy from Pending/ to Completed/"
+        - "Timestamp the sign-off"
+        - "Log gate verification in transaction audit trail"
+      automation: AUTO
 
     - id: GD-AUTO-004
       name: Generate Jurisdiction Checklist
@@ -280,10 +320,17 @@ integration_flow:
         tool: ai_layer
         details: "Run signature validation + cross-document validation"
 
+      - step: 3.5
+        action: "Generate agent review copy (if gate triggered)"
+        tool: ai_layer + google_drive
+        details: "Extract relevant pages, apply highlights, save to agent's PRIVATE review folder"
+        privacy: "Review copy is AGENT-ONLY — original document proceeds clean to step 4"
+        reference: "workflow/agent_review_overlay.yaml"
+
       - step: 4
-        action: "File to transaction folder"
+        action: "File ORIGINAL (clean) document to transaction folder"
         tool: google_drive
-        details: "AI classifies and files to correct subfolder"
+        details: "AI classifies and files to correct subfolder — no highlights on this copy"
 
       - step: 5
         action: "Upload to compliance system"
