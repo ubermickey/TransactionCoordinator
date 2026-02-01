@@ -1,0 +1,493 @@
+# =============================================================================
+# TRANSACTION WORKFLOW PHASES
+# =============================================================================
+#
+# Nine phases of a residential real estate transaction.
+# Each phase defines entry criteria, AI-automated tasks, agent verification
+# gates, and exit criteria.
+#
+# Automation levels:
+#   AUTO       - AI performs without agent involvement
+#   AI_DRAFT   - AI prepares, agent reviews before sending/filing
+#   AGENT_GATE - System stops, agent must verify (see agent_verification_gates.yaml)
+#
+# =============================================================================
+
+phases:
+
+  # ---------------------------------------------------------------------------
+  - id: PRE_CONTRACT
+    name: Pre-Contract / Listing
+    order: 1
+    description: "Property listed, disclosures prepared, showing and marketing active"
+    entry_criteria:
+      - "Listing agreement executed OR buyer engagement letter signed"
+      - "Property information available"
+    exit_criteria:
+      - "GATE-001: Agency disclosure verified"
+      - "GATE-002: Visual inspection completed"
+      - "GATE-003: Seller disclosures reviewed"
+      - "GATE-004: NHD report reviewed"
+      - "GATE-005: Fair housing compliance confirmed"
+      - "Offer received or submitted"
+
+    tasks:
+      - action: "Create transaction file in SkySlope"
+        automation: AUTO
+        tool: skyslope
+        details: "Set up new transaction with property address, parties, listing info"
+
+      - action: "Create transaction folder in Google Drive"
+        automation: AUTO
+        tool: google_drive
+        details: "Create folder structure per template (01_Listing through 10_Compliance)"
+
+      - action: "Order NHD report"
+        automation: AUTO
+        tool: google_drive
+        details: "Submit order to NHD provider via email template"
+
+      - action: "Prepare seller disclosure packet (TDS, SPQ)"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI pre-fills known property data; agent reviews before sending to seller"
+
+      - action: "Send disclosures to seller for completion"
+        automation: AI_DRAFT
+        tool: docusign
+        details: "AI creates DocuSign envelope; agent reviews recipient list and documents before sending"
+
+      - action: "Conduct visual inspection of property"
+        automation: AGENT_GATE
+        gate: GATE-002
+        details: "Agent must personally inspect — AI provides checklist only"
+
+      - action: "Review completed disclosures"
+        automation: AGENT_GATE
+        gate: GATE-003
+        details: "AI scans for completeness and contradictions; agent makes final determination"
+
+      - action: "Verify agency disclosure"
+        automation: AGENT_GATE
+        gate: GATE-001
+        details: "AI identifies agency relationship; agent confirms accuracy"
+
+      - action: "Confirm fair housing compliance"
+        automation: AGENT_GATE
+        gate: GATE-005
+        details: "AI scans listings; agent confirms compliance"
+
+  # ---------------------------------------------------------------------------
+  - id: CONTRACT_EXECUTION
+    name: Contract Execution
+    order: 2
+    description: "Purchase agreement executed, escrow opened, deadlines calculated"
+    entry_criteria:
+      - "All PRE_CONTRACT exit criteria met"
+      - "Purchase agreement received"
+    exit_criteria:
+      - "GATE-010: Contract terms verified"
+      - "GATE-011: Deposit handling confirmed"
+      - "GATE-012: All disclosures delivered"
+      - "Escrow opened"
+      - "All deadline dates calculated and entered"
+      - "All parties notified"
+
+    tasks:
+      - action: "Extract contract terms from executed RPA"
+        automation: AUTO
+        tool: ai_extraction
+        details: "AI reads RPA, extracts all parties, financial terms, REVIEWABLE dates, contingency elections"
+
+      - action: "Calculate all transaction deadlines"
+        automation: AUTO
+        tool: google_drive
+        details: "AI populates deadline calculator spreadsheet from extracted terms"
+
+      - action: "Verify contract terms and client understanding"
+        automation: AGENT_GATE
+        gate: GATE-010
+        details: "Agent reviews AI extraction for accuracy; confirms client understands all terms"
+
+      - action: "Open escrow"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts escrow opening instructions from contract terms; agent reviews before sending"
+
+      - action: "Confirm earnest money deposit"
+        automation: AGENT_GATE
+        gate: GATE-011
+        details: "AI tracks deposit deadline; agent confirms deposit received by escrow"
+
+      - action: "Deliver all disclosures to buyer"
+        automation: AGENT_GATE
+        gate: GATE-012
+        details: "AI tracks disclosure delivery via DocuSign; agent confirms completeness"
+
+      - action: "Send introduction email to all parties"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI generates intro email with key dates, contacts, next steps from template"
+
+      - action: "Enter all deadlines in SkySlope"
+        automation: AUTO
+        tool: skyslope
+        details: "AI-extracted dates entered into SkySlope transaction timeline"
+
+      - action: "Generate jurisdiction-specific compliance checklist"
+        automation: AUTO
+        tool: google_drive
+        details: "AI reads property address, generates CA + city-level checklist"
+
+  # ---------------------------------------------------------------------------
+  - id: INSPECTION
+    name: Inspection Period
+    order: 3
+    description: "Property inspections conducted, reports reviewed, repairs negotiated"
+    entry_criteria:
+      - "All CONTRACT_EXECUTION exit criteria met"
+      - "Investigation contingency period active"
+    exit_criteria:
+      - "GATE-020: Inspection findings reviewed with client"
+      - "GATE-021: Repair terms verified (if applicable)"
+      - "GATE-022: Investigation contingency decision made"
+      - "Investigation contingency removed OR contract cancelled"
+
+    tasks:
+      - action: "Schedule inspections"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts scheduling emails to inspectors; agent approves"
+
+      - action: "Receive and file inspection reports"
+        automation: AUTO
+        tool: google_drive
+        details: "AI classifies incoming reports and files to correct folder; uploads to SkySlope"
+
+      - action: "Summarize inspection findings"
+        automation: AUTO
+        tool: ai_extraction
+        details: "AI generates summary of material findings categorized by severity"
+
+      - action: "Review inspection findings with client"
+        automation: AGENT_GATE
+        gate: GATE-020
+        details: "Agent reviews AI summary, discusses with client, advises on significance"
+
+      - action: "Prepare Request for Repair"
+        automation: AI_DRAFT
+        tool: docusign
+        details: "AI drafts RR from client direction; agent reviews; sent via DocuSign"
+
+      - action: "Review repair response"
+        automation: AGENT_GATE
+        gate: GATE-021
+        details: "Agent reviews repair agreement terms with client"
+
+      - action: "Investigation contingency decision"
+        automation: AGENT_GATE
+        gate: GATE-022
+        details: "Agent ensures client makes informed decision; AI prepares CR-1 if removing"
+
+      - action: "Send contingency removal or cancellation"
+        automation: AI_DRAFT
+        tool: docusign
+        details: "AI prepares CR-1 or cancellation form; agent reviews before sending via DocuSign"
+
+      - action: "Upload executed CR-1 to SkySlope"
+        automation: AUTO
+        tool: skyslope
+        details: "Completed DocuSign envelope auto-filed"
+
+    deadline_tracking:
+      - name: "Investigation Contingency"
+        type: REVIEWABLE
+        default_days: 17
+        source: contract
+        reminders: [5, 3, 2, 1]
+
+  # ---------------------------------------------------------------------------
+  - id: APPRAISAL
+    name: Appraisal
+    order: 4
+    description: "Property appraised, results reviewed, contingency addressed"
+    entry_criteria:
+      - "Lender has ordered appraisal (if financed)"
+      - "Appraisal contingency period active"
+    exit_criteria:
+      - "GATE-030: Appraisal results reviewed"
+      - "GATE-031: Appraisal contingency decision made"
+      - "Appraisal contingency removed OR renegotiated OR cancelled"
+
+    tasks:
+      - action: "Confirm appraisal ordered by lender"
+        automation: AUTO
+        tool: google_drive
+        details: "AI tracks lender communication for appraisal order confirmation"
+
+      - action: "Provide property access for appraiser"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI coordinates access via email template"
+
+      - action: "Receive appraisal report"
+        automation: AUTO
+        tool: google_drive
+        details: "AI files report and extracts appraised value"
+
+      - action: "Review appraisal results"
+        automation: AGENT_GATE
+        gate: GATE-030
+        details: "AI compares value to price; agent reviews with client"
+
+      - action: "Appraisal contingency decision"
+        automation: AGENT_GATE
+        gate: GATE-031
+        details: "Agent ensures informed client decision"
+
+    deadline_tracking:
+      - name: "Appraisal Contingency"
+        type: REVIEWABLE
+        default_days: 17
+        source: contract
+        reminders: [5, 3, 2, 1]
+
+  # ---------------------------------------------------------------------------
+  - id: FINANCING
+    name: Loan / Financing
+    order: 5
+    description: "Loan processed through underwriting to approval"
+    entry_criteria:
+      - "Loan application submitted"
+      - "Loan contingency period active (if applicable)"
+    exit_criteria:
+      - "GATE-040: Loan status verified"
+      - "GATE-041: Loan contingency decision made"
+      - "Loan contingency removed OR cancelled"
+
+    tasks:
+      - action: "Track loan milestones"
+        automation: AUTO
+        tool: google_drive
+        details: "AI logs loan status updates in tracking sheet"
+
+      - action: "Follow up with lender on conditions"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts follow-up emails; agent reviews before sending"
+
+      - action: "Review loan status"
+        automation: AGENT_GATE
+        gate: GATE-040
+        details: "Agent reviews loan progress against timeline"
+
+      - action: "Loan contingency decision"
+        automation: AGENT_GATE
+        gate: GATE-041
+        details: "Agent ensures informed client decision"
+
+    deadline_tracking:
+      - name: "Loan Contingency"
+        type: REVIEWABLE
+        default_days: 17
+        source: contract
+        reminders: [5, 3, 2, 1]
+
+  # ---------------------------------------------------------------------------
+  - id: TITLE_ESCROW
+    name: Title & Escrow
+    order: 6
+    description: "Title cleared, HOA documents reviewed, escrow in process"
+    entry_criteria:
+      - "Escrow opened"
+      - "Preliminary title report received"
+    exit_criteria:
+      - "GATE-050: Title report reviewed"
+      - "GATE-051: HOA documents reviewed (if applicable)"
+      - "Title clear or issues resolved"
+
+    tasks:
+      - action: "Receive and analyze preliminary title report"
+        automation: AUTO
+        tool: ai_extraction
+        details: "AI parses title report, categorizes exceptions, flags issues"
+
+      - action: "Review title report"
+        automation: AGENT_GATE
+        gate: GATE-050
+        details: "Agent reviews AI analysis, discusses with client"
+
+      - action: "Request HOA documents (if applicable)"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI sends request to HOA management via template"
+
+      - action: "Review HOA documents"
+        automation: AGENT_GATE
+        gate: GATE-051
+        details: "Agent reviews HOA package, informs client of material issues"
+
+      - action: "Coordinate title issue resolution"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts communications to title company; agent directs resolution strategy"
+
+    deadline_tracking:
+      - name: "HOA Review Period"
+        type: FIXED
+        fixed_days: 5
+        basis: "From delivery of HOA documents"
+        reminders: [3, 2, 1]
+
+  # ---------------------------------------------------------------------------
+  - id: PRE_CLOSING
+    name: Pre-Closing
+    order: 7
+    description: "All contingencies resolved, final verifications, closing preparation"
+    entry_criteria:
+      - "All contingency deadlines passed or contingencies removed"
+      - "Loan approved (if financed)"
+      - "Title clear"
+    exit_criteria:
+      - "GATE-060: All contingencies verified removed"
+      - "GATE-061: Closing disclosure verified"
+      - "GATE-062: Final walkthrough completed"
+      - "GATE-063: Jurisdiction compliance verified"
+      - "Ready to close"
+
+    tasks:
+      - action: "Verify all contingencies removed"
+        automation: AGENT_GATE
+        gate: GATE-060
+        details: "AI generates contingency matrix; agent verifies completeness"
+
+      - action: "Review closing disclosure"
+        automation: AGENT_GATE
+        gate: GATE-061
+        details: "AI cross-references all figures; agent reviews with client"
+
+      - action: "Schedule and confirm final walkthrough"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI coordinates scheduling; agent attends or confirms completion"
+
+      - action: "Verify final walkthrough"
+        automation: AGENT_GATE
+        gate: GATE-062
+        details: "Agent confirms property condition"
+
+      - action: "Run jurisdiction compliance check"
+        automation: AUTO
+        tool: ai_extraction
+        details: "AI checks all jurisdiction-specific items against completion records"
+
+      - action: "Verify jurisdiction compliance"
+        automation: AGENT_GATE
+        gate: GATE-063
+        details: "Agent confirms all local requirements met"
+
+      - action: "Confirm utilities transfer arranged"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI sends utility transfer reminders to buyer"
+
+      - action: "Verify lender clear to close"
+        automation: AUTO
+        tool: google_drive
+        details: "AI confirms with lender that loan is funded or funding"
+
+    deadline_tracking:
+      - name: "Closing Disclosure"
+        type: FIXED
+        fixed_days: 3
+        basis: "3 business days before closing"
+        reminders: [0]
+      - name: "Final Walkthrough"
+        type: REVIEWABLE
+        default_days: -5
+        offset_from: close_of_escrow
+        reminders: [2, 1]
+
+  # ---------------------------------------------------------------------------
+  - id: CLOSING
+    name: Closing
+    order: 8
+    description: "Documents signed, funds disbursed, deed recorded"
+    entry_criteria:
+      - "All PRE_CLOSING exit criteria met"
+      - "All documents ready for signing"
+      - "Lender funded or authorized funding"
+    exit_criteria:
+      - "GATE-070: All closing documents verified"
+      - "GATE-071: Recording and disbursement confirmed"
+      - "Deed recorded"
+      - "Funds disbursed"
+
+    tasks:
+      - action: "Verify all closing documents executed"
+        automation: AGENT_GATE
+        gate: GATE-070
+        details: "AI validates all signatures via DocuSign; agent confirms completeness"
+
+      - action: "Confirm recording and disbursement"
+        automation: AGENT_GATE
+        gate: GATE-071
+        details: "AI monitors recording status; agent confirms with escrow"
+
+      - action: "Distribute final documents to all parties"
+        automation: AUTO
+        tool: docusign
+        details: "AI sends completed closing package to all parties"
+
+      - action: "Coordinate key exchange"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI sends key exchange coordination email"
+
+  # ---------------------------------------------------------------------------
+  - id: POST_CLOSING
+    name: Post-Closing
+    order: 9
+    description: "File archived, commissions tracked, post-closing items resolved"
+    entry_criteria:
+      - "All CLOSING exit criteria met"
+      - "Transaction officially closed"
+    exit_criteria:
+      - "GATE-080: File compliance and retention confirmed"
+      - "All post-closing items resolved"
+
+    tasks:
+      - action: "Send closing confirmation to all parties"
+        automation: AUTO
+        tool: google_drive
+        details: "AI generates and sends closing confirmation email"
+
+      - action: "Archive transaction file in SkySlope"
+        automation: AUTO
+        tool: skyslope
+        details: "AI verifies all checklist items complete; submits for broker review"
+
+      - action: "Archive backup in Google Drive"
+        automation: AUTO
+        tool: google_drive
+        details: "AI copies all final documents to closed transactions archive"
+
+      - action: "Track commission payment"
+        automation: AUTO
+        tool: google_drive
+        details: "AI logs commission in tracking spreadsheet"
+
+      - action: "Verify file completeness"
+        automation: AGENT_GATE
+        gate: GATE-080
+        details: "Agent confirms file is complete for DRE retention"
+
+      - action: "Notify buyer of supplemental tax obligations"
+        automation: AUTO
+        tool: google_drive
+        details: "AI sends supplemental tax advisory to buyer"
+
+      - action: "Handle post-closing items"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI tracks any outstanding items and drafts follow-up communications"

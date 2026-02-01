@@ -1,0 +1,274 @@
+# =============================================================================
+# JURISDICTION RULES: CALIFORNIA (STATE)
+# =============================================================================
+#
+# Base layer for all California residential real estate transactions.
+# City/county rules inherit from and supplement these rules.
+#
+# Rule statuses: active, under_review, repealed
+# Update process: See workflow/legal_update_process.yaml
+#
+# =============================================================================
+
+jurisdiction:
+  name: California
+  level: state
+  parent: null
+  last_full_audit: 2026-01-15
+  next_full_audit: 2027-01-15
+
+# -----------------------------------------------------------------------------
+# FORMS & DOCUMENTS
+# -----------------------------------------------------------------------------
+required_forms:
+
+  - id: CA-FORM-001
+    name: Transfer Disclosure Statement (TDS)
+    citation: "Civil Code §1102-1102.17"
+    phase: PRE_CONTRACT
+    track: documents
+    required_for: "Most residential 1-4 unit sales"
+    exemptions: "Court-ordered sales, fiduciary sales, foreclosures, new construction (see §1102.2)"
+    agent_gate: GATE-003
+    last_verified: 2026-01-15
+
+  - id: CA-FORM-002
+    name: Seller Property Questionnaire (SPQ)
+    citation: "CAR form — industry standard"
+    phase: PRE_CONTRACT
+    track: documents
+    required_for: "All residential transactions (CAR standard practice)"
+    agent_gate: GATE-003
+    last_verified: 2026-01-15
+
+  - id: CA-FORM-003
+    name: Natural Hazard Disclosure (NHD)
+    citation: "Civil Code §1103-1103.14"
+    phase: PRE_CONTRACT
+    track: documents
+    required_for: "All residential 1-4 unit sales"
+    covers:
+      - "Special Flood Hazard Area (FEMA)"
+      - "Dam Inundation Zone"
+      - "Very High Fire Hazard Severity Zone"
+      - "State Fire Responsibility Area"
+      - "Earthquake Fault Zone (Alquist-Priolo)"
+      - "Seismic Hazard Zone"
+    agent_gate: GATE-004
+    last_verified: 2026-01-15
+
+  - id: CA-FORM-004
+    name: Agency Disclosure (AD)
+    citation: "Civil Code §2079.13-2079.24"
+    phase: PRE_CONTRACT
+    track: documents
+    required_for: "All residential transactions"
+    timing: "Before buyer or seller signs the purchase agreement"
+    agent_gate: GATE-001
+    last_verified: 2026-01-15
+
+  - id: CA-FORM-005
+    name: Statewide Buyer and Seller Advisory (SBSA)
+    citation: "CAR form — industry standard advisory"
+    phase: CONTRACT_EXECUTION
+    track: documents
+    required_for: "All residential transactions (CAR standard practice)"
+    agent_gate: GATE-012
+    last_verified: 2026-01-15
+
+  - id: CA-FORM-006
+    name: Contingency Removal (CR-1)
+    citation: "CAR form — contractual requirement per RPA"
+    phase: INSPECTION  # and APPRAISAL, FINANCING
+    track: documents
+    required_for: "Each contingency that is being removed"
+    critical_note: "Buyer must ACTIVELY remove contingencies in writing. They do NOT auto-expire in California."
+    agent_gates: [GATE-022, GATE-031, GATE-041]
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# CONTINGENCY RULES
+# -----------------------------------------------------------------------------
+contingency_rules:
+
+  - id: CA-CONT-001
+    name: Active Removal Requirement
+    citation: "CAR RPA provisions"
+    rule: "Contingencies must be actively removed in writing by the buyer. They do not automatically expire."
+    impact: "If buyer does not remove a contingency by the deadline, seller may issue a Notice to Buyer to Perform (NBP) giving buyer typically 2 days to remove or cancel"
+    critical_for_agent: true
+    agent_gates: [GATE-022, GATE-031, GATE-041]
+    last_verified: 2026-01-15
+
+  - id: CA-CONT-002
+    name: Default Contingency Periods
+    citation: "CAR RPA"
+    defaults:
+      investigation_contingency:
+        days: 17
+        type: REVIEWABLE
+        commonly_negotiated_to: "7-14 days in competitive markets"
+      appraisal_contingency:
+        days: 17
+        type: REVIEWABLE
+        commonly_negotiated_to: "17-21 days; sometimes waived"
+      loan_contingency:
+        days: 17
+        type: REVIEWABLE
+        commonly_negotiated_to: "17-25 days; sometimes waived for strong buyers"
+    note: "All periods are calendar days from acceptance. These are defaults only — actual periods come from the executed contract."
+    last_verified: 2026-01-15
+
+  - id: CA-CONT-003
+    name: Earnest Money Deposit Timing
+    citation: "CAR RPA"
+    default_days: 3
+    day_type: business_days
+    type: REVIEWABLE
+    from: acceptance_date
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# ESCROW & CLOSING
+# -----------------------------------------------------------------------------
+escrow_rules:
+
+  - id: CA-ESC-001
+    name: Escrow Company Model
+    citation: "California Financial Code §17000 et seq."
+    rule: "California uses independent escrow companies (not attorneys) to close transactions"
+    impact: "TC coordinates with escrow officer, not a closing attorney"
+    last_verified: 2026-01-15
+
+  - id: CA-ESC-002
+    name: Close of Escrow Definition
+    citation: "Industry standard; contract terms"
+    rule: "Transaction closes when the deed is RECORDED with the County Recorder, not when documents are signed"
+    impact: "Recording must occur during business hours; same-day recording is goal but not guaranteed"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# TAX & FINANCIAL
+# -----------------------------------------------------------------------------
+tax_rules:
+
+  - id: CA-TAX-001
+    name: County Documentary Transfer Tax
+    citation: "CA Revenue & Taxation Code §11911"
+    rate: 1.10
+    per: 1000
+    basis: sale_price
+    paid_by: seller  # customary, not statutory
+    type: FIXED
+    last_verified: 2026-01-15
+
+  - id: CA-TAX-002
+    name: Proposition 13 Reassessment
+    citation: "CA Constitution Article XIIIA"
+    rule: "Property reassessed to market value upon change of ownership"
+    impact: "Buyer will receive supplemental tax bill(s) after closing"
+    agent_action: "Inform buyer of supplemental tax obligation"
+    last_verified: 2026-01-15
+
+  - id: CA-TAX-003
+    name: HARPTA (California Withholding)
+    citation: "CA Revenue & Taxation Code §18662"
+    rate: 3.33
+    per: 100
+    basis: sale_price
+    applies_when: "Seller is an out-of-state resident"
+    exemptions:
+      - "Seller is a California resident (Form 593-C)"
+      - "Sale price is $100,000 or less"
+      - "Property was seller's principal residence"
+      - "Seller certifies no gain on sale"
+      - "Seller is a corporation with permanent CA presence"
+    escrow_responsibility: "Escrow withholds and remits to Franchise Tax Board"
+    agent_gate: GATE-063
+    last_verified: 2026-01-15
+
+  - id: CA-TAX-004
+    name: Mello-Roos Special Tax
+    citation: "Mello-Roos Community Facilities Act of 1982"
+    rule: "Properties in Community Facilities Districts (CFDs) have additional annual special tax"
+    disclosure_required: true
+    appears_on: "Tax bill and preliminary title report"
+    agent_action: "Disclose to buyer; ensure reflected in NHD report"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# RETROFIT REQUIREMENTS (Point of Sale)
+# -----------------------------------------------------------------------------
+retrofit_requirements:
+
+  - id: CA-RETRO-001
+    name: Smoke Detector Compliance
+    citation: "CA Health & Safety Code §13113.8"
+    requirement: "Smoke detectors in each bedroom, outside each sleeping area, and on every level"
+    applies_to: "All residential sales"
+    point_of_sale: true
+    agent_gate: GATE-063
+    last_verified: 2026-01-15
+
+  - id: CA-RETRO-002
+    name: Carbon Monoxide Detector Compliance
+    citation: "CA Health & Safety Code §17926"
+    requirement: "CO detectors outside each sleeping area in dwellings with fossil fuel appliances or attached garage"
+    applies_to: "All residential sales with applicable conditions"
+    point_of_sale: true
+    agent_gate: GATE-063
+    last_verified: 2026-01-15
+
+  - id: CA-RETRO-003
+    name: Water Heater Bracing
+    citation: "CA Health & Safety Code §19211"
+    requirement: "Water heaters must be braced, anchored, or strapped to resist falling during earthquake"
+    applies_to: "All residential sales"
+    point_of_sale: true
+    agent_gate: GATE-063
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# HOA RULES (Davis-Stirling)
+# -----------------------------------------------------------------------------
+hoa_rules:
+
+  - id: CA-HOA-001
+    name: Davis-Stirling Document Requirements
+    citation: "Civil Code §4525-4528"
+    required_documents:
+      - "CC&Rs, bylaws, articles of incorporation"
+      - "Operating rules"
+      - "Most recent financial statement and budget"
+      - "Reserve study"
+      - "Minutes of regular board meetings (last 12 months)"
+      - "Pending litigation disclosure"
+      - "Special assessment disclosure"
+      - "Insurance summary"
+    agent_gate: GATE-051
+    last_verified: 2026-01-15
+
+  - id: CA-HOA-002
+    name: HOA Document Review Period
+    citation: "Civil Code §4525"
+    period_days: 5
+    type: FIXED
+    basis: "From delivery of HOA documents to buyer"
+    right: "Buyer may cancel within this period based on HOA document review"
+    critical_note: "This is a statutory right — cannot be shortened by contract"
+    agent_gate: GATE-051
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# RECORD RETENTION
+# -----------------------------------------------------------------------------
+retention:
+
+  - id: CA-RET-001
+    name: DRE File Retention
+    citation: "Business & Professions Code §10148"
+    period_years: 3
+    from: "Close of escrow or date of listing expiration/withdrawal"
+    applies_to: "All transaction documents"
+    agent_gate: GATE-080
+    last_verified: 2026-01-15

@@ -1,0 +1,598 @@
+# =============================================================================
+# AGENT VERIFICATION GATES
+# =============================================================================
+#
+# As the licensed agent on these transactions, you carry fiduciary duty,
+# DRE obligations, and personal legal liability. These gates represent
+# every point where the system STOPS and requires YOUR explicit verification
+# before proceeding.
+#
+# Gate behavior:
+#   HARD_GATE  - System halts. Cannot proceed without agent sign-off.
+#                No override. No timeout. You MUST verify.
+#   SOFT_GATE  - System flags for review. Will remind at escalating intervals
+#                (1hr, 4hr, 24hr, 48hr) but will not auto-proceed.
+#
+# Every gate maps to a specific legal obligation so you know WHY you're
+# verifying, not just WHAT.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# PHASE 1: PRE-CONTRACT / LISTING
+# -----------------------------------------------------------------------------
+
+gates:
+
+  # --- AGENCY & FIDUCIARY ---
+
+  - id: GATE-001
+    phase: PRE_CONTRACT
+    name: Agency Relationship Verification
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §2079.13-2079.24"
+      obligation: "Agent must disclose agency relationship to all parties"
+      liability: "Failure to disclose can result in license discipline, rescission of contract, and civil liability"
+    what_agent_verifies:
+      - "Correct agency relationship identified (buyer's agent, seller's agent, dual agent)"
+      - "Agency Disclosure (AD) form is accurate and reflects the actual relationship"
+      - "If dual agency: both parties have given informed written consent"
+      - "Disclosure has been provided to all parties BEFORE they sign the purchase agreement"
+    ai_prepares:
+      - "Pre-fills AD form based on transaction setup"
+      - "Identifies if dual agency situation exists"
+      - "Flags if disclosure timing is at risk"
+    cannot_proceed_until: "Agent confirms agency disclosure is accurate and properly timed"
+
+  - id: GATE-002
+    phase: PRE_CONTRACT
+    name: Visual Inspection Completed
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §2079"
+      obligation: "Agent must conduct a reasonably competent and diligent visual inspection of accessible areas and disclose all material facts"
+      liability: "Personal liability for undisclosed material defects discoverable by visual inspection; cannot delegate this duty"
+    what_agent_verifies:
+      - "I have personally conducted a visual inspection of the property"
+      - "I have documented all observable conditions"
+      - "All material facts discovered are disclosed in writing"
+      - "Areas that were not accessible are noted"
+    ai_prepares:
+      - "Generates visual inspection checklist based on property type"
+      - "Provides template for documenting findings"
+      - "Cross-references property age and type against common issues"
+    cannot_proceed_until: "Agent confirms visual inspection completed and findings documented"
+    notes: "This is YOUR personal legal duty. An inspector's report does NOT satisfy this obligation. You must physically inspect."
+
+  - id: GATE-003
+    phase: PRE_CONTRACT
+    name: Seller Disclosure Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §1102-1102.17"
+      obligation: "Agent must review TDS and SPQ for completeness and red flags"
+      liability: "Agent may be liable for failure to identify and follow up on incomplete or inconsistent disclosures"
+    what_agent_verifies:
+      - "TDS is complete — all sections filled out, no blanks where answers are expected"
+      - "SPQ is complete and consistent with TDS"
+      - "No contradictions between seller disclosures and my visual inspection findings"
+      - "Any red flags identified and followed up on"
+      - "If listing agent: seller has been advised to complete disclosures fully and honestly"
+    ai_prepares:
+      - "Scans TDS and SPQ for blank fields"
+      - "Cross-references TDS answers against SPQ answers for contradictions"
+      - "Cross-references disclosures against property age, location, and NHD report"
+      - "Flags inconsistencies for agent review"
+    cannot_proceed_until: "Agent confirms disclosures reviewed and any red flags addressed"
+
+  - id: GATE-004
+    phase: PRE_CONTRACT
+    name: Natural Hazard Disclosure Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §1103-1103.14"
+      obligation: "NHD report must be provided to buyer; agent must review for accuracy"
+      liability: "Agent liability if property is in a hazard zone and buyer was not informed"
+    what_agent_verifies:
+      - "NHD report has been ordered from a qualified provider"
+      - "Report covers all six statutory hazard zones"
+      - "Property's hazard zone status is accurately reflected"
+      - "Report has been delivered to buyer"
+    ai_prepares:
+      - "Orders NHD report automatically upon listing"
+      - "Verifies report covers all required zones (flood, fire, earthquake fault, seismic hazard, wildfire state responsibility, dam inundation)"
+      - "Flags if property is in any hazard zone"
+    cannot_proceed_until: "Agent confirms NHD reviewed and accurate"
+
+  # --- FAIR HOUSING ---
+
+  - id: GATE-005
+    phase: PRE_CONTRACT
+    name: Fair Housing Compliance
+    type: HARD_GATE
+    legal_basis:
+      statute: "Federal Fair Housing Act (42 USC §3601-3619); California FEHA (Gov Code §12955)"
+      obligation: "Agent must not discriminate and must ensure marketing, showing, and negotiation comply with fair housing laws"
+      liability: "License revocation, federal civil penalties up to $100K+, personal civil liability"
+    what_agent_verifies:
+      - "Listing description contains no discriminatory language"
+      - "Showing policies do not discriminate against any protected class"
+      - "No steering, blockbusting, or discriminatory screening"
+      - "Any HOA rules reviewed for fair housing compliance"
+    ai_prepares:
+      - "Scans listing description for potentially discriminatory language"
+      - "Flags terms that may violate fair housing guidelines"
+    cannot_proceed_until: "Agent confirms fair housing compliance"
+
+  # ---------------------------------------------------------------------------
+  # PHASE 2: CONTRACT EXECUTION
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-010
+    phase: CONTRACT_EXECUTION
+    name: Purchase Agreement Terms Verification
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Business & Professions Code §10177(d); DRE regulations"
+      obligation: "Agent must understand all contract terms and ensure client understands what they are agreeing to"
+      liability: "License discipline for negligent preparation; personal liability for client damages from misunderstood terms"
+    what_agent_verifies:
+      - "All material terms are correctly stated (price, deposit, contingencies, closing date)"
+      - "All REVIEWABLE dates are appropriate for this transaction"
+      - "Contingency periods are realistic given market conditions and property type"
+      - "Special terms or addenda are clear and enforceable"
+      - "My client understands every term before signing"
+      - "No terms that could harm my client's interests have been overlooked"
+    ai_prepares:
+      - "Extracts all terms from RPA with confidence scores"
+      - "Calculates all deadline dates"
+      - "Flags unusual terms or deviations from standard CAR language"
+      - "Compares contingency periods against typical timelines"
+      - "Identifies any terms that conflict with each other"
+    cannot_proceed_until: "Agent confirms all terms verified and client informed"
+
+  - id: GATE-011
+    phase: CONTRACT_EXECUTION
+    name: Earnest Money Deposit Handling
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Business & Professions Code §10145; Commissioner's Regulation 2832"
+      obligation: "Agent must ensure deposit is handled according to contract terms and trust fund rules"
+      liability: "Trust fund violations can result in license revocation"
+    what_agent_verifies:
+      - "Deposit amount matches contract terms"
+      - "Deposit delivered within the contractual timeframe"
+      - "Deposit placed with the correct party (escrow company per contract)"
+      - "Receipt obtained and filed"
+    ai_prepares:
+      - "Extracts deposit amount and deadline from contract"
+      - "Monitors delivery deadline"
+      - "Alerts if deposit not confirmed by deadline"
+    cannot_proceed_until: "Agent confirms deposit handled per contract and trust fund rules"
+
+  - id: GATE-012
+    phase: CONTRACT_EXECUTION
+    name: All Disclosures Delivered to Buyer
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §1102.3; §1103.2"
+      obligation: "Statutory disclosures must be delivered to buyer as soon as practicable"
+      liability: "Late delivery gives buyer extended rescission rights; non-delivery can void the transaction"
+    what_agent_verifies:
+      - "TDS delivered to buyer"
+      - "SPQ delivered to buyer"
+      - "NHD report delivered to buyer"
+      - "Agency disclosure delivered to buyer"
+      - "Statewide Buyer and Seller Advisory (SBSA) delivered"
+      - "All applicable local disclosures delivered (LA 9A, Mello-Roos, etc.)"
+      - "Delivery method documented (date, time, method)"
+    ai_prepares:
+      - "Generates jurisdiction-specific disclosure checklist"
+      - "Tracks delivery status of each document"
+      - "Flags any undelivered items"
+      - "Records delivery timestamps from DocuSign"
+    cannot_proceed_until: "Agent confirms all required disclosures delivered and documented"
+
+  # ---------------------------------------------------------------------------
+  # PHASE 3: INSPECTION
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-020
+    phase: INSPECTION
+    name: Inspection Report Material Facts Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §2079; §1102"
+      obligation: "Agent must review inspection reports and ensure material findings are communicated to client"
+      liability: "Agent can be liable for failing to follow up on material inspection findings"
+    what_agent_verifies:
+      - "I have personally reviewed all inspection reports"
+      - "All material findings have been communicated to my client"
+      - "My client understands the significance of material findings"
+      - "If listing agent: seller has been informed of findings affecting disclosures"
+      - "Any findings requiring updated disclosures have been addressed"
+    ai_prepares:
+      - "Summarizes inspection reports highlighting material findings"
+      - "Categorizes findings by severity (safety, structural, functional, cosmetic)"
+      - "Cross-references findings against seller disclosures for contradictions"
+      - "Flags findings that may require updated TDS"
+    cannot_proceed_until: "Agent confirms inspection findings reviewed and client informed"
+
+  - id: GATE-021
+    phase: INSPECTION
+    name: Request for Repair / Response Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "Contract law; fiduciary duty"
+      obligation: "Agent must ensure repair requests/responses serve client's interests and are properly documented"
+      liability: "Failure to properly negotiate repairs can constitute breach of fiduciary duty"
+    what_agent_verifies:
+      - "Repair request accurately reflects client's priorities"
+      - "Response terms are clearly stated and enforceable"
+      - "Client understands and approves the repair agreement"
+      - "Deadlines for completing repairs are tracked"
+    ai_prepares:
+      - "Drafts repair request from inspection findings per client direction"
+      - "Tracks repair negotiation status"
+      - "Compares repair agreement against original request"
+    cannot_proceed_until: "Agent confirms repair terms verified and client approved"
+
+  - id: GATE-022
+    phase: INSPECTION
+    name: Investigation Contingency Decision
+    type: HARD_GATE
+    legal_basis:
+      statute: "CAR RPA contingency provisions; fiduciary duty"
+      obligation: "Agent must ensure client makes an informed decision to remove or not remove the investigation contingency"
+      liability: "Removing contingency without client's informed consent; failing to advise of risks of removal"
+    what_agent_verifies:
+      - "Client has received and reviewed all inspection reports"
+      - "All material issues have been discussed"
+      - "Client understands the consequence of removing this contingency (no further right to cancel on inspection grounds without forfeiting deposit)"
+      - "Decision to remove or not remove is the CLIENT'S informed choice"
+      - "If not removing: cancellation is properly documented"
+    ai_prepares:
+      - "Generates contingency status summary"
+      - "Lists all open items and unresolved findings"
+      - "Calculates days remaining before deadline"
+      - "Prepares CR-1 form for signature if client decides to remove"
+    cannot_proceed_until: "Agent confirms client made informed contingency decision"
+    deadline_type: REVIEWABLE
+    default_offset_days: 17
+
+  # ---------------------------------------------------------------------------
+  # PHASE 4: APPRAISAL
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-030
+    phase: APPRAISAL
+    name: Appraisal Results Review
+    type: SOFT_GATE
+    legal_basis:
+      statute: "Fiduciary duty; contract terms"
+      obligation: "Agent must inform client of appraisal results and advise on options"
+      liability: "Failure to communicate appraisal issues can affect client's financial decisions"
+    what_agent_verifies:
+      - "Appraisal value reviewed"
+      - "If below purchase price: client informed of options (renegotiate, make up difference, cancel)"
+      - "If at or above: proceed normally"
+      - "Appraisal report accuracy (correct comps, correct property details)"
+    ai_prepares:
+      - "Compares appraised value against purchase price"
+      - "Flags any significant discrepancy"
+      - "Identifies appraisal report errors (wrong bed/bath count, wrong sq ft)"
+      - "Calculates financial impact of low appraisal"
+    cannot_proceed_until: "Agent confirms appraisal reviewed and client informed"
+
+  - id: GATE-031
+    phase: APPRAISAL
+    name: Appraisal Contingency Decision
+    type: HARD_GATE
+    legal_basis:
+      statute: "CAR RPA contingency provisions; fiduciary duty"
+      obligation: "Agent must ensure client makes informed decision on appraisal contingency removal"
+      liability: "Same as GATE-022 — removing contingency is irrevocable"
+    what_agent_verifies:
+      - "Client understands the appraised value and any gap"
+      - "Client understands consequence of removing appraisal contingency"
+      - "If low appraisal: client has decided how to proceed (renegotiate, proceed, cancel)"
+      - "Decision is the CLIENT'S informed choice"
+    ai_prepares:
+      - "Prepares contingency status summary"
+      - "Calculates days remaining before deadline"
+      - "Prepares CR-1 for signature if removing"
+    cannot_proceed_until: "Agent confirms client made informed appraisal contingency decision"
+    deadline_type: REVIEWABLE
+    default_offset_days: 17
+
+  # ---------------------------------------------------------------------------
+  # PHASE 5: FINANCING
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-040
+    phase: FINANCING
+    name: Loan Status Verification
+    type: SOFT_GATE
+    legal_basis:
+      statute: "Fiduciary duty"
+      obligation: "Agent must monitor loan progress and inform client of any issues"
+      liability: "Failure to track loan progress can result in missed deadlines and forfeited deposits"
+    what_agent_verifies:
+      - "Loan application submitted and in process"
+      - "Any lender conditions communicated to client"
+      - "Loan timeline is tracking toward closing date"
+      - "If delays: client and other parties informed"
+    ai_prepares:
+      - "Tracks loan milestones (submitted, processing, underwriting, conditional, clear to close)"
+      - "Flags missed milestones"
+      - "Calculates if loan timeline risks the contingency deadline or closing date"
+    cannot_proceed_until: "Agent confirms loan status reviewed"
+
+  - id: GATE-041
+    phase: FINANCING
+    name: Loan Contingency Decision
+    type: HARD_GATE
+    legal_basis:
+      statute: "CAR RPA contingency provisions; fiduciary duty"
+      obligation: "Agent must ensure client makes informed decision on loan contingency"
+      liability: "Removing loan contingency without full approval puts client's deposit at risk"
+    what_agent_verifies:
+      - "Current loan approval status (conditional? full? outstanding conditions?)"
+      - "Client understands that removing loan contingency means deposit at risk if loan falls through"
+      - "If loan not yet fully approved: client understands the specific risk"
+      - "Decision is the CLIENT'S informed choice"
+    ai_prepares:
+      - "Summarizes current loan status from lender communications"
+      - "Lists any outstanding conditions"
+      - "Calculates risk level based on approval status"
+      - "Prepares CR-1 for signature if removing"
+    cannot_proceed_until: "Agent confirms client made informed loan contingency decision"
+    deadline_type: REVIEWABLE
+    default_offset_days: 17
+
+  # ---------------------------------------------------------------------------
+  # PHASE 6: TITLE & ESCROW
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-050
+    phase: TITLE_ESCROW
+    name: Preliminary Title Report Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "Fiduciary duty; professional standard of care"
+      obligation: "Agent must review preliminary title report and inform client of material title issues"
+      liability: "Failure to identify and communicate title problems can result in client acquiring property with undisclosed encumbrances"
+    what_agent_verifies:
+      - "I have reviewed the preliminary title report"
+      - "All liens identified and explained to client"
+      - "All easements identified and impact assessed"
+      - "Any CC&Rs reviewed for material restrictions"
+      - "Any exceptions to title coverage discussed with client"
+      - "If issues found: plan to resolve before closing or client accepts with knowledge"
+    ai_prepares:
+      - "Parses preliminary title report"
+      - "Categorizes exceptions (standard vs. property-specific)"
+      - "Flags liens, judgments, tax delinquencies"
+      - "Identifies easements and summarizes their impact"
+      - "Cross-references CC&Rs against client's intended use"
+    cannot_proceed_until: "Agent confirms title report reviewed and client informed of all exceptions"
+
+  - id: GATE-051
+    phase: TITLE_ESCROW
+    name: HOA Document Review (if applicable)
+    type: HARD_GATE
+    conditions: "property_has_hoa == true"
+    legal_basis:
+      statute: "California Civil Code §4525 (Davis-Stirling Act)"
+      obligation: "HOA documents must be provided; buyer has statutory review period"
+      liability: "Failure to provide HOA docs gives buyer ongoing right to cancel"
+    what_agent_verifies:
+      - "All required HOA documents received (CC&Rs, bylaws, financials, minutes, pending litigation, assessments)"
+      - "Client informed of material HOA issues (special assessments, litigation, reserve shortfall)"
+      - "5-day statutory review period properly tracked"
+      - "Client's decision to proceed or cancel is informed"
+    ai_prepares:
+      - "Checks HOA document package for completeness against Davis-Stirling requirements"
+      - "Summarizes financial health from budget and reserves"
+      - "Flags pending litigation, special assessments, or rule violations"
+      - "Tracks the 5-day FIXED review period"
+    cannot_proceed_until: "Agent confirms HOA documents reviewed and client informed"
+    deadline_type: FIXED
+    fixed_period_days: 5
+    fixed_basis: "From delivery of HOA documents to buyer"
+
+  # ---------------------------------------------------------------------------
+  # PHASE 7: PRE-CLOSING
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-060
+    phase: PRE_CLOSING
+    name: All Contingencies Removed Verification
+    type: HARD_GATE
+    legal_basis:
+      statute: "CAR RPA; contract law"
+      obligation: "Agent must verify all contingencies properly removed or transaction properly cancelled before closing"
+      liability: "Closing with unresolved contingencies creates legal ambiguity and potential client liability"
+    what_agent_verifies:
+      - "Every contingency has a signed CR-1 on file OR was waived in the contract"
+      - "No contingency removal was obtained without client's informed consent"
+      - "All contingency removals are within their respective deadlines"
+      - "If any contingency was NOT removed: cancellation or extension properly documented"
+    ai_prepares:
+      - "Generates contingency status matrix showing each contingency, its deadline, and removal status"
+      - "Flags any missing CR-1 forms"
+      - "Flags any removals that occurred after their deadline"
+      - "Verifies all CR-1 signatures via DocuSign validation"
+    cannot_proceed_until: "Agent confirms all contingencies accounted for"
+
+  - id: GATE-061
+    phase: PRE_CLOSING
+    name: Closing Disclosure Review
+    type: HARD_GATE
+    legal_basis:
+      statute: "TRID (TILA-RESPA Integrated Disclosure); fiduciary duty"
+      obligation: "Agent must review closing figures with client before signing"
+      liability: "Errors in closing figures directly affect client's finances"
+    what_agent_verifies:
+      - "Purchase price matches contract"
+      - "Loan amount and terms match loan approval"
+      - "All credits and debits are correct"
+      - "Prorations are accurately calculated"
+      - "Transfer taxes are correct per jurisdiction (County, City, Measure ULA if applicable)"
+      - "Agent commission is correct"
+      - "Client has reviewed and understands their net proceeds or cash to close"
+    ai_prepares:
+      - "Cross-references every line item against contract terms"
+      - "Independently calculates transfer taxes, prorations, and fees"
+      - "Flags any discrepancy between closing disclosure and contract"
+      - "Generates comparison report: expected vs. actual"
+    cannot_proceed_until: "Agent confirms closing figures verified with client"
+    deadline_type: FIXED
+    fixed_period_days: 3
+    fixed_basis: "Must be delivered 3 business days before closing (federal TRID)"
+
+  - id: GATE-062
+    phase: PRE_CLOSING
+    name: Final Walkthrough Confirmation
+    type: HARD_GATE
+    legal_basis:
+      statute: "CAR RPA §16; contract terms"
+      obligation: "Buyer has right to final walkthrough; agent must ensure it occurs"
+      liability: "Skipping walkthrough can leave undiscovered damage or missing fixtures"
+    what_agent_verifies:
+      - "Final walkthrough has been scheduled and completed (or client waived in writing)"
+      - "Property condition matches contract expectations"
+      - "All agreed repairs have been completed"
+      - "All fixtures and personal property per contract are present"
+      - "No new damage or issues since last inspection"
+      - "If issues found: documented and resolution agreed before closing"
+    ai_prepares:
+      - "Generates walkthrough checklist from contract terms and repair agreement"
+      - "Lists all fixtures, personal property, and excluded items from contract"
+      - "Provides template for documenting walkthrough findings"
+    cannot_proceed_until: "Agent confirms walkthrough completed and property condition verified"
+    deadline_type: REVIEWABLE
+    default_offset_days: -5
+    offset_from: close_of_escrow
+
+  - id: GATE-063
+    phase: PRE_CLOSING
+    name: Jurisdiction Compliance Verification
+    type: HARD_GATE
+    legal_basis:
+      statute: "Various — see jurisdiction rules for specific citations"
+      obligation: "Agent must ensure all local compliance requirements are met before closing"
+      liability: "Closing without required local compliance can result in post-closing liability and fines"
+    what_agent_verifies:
+      - "All California state requirements met (retrofits, disclosures)"
+      - "All city/county requirements met per property jurisdiction"
+      - "LA-specific: 9A report clear, transfer taxes calculated, Measure ULA addressed if applicable"
+      - "Beverly Hills-specific: gas shut-off valve, low-flow fixtures, transfer tax"
+      - "All compliance certificates obtained and filed"
+    ai_prepares:
+      - "Generates jurisdiction-specific compliance checklist based on property address"
+      - "Tracks completion status of each requirement"
+      - "Flags missing compliance items"
+      - "Calculates all applicable taxes and fees"
+    cannot_proceed_until: "Agent confirms all jurisdiction compliance items verified"
+
+  # ---------------------------------------------------------------------------
+  # PHASE 8: CLOSING
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-070
+    phase: CLOSING
+    name: Final Document Execution Verification
+    type: HARD_GATE
+    legal_basis:
+      statute: "Contract law; DRE regulations"
+      obligation: "Agent must verify all closing documents are properly executed before recording"
+      liability: "Improperly executed documents can delay or void the transfer"
+    what_agent_verifies:
+      - "All documents properly signed by all required parties"
+      - "Notarization completed where required"
+      - "Grant deed is correct (names, legal description, vesting)"
+      - "All funds are confirmed in escrow"
+      - "Lender has authorized funding"
+    ai_prepares:
+      - "Runs DocuSign signature validation on all digital documents"
+      - "Cross-references signer names against contract parties"
+      - "Verifies all required documents are present in the closing package"
+      - "Confirms escrow funding status"
+    cannot_proceed_until: "Agent confirms all closing documents verified"
+
+  - id: GATE-071
+    phase: CLOSING
+    name: Recording and Fund Disbursement Confirmation
+    type: HARD_GATE
+    legal_basis:
+      statute: "California Civil Code §1169; escrow instructions"
+      obligation: "Agent must confirm deed is recorded and funds disbursed per settlement statement"
+      liability: "Premature confirmation of close or incorrect disbursement"
+    what_agent_verifies:
+      - "Deed recorded with County Recorder — recording number obtained"
+      - "Funds disbursed per settlement statement"
+      - "Commission received or confirmed pending"
+      - "Client notified that transaction is officially closed"
+    ai_prepares:
+      - "Monitors recording status via county portal"
+      - "Verifies disbursement against settlement statement"
+      - "Generates closing confirmation communication"
+    cannot_proceed_until: "Agent confirms recording and disbursement verified"
+
+  # ---------------------------------------------------------------------------
+  # PHASE 9: POST-CLOSING
+  # ---------------------------------------------------------------------------
+
+  - id: GATE-080
+    phase: POST_CLOSING
+    name: File Compliance and Retention
+    type: SOFT_GATE
+    legal_basis:
+      statute: "California Business & Professions Code §10148"
+      obligation: "Broker must retain transaction files for 3 years from closing or listing expiration"
+      liability: "DRE audit failure; inability to defend against future claims"
+    what_agent_verifies:
+      - "Complete transaction file archived in SkySlope"
+      - "SkySlope checklist shows all items complete"
+      - "Broker review submitted (if required by brokerage)"
+      - "Backup copy in Google Drive"
+      - "File retention period tracked (3 years from close)"
+    ai_prepares:
+      - "Audits SkySlope checklist for completeness"
+      - "Audits Google Drive folder against document requirements list"
+      - "Generates missing document report if any gaps"
+      - "Sets 3-year retention reminder"
+    cannot_proceed_until: "Agent confirms file is complete and archived"
+
+# =============================================================================
+# GATE SUMMARY
+# =============================================================================
+#
+# Total gates: 20
+# HARD_GATE: 17 (system halts — agent MUST verify)
+# SOFT_GATE: 3  (system flags — agent should verify)
+#
+# Phase distribution:
+#   PRE_CONTRACT:        5 gates (GATE-001 through GATE-005)
+#   CONTRACT_EXECUTION:  3 gates (GATE-010 through GATE-012)
+#   INSPECTION:          3 gates (GATE-020 through GATE-022)
+#   APPRAISAL:           2 gates (GATE-030, GATE-031)
+#   FINANCING:           2 gates (GATE-040, GATE-041)
+#   TITLE_ESCROW:        2 gates (GATE-050, GATE-051)
+#   PRE_CLOSING:         4 gates (GATE-060 through GATE-063)
+#   CLOSING:             2 gates (GATE-070, GATE-071)
+#   POST_CLOSING:        1 gate  (GATE-080)
+#
+# REVIEWABLE deadlines in gates:
+#   GATE-022: Investigation contingency (default 17 days)
+#   GATE-031: Appraisal contingency (default 17 days)
+#   GATE-041: Loan contingency (default 17 days)
+#   GATE-062: Final walkthrough (default COE - 5 days)
+#
+# FIXED deadlines in gates:
+#   GATE-051: HOA review period (5 days from delivery — Davis-Stirling)
+#   GATE-061: Closing disclosure (3 business days before close — TRID)
+#
+# =============================================================================

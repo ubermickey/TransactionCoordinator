@@ -1,0 +1,208 @@
+# =============================================================================
+# JURISDICTION RULES: LOS ANGELES (CITY & COUNTY)
+# =============================================================================
+#
+# Inherits from: california.yaml
+# These rules supplement California state rules for properties within
+# the City and County of Los Angeles.
+#
+# =============================================================================
+
+jurisdiction:
+  name: Los Angeles
+  level: city_county
+  parent: california
+  last_full_audit: 2026-01-15
+  next_full_audit: 2026-07-15
+
+# -----------------------------------------------------------------------------
+# TRANSFER TAXES
+# -----------------------------------------------------------------------------
+tax_rules:
+
+  - id: LA-TAX-001
+    name: LA County Documentary Transfer Tax
+    citation: "CA Revenue & Taxation Code §11911 (county rate)"
+    rate: 1.10
+    per: 1000
+    basis: sale_price
+    paid_by: seller  # customary
+    note: "This is the same as the state base rate — not an additional tax"
+    type: FIXED
+    agent_gate: GATE-061
+    last_verified: 2026-01-15
+
+  - id: LA-TAX-002
+    name: City of LA Transfer Tax
+    citation: "LAMC §21.9.2"
+    rate: 4.50
+    per: 1000
+    basis: sale_price
+    paid_by: seller  # customary
+    note: "This is in ADDITION to the county tax"
+    type: FIXED
+    agent_gate: GATE-061
+    last_verified: 2026-01-15
+
+  - id: LA-TAX-003
+    name: Measure ULA (Homelessness and Housing Solutions Tax)
+    citation: "LAMC §21.9.10 (Measure ULA, effective April 1, 2023)"
+    tiers:
+      - threshold_min: 5000000
+        threshold_max: 10000000
+        rate: 4.0
+        per: 100
+        basis: sale_price
+      - threshold_min: 10000001
+        threshold_max: null
+        rate: 5.5
+        per: 100
+        basis: sale_price
+    applies_when: "Sale price exceeds $5,000,000"
+    paid_by: seller  # typically, but negotiable
+    note: "This is a significant tax. On a $6M sale: $240,000. On a $12M sale: $660,000."
+    type: FIXED
+    agent_gate: GATE-061
+    critical_for_agent: true
+    agent_must_verify:
+      - "Client is aware of Measure ULA applicability and amount"
+      - "Tax is correctly reflected on closing disclosure"
+      - "Tax planning has been discussed (e.g., installment sales, structure)"
+    last_verified: 2026-01-15
+    changelog:
+      - date: 2023-04-01
+        note: "Measure ULA effective date"
+      - date: 2024-03-01
+        note: "Survived legal challenges; remains in effect"
+
+# -----------------------------------------------------------------------------
+# CITY-SPECIFIC REPORTS & COMPLIANCE
+# -----------------------------------------------------------------------------
+compliance_requirements:
+
+  - id: LA-COMP-001
+    name: City of LA 9A Report
+    citation: "LAMC §91.109.1 (commonly called '9A Report' or 'Zoning Verification')"
+    description: "Report from LA Department of Building & Safety confirming permits, zoning compliance, and code violations"
+    required_for: "All properties within City of LA"
+    when_to_order: PRE_CONTRACT
+    turnaround: "5-15 business days"
+    what_it_reveals:
+      - "Open or expired permits"
+      - "Code violations"
+      - "Zoning compliance"
+      - "Certificate of Occupancy status"
+      - "Unpermitted construction"
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "9A report has been ordered and received"
+      - "No open violations or unpermitted work that affects the transaction"
+      - "If issues found: disclosed to buyer and resolution plan in place"
+    last_verified: 2026-01-15
+
+  - id: LA-COMP-002
+    name: LADBS Open Permits and Violations Check
+    citation: "LADBS records"
+    description: "Verify no outstanding building violations or open permits"
+    how_to_check: "LADBS online portal or 9A report"
+    agent_gate: GATE-063
+    last_verified: 2026-01-15
+
+  - id: LA-COMP-003
+    name: Soft-Story Retrofit Ordinance
+    citation: "LAMC §91.9301 et seq."
+    description: "Wood-frame buildings with soft/weak stories (typically built before 1978) must be retrofitted"
+    applies_to: "Multi-family wood-frame buildings with parking at ground level"
+    mandatory: true
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "Property assessed for soft-story classification"
+      - "If applicable: retrofit status (completed, in progress, non-compliant)"
+      - "Buyer informed of retrofit obligations if not yet completed"
+    last_verified: 2026-01-15
+
+  - id: LA-COMP-004
+    name: Private Sewer Lateral Program
+    citation: "LAMC §64.70"
+    description: "Sewer line inspection may be required; older LA properties commonly have clay or Orangeburg pipes"
+    recommendation: "Order sewer line inspection for any property built before 1980"
+    agent_gate: GATE-020
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# RENT STABILIZATION
+# -----------------------------------------------------------------------------
+rent_stabilization:
+
+  - id: LA-RSO-001
+    name: LA Rent Stabilization Ordinance (RSO)
+    citation: "LAMC §151.00 et seq."
+    applies_to: "Multi-family properties built before October 1, 1978 (with exceptions)"
+    impact_on_sale:
+      - "RSO registration must be current"
+      - "Tenant rights transfer with the property"
+      - "Rent rolls and tenant information must be disclosed"
+      - "Buyer assumes all RSO obligations"
+      - "Ellis Act withdrawal requirements if converting to non-rental use"
+    agent_gate: GATE-050
+    agent_must_verify:
+      - "RSO status of the property confirmed"
+      - "If RSO: current registration, rent rolls, tenant histories disclosed"
+      - "Buyer understands RSO obligations"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# WILDFIRE & HILLSIDE
+# -----------------------------------------------------------------------------
+wildfire_hillside:
+
+  - id: LA-FIRE-001
+    name: Brush Clearance Compliance
+    citation: "LAMC §57.322; LAFD regulations"
+    description: "Properties in Very High Fire Hazard Severity Zones must maintain 200ft defensible space"
+    applies_to: "Hillside and canyon properties in fire zones"
+    annual_requirement: true
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "Property fire zone status identified (from NHD report)"
+      - "If in fire zone: current brush clearance compliance confirmed"
+      - "Buyer informed of ongoing annual brush clearance obligation"
+    last_verified: 2026-01-15
+
+  - id: LA-FIRE-002
+    name: Wildfire Insurance Availability
+    citation: "Various; California FAIR Plan as last resort"
+    description: "Many hillside/canyon properties cannot obtain standard homeowner's insurance"
+    agent_action: "Advise buyer to confirm insurance availability EARLY in the contingency period"
+    agent_gate: GATE-022
+    agent_must_verify:
+      - "If hillside/fire zone: buyer has confirmed insurance is obtainable"
+      - "If standard market declines: buyer aware of FAIR Plan option and its limitations"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# UTILITIES
+# -----------------------------------------------------------------------------
+utilities:
+
+  - id: LA-UTIL-001
+    name: LADWP (Los Angeles Department of Water and Power)
+    description: "Municipal utility provider for City of LA"
+    closing_actions:
+      - "Arrange final meter reads"
+      - "Transfer account to buyer"
+    agent_gate: null  # AI handles; no legal liability
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# RECORDING
+# -----------------------------------------------------------------------------
+recording:
+
+  - id: LA-REC-001
+    name: LA County Registrar-Recorder
+    description: "All deeds recorded with the LA County Registrar-Recorder/County Clerk"
+    online_portal: true
+    recording_hours: "8:00 AM - 5:00 PM, Monday-Friday (excluding holidays)"
+    agent_gate: GATE-071
+    last_verified: 2026-01-15
