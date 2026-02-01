@@ -92,33 +92,81 @@ def deadline_rows(txn_id: str) -> list[dict]:
     with db.conn() as c:
         return [dict(r) for r in c.execute("SELECT * FROM deadlines WHERE txn=? ORDER BY due", (txn_id,))]
 
+# ── Phase Advancement ────────────────────────────────────────────────────────
+
+PHASE_ORDER = [p["id"] for p in rules.phases()]
+
+def can_advance(txn_id: str) -> tuple[bool, list[str]]:
+    """Check if all gates for current phase are verified."""
+    with db.conn() as c:
+        t = db.txn(c, txn_id)
+    phase = t["phase"]
+    phase_def = next((p for p in rules.phases() if p["id"] == phase), None)
+    if not phase_def:
+        return False, ["Unknown phase"]
+    blocking = []
+    for g in gate_rows(txn_id):
+        info = rules.gate(g["gid"])
+        if info and info["phase"] == phase and g["status"] != "verified" and info["type"] == "HARD_GATE":
+            blocking.append(f"{g['gid']}: {info['name']}")
+    return len(blocking) == 0, blocking
+
+
+def advance_phase(txn_id: str) -> str | None:
+    """Move to next phase if gates allow. Returns new phase or None."""
+    ok, blocking = can_advance(txn_id)
+    if not ok:
+        return None
+    with db.conn() as c:
+        t = db.txn(c, txn_id)
+    idx = PHASE_ORDER.index(t["phase"]) if t["phase"] in PHASE_ORDER else -1
+    if idx + 1 >= len(PHASE_ORDER):
+        return None
+    new_phase = PHASE_ORDER[idx + 1]
+    with db.conn() as c:
+        c.execute("UPDATE txns SET phase=?, updated=datetime('now','localtime') WHERE id=?", (new_phase, txn_id))
+    return new_phase
+
 # ── Extraction ───────────────────────────────────────────────────────────────
 
-PROMPT = """\
-Extract all contract terms from this real estate purchase agreement.
-Return ONLY valid JSON (no markdown):
-{
-  "parties": {"buyer":"","seller":"","buyer_agent":"","seller_agent":"","escrow_company":""},
-  "property": {"address":"","city":"","state":"CA","zip":"","apn":""},
-  "financial": {"purchase_price":0,"deposit":0,"loan_amount":0,"down_payment":0},
-  "dates": {"acceptance":"YYYY-MM-DD","close_of_escrow":"YYYY-MM-DD"},
-  "contingencies": {"investigation_days":17,"appraisal_days":17,"loan_days":17,"deposit_days":3},
-  "hoa": false,
-  "flags": []
-}
-Use actual values from the document. ISO dates. null for missing values."""
+def _build_prompt(form_template: dict | None = None) -> str:
+    """Build extraction prompt, optionally using a CAR form template."""
+    base = {
+        "parties": {"buyer":"","seller":"","buyer_agent":"","seller_agent":"","escrow_company":""},
+        "property": {"address":"","city":"","state":"CA","zip":"","apn":""},
+        "financial": {"purchase_price":0,"deposit":0,"loan_amount":0,"down_payment":0},
+        "dates": {"acceptance":"YYYY-MM-DD","close_of_escrow":"YYYY-MM-DD"},
+        "contingencies": {"investigation_days":17,"appraisal_days":17,"loan_days":17,"deposit_days":3},
+        "hoa": False,
+        "flags": [],
+    }
+    prompt = "Extract all contract terms from this document.\nReturn ONLY valid JSON (no markdown):\n"
+    prompt += json.dumps(base, indent=2) + "\n"
+    prompt += "Use actual values from the document. ISO dates. null for missing values.\n"
+    if form_template:
+        prompt += f"\nThis is a CAR {form_template['form']['code']} ({form_template['form']['name']}).\n"
+        prompt += "Field locations:\n"
+        for fid, f in form_template.get("fields", {}).items():
+            prompt += f"  - Section {f.get('section','?')}: {f.get('label',fid)} -> {f.get('maps_to',fid)}\n"
+        if form_template.get("flags"):
+            prompt += "\nAlso check for:\n"
+            for flag in form_template["flags"]:
+                prompt += f"  - {flag}\n"
+    return prompt
 
 
-def extract(pdf_path: str) -> dict:
+def extract(pdf_path: str, form_type: str | None = None) -> dict:
     import anthropic
 
+    template = rules.form_template(form_type) if form_type else None
+    prompt = _build_prompt(template)
     data = base64.b64encode(open(pdf_path, "rb").read()).decode()
     resp = anthropic.Anthropic().messages.create(
         model="claude-sonnet-4-20250514",
         max_tokens=4096,
         messages=[{"role": "user", "content": [
             {"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": data}},
-            {"type": "text", "text": PROMPT},
+            {"type": "text", "text": prompt},
         ]}],
     )
     return json.loads(resp.content[0].text)

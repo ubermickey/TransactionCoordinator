@@ -42,11 +42,11 @@ def new(address: str):
 
 
 @app.command()
-def extract(pdf: Path, txn_id: str = typer.Option(None, "--txn")):
+def extract(pdf: Path, form: str = typer.Option(None, "--form", help="CAR form type (rpa, tds, cr1)"), txn_id: str = typer.Option(None, "--txn")):
     """Extract contract terms from a PDF via Claude."""
     tid = _tid(txn_id)
-    con.print("[yellow]Sending to Claude...[/]")
-    data = engine.extract(str(pdf))
+    con.print(f"[yellow]Sending to Claude{f' (using {form} template)' if form else ''}...[/]")
+    data = engine.extract(str(pdf), form_type=form)
     with db.conn() as c:
         c.execute("UPDATE txns SET data=?, updated=datetime('now','localtime') WHERE id=?", (json.dumps(data), tid))
     anchor = (data.get("dates") or {}).get("acceptance")
@@ -264,6 +264,62 @@ def digest():
             "\n".join(f"{a}: {n} ({w})" for a, n, w in urgent[:5]),
             priority=1,
         )
+
+
+# ── Phase Advancement ────────────────────────────────────────────────────────
+
+@app.command()
+def advance(txn_id: str = typer.Option(None, "--txn")):
+    """Advance to next phase (if all HARD_GATE gates are verified)."""
+    tid = _tid(txn_id)
+    ok, blocking = engine.can_advance(tid)
+    if not ok:
+        con.print("[red]Cannot advance. Blocking gates:[/]")
+        for b in blocking:
+            con.print(f"  {b}")
+        return
+    new = engine.advance_phase(tid)
+    if new:
+        con.print(f"[green]Advanced to {new}[/]")
+        notify.alert("Phase advanced", new)
+    else:
+        con.print("[dim]Already at final phase.[/]")
+
+
+# ── Forms ────────────────────────────────────────────────────────────────────
+
+@app.command()
+def forms():
+    """List available CAR form templates."""
+    tbl = Table(title="CAR Form Templates")
+    tbl.add_column("Code")
+    tbl.add_column("Name")
+    tbl.add_column("Version")
+    tbl.add_column("Fields")
+    for t in rules.form_templates():
+        f = t["form"]
+        tbl.add_row(f["code"], f["name"], f.get("version", "?"), str(len(t.get("fields", {}))))
+    con.print(tbl)
+    con.print("[dim]Use --form CODE with extract to use a template.[/]")
+
+
+@app.command(name="form-diff")
+def form_diff(form_file: Path):
+    """Show fields in a form template (for reviewing updates)."""
+    import yaml
+    t = yaml.safe_load(form_file.read_text())
+    f = t["form"]
+    con.print(f"[bold]{f['code']} — {f['name']}[/]  v{f.get('version','?')}")
+    con.print(f"Last verified: {f.get('last_verified','?')}\n")
+    for fid, field in t.get("fields", {}).items():
+        req = " [red]*[/]" if field.get("required") else ""
+        rev = " [blue]REVIEWABLE[/]" if field.get("reviewable") else ""
+        con.print(f"  {field.get('section','?'):8s} {field.get('label', fid)}{req}{rev}")
+        con.print(f"           -> {field.get('maps_to', '?')}  [dim]({field.get('type','text')})[/]")
+    if t.get("flags"):
+        con.print("\n[yellow]Flags:[/]")
+        for flag in t["flags"]:
+            con.print(f"  - {flag}")
 
 
 # ── List ─────────────────────────────────────────────────────────────────────

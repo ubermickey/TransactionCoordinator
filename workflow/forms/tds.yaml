@@ -1,0 +1,87 @@
+# CAR Transfer Disclosure Statement (TDS) — Form Template
+# Version: TDS 12/24
+# Legal basis: Civil Code §1102-1102.17
+
+form:
+  name: Transfer Disclosure Statement
+  code: TDS
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-01-15
+  gate: GATE-003
+
+fields:
+  seller_name:
+    section: "I"
+    label: "Seller / Transferor"
+    maps_to: parties.seller
+    type: text
+
+  property_address:
+    section: "I"
+    label: "Property Address"
+    maps_to: property.address
+    type: text
+
+  # Section II: Seller's checklist — these are disclosure flags
+  has_appliances:
+    section: "II.A"
+    label: "Appliances included"
+    type: checklist
+    verify: "Compare against RPA included items"
+
+  has_defects:
+    section: "II.B"
+    label: "Known defects or malfunctions"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Seller acknowledges defects — verify details provided"
+
+  has_additions:
+    section: "II.C"
+    label: "Additions/alterations without permits"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Unpermitted work — verify scope and impact"
+
+  has_encroachments:
+    section: "II.D"
+    label: "Encroachments, easements, or boundary issues"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Title/boundary issue — compare with prelim title report"
+
+  has_neighborhood_noise:
+    section: "II.E"
+    label: "Neighborhood noise or nuisance issues"
+    type: yes_no
+    flag_if: "yes"
+
+  has_insurance_claims:
+    section: "II.F"
+    label: "Insurance claims in past 5 years"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Insurance history — may affect buyer's insurability"
+
+  has_hoa:
+    section: "II.G"
+    label: "Property subject to HOA"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Triggers Davis-Stirling requirements (GATE-051)"
+
+  # Section III: Agent's inspection
+  agent_inspection_completed:
+    section: "III"
+    label: "Agent Visual Inspection"
+    type: text
+    verify: "Must be completed by listing agent per Civil Code §2079"
+    gate: GATE-002
+
+flags:
+  - "Blank fields in Section II (seller may have skipped questions)"
+  - "Contradictions between TDS and SPQ answers"
+  - "Contradictions between TDS and agent's visual inspection (Section III)"
+  - "Water damage, foundation, or roof issues checked 'yes'"
+  - "Section III left blank (agent inspection may not be done)"

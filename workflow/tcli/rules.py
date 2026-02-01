@@ -33,6 +33,22 @@ def resolve(city: str) -> list[str]:
     return ["california"]
 
 
+FORMS_DIR = ROOT / "forms"
+
+
+def form_template(code: str | None) -> dict | None:
+    if not code:
+        return None
+    path = FORMS_DIR / f"{code.lower()}.yaml"
+    return _load(path) if path.exists() else None
+
+
+def form_templates() -> list[dict]:
+    if not FORMS_DIR.exists():
+        return []
+    return [_load(p) for p in sorted(FORMS_DIR.glob("*.yaml"))]
+
+
 def all_rules(names: list[str], section: str) -> list[dict]:
     out = []
     for n in names:
