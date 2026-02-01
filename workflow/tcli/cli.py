@@ -50,6 +50,8 @@ def extract(pdf: Path, form: str = typer.Option(None, "--form", help="CAR form t
     data = engine.extract(str(pdf), form_type=form)
     with db.conn() as c:
         c.execute("UPDATE txns SET data=?, updated=datetime('now','localtime') WHERE id=?", (json.dumps(data), tid))
+    with db.conn() as c:
+        db.log(c, tid, "extracted", f"form={form or 'auto'}")
     anchor = (data.get("dates") or {}).get("acceptance")
     if anchor:
         engine.calc_deadlines(tid, date.fromisoformat(anchor), data)
@@ -546,6 +548,125 @@ def summary(txn_id: str = typer.Option(None, "--txn")):
         con.print(f"\n[yellow bold]Upcoming (7 days)[/]")
         for d, delta in upcoming:
             con.print(f"  [yellow]{d['due']}[/] {d['name']} ({delta}d)")
+
+
+# ── Import ───────────────────────────────────────────────────────────────────
+
+@app.command(name="import")
+def import_txn(file: Path):
+    """Restore a transaction from exported JSON."""
+    payload = json.loads(file.read_text())
+    t = payload["transaction"]
+    tid = t["id"]
+    with db.conn() as c:
+        if db.txn(c, tid):
+            con.print(f"[red]Transaction {tid} already exists.[/]")
+            raise typer.Exit(1)
+        c.execute(
+            "INSERT INTO txns(id,address,phase,jurisdictions,data,created,updated) VALUES(?,?,?,?,?,?,?)",
+            (tid, t["address"], t["phase"], json.dumps(t["jurisdictions"]),
+             json.dumps(t["data"]), t["created"], t["updated"]),
+        )
+        for g in payload.get("gates", []):
+            c.execute("INSERT OR IGNORE INTO gates(txn,gid,status,triggered,verified,notes) VALUES(?,?,?,?,?,?)",
+                      (g["txn"], g["gid"], g["status"], g.get("triggered"), g.get("verified"), g.get("notes")))
+        for d in payload.get("deadlines", []):
+            c.execute("INSERT OR IGNORE INTO deadlines(txn,did,name,type,due,status) VALUES(?,?,?,?,?,?)",
+                      (d["txn"], d["did"], d["name"], d["type"], d.get("due"), d["status"]))
+        db.log(c, tid, "imported", str(file))
+    con.print(f"[green]Imported {tid} — {t['address']}[/]")
+
+
+# ── Cron ─────────────────────────────────────────────────────────────────────
+
+@app.command()
+def cron():
+    """Show crontab entry for daily digest reminders."""
+    import sys
+    venv_python = Path(sys.executable)
+    root = Path(__file__).resolve().parent.parent
+    entry = f"0 8 * * * cd {root} && {venv_python} -m tcli digest 2>&1 >> ~/.tc/digest.log"
+    con.print("[bold]Add this to your crontab (crontab -e):[/]\n")
+    con.print(f"  {entry}\n")
+    con.print("[dim]Runs daily at 8am. Sends push notification if urgent deadlines exist.[/]")
+
+
+# ── Report ───────────────────────────────────────────────────────────────────
+
+@app.command()
+def report(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(None, "--out")):
+    """Generate broker compliance report (text)."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        t = db.txn(c, tid)
+    data = json.loads(t["data"])
+    gs = engine.gate_rows(tid)
+    dls = engine.deadline_rows(tid)
+    juris = json.loads(t["jurisdictions"])
+    today = date.today()
+    v = sum(1 for g in gs if g["status"] == "verified")
+
+    lines = [
+        "=" * 60,
+        "TRANSACTION COMPLIANCE REPORT",
+        "=" * 60,
+        f"Property:       {t['address']}",
+        f"Transaction ID: {tid}",
+        f"Phase:          {t['phase']}",
+        f"Jurisdictions:  {', '.join(juris)}",
+        f"Report Date:    {today}",
+        f"Gates:          {v}/{len(gs)} verified",
+        "",
+    ]
+
+    if p := data.get("parties"):
+        lines += ["PARTIES", "-" * 40]
+        for k, val in p.items():
+            lines.append(f"  {k}: {val}")
+        lines.append("")
+    if f := data.get("financial"):
+        lines += ["FINANCIAL", "-" * 40]
+        for k, val in f.items():
+            if val:
+                lines.append(f"  {k}: ${val:,.0f}" if isinstance(val, (int, float)) else f"  {k}: {val}")
+        lines.append("")
+
+    lines += ["VERIFICATION GATES", "-" * 40]
+    for g in gs:
+        info = rules.gate(g["gid"])
+        status = "VERIFIED" if g["status"] == "verified" else "PENDING"
+        mark = "[x]" if g["status"] == "verified" else "[ ]"
+        name = info["name"] if info else "?"
+        line = f"  {mark} {g['gid']} {name}"
+        if g.get("verified"):
+            line += f"  (verified {g['verified']})"
+        lines.append(line)
+    lines.append("")
+
+    lines += ["DEADLINES", "-" * 40]
+    for d in dls:
+        if not d["due"]:
+            continue
+        delta = (date.fromisoformat(d["due"]) - today).days
+        flag = " ** OVERDUE **" if delta < 0 else " * URGENT *" if delta <= 3 else ""
+        lines.append(f"  {d['due']}  {d['name']}  ({delta}d){flag}")
+    lines.append("")
+
+    lines += ["JURISDICTION COMPLIANCE", "-" * 40]
+    for name in juris:
+        j = rules.jurisdiction(name)
+        lines.append(f"  {j['jurisdiction']['name']}:")
+        for section in ("required_forms", "retrofit_requirements", "compliance_requirements"):
+            for item in j.get(section, []):
+                lines.append(f"    [ ] {item['name']}  ({item.get('citation', '')})")
+    lines += ["", "=" * 60, f"Generated by TC CLI — {today}", "=" * 60]
+
+    text = "\n".join(lines)
+    if out:
+        out.write_text(text)
+        con.print(f"[green]Report saved to {out}[/]")
+    else:
+        con.print(text)
 
 
 if __name__ == "__main__":

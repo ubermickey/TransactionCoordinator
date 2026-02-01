@@ -28,6 +28,9 @@ _tc() {
         'export:Export transaction as JSON'
         'log:Show audit trail'
         'summary:Full transaction summary'
+        'import:Restore transaction from JSON'
+        'cron:Show crontab entry for daily digest'
+        'report:Generate broker compliance report'
     )
 
     _arguments -C \
@@ -56,8 +59,11 @@ _tc() {
                 form-diff)
                     _arguments '1:form_file:_files -g "*.yaml"'
                     ;;
-                export)
+                export|report)
                     _arguments '--out[Output file]:file:_files -g "*.json"'
+                    ;;
+                import)
+                    _arguments '1:file:_files -g "*.json"'
                     ;;
                 new)
                     _arguments '1:address:'
