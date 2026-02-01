@@ -41,8 +41,9 @@ def all_rules(names: list[str], section: str) -> list[dict]:
 
 
 def calc_taxes(price: float, names: list[str]) -> list[tuple[str, float]]:
-    taxes = []
-    for r in all_rules(names, "tax_rules"):
+    taxes, seen = [], set()
+    # Process most-specific jurisdiction first so local rules take precedence
+    for r in all_rules(list(reversed(names)), "tax_rules"):
         if "tiers" in r:
             for t in r["tiers"]:
                 lo, hi = t["threshold_min"], t.get("threshold_max")
@@ -50,5 +51,9 @@ def calc_taxes(price: float, names: list[str]) -> list[tuple[str, float]]:
                     taxes.append((r["name"], price * t["rate"] / t["per"]))
                     break
         elif "rate" in r:
+            key = (r["rate"], r["per"], r.get("basis"))
+            if key in seen:
+                continue  # skip duplicate (e.g., county tax in both CA + LA)
+            seen.add(key)
             taxes.append((r["name"], price * r["rate"] / r["per"]))
     return taxes

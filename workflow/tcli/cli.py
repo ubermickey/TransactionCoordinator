@@ -208,6 +208,64 @@ def send_email(to: str, subject: str, body: str):
     con.print("[green]Sent.[/]")
 
 
+# ── Digest ───────────────────────────────────────────────────────────────────
+
+@app.command()
+def digest():
+    """Daily digest — upcoming deadlines and pending gates across all transactions."""
+    today = date.today()
+    urgent, upcoming, pending_gates = [], [], []
+    with db.conn() as c:
+        for row in c.execute("SELECT * FROM txns ORDER BY created DESC"):
+            t = dict(row)
+            for d in engine.deadline_rows(t["id"]):
+                if not d["due"]:
+                    continue
+                due = date.fromisoformat(d["due"])
+                delta = (due - today).days
+                if delta < 0:
+                    urgent.append((t["address"], d["name"], f"OVERDUE by {-delta}d"))
+                elif delta <= 3:
+                    urgent.append((t["address"], d["name"], f"In {delta}d"))
+                elif delta <= 14:
+                    upcoming.append((t["address"], d["name"], f"In {delta}d"))
+            for g in engine.gate_rows(t["id"]):
+                if g["status"] == "pending":
+                    info = rules.gate(g["gid"])
+                    pending_gates.append((t["address"], g["gid"], info["name"] if info else "?"))
+
+    if urgent:
+        tbl = Table(title="URGENT", style="red")
+        tbl.add_column("Transaction"); tbl.add_column("Deadline"); tbl.add_column("When")
+        for row in urgent:
+            tbl.add_row(*row)
+        con.print(tbl)
+    if upcoming:
+        tbl = Table(title="Upcoming (next 14 days)")
+        tbl.add_column("Transaction"); tbl.add_column("Deadline"); tbl.add_column("When")
+        for row in upcoming:
+            tbl.add_row(*row)
+        con.print(tbl)
+    if pending_gates:
+        tbl = Table(title=f"Pending Gates ({len(pending_gates)})")
+        tbl.add_column("Transaction"); tbl.add_column("Gate"); tbl.add_column("Name")
+        for row in pending_gates[:10]:
+            tbl.add_row(*row)
+        if len(pending_gates) > 10:
+            con.print(f"  [dim]...and {len(pending_gates) - 10} more[/]")
+        con.print(tbl)
+    if not urgent and not upcoming:
+        con.print("[green]All clear — no urgent deadlines.[/]")
+
+    # Send push summary if configured
+    if urgent:
+        notify.alert(
+            f"TC: {len(urgent)} urgent deadline(s)",
+            "\n".join(f"{a}: {n} ({w})" for a, n, w in urgent[:5]),
+            priority=1,
+        )
+
+
 # ── List ─────────────────────────────────────────────────────────────────────
 
 @app.command(name="list")
