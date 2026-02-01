@@ -1,6 +1,6 @@
 """TC command-line interface."""
 import json
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from uuid import uuid4
 
@@ -36,6 +36,7 @@ def new(address: str):
     juris = rules.resolve(city)
     with db.conn() as c:
         c.execute("INSERT INTO txns(id,address,jurisdictions) VALUES(?,?,?)", (tid, address, json.dumps(juris)))
+        db.log(c, tid, "created", address)
     engine.init_gates(tid)
     con.print(f"[green]Created[/] {tid} — {address}")
     con.print(f"Jurisdictions: {', '.join(juris)}")
@@ -407,10 +408,144 @@ def delete(txn_id: str):
         raise typer.Exit(1)
     if typer.confirm(f"Delete {t['address']} ({txn_id})?"):
         with db.conn() as c:
+            db.log(c, txn_id, "deleted", t["address"])
             c.execute("DELETE FROM deadlines WHERE txn=?", (txn_id,))
             c.execute("DELETE FROM gates WHERE txn=?", (txn_id,))
             c.execute("DELETE FROM txns WHERE id=?", (txn_id,))
         con.print(f"[green]Deleted {txn_id}[/]")
+
+
+# ── Timeline ─────────────────────────────────────────────────────────────────
+
+@app.command()
+def timeline(txn_id: str = typer.Option(None, "--txn"), weeks: int = 8):
+    """Visual deadline timeline."""
+    tid = _tid(txn_id)
+    dls = engine.deadline_rows(tid)
+    today = date.today()
+    end = today + timedelta(weeks=weeks)
+    con.print(f"\n[bold]Timeline[/]  {today} → {end}  ({weeks} weeks)\n")
+    bar_width = 60
+    total_days = (end - today).days or 1
+    for d in dls:
+        if not d["due"]:
+            continue
+        due = date.fromisoformat(d["due"])
+        if due < today - timedelta(days=7) or due > end:
+            continue
+        offset = max(0, min(bar_width, int((due - today).days / total_days * bar_width)))
+        delta = (due - today).days
+        color = "red" if delta < 0 else "red" if delta <= 1 else "yellow" if delta <= 5 else "green"
+        marker = "│" if delta >= 0 else "X"
+        bar = "─" * offset + f"[{color}]{marker}[/{color}]" + "─" * (bar_width - offset)
+        label = d["name"][:28]
+        con.print(f"  {d['due']}  {bar}  [{color}]{label}[/{color}]  ({delta}d)")
+    con.print(f"\n  {'TODAY':>10}  │{'':>{bar_width}}│")
+    con.print(f"  {'':>10}  {today!s}{'':>{bar_width - 10}}{end!s}")
+
+
+# ── Export ───────────────────────────────────────────────────────────────────
+
+@app.command()
+def export(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(None, "--out")):
+    """Export transaction as JSON (backup/integration)."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        t = db.txn(c, tid)
+    payload = {
+        "transaction": {**t, "data": json.loads(t["data"]), "jurisdictions": json.loads(t["jurisdictions"])},
+        "gates": engine.gate_rows(tid),
+        "deadlines": engine.deadline_rows(tid),
+        "audit": [],
+    }
+    with db.conn() as c:
+        for r in c.execute("SELECT * FROM audit WHERE txn=? ORDER BY ts", (tid,)):
+            payload["audit"].append(dict(r))
+    text = json.dumps(payload, indent=2, default=str)
+    if out:
+        out.write_text(text)
+        con.print(f"[green]Exported to {out}[/]")
+    else:
+        con.print(text)
+
+
+# ── Audit Log ────────────────────────────────────────────────────────────────
+
+@app.command(name="log")
+def audit_log(txn_id: str = typer.Option(None, "--txn"), limit: int = 20):
+    """Show audit trail for a transaction."""
+    tid = _tid(txn_id)
+    tbl = Table(title="Audit Log")
+    tbl.add_column("Time")
+    tbl.add_column("Action")
+    tbl.add_column("Detail")
+    with db.conn() as c:
+        rows = c.execute("SELECT * FROM audit WHERE txn=? ORDER BY ts DESC LIMIT ?", (tid, limit)).fetchall()
+    for r in rows:
+        tbl.add_row(r["ts"], r["action"], r["detail"])
+    con.print(tbl)
+
+
+# ── Summary ──────────────────────────────────────────────────────────────────
+
+@app.command()
+def summary(txn_id: str = typer.Option(None, "--txn")):
+    """Full transaction summary for agent reference."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        t = db.txn(c, tid)
+    data = json.loads(t["data"])
+    gs = engine.gate_rows(tid)
+    dls = engine.deadline_rows(tid)
+    today = date.today()
+    v = sum(1 for g in gs if g["status"] == "verified")
+
+    con.print(Panel(f"[bold]{t['address']}[/]", title="Transaction Summary"))
+    con.print(f"  ID: {tid}  |  Phase: {t['phase']}  |  Created: {t['created']}")
+    con.print(f"  Jurisdictions: {', '.join(json.loads(t['jurisdictions']))}")
+
+    if p := data.get("parties"):
+        con.print(f"\n[bold]Parties[/]")
+        for k, val in p.items():
+            con.print(f"  {k}: {val}")
+    if f := data.get("financial"):
+        con.print(f"\n[bold]Financial[/]")
+        for k, val in f.items():
+            if val:
+                con.print(f"  {k}: ${val:,.0f}" if isinstance(val, (int, float)) else f"  {k}: {val}")
+    if d := data.get("dates"):
+        con.print(f"\n[bold]Key Dates[/]")
+        for k, val in d.items():
+            con.print(f"  {k}: {val}")
+    if ct := data.get("contingencies"):
+        con.print(f"\n[bold]Contingencies[/]")
+        for k, val in ct.items():
+            con.print(f"  {k}: {val} days")
+
+    con.print(f"\n[bold]Gates[/]  {v}/{len(gs)} verified")
+    for g in gs:
+        if g["status"] == "pending":
+            info = rules.gate(g["gid"])
+            con.print(f"  [dim]pending[/]  {g['gid']} {info['name'] if info else '?'}")
+
+    overdue = []
+    upcoming = []
+    for d in dls:
+        if not d["due"]:
+            continue
+        delta = (date.fromisoformat(d["due"]) - today).days
+        if delta < 0:
+            overdue.append((d, delta))
+        elif delta <= 7:
+            upcoming.append((d, delta))
+    if overdue:
+        con.print(f"\n[red bold]OVERDUE ({len(overdue)})[/]")
+        for d, delta in overdue:
+            con.print(f"  [red]{d['due']}[/] {d['name']} ({-delta}d overdue)")
+    if upcoming:
+        con.print(f"\n[yellow bold]Upcoming (7 days)[/]")
+        for d, delta in upcoming:
+            con.print(f"  [yellow]{d['due']}[/] {d['name']} ({delta}d)")
 
 
 if __name__ == "__main__":

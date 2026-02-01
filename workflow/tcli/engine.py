@@ -81,6 +81,7 @@ def verify(txn_id: str, gate_id: str, notes: str = ""):
             "WHERE txn=? AND gid=?",
             (notes, txn_id, gate_id),
         )
+        db.log(c, txn_id, "gate_verified", gate_id)
 
 
 def gate_rows(txn_id: str) -> list[dict]:
@@ -125,6 +126,7 @@ def advance_phase(txn_id: str) -> str | None:
     new_phase = PHASE_ORDER[idx + 1]
     with db.conn() as c:
         c.execute("UPDATE txns SET phase=?, updated=datetime('now','localtime') WHERE id=?", (new_phase, txn_id))
+        db.log(c, txn_id, "phase_advanced", f"{t['phase']} -> {new_phase}")
     return new_phase
 
 # ── Extraction ───────────────────────────────────────────────────────────────

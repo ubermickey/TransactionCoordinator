@@ -22,6 +22,11 @@ CREATE TABLE IF NOT EXISTS deadlines(
   txn TEXT, did TEXT, name TEXT, type TEXT, due TEXT,
   status TEXT DEFAULT 'pending',
   PRIMARY KEY(txn, did)
+);
+CREATE TABLE IF NOT EXISTS audit(
+  id INTEGER PRIMARY KEY AUTOINCREMENT, txn TEXT,
+  action TEXT, detail TEXT,
+  ts TEXT DEFAULT(datetime('now','localtime'))
 );"""
 
 
@@ -46,3 +51,7 @@ def txn(c, tid):
 def active(c):
     r = c.execute("SELECT * FROM txns ORDER BY created DESC LIMIT 1").fetchone()
     return dict(r) if r else None
+
+
+def log(c, txn_id: str, action: str, detail: str = ""):
+    c.execute("INSERT INTO audit(txn,action,detail) VALUES(?,?,?)", (txn_id, action, detail))
