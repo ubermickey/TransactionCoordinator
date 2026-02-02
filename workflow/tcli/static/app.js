@@ -607,19 +607,39 @@ async function loadTxns() {
   empty.style.display = 'none';
   emptyState.style.display = 'none';
 
+  // Fetch dashboard data for urgency indicators
+  const dash = await get('/api/dashboard');
+  const healthMap = {};
+  if (!dash._error) {
+    dash.forEach(d => { healthMap[d.id] = d; });
+  }
+
   list.innerHTML = txns.map(t => {
     const ds = t.doc_stats || {};
     const pct = ds.total ? Math.round((ds.received / ds.total) * 100) : 0;
     const active = currentTxn === t.id ? ' active' : '';
+    const h = healthMap[t.id] || {};
+    const health = h.health || 'green';
+    const urgentCount = (h.overdue || 0) + (h.soon || 0);
+    const nextDl = (h.urgent_deadlines || [])[0];
+    const gatePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
     return `
       <li class="txn-item${active}" data-id="${t.id}">
-        <div class="txn-address">${esc(t.address)}</div>
+        <div class="txn-item-top">
+          <span class="health-dot health-${health}" title="${health === 'red' ? 'Overdue items' : health === 'yellow' ? 'Items due soon' : 'On track'}"></span>
+          <div class="txn-address">${esc(t.address)}</div>
+          ${urgentCount > 0 ? `<span class="urgency-badge urgency-${health}">${urgentCount}</span>` : ''}
+        </div>
         <div class="txn-meta">
           <span class="type-badge ${t.txn_type}">${t.txn_type}</span>
           <span class="type-badge ${t.party_role}">${t.party_role}</span>
+          <span class="phase-badge">${formatPhase(t.phase)}</span>
         </div>
-        <div class="txn-phase">${formatPhase(t.phase)}</div>
-        ${ds.total ? `<div class="progress-bar"><div class="progress-bar-fill" style="width:${pct}%"></div></div>` : ''}
+        <div class="txn-bars">
+          <div class="mini-bar" title="Docs: ${pct}%"><div class="mini-bar-fill mini-bar-docs" style="width:${pct}%"></div></div>
+          <div class="mini-bar" title="Gates: ${gatePct}%"><div class="mini-bar-fill mini-bar-gates" style="width:${gatePct}%"></div></div>
+        </div>
+        ${nextDl ? `<div class="txn-next-dl">${esc(nextDl.name)}: ${nextDl.days_left}d</div>` : ''}
       </li>`;
   }).join('');
 
@@ -738,6 +758,18 @@ async function renderOverview() {
   if (!t) return;
   const el = $('#tab-content');
 
+  // Fetch urgency + audit + notes in parallel
+  const [dashAll, audit, notesRes, contData] = await Promise.all([
+    get('/api/dashboard'),
+    get(`/api/txns/${currentTxn}/audit`),
+    get(`/api/txns/${currentTxn}/notes`),
+    get(`/api/txns/${currentTxn}/contingencies`),
+  ]);
+  const dash = (!dashAll._error ? dashAll : []).find(d => d.id === currentTxn) || {};
+  const auditRows = (!audit._error ? audit : []).slice(0, 8);
+  const notes = (!notesRes._error ? notesRes.notes : '') || '';
+  const contItems = (!contData._error && contData.items) ? contData.items : [];
+
   // Advance bar
   const phases = phasesCache[t.txn_type || 'sale'] || [];
   const phaseObj = phases.find ? phases.find(p => p.id === t.phase) : null;
@@ -753,35 +785,112 @@ async function renderOverview() {
       ${!isLast ? '<button class="btn btn-primary btn-sm" onclick="advancePhase()">Advance Phase</button>' : '<span class="badge badge-verified">Final Phase</span>'}
     </div>`;
 
-  // Stats
+  // ── Attention Required ──
+  const urgentDl = dash.urgent_deadlines || [];
+  const urgentCont = dash.urgent_contingencies || [];
+  const pendingGates = dash.pending_hard_gates || 0;
+  const hasUrgent = urgentDl.length > 0 || urgentCont.length > 0 || pendingGates > 0;
+
+  if (hasUrgent) {
+    html += `<div class="attention-card">
+      <div class="card-title">Attention Required</div>
+      <div class="attention-items">`;
+    urgentDl.forEach(d => {
+      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 2 ? 'urgent' : 'soon';
+      html += `<div class="attention-item attention-${cls}">
+        <span class="attention-icon">${d.days_left < 0 ? '\u26A0' : '\u23F3'}</span>
+        <span>${esc(d.name)}</span>
+        <span class="attention-days">${d.days_left < 0 ? Math.abs(d.days_left) + 'd overdue' : d.days_left + 'd left'}</span>
+      </div>`;
+    });
+    urgentCont.forEach(d => {
+      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 2 ? 'urgent' : 'soon';
+      html += `<div class="attention-item attention-${cls}">
+        <span class="attention-icon">\u25CB</span>
+        <span>${esc(d.name)}</span>
+        <span class="attention-days">${d.days_left < 0 ? Math.abs(d.days_left) + 'd overdue' : d.days_left + 'd left'}</span>
+      </div>`;
+    });
+    if (pendingGates > 0) {
+      html += `<div class="attention-item attention-soon">
+        <span class="attention-icon">\u2610</span>
+        <span>${pendingGates} hard gate${pendingGates > 1 ? 's' : ''} blocking phase advance</span>
+      </div>`;
+    }
+    html += `</div></div>`;
+  }
+
+  // ── Stats ──
   const ds = t.doc_stats || {};
+  const gatePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
+  const docPct = ds.total ? Math.round(((ds.received || 0) / ds.total) * 100) : 0;
+  const activeCont = contItems.filter(c => c.status === 'active').length;
+  const removedCont = contItems.filter(c => c.status !== 'active').length;
+
   html += `
-    <div class="card-grid">
+    <div class="card-grid card-grid-4">
       <div class="stat-card">
+        <div class="stat-ring" style="--pct:${gatePct}; --ring-color:var(--blue)">
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" class="ring-bg"/>
+          <circle cx="18" cy="18" r="15.9" class="ring-fg" style="stroke-dasharray:${gatePct} 100"/></svg>
+          <span class="ring-label">${gatePct}%</span>
+        </div>
         <div class="stat-value">${t.gates_verified}/${t.gate_count}</div>
-        <div class="stat-label">Gates Verified</div>
+        <div class="stat-label">Gates</div>
       </div>
       <div class="stat-card">
+        <div class="stat-ring" style="--pct:${docPct}; --ring-color:var(--green)">
+          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" class="ring-bg"/>
+          <circle cx="18" cy="18" r="15.9" class="ring-fg" style="stroke-dasharray:${docPct} 100"/></svg>
+          <span class="ring-label">${docPct}%</span>
+        </div>
         <div class="stat-value">${ds.received || 0}/${ds.total || 0}</div>
-        <div class="stat-label">Docs Received</div>
+        <div class="stat-label">Docs</div>
       </div>
       <div class="stat-card">
         <div class="stat-value">${(t.deadlines || []).length}</div>
         <div class="stat-label">Deadlines</div>
       </div>
+      <div class="stat-card">
+        <div class="stat-value">${activeCont}<span class="stat-sub">/${activeCont + removedCont}</span></div>
+        <div class="stat-label">Contingencies</div>
+      </div>
     </div>`;
 
-  // Parties
+  // ── Notes ──
+  html += `<div class="card">
+    <div class="card-title">Transaction Notes</div>
+    <textarea class="notes-area" id="txn-notes" placeholder="Add notes about this transaction...">${esc(notes)}</textarea>
+    <button class="btn btn-primary btn-sm" onclick="saveNotes()" style="margin-top:6px">Save Notes</button>
+  </div>`;
+
+  // ── Recent Activity ──
+  if (auditRows.length > 0) {
+    html += `<div class="card">
+      <div class="card-title">Recent Activity</div>
+      <div class="activity-feed">
+        ${auditRows.map(r => `
+          <div class="activity-item">
+            <span class="activity-action">${esc(r.action)}</span>
+            <span class="activity-detail">${esc(r.detail || '')}</span>
+            <span class="activity-time">${esc(r.ts || '')}</span>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="switchTab('audit')" style="margin-top:4px">View Full Audit</button>
+    </div>`;
+  }
+
+  // ── Parties ──
   const parties = (t.data || {}).parties || {};
   if (Object.values(parties).some(v => v)) {
-    html += `<div class="card" style="margin-top:12px">
+    html += `<div class="card">
       <div class="card-title">Parties</div>
       <div class="kv-grid">
         ${Object.entries(parties).map(([k, v]) => v ? `<span class="kv-key">${esc(k)}</span><span class="kv-val">${esc(v)}</span>` : '').join('')}
       </div></div>`;
   }
 
-  // Financial
+  // ── Financial ──
   const fin = (t.data || {}).financial || {};
   if (Object.values(fin).some(v => v)) {
     html += `<div class="card">
@@ -791,7 +900,7 @@ async function renderOverview() {
       </div></div>`;
   }
 
-  // Property flags
+  // ── Property flags ──
   const allFlags = [
     'is_condo', 'is_pre_1978', 'has_solar', 'has_hoa', 'is_trust_sale',
     'price_above_5m', 'has_pool', 'has_septic', 'is_manufactured',
@@ -817,6 +926,13 @@ async function renderOverview() {
   </div>`;
 
   el.innerHTML = html;
+}
+
+async function saveNotes() {
+  const notes = document.getElementById('txn-notes')?.value || '';
+  const res = await post(`/api/txns/${currentTxn}/notes`, { notes });
+  if (res._error) return;
+  Toast.show('Notes saved', 'success');
 }
 
 async function advancePhase() {
@@ -848,6 +964,26 @@ async function deleteTxn() {
   Toast.show('Transaction deleted', 'info');
   currentTxn = null;
   loadTxns();
+}
+
+async function bulkReceive() {
+  if (!confirm('Mark all required documents as received?')) return;
+  const res = await post(`/api/txns/${currentTxn}/docs/bulk-receive`);
+  if (res._error) return;
+  Toast.show(`${res.updated} documents marked received`, 'success');
+  renderDocs();
+  const t = await get(`/api/txns/${currentTxn}`);
+  if (!t._error) { txnCache[currentTxn] = t; loadTxns(); }
+}
+
+async function bulkVerify() {
+  if (!confirm('Mark all received documents as verified?')) return;
+  const res = await post(`/api/txns/${currentTxn}/docs/bulk-verify`);
+  if (res._error) return;
+  Toast.show(`${res.updated} documents verified`, 'success');
+  renderDocs();
+  const t = await get(`/api/txns/${currentTxn}`);
+  if (!t._error) { txnCache[currentTxn] = t; loadTxns(); }
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -899,6 +1035,10 @@ async function renderDocs() {
     <span><span class="count">${stats.verified || 0}</span> verified</span>
     <span><span class="count">${stats.required || 0}</span> required</span>
     <span><span class="count">${stats.na || 0}</span> N/A</span>
+    <span class="bulk-actions">
+      ${stats.required ? `<button class="btn btn-warning btn-sm" onclick="bulkReceive()">Receive All (${stats.required})</button>` : ''}
+      ${stats.received ? `<button class="btn btn-success btn-sm" onclick="bulkVerify()">Verify All (${stats.received})</button>` : ''}
+    </span>
   </div>`;
 
   html += '<div id="docs-table-area"></div>';

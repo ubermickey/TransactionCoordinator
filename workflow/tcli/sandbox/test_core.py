@@ -85,6 +85,54 @@ def register(runner):
         actions = [r["action"] for r in rows]
         assert "created" in actions
 
+    def test_dashboard():
+        """GET /api/dashboard returns health data for all transactions."""
+        _, items = get("/api/dashboard", expect=200)
+        assert isinstance(items, list)
+        mine = next((d for d in items if d["id"] == tid), None)
+        assert mine is not None, "our txn should be in dashboard"
+        assert "health" in mine
+        assert mine["health"] in ("green", "yellow", "red")
+        assert "doc_stats" in mine
+        assert "overdue" in mine
+
+    def test_notes_save():
+        """Save and retrieve transaction notes."""
+        _, res = post(f"/api/txns/{tid}/notes", {"notes": "Buyer wants quick close"}, expect=200)
+        assert res["ok"] is True
+        _, data = get(f"/api/txns/{tid}/notes", expect=200)
+        assert data["notes"] == "Buyer wants quick close"
+
+    def test_notes_empty():
+        """Save empty notes."""
+        _, res = post(f"/api/txns/{tid}/notes", {"notes": ""}, expect=200)
+        assert res["ok"] is True
+
+    def test_bulk_receive():
+        """Bulk receive all required documents."""
+        _, docs_before = get(f"/api/txns/{tid}/docs", expect=200)
+        required = [d for d in docs_before if d["status"] == "required"]
+        _, res = post(f"/api/txns/{tid}/docs/bulk-receive", expect=200)
+        assert res["updated"] == len(required)
+        # All should now be received
+        _, docs_after = get(f"/api/txns/{tid}/docs", expect=200)
+        still_required = [d for d in docs_after if d["status"] == "required"]
+        assert len(still_required) == 0
+
+    def test_bulk_verify():
+        """Bulk verify all received documents."""
+        _, docs_before = get(f"/api/txns/{tid}/docs", expect=200)
+        received = [d for d in docs_before if d["status"] == "received"]
+        _, res = post(f"/api/txns/{tid}/docs/bulk-verify", expect=200)
+        assert res["updated"] == len(received)
+
+    def test_bulk_empty():
+        """Bulk actions on empty sets return 0."""
+        _, res = post(f"/api/txns/{tid}/docs/bulk-receive", expect=200)
+        assert res["updated"] == 0
+        _, res = post(f"/api/txns/{tid}/docs/bulk-verify", expect=200)
+        assert res["updated"] == 0
+
     def test_delete_txn():
         """Delete transaction and verify 404."""
         _, _ = delete(f"/api/txns/{tid}", expect=200)
@@ -102,4 +150,10 @@ def register(runner):
     runner.test("core:props_flag", test_props_flag)
     runner.test("core:deadlines", test_deadlines)
     runner.test("core:audit_log", test_audit_log)
+    runner.test("core:dashboard", test_dashboard)
+    runner.test("core:notes_save", test_notes_save)
+    runner.test("core:notes_empty", test_notes_empty)
+    runner.test("core:bulk_receive", test_bulk_receive)
+    runner.test("core:bulk_verify", test_bulk_verify)
+    runner.test("core:bulk_empty", test_bulk_empty)
     runner.test("core:delete_txn", test_delete_txn)

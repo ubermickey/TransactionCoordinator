@@ -1956,3 +1956,130 @@ tbody tr:hover { background: var(--table-row-hover); }
   .sig-followup-row { flex-wrap: wrap; }
   .outbox-card-header { flex-direction: column; align-items: flex-start; gap: 4px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   SIDEBAR ENHANCEMENTS — health dots, urgency badges, mini-bars
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.txn-item-top {
+  display: flex; align-items: center; gap: 8px;
+}
+.health-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.health-green { background: var(--green); }
+.health-yellow { background: var(--yellow); }
+.health-red { background: var(--red); animation: pulse-dot 1.5s infinite; }
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.urgency-badge {
+  font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 10px;
+  margin-left: auto; flex-shrink: 0;
+}
+.urgency-red { background: color-mix(in srgb, var(--red) 20%, transparent); color: var(--red); }
+.urgency-yellow { background: color-mix(in srgb, var(--yellow) 20%, transparent); color: var(--yellow); }
+.phase-badge {
+  font-size: 10px; color: var(--text-secondary); font-weight: 500;
+}
+.txn-bars {
+  display: flex; gap: 4px; margin-top: 4px;
+}
+.mini-bar {
+  flex: 1; height: 3px; background: var(--bg-hover); border-radius: 2px; overflow: hidden;
+}
+.mini-bar-fill {
+  height: 100%; border-radius: 2px; transition: width 0.3s;
+}
+.mini-bar-docs { background: var(--green); }
+.mini-bar-gates { background: var(--blue); }
+.txn-next-dl {
+  font-size: 10px; color: var(--text-secondary); margin-top: 3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.txn-phase { display: none; } /* replaced by phase-badge in meta row */
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   OVERVIEW — attention card, progress rings, notes, activity feed
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.attention-card {
+  background: color-mix(in srgb, var(--red) 5%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--red) 20%, transparent);
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px;
+}
+.attention-items { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.attention-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px 10px;
+  border-radius: 6px; font-size: 13px;
+}
+.attention-overdue { background: color-mix(in srgb, var(--red) 12%, transparent); }
+.attention-urgent { background: color-mix(in srgb, var(--orange, #f59e0b) 12%, transparent); }
+.attention-soon { background: color-mix(in srgb, var(--yellow) 12%, transparent); }
+.attention-icon { font-size: 14px; flex-shrink: 0; }
+.attention-days {
+  margin-left: auto; font-weight: 600; font-size: 12px; white-space: nowrap;
+}
+.attention-overdue .attention-days { color: var(--red); }
+.attention-urgent .attention-days { color: var(--orange, #f59e0b); }
+.attention-soon .attention-days { color: var(--yellow); }
+
+/* Progress rings */
+.card-grid-4 { grid-template-columns: repeat(4, 1fr); }
+.stat-ring {
+  position: relative; width: 52px; height: 52px; margin: 0 auto 6px;
+}
+.stat-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring-bg {
+  fill: none; stroke: var(--bg-hover); stroke-width: 2.5;
+}
+.ring-fg {
+  fill: none; stroke: var(--ring-color, var(--blue)); stroke-width: 2.5;
+  stroke-linecap: round; transition: stroke-dasharray 0.6s ease;
+}
+.ring-label {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 700;
+}
+.stat-sub { font-size: 12px; color: var(--text-secondary); font-weight: 400; }
+
+/* Notes */
+.notes-area {
+  width: 100%; min-height: 80px; padding: 10px 12px; border: 1px solid var(--border);
+  border-radius: 6px; background: var(--bg); color: var(--text);
+  font-family: var(--font); font-size: 13px; resize: vertical;
+}
+.notes-area:focus {
+  outline: none; border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,113,227,0.1);
+}
+
+/* Activity feed */
+.activity-feed { display: flex; flex-direction: column; gap: 2px; }
+.activity-item {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 8px;
+  padding: 5px 0; font-size: 12px; border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-action {
+  font-weight: 600; color: var(--accent); white-space: nowrap;
+}
+.activity-detail {
+  color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.activity-time {
+  color: var(--text-secondary); font-size: 11px; white-space: nowrap;
+}
+
+/* Bulk actions in docs summary bar */
+.bulk-actions {
+  margin-left: auto; display: flex; gap: 6px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .card-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .attention-item { font-size: 12px; }
+  .bulk-actions { margin-left: 0; margin-top: 6px; flex-wrap: wrap; }
+}

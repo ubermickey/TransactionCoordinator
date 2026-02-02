@@ -723,6 +723,159 @@ def waive_contingency(tid, cid):
     return jsonify(dict(updated))
 
 
+# ── Dashboard (cross-transaction urgency) ────────────────────────────────────
+
+@app.route("/api/dashboard")
+def dashboard():
+    """Aggregate urgency across all transactions — the TC command center."""
+    with db.conn() as c:
+        txns = c.execute("SELECT * FROM txns ORDER BY created DESC").fetchall()
+        items = []
+        for row in txns:
+            t = _txn_dict(row)
+            tid = t["id"]
+
+            # Deadline urgency
+            urgent_dl = c.execute(
+                "SELECT name, due,"
+                " CAST(julianday(due) - julianday('now','localtime') AS INTEGER) AS days_left"
+                " FROM deadlines WHERE txn=? AND status='pending'"
+                " AND julianday(due) - julianday('now','localtime') <= 5"
+                " ORDER BY due LIMIT 3",
+                (tid,),
+            ).fetchall()
+
+            # Active contingencies near deadline
+            urgent_cont = c.execute(
+                "SELECT name, deadline_date, status,"
+                " CAST(julianday(deadline_date) - julianday('now','localtime') AS INTEGER) AS days_left"
+                " FROM contingencies WHERE txn=? AND status='active'"
+                " AND julianday(deadline_date) - julianday('now','localtime') <= 5"
+                " ORDER BY deadline_date LIMIT 3",
+                (tid,),
+            ).fetchall()
+
+            # Pending hard gates count
+            all_gates_defs = {g["id"]: g for g in rules.gates()}
+            brokerage = t.get("brokerage", "")
+            if brokerage:
+                for g in rules.de_gates(brokerage):
+                    all_gates_defs[g["id"]] = g
+            gate_rows = c.execute("SELECT * FROM gates WHERE txn=?", (tid,)).fetchall()
+            pending_hard = sum(
+                1 for g in gate_rows
+                if g["status"] != "verified"
+                and all_gates_defs.get(g["gid"], {}).get("type") == "HARD_GATE"
+                and all_gates_defs.get(g["gid"], {}).get("phase") == t["phase"]
+            )
+
+            # Doc stats
+            ds = _doc_stats(c, tid)
+
+            # Notes
+            notes = t.get("data", {}).get("notes", "")
+
+            # Determine overall health
+            overdue_count = sum(1 for d in urgent_dl if d["days_left"] < 0) + \
+                            sum(1 for d in urgent_cont if d["days_left"] < 0)
+            soon_count = len(urgent_dl) + len(urgent_cont) - overdue_count
+
+            health = "green"
+            if soon_count > 0:
+                health = "yellow"
+            if overdue_count > 0:
+                health = "red"
+
+            items.append({
+                "id": tid,
+                "address": t["address"],
+                "phase": t["phase"],
+                "txn_type": t.get("txn_type", "sale"),
+                "party_role": t.get("party_role", "listing"),
+                "brokerage": brokerage,
+                "health": health,
+                "overdue": overdue_count,
+                "soon": soon_count,
+                "pending_hard_gates": pending_hard,
+                "doc_stats": ds,
+                "urgent_deadlines": [dict(d) for d in urgent_dl],
+                "urgent_contingencies": [dict(d) for d in urgent_cont],
+                "notes": notes,
+            })
+
+    return jsonify(items)
+
+
+# ── Notes ────────────────────────────────────────────────────────────────────
+
+@app.route("/api/txns/<tid>/notes", methods=["GET"])
+def get_notes(tid):
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "not found"}), 404
+        data = json.loads(t.get("data") or "{}")
+    return jsonify({"notes": data.get("notes", "")})
+
+
+@app.route("/api/txns/<tid>/notes", methods=["POST"])
+def save_notes(tid):
+    body = request.json or {}
+    notes = body.get("notes", "")
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "not found"}), 404
+        data = json.loads(t.get("data") or "{}")
+        data["notes"] = notes
+        c.execute(
+            "UPDATE txns SET data=?, updated=datetime('now','localtime') WHERE id=?",
+            (json.dumps(data), tid),
+        )
+        db.log(c, tid, "notes_updated", f"{len(notes)} chars")
+    return jsonify({"ok": True, "notes": notes})
+
+
+# ── Bulk Document Actions ────────────────────────────────────────────────────
+
+@app.route("/api/txns/<tid>/docs/bulk-receive", methods=["POST"])
+def bulk_receive(tid):
+    """Mark all 'required' docs as 'received'."""
+    with db.conn() as c:
+        rows = c.execute(
+            "SELECT code FROM docs WHERE txn=? AND status='required'", (tid,)
+        ).fetchall()
+        codes = [r["code"] for r in rows]
+        if not codes:
+            return jsonify({"updated": 0})
+        c.execute(
+            "UPDATE docs SET status='received', received=datetime('now','localtime')"
+            " WHERE txn=? AND status='required'",
+            (tid,),
+        )
+        db.log(c, tid, "bulk_received", f"{len(codes)} documents")
+    return jsonify({"updated": len(codes), "codes": codes})
+
+
+@app.route("/api/txns/<tid>/docs/bulk-verify", methods=["POST"])
+def bulk_verify(tid):
+    """Mark all 'received' docs as 'verified'."""
+    with db.conn() as c:
+        rows = c.execute(
+            "SELECT code FROM docs WHERE txn=? AND status='received'", (tid,)
+        ).fetchall()
+        codes = [r["code"] for r in rows]
+        if not codes:
+            return jsonify({"updated": 0})
+        c.execute(
+            "UPDATE docs SET status='verified', verified=datetime('now','localtime')"
+            " WHERE txn=? AND status='received'",
+            (tid,),
+        )
+        db.log(c, tid, "bulk_verified", f"{len(codes)} documents")
+    return jsonify({"updated": len(codes), "codes": codes})
+
+
 # ── Meta ─────────────────────────────────────────────────────────────────────
 
 @app.route("/api/brokerages")
