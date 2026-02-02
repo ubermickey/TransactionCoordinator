@@ -33,6 +33,51 @@ CREATE TABLE IF NOT EXISTS docs(
   status TEXT DEFAULT 'required',
   received TEXT, verified TEXT, notes TEXT,
   PRIMARY KEY(txn, code)
+);
+CREATE TABLE IF NOT EXISTS sig_reviews(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT,
+  doc_code TEXT,
+  folder TEXT,
+  filename TEXT,
+  field_name TEXT,
+  field_type TEXT DEFAULT 'signature',
+  page INTEGER,
+  bbox TEXT,
+  is_filled INTEGER DEFAULT 0,
+  review_status TEXT DEFAULT 'pending',
+  reviewer_note TEXT DEFAULT '',
+  source TEXT DEFAULT 'auto',
+  reviewed_at TEXT,
+  UNIQUE(txn, doc_code, field_name, page)
+);
+CREATE TABLE IF NOT EXISTS envelope_tracking(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT,
+  sig_review_id INTEGER,
+  provider TEXT DEFAULT 'docusign',
+  envelope_id TEXT,
+  recipient_email TEXT,
+  recipient_name TEXT,
+  status TEXT DEFAULT 'created',
+  sent_at TEXT,
+  viewed_at TEXT,
+  signed_at TEXT,
+  last_checked TEXT,
+  FOREIGN KEY(sig_review_id) REFERENCES sig_reviews(id)
+);
+CREATE TABLE IF NOT EXISTS outbox(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT,
+  channel TEXT DEFAULT 'email',
+  to_addr TEXT,
+  subject TEXT,
+  body TEXT,
+  status TEXT DEFAULT 'queued',
+  created_at TEXT DEFAULT(datetime('now','localtime')),
+  sent_at TEXT,
+  related_sig_id INTEGER,
+  related_envelope_id INTEGER
 );"""
 
 # Columns added after initial schema — migrated on connect
@@ -41,6 +86,10 @@ _MIGRATIONS = [
     ("txns", "party_role", "TEXT DEFAULT 'listing'"),
     ("txns", "brokerage", "TEXT DEFAULT ''"),
     ("txns", "props", "TEXT DEFAULT '{}'"),
+    ("sig_reviews", "signer_email", "TEXT DEFAULT ''"),
+    ("sig_reviews", "signer_name", "TEXT DEFAULT ''"),
+    ("sig_reviews", "last_reminder_at", "TEXT"),
+    ("sig_reviews", "reminder_count", "INTEGER DEFAULT 0"),
 ]
 
 

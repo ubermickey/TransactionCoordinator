@@ -1,13 +1,15 @@
 """Flask web UI for Transaction Coordinator."""
 import json
 import os
-from datetime import date
+import re
+from datetime import date, datetime
 from pathlib import Path
 from uuid import uuid4
 
+import yaml
 from flask import Flask, jsonify, render_template, request
 
-from . import checklist, db, doc_versions, engine, rules
+from . import checklist, db, doc_versions, engine, integrations, rules
 
 app = Flask(__name__)
 
@@ -121,6 +123,9 @@ def delete_txn(tid):
         if not t:
             return jsonify({"error": "not found"}), 404
         db.log(c, tid, "deleted", t["address"])
+        c.execute("DELETE FROM outbox WHERE txn=?", (tid,))
+        c.execute("DELETE FROM envelope_tracking WHERE txn=?", (tid,))
+        c.execute("DELETE FROM sig_reviews WHERE txn=?", (tid,))
         c.execute("DELETE FROM docs WHERE txn=?", (tid,))
         c.execute("DELETE FROM deadlines WHERE txn=?", (tid,))
         c.execute("DELETE FROM gates WHERE txn=?", (tid,))
@@ -288,6 +293,279 @@ def get_audit(tid):
     with db.conn() as c:
         rows = c.execute(
             "SELECT * FROM audit WHERE txn=? ORDER BY ts DESC", (tid,)
+        ).fetchall()
+    return jsonify([dict(r) for r in rows])
+
+
+# ── Signatures ───────────────────────────────────────────────────────────
+
+def _populate_sig_reviews(c, tid):
+    """Lazy-load signature fields from manifests into sig_reviews for a txn."""
+    docs = c.execute("SELECT code, name FROM docs WHERE txn=?", (tid,)).fetchall()
+    if not docs:
+        return
+
+    for doc in docs:
+        code = doc["code"]
+        # Check if already populated for this doc
+        existing = c.execute(
+            "SELECT 1 FROM sig_reviews WHERE txn=? AND doc_code=? LIMIT 1",
+            (tid, code),
+        ).fetchone()
+        if existing:
+            continue
+
+        # Try to find a matching manifest
+        # doc code format varies — scan all manifest folders
+        manifest_dir = doc_versions.MANIFEST_DIR
+        if not manifest_dir.exists():
+            continue
+
+        for folder in manifest_dir.iterdir():
+            if not folder.is_dir() or folder.name.startswith("_"):
+                continue
+            for mfile in folder.glob("*.yaml"):
+                if mfile.name.startswith("_"):
+                    continue
+                try:
+                    with open(mfile) as f:
+                        m = yaml.safe_load(f) or {}
+                except Exception:
+                    continue
+                fields = m.get("field_map", [])
+                sig_fields = [
+                    f for f in fields
+                    if f.get("category") in ("signature", "signature_area")
+                ]
+                if not sig_fields:
+                    continue
+
+                # Match manifest to doc by code or name similarity
+                manifest_name = m.get("document_name", mfile.stem)
+                if not (code.lower() in manifest_name.lower()
+                        or manifest_name.lower() in doc["name"].lower()
+                        or doc["name"].lower() in manifest_name.lower()):
+                    continue
+
+                for sf in sig_fields:
+                    field_name = sf.get("field", "")
+                    is_initials = bool(re.search(r"initial", field_name, re.IGNORECASE))
+                    field_type = "initials" if is_initials else "signature"
+                    bbox = sf.get("bbox", {})
+                    filled = 1 if sf.get("filled") else 0
+                    try:
+                        c.execute(
+                            "INSERT OR IGNORE INTO sig_reviews"
+                            "(txn, doc_code, folder, filename, field_name, field_type,"
+                            " page, bbox, is_filled, review_status, source)"
+                            " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                            (
+                                tid, code, folder.name, mfile.stem,
+                                field_name, field_type,
+                                sf.get("page", 0), json.dumps(bbox),
+                                filled, "pending", "auto",
+                            ),
+                        )
+                    except Exception:
+                        pass
+                break  # matched this doc, move to next
+
+
+@app.route("/api/txns/<tid>/signatures")
+def get_signatures(tid):
+    """List all signature/initial fields for a transaction."""
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "not found"}), 404
+
+        # Lazy populate from manifests
+        _populate_sig_reviews(c, tid)
+
+        rows = c.execute(
+            "SELECT sr.*, d.name as doc_name FROM sig_reviews sr"
+            " LEFT JOIN docs d ON sr.txn = d.txn AND sr.doc_code = d.code"
+            " WHERE sr.txn=? ORDER BY sr.doc_code, sr.page, sr.id",
+            (tid,),
+        ).fetchall()
+
+        items = [dict(r) for r in rows]
+
+        # Summary counts
+        total = len(items)
+        filled = sum(1 for i in items if i["is_filled"])
+        empty = total - filled
+        reviewed = sum(1 for i in items if i["review_status"] == "reviewed")
+        flagged = sum(1 for i in items if i["review_status"] == "flagged")
+
+    return jsonify({
+        "items": items,
+        "summary": {
+            "total": total,
+            "filled": filled,
+            "empty": empty,
+            "reviewed": reviewed,
+            "flagged": flagged,
+        },
+    })
+
+
+@app.route("/api/txns/<tid>/signatures/<int:sig_id>/review", methods=["POST"])
+def review_signature(tid, sig_id):
+    """Mark a signature field as reviewed or flagged."""
+    body = request.json or {}
+    status = body.get("status", "reviewed")
+    note = body.get("note", "")
+    if status not in ("reviewed", "flagged"):
+        return jsonify({"error": "status must be reviewed or flagged"}), 400
+
+    with db.conn() as c:
+        row = c.execute(
+            "SELECT * FROM sig_reviews WHERE id=? AND txn=?", (sig_id, tid)
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c.execute(
+            "UPDATE sig_reviews SET review_status=?, reviewer_note=?, reviewed_at=?"
+            " WHERE id=?",
+            (status, note, now, sig_id),
+        )
+        db.log(c, tid, f"sig_{status}", f"{row['field_name']} p{row['page']} ({row['doc_code']})")
+        updated = c.execute("SELECT * FROM sig_reviews WHERE id=?", (sig_id,)).fetchone()
+    return jsonify(dict(updated))
+
+
+@app.route("/api/txns/<tid>/signatures/add", methods=["POST"])
+def add_signature(tid):
+    """Manually add a signature/initials field."""
+    body = request.json or {}
+    doc_code = body.get("doc_code", "")
+    field_name = body.get("field_name", "").strip()
+    field_type = body.get("field_type", "signature")
+    page = body.get("page", 1)
+    note = body.get("note", "")
+
+    if not doc_code or not field_name:
+        return jsonify({"error": "doc_code and field_name required"}), 400
+    if field_type not in ("signature", "initials"):
+        return jsonify({"error": "field_type must be signature or initials"}), 400
+
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "txn not found"}), 404
+        try:
+            c.execute(
+                "INSERT INTO sig_reviews"
+                "(txn, doc_code, field_name, field_type, page, bbox,"
+                " is_filled, review_status, reviewer_note, source)"
+                " VALUES(?,?,?,?,?,?,?,?,?,?)",
+                (tid, doc_code, field_name, field_type, page, "{}",
+                 0, "manual", note, "manual"),
+            )
+            new_id = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+        except Exception as e:
+            return jsonify({"error": str(e)}), 409
+        db.log(c, tid, "sig_manual_add", f"{field_name} p{page} ({doc_code})")
+        row = c.execute("SELECT * FROM sig_reviews WHERE id=?", (new_id,)).fetchone()
+    return jsonify(dict(row)), 201
+
+
+@app.route("/api/txns/<tid>/signatures/<int:sig_id>", methods=["DELETE"])
+def delete_signature(tid, sig_id):
+    """Delete a manually added signature field."""
+    with db.conn() as c:
+        row = c.execute(
+            "SELECT * FROM sig_reviews WHERE id=? AND txn=?", (sig_id, tid)
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        if row["source"] != "manual":
+            return jsonify({"error": "can only delete manually added fields"}), 403
+        c.execute("DELETE FROM sig_reviews WHERE id=?", (sig_id,))
+        db.log(c, tid, "sig_deleted", f"{row['field_name']} p{row['page']} ({row['doc_code']})")
+    return jsonify({"ok": True})
+
+
+# ── Follow-ups (DocuSign / SkySlope / Email sandbox) ────────────────────────
+
+@app.route("/api/sandbox-status")
+def sandbox_status():
+    return jsonify({"sandbox": integrations.SANDBOX})
+
+
+@app.route("/api/txns/<tid>/signatures/<int:sig_id>/send", methods=["POST"])
+def send_signature(tid, sig_id):
+    """Send a signature field for signing via DocuSign (or sandbox mock)."""
+    body = request.json or {}
+    email_addr = body.get("email", "").strip()
+    name = body.get("name", "").strip()
+    provider = body.get("provider", "docusign")
+    if not email_addr or not name:
+        return jsonify({"error": "email and name required"}), 400
+
+    with db.conn() as c:
+        row = c.execute(
+            "SELECT * FROM sig_reviews WHERE id=? AND txn=?", (sig_id, tid)
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "signature field not found"}), 404
+        result = integrations.send_for_signature(
+            c, tid, sig_id, email_addr, name, provider
+        )
+    return jsonify(result), 201
+
+
+@app.route("/api/txns/<tid>/signatures/<int:sig_id>/remind", methods=["POST"])
+def remind_signature(tid, sig_id):
+    """Send a follow-up reminder for an unsigned field."""
+    with db.conn() as c:
+        result = integrations.send_reminder(c, tid, sig_id)
+        if not result:
+            return jsonify({"error": "no signer email set or field not found"}), 400
+    return jsonify(result)
+
+
+@app.route("/api/txns/<tid>/signatures/<int:sig_id>/simulate", methods=["POST"])
+def simulate_signature(tid, sig_id):
+    """Sandbox only: simulate a signer completing the signature."""
+    if not integrations.SANDBOX:
+        return jsonify({"error": "simulate only available in sandbox mode"}), 403
+
+    with db.conn() as c:
+        # Find the envelope tracking record for this sig
+        env = c.execute(
+            "SELECT * FROM envelope_tracking WHERE sig_review_id=? AND txn=?"
+            " ORDER BY id DESC LIMIT 1",
+            (sig_id, tid),
+        ).fetchone()
+        if not env:
+            return jsonify({"error": "no envelope found — send for signing first"}), 404
+        result = integrations.simulate_sign(c, env["id"])
+        if not result:
+            return jsonify({"error": "simulation failed"}), 500
+    return jsonify(result)
+
+
+@app.route("/api/txns/<tid>/outbox")
+def get_outbox(tid):
+    """View all sent/queued/sandbox emails for a transaction."""
+    with db.conn() as c:
+        items = integrations.get_outbox(c, tid)
+    return jsonify(items)
+
+
+@app.route("/api/txns/<tid>/envelopes")
+def get_envelopes(tid):
+    """View all DocuSign/SkySlope envelope tracking records."""
+    with db.conn() as c:
+        rows = c.execute(
+            "SELECT et.*, sr.field_name, sr.doc_code, sr.page"
+            " FROM envelope_tracking et"
+            " LEFT JOIN sig_reviews sr ON et.sig_review_id = sr.id"
+            " WHERE et.txn=? ORDER BY et.sent_at DESC",
+            (tid,),
         ).fetchall()
     return jsonify([dict(r) for r in rows])
 

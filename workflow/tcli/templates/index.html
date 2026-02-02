@@ -43,6 +43,7 @@
         <nav class="tab-bar" id="tab-bar">
           <button class="tab active" data-tab="overview">Overview</button>
           <button class="tab" data-tab="docs">Documents</button>
+          <button class="tab" data-tab="signatures">Signatures</button>
           <button class="tab" data-tab="gates">Gates</button>
           <button class="tab" data-tab="deadlines">Deadlines</button>
           <button class="tab" data-tab="audit">Audit</button>
@@ -94,6 +95,47 @@
     </div>
   </div>
 
+  <!-- Add Signature Field Modal -->
+  <div class="modal-backdrop" id="sig-modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Signature Field</h3>
+        <button class="modal-close" id="sig-modal-close">&times;</button>
+      </div>
+      <form id="form-add-sig" class="modal-body">
+        <label class="field-label">
+          Document
+          <select id="sig-doc-code" required></select>
+        </label>
+        <label class="field-label">
+          Field Name
+          <input type="text" id="sig-field-name" placeholder="e.g. Buyer's Initials" required>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Type
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="sig-type" value="signature" checked> Signature</label>
+              <label class="radio-label"><input type="radio" name="sig-type" value="initials"> Initials</label>
+            </div>
+          </label>
+          <label class="field-label">
+            Page
+            <input type="number" id="sig-page" value="1" min="1" required>
+          </label>
+        </div>
+        <label class="field-label">
+          Note
+          <textarea id="sig-note" rows="2" placeholder="Optional note..."></textarea>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="sig-btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Field</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -137,9 +179,10 @@
         <div class="shortcut-row"><span>New Transaction</span><kbd>&#8984;N</kbd></div>
         <div class="shortcut-row"><span>Overview Tab</span><kbd>1</kbd></div>
         <div class="shortcut-row"><span>Documents Tab</span><kbd>2</kbd></div>
-        <div class="shortcut-row"><span>Gates Tab</span><kbd>3</kbd></div>
-        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>4</kbd></div>
-        <div class="shortcut-row"><span>Audit Tab</span><kbd>5</kbd></div>
+        <div class="shortcut-row"><span>Signatures Tab</span><kbd>3</kbd></div>
+        <div class="shortcut-row"><span>Gates Tab</span><kbd>4</kbd></div>
+        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>5</kbd></div>
+        <div class="shortcut-row"><span>Audit Tab</span><kbd>6</kbd></div>
         <div class="shortcut-row"><span>Close Panel</span><kbd>Esc</kbd></div>
         <div class="shortcut-row"><span>Show This Help</span><kbd>?</kbd></div>
       </div>

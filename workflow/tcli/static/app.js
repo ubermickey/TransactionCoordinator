@@ -427,7 +427,7 @@ const CmdPalette = (() => {
 
 const Shortcuts = (() => {
   let helpOpen = false;
-  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'gates', '4': 'deadlines', '5': 'audit' };
+  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'signatures', '4': 'gates', '5': 'deadlines', '6': 'audit' };
 
   function isInput() {
     const tag = document.activeElement?.tagName;
@@ -537,6 +537,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === e.currentTarget) closeModal();
   });
   $('#form-new').addEventListener('submit', handleCreate);
+
+  // Signature modal
+  const sigClose = $('#sig-modal-close');
+  const sigCancel = $('#sig-btn-cancel');
+  const sigBackdrop = $('#sig-modal-backdrop');
+  if (sigClose) sigClose.addEventListener('click', closeSigModal);
+  if (sigCancel) sigCancel.addEventListener('click', closeSigModal);
+  if (sigBackdrop) sigBackdrop.addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeSigModal();
+  });
+  const sigForm = $('#form-add-sig');
+  if (sigForm) sigForm.addEventListener('submit', handleAddSig);
 
   // Tabs
   $$('#tab-bar .tab').forEach(t => {
@@ -698,6 +710,7 @@ function switchTab(tab) {
   const render = {
     overview: renderOverview,
     docs: renderDocs,
+    signatures: renderSignatures,
     gates: renderGates,
     deadlines: renderDeadlines,
     audit: renderAudit,
@@ -1278,6 +1291,401 @@ function showTimelineTooltip(event, el) {
 function hideTimelineTooltip() {
   const tt = document.getElementById('timeline-tt');
   if (tt) tt.remove();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SIGNATURES TAB
+// ══════════════════════════════════════════════════════════════════════════════
+
+let _sigData = [];
+let _sigSummary = {};
+let _sigEnvelopes = {};  // keyed by sig_review_id
+let _sandboxMode = true;
+
+async function fetchSandboxStatus() {
+  const res = await get('/api/sandbox-status');
+  if (!res._error) _sandboxMode = res.sandbox;
+}
+
+async function renderSignatures() {
+  showSkeleton('gate-cards');
+
+  // Fetch sandbox status, signatures, and envelopes in parallel
+  const [sbRes, sigRes, envRes] = await Promise.all([
+    get('/api/sandbox-status'),
+    get(`/api/txns/${currentTxn}/signatures`),
+    get(`/api/txns/${currentTxn}/envelopes`),
+  ]);
+
+  if (!sbRes._error) _sandboxMode = sbRes.sandbox;
+  if (sigRes._error) return;
+  _sigData = sigRes.items || [];
+  _sigSummary = sigRes.summary || {};
+
+  // Index envelopes by sig_review_id
+  _sigEnvelopes = {};
+  if (!envRes._error) {
+    (envRes || []).forEach(e => { _sigEnvelopes[e.sig_review_id] = e; });
+  }
+
+  const el = $('#tab-content');
+  let html = '';
+
+  // Sandbox banner
+  if (_sandboxMode) {
+    html += '<div class="sandbox-banner">Sandbox mode — emails and API calls are simulated. No real messages are sent.</div>';
+  }
+
+  if (_sigData.length === 0) {
+    html += '<div class="card"><p style="color:var(--text-secondary)">No signature or initial fields detected. Fields are auto-populated from document manifests when available.</p></div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  // Filter bar
+  html += `<div class="filter-bar" id="sig-filter">
+    <input type="text" placeholder="Search fields..." id="sig-search">
+    <select id="sig-type-filter">
+      <option value="">All Types</option>
+      <option value="signature">Signatures</option>
+      <option value="initials">Initials</option>
+    </select>
+    <select id="sig-status-filter">
+      <option value="">All Statuses</option>
+      <option value="pending">Pending</option>
+      <option value="reviewed">Reviewed</option>
+      <option value="flagged">Flagged</option>
+      <option value="unfilled">Unfilled Only</option>
+    </select>
+    <button class="btn btn-primary btn-sm" onclick="openSigModal()">+ Add Field</button>
+  </div>`;
+
+  // Summary cards
+  const s = _sigSummary;
+  html += `<div class="sig-summary">
+    <div class="sig-summary-item"><span class="sig-summary-val">${s.total}</span><span class="sig-summary-lbl">Total</span></div>
+    <div class="sig-summary-item"><span class="sig-summary-val sig-filled">${s.filled}</span><span class="sig-summary-lbl">Filled</span></div>
+    <div class="sig-summary-item"><span class="sig-summary-val sig-empty">${s.empty}</span><span class="sig-summary-lbl">Empty</span></div>
+    <div class="sig-summary-item"><span class="sig-summary-val sig-reviewed">${s.reviewed}</span><span class="sig-summary-lbl">Reviewed</span></div>
+    <div class="sig-summary-item"><span class="sig-summary-val sig-flagged">${s.flagged}</span><span class="sig-summary-lbl">Flagged</span></div>
+  </div>`;
+
+  html += '<div id="sig-list-area"></div>';
+  html += '<div id="sig-outbox-area"></div>';
+  el.innerHTML = html;
+
+  renderSigList(_sigData);
+  renderOutbox();
+
+  // Attach filters
+  const searchEl = document.getElementById('sig-search');
+  const typeEl = document.getElementById('sig-type-filter');
+  const statusEl = document.getElementById('sig-status-filter');
+  const filterFn = () => {
+    const q = searchEl.value.toLowerCase();
+    const tp = typeEl.value;
+    const st = statusEl.value;
+    const filtered = _sigData.filter(item => {
+      if (q && !(item.field_name || '').toLowerCase().includes(q)
+            && !(item.doc_name || '').toLowerCase().includes(q)
+            && !(item.doc_code || '').toLowerCase().includes(q)) return false;
+      if (tp && item.field_type !== tp) return false;
+      if (st === 'unfilled' && item.is_filled) return false;
+      if (st && st !== 'unfilled' && item.review_status !== st) return false;
+      return true;
+    });
+    renderSigList(filtered);
+  };
+  searchEl.addEventListener('input', filterFn);
+  typeEl.addEventListener('change', filterFn);
+  statusEl.addEventListener('change', filterFn);
+}
+
+function renderSigList(items) {
+  const area = document.getElementById('sig-list-area');
+  if (!area) return;
+
+  if (items.length === 0) {
+    area.innerHTML = '<div class="card"><p style="color:var(--text-secondary)">No fields match your filters.</p></div>';
+    return;
+  }
+
+  // Group by doc_code
+  const groups = {};
+  items.forEach(item => {
+    const key = item.doc_code || 'unknown';
+    if (!groups[key]) groups[key] = { name: item.doc_name || item.doc_code, items: [] };
+    groups[key].items.push(item);
+  });
+
+  let html = '';
+  Object.entries(groups).forEach(([code, group]) => {
+    const count = group.items.length;
+    html += `<div class="sig-doc-group">
+      <div class="sig-doc-header">
+        <span class="sig-doc-name">${esc(group.name || code)}</span>
+        <span class="sig-doc-meta">${esc(code)} &middot; ${count} field${count !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="sig-fields">`;
+
+    group.items.forEach(item => {
+      const typeBadge = item.field_type === 'initials' ? 'INI' : 'SIG';
+      const typeCls = item.field_type === 'initials' ? 'sig-badge-ini' : 'sig-badge-sig';
+      const fillCls = item.is_filled ? 'sig-fill-yes' : 'sig-fill-no';
+      const fillText = item.is_filled ? 'Filled' : 'Empty';
+
+      let statusIcon = '';
+      let statusCls = '';
+      switch (item.review_status) {
+        case 'reviewed':
+          statusIcon = '\u2705'; statusCls = 'sig-status-reviewed'; break;
+        case 'flagged':
+          statusIcon = '\u26A0\uFE0F'; statusCls = 'sig-status-flagged'; break;
+        case 'manual':
+          statusIcon = '\u2795'; statusCls = 'sig-status-manual'; break;
+        default:
+          statusIcon = '\u23F3'; statusCls = 'sig-status-pending'; break;
+      }
+
+      const truncName = (item.field_name || '').length > 50
+        ? item.field_name.substring(0, 50) + '...'
+        : (item.field_name || '');
+
+      // Check if there's an envelope for this field
+      const env = _sigEnvelopes[item.id];
+
+      html += `<div class="sig-field-card">
+        <div class="sig-field-top">
+          <div class="sig-field-info">
+            <span class="sig-badge ${typeCls}">${typeBadge}</span>
+            <span class="sig-field-name">${esc(truncName)}</span>
+            <span class="sig-field-page">p${item.page || '?'}</span>
+            <span class="sig-fill-pill ${fillCls}">${fillText}</span>
+          </div>
+          <div class="sig-field-actions">`;
+
+      if (item.review_status === 'pending' || item.review_status === 'manual') {
+        html += `<button class="btn btn-success btn-sm" onclick="sigReview(${item.id}, 'reviewed')">Review</button>`;
+        html += `<button class="btn btn-warning btn-sm" onclick="sigFlag(${item.id})">Flag</button>`;
+      } else if (item.review_status === 'reviewed') {
+        html += `<button class="btn btn-warning btn-sm" onclick="sigFlag(${item.id})">Flag</button>`;
+      } else if (item.review_status === 'flagged') {
+        html += `<button class="btn btn-success btn-sm" onclick="sigReview(${item.id}, 'reviewed')">Review</button>`;
+      }
+
+      if (item.source === 'manual') {
+        html += `<button class="btn btn-danger btn-sm" onclick="sigDelete(${item.id})">Delete</button>`;
+      }
+
+      html += `</div></div>
+        <div class="sig-field-bottom">
+          <span class="sig-status ${statusCls}">${statusIcon} ${esc(item.review_status)}</span>`;
+
+      if (item.reviewer_note) {
+        html += `<span class="sig-note">"${esc(item.reviewer_note)}"</span>`;
+      }
+      if (item.reviewed_at) {
+        html += `<span class="sig-time">${esc(item.reviewed_at)}</span>`;
+      }
+      if (item.source === 'manual') {
+        html += '<span class="sig-source-badge">manual</span>';
+      }
+
+      html += `</div>`;
+
+      // ── Follow-up section ──
+      html += `<div class="sig-followup">`;
+      if (env) {
+        // Envelope exists — show status + reminder/simulate
+        const envStatusCls = 'envelope-pill env-' + env.status;
+        html += `<div class="sig-followup-row">
+          <span class="sig-followup-label">Signer:</span>
+          <span>${esc(env.recipient_name)} &lt;${esc(env.recipient_email)}&gt;</span>
+        </div>
+        <div class="sig-followup-row">
+          <span class="sig-followup-label">${esc(env.provider || 'DocuSign')}:</span>
+          <span class="${envStatusCls}">${esc(env.status)}</span>
+          ${env.sent_at ? `<span class="sig-time">${esc(env.sent_at)}</span>` : ''}
+        </div>`;
+        if (item.reminder_count) {
+          html += `<div class="sig-followup-row">
+            <span class="sig-followup-label">Reminders sent:</span>
+            <span>${item.reminder_count}</span>
+          </div>`;
+        }
+        html += `<div class="sig-followup-actions">`;
+        if (env.status !== 'signed' && env.status !== 'declined') {
+          html += `<button class="btn btn-warning btn-sm" onclick="sigRemind(${item.id})">Send Reminder</button>`;
+          if (_sandboxMode) {
+            html += `<button class="btn btn-simulate btn-sm" onclick="sigSimulate(${item.id})">Simulate Sign</button>`;
+          }
+        }
+        html += `</div>`;
+      } else if (!item.is_filled) {
+        // No envelope — show send form
+        html += `<div class="sig-send-inline" id="sig-send-${item.id}">
+          <input type="email" placeholder="Signer email" id="sig-email-${item.id}"
+                 value="${esc(item.signer_email || '')}" class="sig-send-input">
+          <input type="text" placeholder="Signer name" id="sig-name-${item.id}"
+                 value="${esc(item.signer_name || '')}" class="sig-send-input">
+          <button class="btn btn-primary btn-sm" onclick="sigSend(${item.id})">Send for Signing</button>
+        </div>`;
+      }
+      html += `</div>`;
+
+      html += `</div>`;
+    });
+
+    html += '</div></div>';
+  });
+
+  area.innerHTML = html;
+}
+
+async function renderOutbox() {
+  const area = document.getElementById('sig-outbox-area');
+  if (!area) return;
+
+  const outbox = await get(`/api/txns/${currentTxn}/outbox`);
+  if (outbox._error || !outbox.length) {
+    area.innerHTML = '';
+    return;
+  }
+
+  let html = `<div class="outbox-section">
+    <div class="outbox-header" onclick="document.getElementById('outbox-list').classList.toggle('collapsed')">
+      <span>Email Outbox${_sandboxMode ? ' (sandbox)' : ''}</span>
+      <span class="outbox-count">${outbox.length}</span>
+    </div>
+    <div class="outbox-list" id="outbox-list">`;
+
+  outbox.forEach(msg => {
+    const statusCls = msg.status === 'sandbox' ? 'outbox-sandbox' :
+                      msg.status === 'sent' ? 'outbox-sent' : 'outbox-queued';
+    html += `<div class="outbox-card">
+      <div class="outbox-card-header">
+        <span class="outbox-to">To: ${esc(msg.to_addr)}</span>
+        <span class="outbox-status ${statusCls}">${esc(msg.status)}</span>
+      </div>
+      <div class="outbox-subject">${esc(msg.subject)}</div>
+      <div class="outbox-meta">${esc(msg.created_at || '')}</div>
+      <details class="outbox-body-toggle">
+        <summary>View body</summary>
+        <pre class="outbox-body">${esc(msg.body)}</pre>
+      </details>
+    </div>`;
+  });
+
+  html += '</div></div>';
+  area.innerHTML = html;
+}
+
+// ── Signature review/flag/delete actions ────────────────────────────────
+
+async function sigReview(sigId, status) {
+  const res = await post(`/api/txns/${currentTxn}/signatures/${sigId}/review`, { status, note: '' });
+  if (res._error) return;
+  Toast.show(`Field marked as ${status}`, 'success');
+  renderSignatures();
+}
+
+async function sigFlag(sigId) {
+  const note = prompt('Flag note (optional):') || '';
+  const res = await post(`/api/txns/${currentTxn}/signatures/${sigId}/review`, { status: 'flagged', note });
+  if (res._error) return;
+  Toast.show('Field flagged', 'warning');
+  renderSignatures();
+}
+
+async function sigDelete(sigId) {
+  if (!confirm('Delete this manually added field?')) return;
+  const res = await del(`/api/txns/${currentTxn}/signatures/${sigId}`);
+  if (res._error) return;
+  Toast.show('Field removed', 'info');
+  renderSignatures();
+}
+
+// ── Follow-up actions (send, remind, simulate) ─────────────────────────
+
+async function sigSend(sigId) {
+  const emailEl = document.getElementById(`sig-email-${sigId}`);
+  const nameEl = document.getElementById(`sig-name-${sigId}`);
+  const email = (emailEl ? emailEl.value : '').trim();
+  const name = (nameEl ? nameEl.value : '').trim();
+  if (!email || !name) {
+    Toast.show('Email and name are required', 'warning');
+    return;
+  }
+  const res = await post(`/api/txns/${currentTxn}/signatures/${sigId}/send`, { email, name });
+  if (res._error) return;
+  Toast.show(`Sent for signing to ${email}`, 'success');
+  renderSignatures();
+}
+
+async function sigRemind(sigId) {
+  const res = await post(`/api/txns/${currentTxn}/signatures/${sigId}/remind`);
+  if (res._error) return;
+  Toast.show(`Reminder sent (${res.reminder_count})`, 'success');
+  renderSignatures();
+}
+
+async function sigSimulate(sigId) {
+  const res = await post(`/api/txns/${currentTxn}/signatures/${sigId}/simulate`);
+  if (res._error) return;
+  Toast.show('Signature simulated', 'success');
+  renderSignatures();
+}
+
+// ── Signature Add Modal ─────────────────────────────────────────────────
+
+function openSigModal() {
+  // Populate doc dropdown
+  const sel = document.getElementById('sig-doc-code');
+  if (sel) {
+    sel.innerHTML = '<option value="">Select document...</option>';
+    const docs = (txnCache[currentTxn] && txnCache[currentTxn]._docs) || [];
+    docs.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.code;
+      opt.textContent = `${d.name} (${d.code})`;
+      sel.appendChild(opt);
+    });
+  }
+  document.getElementById('sig-modal-backdrop').style.display = '';
+  const nameInput = document.getElementById('sig-field-name');
+  if (nameInput) nameInput.focus();
+}
+
+function closeSigModal() {
+  document.getElementById('sig-modal-backdrop').style.display = 'none';
+  const form = document.getElementById('form-add-sig');
+  if (form) form.reset();
+}
+
+async function handleAddSig(e) {
+  e.preventDefault();
+  const docCode = document.getElementById('sig-doc-code').value;
+  const fieldName = document.getElementById('sig-field-name').value.trim();
+  const fieldType = document.querySelector('input[name="sig-type"]:checked').value;
+  const page = parseInt(document.getElementById('sig-page').value) || 1;
+  const note = document.getElementById('sig-note').value.trim();
+
+  if (!docCode || !fieldName) {
+    Toast.show('Document and field name are required', 'warning');
+    return;
+  }
+
+  const res = await post(`/api/txns/${currentTxn}/signatures/add`, {
+    doc_code: docCode,
+    field_name: fieldName,
+    field_type: fieldType,
+    page,
+    note,
+  });
+  if (res._error) return;
+  Toast.show('Field added', 'success');
+  closeSigModal();
+  renderSignatures();
 }
 
 // ── Audit Tab ───────────────────────────────────────────────────────────────
