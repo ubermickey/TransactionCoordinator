@@ -1,0 +1,75 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: 2_of_6_-_Protect_Your_Family_from_Lead_in_Your_Home_-_120_ts15373.pdf
+folder: RLMM Agreement Package
+page_count: 20
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 5
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 2
+  text: about lead-based paint. Buyers have up to 10 days to check for lead.
+  days: 10
+  bbox: &id001
+    x0: 72.0
+    y0: 406.0
+    x1: 528.6
+    y1: 422.7
+field_map:
+- page: 2
+  field: about lead-based paint. Buyers have up to 10 days to check f
+  category: date_area
+  bbox: *id001
+  region: middle
+  time_length_days: 10
+- page: 11
+  field: they eat and before nap time and bed time.
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 334.0
+    x1: 357.8
+    y1: 350.7
+  region: middle
+  time_length_days: null
+- page: 12
+  field: "\u25CFIn addition to day-to-day cleaning"
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 179.0
+    x1: 292.8
+    y1: 195.8
+  region: upper
+  time_length_days: null
+- page: 15
+  field: has expired can make it less effective at removing lead.
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 453.0
+    x1: 440.3
+    y1: 469.8
+  region: middle
+  time_length_days: null
+- page: 17
+  field: for reducing lead hazards. Receive up-to-date address and ph
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 397.0
+    x1: 490.7
+    y1: 413.7
+  region: middle
+  time_length_days: null

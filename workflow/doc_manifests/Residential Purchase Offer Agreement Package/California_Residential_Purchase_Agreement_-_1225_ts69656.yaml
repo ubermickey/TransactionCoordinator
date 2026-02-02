@@ -1,0 +1,2903 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:13'
+file: California_Residential_Purchase_Agreement_-_1225_ts69656.pdf
+folder: Residential Purchase Offer Agreement Package
+page_count: 29
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 66
+  date_areas_from_text: 218
+  fillable_blanks_from_text: 5
+  test_address_references: 0
+time_length_review:
+- page: 3
+  text: 3 calendar days after all Buyer Signature(s)
+  days: 3
+  bbox: &id001
+    x0: 272.2
+    y0: 443.4
+    x1: 426.0
+    y1: 452.3
+- page: 4
+  text: ) Days after Acceptance, or 5 Days
+  days: 5
+  bbox: &id002
+    x0: 317.3
+    y0: 360.1
+    x1: 441.2
+    y1: 369.0
+- page: 4
+  text: ) Days after Acceptance, or 5 Days
+  days: 5
+  bbox: &id003
+    x0: 317.3
+    y0: 382.2
+    x1: 441.2
+    y1: 391.1
+- page: 4
+  text: ) Days after Acceptance, or 5 Days
+  days: 5
+  bbox: &id004
+    x0: 317.3
+    y0: 403.8
+    x1: 441.2
+    y1: 412.7
+- page: 4
+  text: ) Days after Acceptance, or 5 Days
+  days: 5
+  bbox: &id005
+    x0: 317.3
+    y0: 425.4
+    x1: 441.2
+    y1: 434.3
+- page: 4
+  text: 3 Days after Acceptance
+  days: 3
+  bbox: &id006
+    x0: 272.0
+    y0: 672.9
+    x1: 359.1
+    y1: 681.8
+- page: 6
+  text: terms of paragraph 6B, Buyer shall Deliver the updated contact information withi
+  days: 1
+  bbox: &id007
+    x0: 90.0
+    y0: 465.9
+    x1: 519.6
+    y1: 475.9
+- page: 7
+  text: Buyer, and (ii) if the Property contains more than one unit, within 3 Days after
+  days: 3
+  bbox: &id008
+    x0: 72.0
+    y0: 53.1
+    x1: 576.2
+    y1: 63.2
+- page: 7
+  text: Buyer, after first Delivering to Seller written notice to remove the items withi
+  days: 3
+  bbox: &id009
+    x0: 72.0
+    y0: 143.1
+    x1: 576.0
+    y1: 153.2
+- page: 8
+  text: Buyer has 5 Days after receipt to review a revised Preliminary Report, if any, f
+  days: 5
+  bbox: &id010
+    x0: 90.0
+    y0: 140.6
+    x1: 576.1
+    y1: 150.7
+- page: 8
+  text: Disclosures, Buyer shall, within the time specified in paragraph 3L or 5 Days af
+  days: 5
+  bbox: &id011
+    x0: 90.0
+    y0: 344.6
+    x1: 576.0
+    y1: 354.6
+- page: 10
+  text: 'RETURN OF SIGNED COPIES: Buyer shall, within the time specified in paragraph 3L('
+  days: 5
+  bbox: &id012
+    x0: 72.0
+    y0: 371.4
+    x1: 576.0
+    y1: 381.4
+- page: 10
+  text: Agreement within 3 Days after Delivery in person, or 5 Days after Delivery by de
+  days: 3
+  bbox: &id013
+    x0: 90.0
+    y0: 425.9
+    x1: 576.1
+    y1: 435.9
+- page: 11
+  text: paragraph 3L(3) or 3 Days after receipt of any Investigation report, whichever i
+  days: 3
+  bbox: &id014
+    x0: 72.0
+    y0: 549.1
+    x1: 576.1
+    y1: 559.1
+- page: 12
+  text: 'SELLER DELIVERY OF INFORMATION: Seller shall, within 7 Days after request, give '
+  days: 7
+  bbox: &id015
+    x0: 72.0
+    y0: 136.4
+    x1: 576.0
+    y1: 146.4
+- page: 13
+  text: writing; (ii) be Signed by the applicable Buyer or Seller; and (iii) give the ot
+  days: 2
+  bbox: &id016
+    x0: 72.0
+    y0: 148.6
+    x1: 576.0
+    y1: 158.7
+- page: 13
+  text: Notice to Seller to Perform may not be Delivered any earlier than 2 Days prior t
+  days: 2
+  bbox: &id017
+    x0: 72.0
+    y0: 167.1
+    x1: 576.0
+    y1: 177.2
+- page: 13
+  text: 'The DCE shall: (i) be Signed by the applicable Buyer or Seller; and (ii) give th'
+  days: 3
+  bbox: &id018
+    x0: 72.0
+    y0: 352.1
+    x1: 576.1
+    y1: 362.1
+- page: 13
+  text: escrow. A DCE may not be Delivered any earlier than 3 Days prior to the Schedule
+  days: 3
+  bbox: &id019
+    x0: 72.0
+    y0: 361.4
+    x1: 576.1
+    y1: 371.4
+- page: 14
+  text: escrow and, as directed by Escrow Holder, within 3 Days, shall pay to Escrow Hol
+  days: 3
+  bbox: &id020
+    x0: 72.0
+    y0: 336.6
+    x1: 576.0
+    y1: 346.6
+- page: 14
+  text: counter offer(s) and addenda shall be delivered to Escrow Holder within 3 Days a
+  days: 3
+  bbox: &id021
+    x0: 72.0
+    y0: 364.3
+    x1: 576.0
+    y1: 374.4
+- page: 14
+  text: 'and Seller, upon request by Escrow Holder, within 3 Days or within a sufficient '
+  days: 3
+  bbox: &id022
+    x0: 72.0
+    y0: 609.1
+    x1: 576.0
+    y1: 619.2
+- page: 14
+  text: Holder is responsible shall be delivered to Escrow Holder within 3 Days after mu
+  days: 3
+  bbox: &id023
+    x0: 72.0
+    y0: 681.1
+    x1: 525.0
+    y1: 691.2
+- page: 15
+  text: Holder within 1 Day after the assignment. Any nomination by Buyer shall be subje
+  days: 1
+  bbox: &id024
+    x0: 54.0
+    y0: 282.9
+    x1: 576.1
+    y1: 292.9
+- page: 15
+  text: Holder, within 3 Days after Acceptance, evidence of authority to act in that cap
+  days: 3
+  bbox: &id025
+    x0: 54.0
+    y0: 337.1
+    x1: 576.0
+    y1: 347.1
+- page: 16
+  text: link shall notify the sender in writing, within 3 Days after Delivery of the lin
+  days: 3
+  bbox: &id026
+    x0: 72.0
+    y0: 119.9
+    x1: 576.0
+    y1: 129.9
+- page: 20
+  text: Buyer and Seller shall, within 7 Days after receiving a request for FinCEN infor
+  days: 7
+  bbox: &id027
+    x0: 72.0
+    y0: 423.0
+    x1: 576.1
+    y1: 434.2
+field_map:
+- page: 1
+  field: disclosure form. You should read its contents each time it i
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 564.3
+    x1: 576.0
+    y1: 574.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 498.1
+    y1: 648.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 498.1
+    y1: 664.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 692.4
+    x1: 498.5
+    y1: 702.4
+  region: footer
+  time_length_days: null
+- page: 2
+  field: is not prepared by the buyer's agent, the buyer's agent shal
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 329.8
+    x1: 576.0
+    y1: 338.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: sign, and date a written declaration of the facts of the ref
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 361.8
+    x1: 251.9
+    y1: 370.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: 2079.23 (a) A contract between the principal and agent may b
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 647.5
+    x1: 576.0
+    y1: 656.4
+  region: lower
+  time_length_days: null
+- page: 3
+  field: 3 calendar days after all Buyer Signature(s)
+  category: signature_area
+  bbox:
+    x0: 272.2
+    y0: 443.4
+    x1: 426.0
+    y1: 452.3
+  region: middle
+- page: 3
+  field: Initial Deposit Amount
+  category: signature_area
+  bbox:
+    x0: 127.9
+    y0: 475.3
+    x1: 212.7
+    y1: 484.3
+  region: lower
+- page: 3
+  field: Initial adjustable rate
+  category: signature_area
+  bbox:
+    x0: 326.4
+    y0: 534.1
+    x1: 401.9
+    y1: 543.0
+  region: lower
+- page: 3
+  field: Initial adjustable rate
+  category: signature_area
+  bbox:
+    x0: 326.4
+    y0: 609.8
+    x1: 401.9
+    y1: 618.8
+  region: lower
+- page: 3
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 721.8
+    x1: 285.3
+    y1: 730.7
+  region: footer
+- page: 3
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 446.8
+    y1: 730.7
+  region: footer
+- page: 3
+  field: 'Date Prepared:'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 79.3
+    x1: 97.0
+    y1: 89.4
+  region: header
+  time_length_days: null
+- page: 3
+  field: Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 303.8
+    y0: 415.9
+    x1: 386.5
+    y1: 424.9
+  region: middle
+  time_length_days: null
+- page: 3
+  field: (date)
+  category: date_area
+  bbox:
+    x0: 360.3
+    y0: 427.1
+    x1: 383.4
+    y1: 436.0
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Expiration of Offer
+  category: date_area
+  bbox:
+    x0: 127.9
+    y0: 441.9
+    x1: 198.1
+    y1: 450.9
+  region: middle
+  time_length_days: null
+- page: 3
+  field: 3 calendar days after all Buyer Signature(s)
+  category: date_area
+  bbox: *id001
+  region: middle
+  time_length_days: 3
+- page: 3
+  field: (date),
+  category: date_area
+  bbox:
+    x0: 415.1
+    y0: 452.3
+    x1: 440.4
+    y1: 461.2
+  region: middle
+  time_length_days: null
+- page: 3
+  field: ) business days
+  category: date_area
+  bbox:
+    x0: 518.8
+    y0: 477.4
+    x1: 574.4
+    y1: 486.4
+  region: lower
+  time_length_days: null
+- page: 3
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.5
+    y0: 575.8
+    x1: 402.8
+    y1: 584.7
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 285.3
+    y1: 740.4
+  region: footer
+- page: 4
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 446.8
+    y1: 740.4
+  region: footer
+- page: 4
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 4
+  field: ) Days
+  category: date_area
+  bbox:
+    x0: 405.6
+    y0: 119.9
+    x1: 428.7
+    y1: 128.8
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days
+  category: date_area
+  bbox:
+    x0: 405.6
+    y0: 141.5
+    x1: 428.7
+    y1: 150.4
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days
+  category: date_area
+  bbox:
+    x0: 405.6
+    y0: 163.1
+    x1: 428.7
+    y1: 172.0
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days prior to COE
+  category: date_area
+  bbox:
+    x0: 312.8
+    y0: 198.3
+    x1: 382.6
+    y1: 207.2
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 212.7
+    x1: 402.6
+    y1: 221.6
+  region: upper
+  time_length_days: null
+- page: 4
+  field: TIME TO REMOVE CONTINGENCIES
+  category: date_area
+  bbox:
+    x0: 272.0
+    y0: 227.1
+    x1: 410.1
+    y1: 236.0
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 241.5
+    x1: 402.6
+    y1: 250.4
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 254.4
+    x1: 402.6
+    y1: 263.4
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 298.2
+    x1: 402.6
+    y1: 307.1
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 311.1
+    x1: 402.6
+    y1: 320.0
+  region: upper
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 317.3
+    y0: 347.1
+    x1: 402.6
+    y1: 356.0
+  region: middle
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance, or 5 Days
+  category: date_area
+  bbox: *id002
+  region: middle
+  time_length_days: 5
+- page: 4
+  field: ) Days after Acceptance, or 5 Days
+  category: date_area
+  bbox: *id003
+  region: middle
+  time_length_days: 5
+- page: 4
+  field: ) Days after Acceptance, or 5 Days
+  category: date_area
+  bbox: *id004
+  region: middle
+  time_length_days: 5
+- page: 4
+  field: ) Days after Acceptance, or 5 Days
+  category: date_area
+  bbox: *id005
+  region: middle
+  time_length_days: 5
+- page: 4
+  field: Time for Performance
+  category: date_area
+  bbox:
+    x0: 272.0
+    y0: 460.7
+    x1: 365.0
+    y1: 470.8
+  region: middle
+  time_length_days: null
+- page: 4
+  field: Time of Possession
+  category: date_area
+  bbox:
+    x0: 131.4
+    y0: 475.1
+    x1: 206.5
+    y1: 484.1
+  region: lower
+  time_length_days: null
+- page: 4
+  field: PM on date specified, as
+  category: date_area
+  bbox:
+    x0: 329.3
+    y0: 484.0
+    x1: 419.1
+    y1: 492.9
+  region: lower
+  time_length_days: null
+- page: 4
+  field: COE date or, if checked below,
+  category: date_area
+  bbox:
+    x0: 272.0
+    y0: 505.8
+    x1: 382.2
+    y1: 514.7
+  region: lower
+  time_length_days: null
+- page: 4
+  field: days after COE (29 or fewer days)
+  category: date_area
+  bbox:
+    x0: 303.6
+    y0: 514.7
+    x1: 427.1
+    y1: 523.6
+  region: lower
+  time_length_days: null
+- page: 4
+  field: days after COE (30 or more days)
+  category: date_area
+  bbox:
+    x0: 303.6
+    y0: 523.6
+    x1: 425.8
+    y1: 532.5
+  region: lower
+  time_length_days: null
+- page: 4
+  field: fewer days. C.A.R. Form RLAS
+  category: date_area
+  bbox:
+    x0: 455.7
+    y0: 514.7
+    x1: 566.3
+    y1: 523.6
+  region: lower
+  time_length_days: null
+- page: 4
+  field: attached if 30 or more days.
+  category: date_area
+  bbox:
+    x0: 455.7
+    y0: 523.6
+    x1: 554.8
+    y1: 532.5
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Time for Performance
+  category: date_area
+  bbox:
+    x0: 272.0
+    y0: 580.2
+    x1: 365.0
+    y1: 590.2
+  region: lower
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 312.8
+    y0: 595.5
+    x1: 398.2
+    y1: 604.4
+  region: lower
+  time_length_days: null
+- page: 4
+  field: ) Days after Delivery
+  category: date_area
+  bbox:
+    x0: 312.8
+    y0: 609.9
+    x1: 385.2
+    y1: 618.8
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Time to pay fees for ordering HOA
+  category: date_area
+  bbox:
+    x0: 131.4
+    y0: 631.1
+    x1: 253.1
+    y1: 640.0
+  region: lower
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 312.8
+    y0: 631.1
+    x1: 398.1
+    y1: 640.0
+  region: lower
+  time_length_days: null
+- page: 4
+  field: ) Days after Acceptance
+  category: date_area
+  bbox:
+    x0: 312.8
+    y0: 652.0
+    x1: 398.1
+    y1: 661.0
+  region: lower
+  time_length_days: null
+- page: 4
+  field: 3 Days after Acceptance
+  category: date_area
+  bbox: *id006
+  region: footer
+  time_length_days: 3
+- page: 5
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 732.0
+    x1: 285.3
+    y1: 741.0
+  region: footer
+- page: 5
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 732.0
+    x1: 446.8
+    y1: 741.0
+  region: footer
+- page: 5
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 464.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 6
+  field: '(1) INITIAL DEPOSIT: Buyer shall deliver deposit directly to'
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 285.9
+    x1: 576.0
+    y1: 296.2
+  region: upper
+- page: 6
+  field: adjustable rate loan, the prequalification or preapproval le
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 646.1
+    x1: 555.9
+    y1: 656.2
+  region: lower
+- page: 6
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 285.3
+    y1: 742.2
+  region: footer
+- page: 6
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 446.8
+    y1: 742.2
+  region: footer
+- page: 6
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 464.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 6
+  field: Agreement is NOT contingent on Buyer obtaining a loan. Buyer
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 375.9
+    x1: 576.0
+    y1: 385.9
+  region: middle
+  time_length_days: null
+- page: 6
+  field: terms of paragraph 6B, Buyer shall Deliver the updated conta
+  category: date_area
+  bbox: *id007
+  region: middle
+  time_length_days: 1
+- page: 6
+  field: 'incorporated and Signed by all Parties. Buyer shall, within '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 483.9
+    x1: 576.0
+    y1: 493.9
+  region: lower
+  time_length_days: null
+- page: 6
+  field: 'within the time specified in paragraph 3H(2) may be made by '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 609.9
+    x1: 569.8
+    y1: 619.9
+  region: lower
+  time_length_days: null
+- page: 6
+  field: 'VERIFICATION OF LOAN APPLICATIONS: Buyer shall Deliver to Se'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 618.9
+    x1: 576.0
+    y1: 628.9
+  region: lower
+  time_length_days: null
+- page: 6
+  field: closing date, purchase price, and to sell to Buyer in relian
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 673.1
+    x1: 576.0
+    y1: 683.2
+  region: footer
+  time_length_days: null
+- page: 6
+  field: at the purchase price on the COE date (paragraph 3B) even if
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 699.9
+    x1: 576.1
+    y1: 709.9
+  region: footer
+  time_length_days: null
+- page: 7
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 285.3
+    y1: 741.5
+  region: footer
+- page: 7
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 446.8
+    y1: 741.5
+  region: footer
+- page: 7
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 464.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 7
+  field: 'Agreed, such as in C.A.R. Form TOPA: (i) the unit Buyer inte'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 44.1
+    x1: 576.2
+    y1: 54.2
+  region: header
+  time_length_days: null
+- page: 7
+  field: Buyer, and (ii) if the Property contains more than one unit,
+  category: date_area
+  bbox: *id008
+  region: header
+  time_length_days: 3
+- page: 7
+  field: 'Unless Otherwise Agreed: (i) the Property shall be delivered'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 89.1
+    x1: 576.0
+    y1: 99.2
+  region: header
+  time_length_days: null
+- page: 7
+  field: as on the date of Acceptance; (iii) Except as specified in p
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 107.1
+    x1: 576.0
+    y1: 117.2
+  region: header
+  time_length_days: null
+- page: 7
+  field: 'personal property not included in the sale shall be removed '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 125.4
+    x1: 576.1
+    y1: 135.4
+  region: upper
+  time_length_days: null
+- page: 7
+  field: if not on the same date. If items are not removed when posse
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 134.4
+    x1: 576.1
+    y1: 144.4
+  region: upper
+  time_length_days: null
+- page: 7
+  field: Buyer, after first Delivering to Seller written notice to re
+  category: date_area
+  bbox: *id009
+  region: upper
+  time_length_days: 3
+- page: 8
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 285.3
+    y1: 742.5
+  region: footer
+- page: 8
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 446.8
+    y1: 742.5
+  region: footer
+- page: 8
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 8
+  field: Buyer has 5 Days after receipt to review a revised Prelimina
+  category: date_area
+  bbox: *id010
+  region: upper
+  time_length_days: 5
+- page: 8
+  field: Buyer to Perform, may cancel this Agreement if Buyer, by the
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 233.6
+    x1: 576.1
+    y1: 243.6
+  region: upper
+  time_length_days: null
+- page: 8
+  field: Disclosures, Buyer shall, within the time specified in parag
+  category: date_area
+  bbox: *id011
+  region: middle
+  time_length_days: 5
+- page: 8
+  field: If Buyer does not remove a contingency within the time speci
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 363.4
+    x1: 576.1
+    y1: 373.4
+  region: middle
+  time_length_days: null
+- page: 8
+  field: time of Acceptance.
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 548.6
+    x1: 175.0
+    y1: 558.6
+  region: lower
+  time_length_days: null
+- page: 9
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 285.3
+    y1: 740.4
+  region: footer
+- page: 9
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 446.8
+    y1: 740.4
+  region: footer
+- page: 9
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 9
+  field: '(6) LEASED OR LIENED ITEMS AND SYSTEMS: Seller, within the t'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 27.4
+    x1: 576.0
+    y1: 37.6
+  region: header
+  time_length_days: null
+- page: 9
+  field: paragraphs shall be Delivered in the time specified in parag
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 217.1
+    x1: 356.9
+    y1: 227.1
+  region: upper
+  time_length_days: null
+- page: 9
+  field: 'carbon monoxide device(s) or securing of water heater shall '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 244.9
+    x1: 576.1
+    y1: 254.9
+  region: upper
+  time_length_days: null
+- page: 9
+  field: pay for these items and does not fulfill Seller's obligation
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 282.1
+    x1: 576.1
+    y1: 292.1
+  region: upper
+  time_length_days: null
+- page: 9
+  field: (B) Buyer shall be provided, within the time specified in pa
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 374.3
+    x1: 576.0
+    y1: 384.7
+  region: middle
+  time_length_days: null
+- page: 9
+  field: 'time period, a Copy of any required government-conducted or '
+  category: date_area
+  bbox:
+    x0: 108.0
+    y0: 383.9
+    x1: 576.1
+    y1: 393.9
+  region: middle
+  time_length_days: null
+- page: 9
+  field: 'REINSPECTION FEES: If any repair in paragraph 10B(1) is not '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 402.1
+    x1: 576.1
+    y1: 412.2
+  region: middle
+  time_length_days: null
+- page: 9
+  field: (1) Seller shall, within the time specified in paragraph 3N(
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 550.1
+    x1: 576.0
+    y1: 560.4
+  region: lower
+  time_length_days: null
+- page: 10
+  field: defensible space compliance Delivered by Seller, as indicate
+  category: signature_area
+  bbox:
+    x0: 90.0
+    y0: 471.1
+    x1: 576.0
+    y1: 481.1
+  region: lower
+- page: 10
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 732.2
+    x1: 285.3
+    y1: 741.2
+  region: footer
+- page: 10
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 732.2
+    x1: 446.8
+    y1: 741.2
+  region: footer
+- page: 10
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 10
+  field: 'Seller shall, within the time specified in paragraph 3N(1), '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 27.4
+    x1: 576.1
+    y1: 37.4
+  region: header
+  time_length_days: null
+- page: 10
+  field: (1) Seller shall, within the time specified in paragraph 3N(
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 149.3
+    x1: 576.0
+    y1: 159.7
+  region: upper
+  time_length_days: null
+- page: 10
+  field: Buyer shall, within the time specified in paragraph 3L(3), h
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 177.1
+    x1: 576.1
+    y1: 187.2
+  region: upper
+  time_length_days: null
+- page: 10
+  field: in a high or very high fire hazard severity zone, and the ho
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 205.1
+    x1: 576.2
+    y1: 215.2
+  region: upper
+  time_length_days: null
+- page: 10
+  field: located in a high or very high fire hazard severity zone, Se
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 260.4
+    x1: 576.0
+    y1: 270.4
+  region: upper
+  time_length_days: null
+- page: 10
+  field: 'RETURN OF SIGNED COPIES: Buyer shall, within the time specif'
+  category: date_area
+  bbox: *id012
+  region: middle
+  time_length_days: 5
+- page: 10
+  field: 'Agreement within 3 Days after Delivery in person, or 5 Days '
+  category: date_area
+  bbox: *id013
+  region: middle
+  time_length_days: 3
+- page: 10
+  field: Authorized Agent. If Buyer does not rescind within this time
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 444.1
+    x1: 576.1
+    y1: 454.1
+  region: middle
+  time_length_days: null
+- page: 10
+  field: '(2) Defensible Space Compliance: If, by the time specified i'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 461.9
+    x1: 576.0
+    y1: 472.1
+  region: middle
+  time_length_days: null
+- page: 11
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 285.3
+    y1: 742.5
+  region: footer
+- page: 11
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 446.8
+    y1: 742.5
+  region: footer
+- page: 11
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 11
+  field: 'NATURAL AND ENVIRONMENTAL HAZARDS: Seller shall, within the '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 27.1
+    x1: 576.1
+    y1: 37.1
+  region: header
+  time_length_days: null
+- page: 11
+  field: (1) Seller shall, within the time specified in paragraph 3N(
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 99.1
+    x1: 576.0
+    y1: 109.4
+  region: header
+  time_length_days: null
+- page: 11
+  field: 'Seller shall, within the time specified in paragraph 3N(3), '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 135.1
+    x1: 576.0
+    y1: 145.1
+  region: upper
+  time_length_days: null
+- page: 11
+  field: 'SOLAR POWER SYSTEMS: For properties with any solar panels or'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 216.1
+    x1: 576.1
+    y1: 226.1
+  region: upper
+  time_length_days: null
+- page: 11
+  field: or more dwelling units with elevated balconies, stairways or
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 252.1
+    x1: 576.0
+    y1: 262.1
+  region: upper
+  time_length_days: null
+- page: 11
+  field: 'KNOWN MATERIAL FACTS: Seller shall, within the time specifie'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 270.1
+    x1: 576.0
+    y1: 280.1
+  region: upper
+  time_length_days: null
+- page: 11
+  field: Buyer shall, within the time specified in paragraph 3L(3), h
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 315.1
+    x1: 576.1
+    y1: 325.1
+  region: middle
+  time_length_days: null
+- page: 11
+  field: Seller shall have water, gas, electricity and all operable p
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 522.4
+    x1: 576.2
+    y1: 532.4
+  region: lower
+  time_length_days: null
+- page: 11
+  field: delivered to Buyer. Buyer shall, (i) by the time specified i
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 531.1
+    x1: 576.2
+    y1: 541.1
+  region: lower
+  time_length_days: null
+- page: 11
+  field: as to the condition of the Property, and either remove the c
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 540.1
+    x1: 576.1
+    y1: 550.1
+  region: lower
+  time_length_days: null
+- page: 11
+  field: paragraph 3L(3) or 3 Days after receipt of any Investigation
+  category: date_area
+  bbox: *id014
+  region: lower
+  time_length_days: 3
+- page: 11
+  field: 'PRELIMINARY REPORT: Buyer shall, within the time specified i'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 657.1
+    x1: 576.0
+    y1: 667.1
+  region: lower
+  time_length_days: null
+- page: 11
+  field: diligently and in good faith to obtain such Preliminary Repo
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 675.4
+    x1: 576.0
+    y1: 685.4
+  region: footer
+  time_length_days: null
+- page: 12
+  field: 'Sign in a representative capacity as specified in paragraph '
+  category: signature_area
+  bbox:
+    x0: 90.0
+    y0: 660.6
+    x1: 576.0
+    y1: 670.9
+  region: lower
+- page: 12
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 734.5
+    x1: 285.3
+    y1: 743.4
+  region: footer
+- page: 12
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 734.5
+    x1: 446.8
+    y1: 743.4
+  region: footer
+- page: 12
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 12
+  field: restrictions, rights and other matters, whether of record or
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 34.6
+    x1: 576.1
+    y1: 44.7
+  region: header
+  time_length_days: null
+- page: 12
+  field: 'DISCLOSURE TO BUYER: Seller shall, within the time specified'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 71.6
+    x1: 576.0
+    y1: 81.6
+  region: header
+  time_length_days: null
+- page: 12
+  field: 'SELLER DELIVERY OF INFORMATION: Seller shall, within 7 Days '
+  category: date_area
+  bbox: *id015
+  region: upper
+  time_length_days: 7
+- page: 12
+  field: 14. TIME PERIODS; REMOVAL OF CONTINGENCIES; CANCELLATION RIG
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 293.9
+    x1: 576.0
+    y1: 303.9
+  region: upper
+  time_length_days: null
+- page: 12
+  field: 'SELLER DELIVERY OF DOCUMENTS: Seller shall, within the time '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 322.3
+    x1: 576.0
+    y1: 332.4
+  region: middle
+  time_length_days: null
+- page: 12
+  field: '(1) Buyer has the time specified in paragraph 3 to: (i) perf'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 360.4
+    x1: 576.0
+    y1: 370.6
+  region: middle
+  time_length_days: null
+- page: 12
+  field: Buyer may, within the time specified in paragraph 3L(3), req
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 398.4
+    x1: 576.1
+    y1: 408.4
+  region: middle
+  time_length_days: null
+- page: 12
+  field: 'Continuation of Contingency: Even after the end of the time '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 493.3
+    x1: 576.1
+    y1: 503.4
+  region: lower
+  time_length_days: null
+- page: 12
+  field: '(1) SELLER RIGHT TO CANCEL; BUYER CONTINGENCIES: If, by the '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 540.4
+    x1: 576.0
+    y1: 550.6
+  region: lower
+  time_length_days: null
+- page: 12
+  field: to Perform, may cancel this Agreement if, by the time specif
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 586.9
+    x1: 576.2
+    y1: 596.9
+  region: lower
+  time_length_days: null
+- page: 13
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 734.3
+    x1: 285.3
+    y1: 743.2
+  region: footer
+- page: 13
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 734.3
+    x1: 446.8
+    y1: 743.2
+  region: footer
+- page: 13
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 13
+  field: '(1) BUYER RIGHT TO CANCEL; SELLER CONTINGENCIES: If, by the '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 37.6
+    x1: 576.0
+    y1: 47.9
+  region: header
+  time_length_days: null
+- page: 13
+  field: 'BUYER RIGHT TO CANCEL; SELLER CONTRACT OBLIGATIONS: If, by t'
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 83.9
+    x1: 576.1
+    y1: 93.9
+  region: header
+  time_length_days: null
+- page: 13
+  field: by the time specified, Buyer, after first Delivering to Sell
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 102.6
+    x1: 549.8
+    y1: 112.6
+  region: header
+  time_length_days: null
+- page: 13
+  field: writing; (ii) be Signed by the applicable Buyer or Seller; a
+  category: date_area
+  bbox: *id016
+  region: upper
+  time_length_days: 2
+- page: 13
+  field: time specified in the applicable paragraph, whichever occurs
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 158.1
+    x1: 576.1
+    y1: 168.2
+  region: upper
+  time_length_days: null
+- page: 13
+  field: Notice to Seller to Perform may not be Delivered any earlier
+  category: date_area
+  bbox: *id017
+  region: upper
+  time_length_days: 2
+- page: 13
+  field: be Delivered under the terms of paragraph 14G, whether or no
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 185.6
+    x1: 576.1
+    y1: 195.7
+  region: upper
+  time_length_days: null
+- page: 13
+  field: legal holiday.  If a Notice to Buyer to Perform or Notice to
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 195.1
+    x1: 576.0
+    y1: 205.2
+  region: upper
+  time_length_days: null
+- page: 13
+  field: the agreed time, the notice shall be deemed invalid and void
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 204.3
+    x1: 576.1
+    y1: 214.4
+  region: upper
+  time_length_days: null
+- page: 13
+  field: 'for all contingencies and contractual actions for which the '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 213.6
+    x1: 576.1
+    y1: 223.7
+  region: upper
+  time_length_days: null
+- page: 13
+  field: 'The DCE shall: (i) be Signed by the applicable Buyer or Sell'
+  category: date_area
+  bbox: *id018
+  region: middle
+  time_length_days: 3
+- page: 13
+  field: escrow. A DCE may not be Delivered any earlier than 3 Days p
+  category: date_area
+  bbox: *id019
+  region: middle
+  time_length_days: 3
+- page: 13
+  field: If a DCE is incorrectly Delivered or specifies a time less t
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 370.9
+    x1: 576.1
+    y1: 380.9
+  region: middle
+  time_length_days: null
+- page: 13
+  field: (ii) prepare a written statement indicating the Repairs perf
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 527.9
+    x1: 576.0
+    y1: 537.9
+  region: lower
+  time_length_days: null
+- page: 13
+  field: '16. FINAL VERIFICATION OF CONDITION: Buyer shall have the ri'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 546.3
+    x1: 576.1
+    y1: 556.4
+  region: lower
+  time_length_days: null
+- page: 13
+  field: 'be paid current up and through the date of Close Of Escrow. '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 676.1
+    x1: 576.1
+    y1: 686.1
+  region: footer
+  time_length_days: null
+- page: 13
+  field: SHALL BE HANDLED DIRECTLY BETWEEN BUYER AND SELLER. Proratio
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 685.4
+    x1: 539.8
+    y1: 695.4
+  region: footer
+  time_length_days: null
+- page: 14
+  field: Escrow Holder to accept and rely on Copies and Signatures as
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 373.9
+    x1: 576.0
+    y1: 383.9
+  region: middle
+- page: 14
+  field: 'Escrow Holder shall immediately notify each Agent: (i) if Bu'
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 645.1
+    x1: 576.0
+    y1: 655.2
+  region: lower
+- page: 14
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 285.3
+    y1: 741.5
+  region: footer
+- page: 14
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 446.8
+    y1: 741.5
+  region: footer
+- page: 14
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 464.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 14
+  field: Holder's general provisions or supplemental instructions wit
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 318.1
+    x1: 576.0
+    y1: 328.1
+  region: middle
+  time_length_days: null
+- page: 14
+  field: escrow and, as directed by Escrow Holder, within 3 Days, sha
+  category: date_area
+  bbox: *id020
+  region: middle
+  time_length_days: 3
+- page: 14
+  field: counter offer(s) and addenda shall be delivered to Escrow Ho
+  category: date_area
+  bbox: *id021
+  region: middle
+  time_length_days: 3
+- page: 14
+  field: 'and Seller, upon request by Escrow Holder, within 3 Days or '
+  category: date_area
+  bbox: *id022
+  region: lower
+  time_length_days: 3
+- page: 14
+  field: pursuant to this Agreement, or is not good at time of deposi
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 654.1
+    x1: 576.1
+    y1: 664.2
+  region: lower
+  time_length_days: null
+- page: 14
+  field: Holder is responsible shall be delivered to Escrow Holder wi
+  category: date_area
+  bbox: *id023
+  region: footer
+  time_length_days: 3
+- page: 15
+  field: 'is Buyer''s wholly-owned entity or trust, that assignee does '
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 236.9
+    x1: 576.0
+    y1: 246.9
+  region: upper
+- page: 15
+  field: '24. LEGALLY AUTHORIZED SIGNER: Wherever the signature or ini'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 301.1
+    x1: 576.1
+    y1: 311.1
+  region: upper
+- page: 15
+  field: '25. DEFINITIONS and INSTRUCTIONS: The following words are de'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 364.1
+    x1: 576.0
+    y1: 374.1
+  region: middle
+- page: 15
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 285.3
+    y1: 742.2
+  region: footer
+- page: 15
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 446.8
+    y1: 742.2
+  region: footer
+- page: 15
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 15
+  field: 'entity or trust that exists at the time of such assignment. '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 162.9
+    x1: 576.0
+    y1: 172.9
+  region: upper
+  time_length_days: null
+- page: 15
+  field: the time specified in paragraph 3K, Deliver to Seller any re
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 181.1
+    x1: 576.0
+    y1: 191.1
+  region: upper
+  time_length_days: null
+- page: 15
+  field: assignment; or (iii) Buyer Delivers an assignment request to
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 218.1
+    x1: 576.0
+    y1: 228.1
+  region: upper
+  time_length_days: null
+- page: 15
+  field: assignment requires seller's consent, at the time of assignm
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 246.1
+    x1: 576.1
+    y1: 256.1
+  region: upper
+  time_length_days: null
+- page: 15
+  field: 'Holder within 1 Day after the assignment. Any nomination by '
+  category: date_area
+  bbox: *id024
+  region: upper
+  time_length_days: 1
+- page: 15
+  field: Holder, within 3 Days after Acceptance, evidence of authorit
+  category: date_area
+  bbox: *id025
+  region: middle
+  time_length_days: 3
+- page: 15
+  field: "\u201CAcceptance\u201D means the time the offer or final counter offer"
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 382.1
+    x1: 576.1
+    y1: 392.1
+  region: middle
+  time_length_days: null
+- page: 15
+  field: inspect the Property and, within the time specified, request
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 456.1
+    x1: 576.0
+    y1: 466.2
+  region: middle
+  time_length_days: null
+- page: 15
+  field: "\u201CClose Of Escrow\u201D, including \u201CCOE\u201D, means the date the grant"
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 511.3
+    x1: 576.2
+    y1: 521.4
+  region: lower
+  time_length_days: null
+- page: 15
+  field: property, or the date of Delivery of a document evidencing t
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 520.9
+    x1: 527.4
+    y1: 530.9
+  region: lower
+  time_length_days: null
+- page: 15
+  field: 'Counting Days is done as follows unless Otherwise Agreed: (1'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 539.1
+    x1: 576.1
+    y1: 549.2
+  region: lower
+  time_length_days: null
+- page: 15
+  field: 7th calendar day of the month, or Acceptance of a counter of
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 557.9
+    x1: 576.0
+    y1: 567.9
+  region: lower
+  time_length_days: null
+- page: 15
+  field: "the month, then the 7th is Day \u201C0\u201D for purposes of counting "
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 567.1
+    x1: 576.1
+    y1: 577.1
+  region: lower
+  time_length_days: null
+- page: 15
+  field: or contingency removal dates and the 8th of the month is Day
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 576.4
+    x1: 576.0
+    y1: 586.4
+  region: lower
+  time_length_days: null
+- page: 15
+  field: 'establishing the first Day after an event. (3) All calendar '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 585.6
+    x1: 576.1
+    y1: 595.6
+  region: lower
+  time_length_days: null
+- page: 15
+  field: be completed, ending at 11:59 pm on the last day for perform
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 594.9
+    x1: 576.1
+    y1: 604.9
+  region: lower
+  time_length_days: null
+- page: 15
+  field: "Civil Code \xA7 11, after Acceptance, if the Scheduled Performa"
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 604.1
+    x1: 576.1
+    y1: 614.1
+  region: lower
+  time_length_days: null
+- page: 15
+  field: Escrow, lands on a Saturday, Sunday, or Legal Holiday, the p
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 613.4
+    x1: 576.1
+    y1: 623.4
+  region: lower
+  time_length_days: null
+- page: 15
+  field: "not a Saturday, Sunday or Legal Holiday (\u201CAllowable Performa"
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 622.6
+    x1: 576.1
+    y1: 632.6
+  region: lower
+  time_length_days: null
+- page: 15
+  field: of COE, any day that the Recorder's office in the County whe
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 641.1
+    x1: 576.0
+    y1: 651.1
+  region: lower
+  time_length_days: null
+- page: 15
+  field: 'Escrow Holder under this Agreement is closed, the COE shall '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 650.4
+    x1: 576.0
+    y1: 660.4
+  region: lower
+  time_length_days: null
+- page: 15
+  field: lender, and the Escrow Holder is open. (6) COE is considered
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 659.6
+    x1: 576.1
+    y1: 669.6
+  region: lower
+  time_length_days: null
+- page: 15
+  field: "\u201CDay\" or \"Days\u201D means calendar day or days. However, deliver"
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 677.9
+    x1: 525.5
+    y1: 687.9
+  region: footer
+  time_length_days: null
+- page: 16
+  field: "\u201CElectronic Copy\u201D or \u201CElectronic Signature\u201D means, as applic"
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 147.6
+    x1: 576.1
+    y1: 157.6
+  region: upper
+- page: 16
+  field: 'Law. Unless Otherwise Agreed, Buyer and Seller agree to the '
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 157.1
+    x1: 576.1
+    y1: 167.1
+  region: upper
+- page: 16
+  field: "\"Sign\" or \u201CSigned\u201D means either a handwritten or Electronic "
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 258.6
+    x1: 559.9
+    y1: 268.7
+  region: upper
+- page: 16
+  field: by mutual agreement in a counter offer or addendum. If at le
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 296.4
+    x1: 576.0
+    y1: 306.4
+  region: upper
+- page: 16
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.8
+    x1: 285.3
+    y1: 742.7
+  region: footer
+- page: 16
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.8
+    x1: 446.8
+    y1: 742.7
+  region: footer
+- page: 16
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 16
+  field: link shall notify the sender in writing, within 3 Days after
+  category: date_area
+  bbox: *id026
+  region: upper
+  time_length_days: 3
+- page: 16
+  field: effective upon Delivery of the documents and not the link. F
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 129.4
+    x1: 576.1
+    y1: 139.4
+  region: upper
+  time_length_days: null
+- page: 16
+  field: agreement is reached. Seller has the right to continue to of
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 305.9
+    x1: 576.1
+    y1: 315.9
+  region: upper
+  time_length_days: null
+- page: 16
+  field: '28. TIME OF ESSENCE; ENTIRE CONTRACT; CHANGES: Time is of th'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 362.9
+    x1: 576.0
+    y1: 372.9
+  region: middle
+  time_length_days: null
+- page: 17
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 126.0
+    y0: 134.1
+    x1: 197.1
+    y1: 144.2
+  region: upper
+- page: 17
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 134.1
+    x1: 430.1
+    y1: 144.2
+  region: upper
+- page: 17
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 126.0
+    y0: 699.1
+    x1: 197.1
+    y1: 709.2
+  region: footer
+- page: 17
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 699.1
+    x1: 430.1
+    y1: 709.2
+  region: footer
+- page: 17
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 285.3
+    y1: 742.5
+  region: footer
+- page: 17
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 446.8
+    y1: 742.5
+  region: footer
+- page: 17
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 17
+  field: and Seller, judicial decision or arbitration award. AT THE T
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 89.9
+    x1: 576.0
+    y1: 101.1
+  region: header
+  time_length_days: null
+- page: 17
+  field: 'to, or within a reasonable time after, the dispute or claim '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 207.6
+    x1: 576.1
+    y1: 217.6
+  region: upper
+  time_length_days: null
+- page: 17
+  field: 'to, or within a reasonable time after, the dispute or claim '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 356.1
+    x1: 576.0
+    y1: 366.2
+  region: middle
+  time_length_days: null
+- page: 18
+  field: 'ENTITY BUYERS: (Note: If this paragraph is completed, a Repr'
+  category: signature_area
+  bbox:
+    x0: 83.8
+    y0: 66.6
+    x1: 576.0
+    y1: 76.6
+  region: header
+- page: 18
+  field: 'BUYER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 264.6
+    x1: 173.9
+    y1: 274.6
+  region: upper
+- page: 18
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 276.9
+    x1: 114.0
+    y1: 286.9
+  region: upper
+- page: 18
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 310.9
+    x1: 114.0
+    y1: 320.9
+  region: upper
+- page: 18
+  field: 'IF MORE THAN TWO SIGNERS, USE Additional Signature Addendum '
+  category: signature_area
+  bbox:
+    x0: 62.0
+    y0: 343.9
+    x1: 429.2
+    y1: 353.9
+  region: middle
+- page: 18
+  field: 'ENTITY SELLERS: (Note: If this paragraph is completed, a Rep'
+  category: signature_area
+  bbox:
+    x0: 84.2
+    y0: 438.1
+    x1: 576.0
+    y1: 448.2
+  region: middle
+- page: 18
+  field: 'SELLER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 631.6
+    x1: 177.9
+    y1: 641.6
+  region: lower
+- page: 18
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 643.9
+    x1: 114.0
+    y1: 653.9
+  region: lower
+- page: 18
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 677.9
+    x1: 114.0
+    y1: 687.9
+  region: footer
+- page: 18
+  field: 'IF MORE THAN TWO SIGNERS, USE Additional Signature Addendum '
+  category: signature_area
+  bbox:
+    x0: 62.0
+    y0: 710.9
+    x1: 429.2
+    y1: 720.9
+  region: footer
+- page: 18
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 464.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 18
+  field: 'EXPIRATION OF OFFER: This offer shall be deemed revoked and '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 37.1
+    x1: 576.0
+    y1: 47.1
+  region: header
+  time_length_days: null
+- page: 18
+  field: date and time specified in paragraph 3C, the offer is Signed
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 46.6
+    x1: 576.0
+    y1: 56.6
+  region: header
+  time_length_days: null
+- page: 18
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 474.0
+    y0: 276.6
+    x1: 496.5
+    y1: 286.7
+  region: upper
+  time_length_days: null
+- page: 18
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 474.0
+    y0: 310.6
+    x1: 496.5
+    y1: 320.7
+  region: upper
+  time_length_days: null
+- page: 18
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 474.0
+    y0: 643.6
+    x1: 496.5
+    y1: 653.7
+  region: lower
+  time_length_days: null
+- page: 18
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 474.0
+    y0: 677.6
+    x1: 496.5
+    y1: 687.6
+  region: footer
+  time_length_days: null
+- page: 19
+  field: Agents' Signatures and designated electronic delivery addres
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 93.1
+    x1: 325.5
+    y1: 103.1
+  region: header
+- page: 19
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 162.0
+    y0: 374.5
+    x1: 213.3
+    y1: 383.4
+  region: middle
+- page: 19
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 303.3
+    y0: 374.5
+    x1: 358.5
+    y1: 383.4
+  region: middle
+- page: 19
+  field: Agent or Seller Initials
+  category: signature_area
+  bbox:
+    x0: 162.0
+    y0: 562.5
+    x1: 244.2
+    y1: 571.5
+  region: lower
+- page: 19
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 144.0
+    y0: 603.5
+    x1: 201.5
+    y1: 612.4
+  region: lower
+- page: 19
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 464.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 19
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.0
+    y0: 123.3
+    x1: 499.5
+    y1: 133.4
+  region: upper
+  time_length_days: null
+- page: 19
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.0
+    y0: 136.4
+    x1: 499.5
+    y1: 146.4
+  region: upper
+  time_length_days: null
+- page: 19
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.0
+    y0: 245.4
+    x1: 499.5
+    y1: 255.4
+  region: upper
+  time_length_days: null
+- page: 19
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.0
+    y0: 258.3
+    x1: 499.5
+    y1: 268.4
+  region: upper
+  time_length_days: null
+- page: 19
+  field: that the date of Acceptance of the Agreement is
+  category: date_area
+  bbox:
+    x0: 316.4
+    y0: 441.4
+    x1: 508.9
+    y1: 451.4
+  region: middle
+  time_length_days: null
+- page: 19
+  field: Date
+  category: date_area
+  bbox:
+    x0: 459.0
+    y0: 467.4
+    x1: 480.5
+    y1: 477.4
+  region: middle
+  time_length_days: null
+- page: 19
+  field: (date).
+  category: date_area
+  bbox:
+    x0: 543.7
+    y0: 550.4
+    x1: 572.2
+    y1: 560.4
+  region: lower
+  time_length_days: null
+- page: 19
+  field: 'OFFER NOT ACCEPTED: ______/______ No Counter Offer is being '
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 592.1
+    x1: 568.4
+    y1: 602.2
+  region: lower
+  time_length_days: null
+- page: 20
+  field: after the March 1, 2026, implementation date even if schedul
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 249.3
+    x1: 483.3
+    y1: 260.4
+  region: upper
+  time_length_days: null
+- page: 20
+  field: Buyer and Seller shall, within 7 Days after receiving a requ
+  category: date_area
+  bbox: *id027
+  region: middle
+  time_length_days: 7
+- page: 20
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 594.2
+    x1: 489.1
+    y1: 605.4
+  region: lower
+  time_length_days: null
+- page: 20
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 611.3
+    x1: 489.1
+    y1: 622.4
+  region: lower
+  time_length_days: null
+- page: 20
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 633.2
+    x1: 489.1
+    y1: 644.4
+  region: lower
+  time_length_days: null
+- page: 20
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 650.2
+    x1: 489.1
+    y1: 661.4
+  region: lower
+  time_length_days: null
+- page: 22
+  field: Date
+  category: date_area
+  bbox:
+    x0: 456.8
+    y0: 196.3
+    x1: 480.6
+    y1: 207.4
+  region: upper
+  time_length_days: null
+- page: 22
+  field: Date
+  category: date_area
+  bbox:
+    x0: 456.8
+    y0: 220.2
+    x1: 480.6
+    y1: 231.4
+  region: upper
+  time_length_days: null
+- page: 23
+  field: prospective buyers at the same time. These prospective buyer
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 189.2
+    x1: 576.1
+    y1: 200.4
+  region: upper
+  time_length_days: null
+- page: 23
+  field: properties at the same time. As a result, Brokerage will att
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 262.7
+    x1: 576.1
+    y1: 273.9
+  region: upper
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 490.0
+    y0: 77.8
+    x1: 513.9
+    y1: 88.9
+  region: header
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 490.0
+    y0: 93.7
+    x1: 513.9
+    y1: 104.9
+  region: header
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 114.8
+    x1: 513.3
+    y1: 125.9
+  region: upper
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 130.8
+    x1: 513.3
+    y1: 141.9
+  region: upper
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 166.2
+    x1: 513.4
+    y1: 177.4
+  region: upper
+  time_length_days: null
+- page: 24
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 203.3
+    x1: 513.4
+    y1: 214.4
+  region: upper
+  time_length_days: null
+- page: 26
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.5
+    y0: 588.4
+    x1: 494.0
+    y1: 598.4
+  region: lower
+  time_length_days: null
+- page: 26
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.5
+    y0: 602.4
+    x1: 494.0
+    y1: 612.4
+  region: lower
+  time_length_days: null
+- page: 26
+  field: Date
+  category: date_area
+  bbox:
+    x0: 473.0
+    y0: 619.3
+    x1: 494.5
+    y1: 629.4
+  region: lower
+  time_length_days: null
+- page: 26
+  field: Date
+  category: date_area
+  bbox:
+    x0: 473.0
+    y0: 633.4
+    x1: 494.5
+    y1: 643.4
+  region: lower
+  time_length_days: null
+- page: 27
+  field: contingency that gives you the right to legally cancel the a
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 185.3
+    x1: 576.1
+    y1: 196.4
+  region: upper
+  time_length_days: null
+- page: 27
+  field: affordable insurance policy could take time and effort, buye
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 337.2
+    x1: 576.1
+    y1: 348.4
+  region: middle
+  time_length_days: null
+- page: 27
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 593.3
+    x1: 489.1
+    y1: 604.4
+  region: lower
+  time_length_days: null
+- page: 27
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 613.2
+    x1: 489.1
+    y1: 624.4
+  region: lower
+  time_length_days: null
+- page: 28
+  field: At the same time, it has provided hackers and scammers new o
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 109.2
+    x1: 576.0
+    y1: 120.4
+  region: header
+  time_length_days: null
+- page: 28
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 578.2
+    x1: 507.1
+    y1: 589.4
+  region: lower
+  time_length_days: null
+- page: 28
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 595.2
+    x1: 507.1
+    y1: 606.4
+  region: lower
+  time_length_days: null
+- page: 28
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 612.2
+    x1: 507.1
+    y1: 623.4
+  region: lower
+  time_length_days: null
+- page: 28
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 629.3
+    x1: 507.1
+    y1: 640.4
+  region: lower
+  time_length_days: null
+- page: 29
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 399.2
+    x1: 481.2
+    y1: 410.4
+  region: middle
+  time_length_days: null
+- page: 29
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 428.3
+    x1: 481.2
+    y1: 439.4
+  region: middle
+  time_length_days: null

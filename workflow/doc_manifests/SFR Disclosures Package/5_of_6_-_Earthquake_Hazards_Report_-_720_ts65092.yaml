@@ -1,0 +1,41 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:13'
+file: 5_of_6_-_Earthquake_Hazards_Report_-_720_ts65092.pdf
+folder: SFR Disclosures Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 2
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 618.0
+    x1: 472.7
+    y1: 628.6
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 690.0
+    x1: 472.7
+    y1: 700.6
+  region: footer
+  time_length_days: null

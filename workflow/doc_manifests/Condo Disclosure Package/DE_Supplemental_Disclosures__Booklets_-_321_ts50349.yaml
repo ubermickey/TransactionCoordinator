@@ -1,0 +1,117 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:06'
+file: DE_Supplemental_Disclosures__Booklets_-_321_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 4
+  date_areas_from_text: 6
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's Initials  (
+  category: signature_area
+  bbox:
+    x0: 108.0
+    y0: 642.6
+    x1: 187.5
+    y1: 653.8
+  region: lower
+- page: 1
+  field: )      Seller's Initials  (
+  category: signature_area
+  bbox:
+    x0: 266.5
+    y0: 642.6
+    x1: 364.9
+    y1: 653.8
+  region: lower
+- page: 2
+  field: Buyer's Initials  (
+  category: signature_area
+  bbox:
+    x0: 136.2
+    y0: 662.1
+    x1: 215.7
+    y1: 673.3
+  region: lower
+- page: 2
+  field: )      Seller's Initials  (
+  category: signature_area
+  bbox:
+    x0: 294.9
+    y0: 662.1
+    x1: 393.3
+    y1: 673.3
+  region: lower
+- page: 2
+  field: with Fire Department regulations. If the property owner does
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 350.4
+    x1: 576.0
+    y1: 361.5
+  region: middle
+  time_length_days: null
+- page: 2
+  field: June) the City or County Weed Abatement Department will clea
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 362.4
+    x1: 576.0
+    y1: 373.5
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 252.0
+    y0: 438.1
+    x1: 273.7
+    y1: 449.3
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 438.1
+    x1: 525.7
+    y1: 449.3
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 252.0
+    y0: 486.1
+    x1: 273.7
+    y1: 497.2
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 486.1
+    x1: 525.7
+    y1: 497.2
+  region: lower
+  time_length_days: null

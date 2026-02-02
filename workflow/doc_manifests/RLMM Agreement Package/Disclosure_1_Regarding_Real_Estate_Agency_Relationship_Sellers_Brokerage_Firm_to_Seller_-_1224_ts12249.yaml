@@ -1,0 +1,111 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: Disclosure_1_Regarding_Real_Estate_Agency_Relationship_Sellers_Brokerage_Firm_to_Seller_-_1224_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 9
+  fillable_blanks_from_text: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: disclosure form. You should read its contents each time it i
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 564.3
+    x1: 576.0
+    y1: 574.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 498.1
+    y1: 648.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 498.1
+    y1: 664.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 692.4
+    x1: 498.5
+    y1: 702.4
+  region: footer
+  time_length_days: null
+- page: 2
+  field: is not prepared by the buyer's agent, the buyer's agent shal
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 329.8
+    x1: 576.0
+    y1: 338.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: sign, and date a written declaration of the facts of the ref
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 361.8
+    x1: 251.9
+    y1: 370.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: 2079.23 (a) A contract between the principal and agent may b
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 647.5
+    x1: 576.0
+    y1: 656.4
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 393.3
+    x1: 481.2
+    y1: 404.4
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 422.3
+    x1: 481.2
+    y1: 433.4
+  region: middle
+  time_length_days: null

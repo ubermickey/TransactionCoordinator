@@ -1,0 +1,99 @@
+# Natural Hazard Disclosure (NHD) — Form Template
+# Legal basis: CA Civil Code §1103-1103.14
+# Must be delivered to buyer before close of escrow
+
+form:
+  name: Natural Hazard Disclosure Statement
+  code: NHD
+  publisher: Third-party (JCP-LGS, First American, etc.)
+  version: "current"
+  last_verified: 2026-02-01
+  gate: GATE-004
+
+fields:
+  flood_zone:
+    section: "1"
+    label: "Special Flood Hazard Area (Zone A, V)"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Flood insurance required — notify buyer and lender"
+
+  dam_inundation:
+    section: "1"
+    label: "Dam inundation zone"
+    type: yes_no
+    flag_if: "yes"
+
+  very_high_fire:
+    section: "2"
+    label: "Very High Fire Hazard Severity Zone"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Fire hardening disclosure required per AB 38"
+
+  wildfire_risk:
+    section: "2"
+    label: "State Responsibility Area wildfire risk"
+    type: yes_no
+    flag_if: "yes"
+
+  earthquake_fault:
+    section: "3"
+    label: "Earthquake fault zone (Alquist-Priolo)"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Alquist-Priolo zone — structural risk disclosure"
+
+  seismic_hazard:
+    section: "3"
+    label: "Seismic hazard zone (liquefaction, landslide)"
+    type: yes_no
+    flag_if: "yes"
+
+  airport_influence:
+    section: "4"
+    label: "Airport influence area"
+    type: yes_no
+    flag_if: "yes"
+
+  former_military:
+    section: "5"
+    label: "Former military ordnance site"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Environmental contamination risk"
+
+  mining_area:
+    section: "5"
+    label: "Mining operations area"
+    type: yes_no
+    flag_if: "yes"
+
+  tsunami_zone:
+    section: "6"
+    label: "Tsunami inundation zone"
+    type: yes_no
+    flag_if: "yes"
+
+  supplemental_taxes:
+    section: "7"
+    label: "Supplemental tax advisory"
+    type: text
+
+  report_date:
+    section: "signature"
+    label: "Date of NHD report"
+    type: date
+    required: true
+
+  buyer_acknowledgment:
+    section: "signature"
+    label: "Buyer signature acknowledging receipt"
+    type: signature
+    required: true
+
+flags:
+  - "Multiple hazard zones (heightened insurance and disclosure obligations)"
+  - "Report older than 2 years (consider ordering updated report)"
+  - "Flood zone without flood insurance discussion documented"
+  - "Fire zone without AB 38 defensible space disclosure"

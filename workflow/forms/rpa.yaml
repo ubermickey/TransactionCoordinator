@@ -1,0 +1,165 @@
+# CAR Residential Purchase Agreement (RPA) — Form Template
+# Version: RPA 12/24 (December 2024 revision)
+# Update process: When CAR publishes a new RPA, update this file.
+# Run `tc form-diff forms/rpa.yaml` to see what changed.
+
+form:
+  name: Residential Purchase Agreement
+  code: RPA
+  publisher: California Association of REALTORS (CAR)
+  version: "12/24"
+  last_verified: 2026-01-15
+
+# Fields to extract — these map directly to transaction data
+fields:
+
+  # Section 1: Property & Terms
+  property_address:
+    section: "1A"
+    label: "Property Address"
+    maps_to: property.address
+    type: text
+    required: true
+
+  city:
+    section: "1A"
+    label: "City"
+    maps_to: property.city
+    type: text
+    required: true
+
+  zip:
+    section: "1A"
+    label: "Zip Code"
+    maps_to: property.zip
+    type: text
+
+  apn:
+    section: "1A"
+    label: "Assessor's Parcel Number"
+    maps_to: property.apn
+    type: text
+
+  purchase_price:
+    section: "1B"
+    label: "Purchase Price"
+    maps_to: financial.purchase_price
+    type: currency
+    required: true
+
+  close_of_escrow:
+    section: "1C"
+    label: "Close of Escrow"
+    maps_to: dates.close_of_escrow
+    type: date
+    required: true
+    deadline: DL-060
+
+  # Section 3: Finance
+  initial_deposit:
+    section: "3A"
+    label: "Initial Deposit / EMD"
+    maps_to: financial.deposit
+    type: currency
+    deadline: DL-001
+
+  deposit_days:
+    section: "3A"
+    label: "Deposit delivery within ___ business days"
+    maps_to: contingencies.deposit_days
+    type: integer
+    default: 3
+    deadline: DL-001
+
+  loan_amount:
+    section: "3C"
+    label: "First Loan Amount"
+    maps_to: financial.loan_amount
+    type: currency
+
+  down_payment:
+    section: "3D"
+    label: "Down Payment"
+    maps_to: financial.down_payment
+    type: currency
+
+  # Section 4: Escrow & Title
+  escrow_company:
+    section: "4A"
+    label: "Escrow Company"
+    maps_to: parties.escrow_company
+    type: text
+
+  # Section 8: Buyer/Seller Info
+  buyer_name:
+    section: "8"
+    label: "Buyer"
+    maps_to: parties.buyer
+    type: text
+    required: true
+
+  seller_name:
+    section: "8"
+    label: "Seller"
+    maps_to: parties.seller
+    type: text
+    required: true
+
+  # Section 14: Contingencies
+  investigation_days:
+    section: "14B(1)"
+    label: "Investigation Contingency (calendar days)"
+    maps_to: contingencies.investigation_days
+    type: integer
+    default: 17
+    reviewable: true
+    deadline: DL-010
+
+  appraisal_days:
+    section: "14B(2)"
+    label: "Appraisal Contingency (calendar days)"
+    maps_to: contingencies.appraisal_days
+    type: integer
+    default: 17
+    reviewable: true
+    deadline: DL-020
+
+  loan_days:
+    section: "14B(3)"
+    label: "Loan Contingency (calendar days)"
+    maps_to: contingencies.loan_days
+    type: integer
+    default: 17
+    reviewable: true
+    deadline: DL-030
+
+  # Acceptance
+  acceptance_date:
+    section: "signature"
+    label: "Date of Acceptance"
+    maps_to: dates.acceptance
+    type: date
+    required: true
+    deadline: DL-000
+
+  buyer_agent_name:
+    section: "signature"
+    label: "Buyer's Agent"
+    maps_to: parties.buyer_agent
+    type: text
+
+  seller_agent_name:
+    section: "signature"
+    label: "Seller's Agent / Listing Agent"
+    maps_to: parties.seller_agent
+    type: text
+
+# Flags — things the AI should always check for
+flags:
+  - "Handwritten additions or crossed-out text"
+  - "Counter offer references (check for attached counters)"
+  - "Addenda references (check for attached addenda)"
+  - "As-is clause or contingency waivers"
+  - "Seller credits or concessions"
+  - "Rent-back or post-closing occupancy"
+  - "HOA mentioned (triggers GATE-051)"

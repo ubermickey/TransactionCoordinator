@@ -1,0 +1,55 @@
+# CAR Contingency Removal (CR-1) — Form Template
+# Critical: Contingencies must be ACTIVELY removed in California.
+# They do NOT auto-expire.
+
+form:
+  name: Contingency Removal
+  code: CR-1
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-01-15
+  gates: [GATE-022, GATE-031, GATE-041]
+
+fields:
+  property_address:
+    section: header
+    label: "Property Address"
+    maps_to: property.address
+    type: text
+
+  buyer_name:
+    section: header
+    label: "Buyer"
+    maps_to: parties.buyer
+    type: text
+
+  removal_type:
+    section: "1"
+    label: "Which contingency is being removed"
+    type: checklist
+    options:
+      - "Investigation contingency (14B(1))"
+      - "Appraisal contingency (14B(2))"
+      - "Loan contingency (14B(3))"
+      - "All contingencies"
+      - "Other"
+    required: true
+
+  removal_date:
+    section: "signature"
+    label: "Date signed"
+    type: date
+    required: true
+    verify: "Must be on or before the contingency deadline"
+
+  buyer_signature:
+    section: "signature"
+    label: "Buyer signature"
+    type: signature
+    required: true
+
+flags:
+  - "Removing all contingencies at once (unusual — verify buyer is informed)"
+  - "Removal date AFTER contingency deadline (may already be expired)"
+  - "Missing buyer signature"
+  - "Contingency being removed doesn't match active contingencies in RPA"

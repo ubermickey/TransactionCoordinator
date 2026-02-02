@@ -1,0 +1,189 @@
+# =============================================================================
+# LEGAL UPDATE MONITORING & RULE MAINTENANCE
+# =============================================================================
+#
+# Defines how jurisdiction rules are monitored, updated, and verified.
+# No rule set is self-maintaining — this process ensures rules stay current.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# AUTOMATED MONITORING
+# -----------------------------------------------------------------------------
+
+monitoring:
+
+  sources:
+
+    - id: MON-001
+      name: California Legislature
+      url: "leginfo.legislature.ca.gov"
+      frequency: weekly
+      keywords:
+        - "real estate"
+        - "transfer tax"
+        - "disclosure"
+        - "escrow"
+        - "property tax"
+        - "housing"
+        - "landlord tenant"
+        - "rent stabilization"
+        - "seismic"
+        - "fire hazard"
+        - "notarization"
+        - "withholding"
+      action_on_match: "Generate summary → flag affected rules → notify agent"
+
+    - id: MON-002
+      name: California Association of Realtors (CAR)
+      url: "car.org"
+      frequency: weekly
+      monitor_for:
+        - "Form revisions"
+        - "Legal updates and advisories"
+        - "Practice changes"
+        - "New forms"
+      action_on_match: "Generate summary → identify affected workflow tasks → notify agent"
+
+    - id: MON-003
+      name: California DRE
+      url: "dre.ca.gov"
+      frequency: monthly
+      monitor_for:
+        - "Regulatory changes"
+        - "Enforcement advisories"
+        - "License requirement changes"
+      action_on_match: "Generate summary → flag affected compliance rules → notify agent"
+
+    - id: MON-004
+      name: LA City Council
+      url: "lacity.gov/city-council"
+      frequency: weekly
+      keywords:
+        - "transfer tax"
+        - "Measure ULA"
+        - "rent stabilization"
+        - "RSO"
+        - "building code"
+        - "retrofit"
+        - "zoning"
+      action_on_match: "Generate summary → flag affected LA rules → notify agent"
+
+    - id: MON-005
+      name: Beverly Hills City Council
+      url: "beverlyhills.org"
+      frequency: monthly
+      keywords:
+        - "transfer tax"
+        - "rent stabilization"
+        - "building code"
+        - "historic preservation"
+        - "water conservation"
+        - "seismic"
+      action_on_match: "Generate summary → flag affected BH rules → notify agent"
+
+# -----------------------------------------------------------------------------
+# RULE UPDATE PROCESS
+# -----------------------------------------------------------------------------
+
+update_process:
+
+  when_change_detected:
+    steps:
+      - step: 1
+        action: "AI generates change summary"
+        includes:
+          - "What changed (specific statute, ordinance, or regulation)"
+          - "Effective date"
+          - "Which jurisdiction rules are affected"
+          - "Which agent gates are affected"
+          - "Impact assessment (high/medium/low)"
+        automation: AUTO
+
+      - step: 2
+        action: "Agent reviews change summary"
+        automation: AGENT_GATE
+        note: "Agent determines if change is material and confirms understanding"
+
+      - step: 3
+        action: "Update jurisdiction rule file"
+        automation: AI_DRAFT
+        details:
+          - "AI drafts the rule update"
+          - "Agent reviews and approves"
+          - "Old rule archived with date"
+          - "New rule added with effective date and citation"
+          - "Changelog entry added"
+
+      - step: 4
+        action: "Assess impact on active transactions"
+        automation: AUTO
+        details:
+          - "AI identifies all active transactions affected by the rule change"
+          - "Determines if change applies retroactively or only to new contracts"
+          - "Flags affected transactions for agent review"
+
+      - step: 5
+        action: "Agent reviews affected transactions"
+        automation: AGENT_GATE
+        details:
+          - "Agent determines action needed for each affected transaction"
+          - "May need to notify parties, amend documents, or adjust procedures"
+
+# -----------------------------------------------------------------------------
+# PERIODIC REVIEW SCHEDULE
+# -----------------------------------------------------------------------------
+
+periodic_reviews:
+
+  quarterly:
+    description: "Review all rules with past-due next_review dates"
+    process:
+      - "AI generates list of rules where next_review < today"
+      - "For each rule: AI checks current statute/ordinance text against stored rule"
+      - "AI flags any discrepancies"
+      - "Agent reviews and confirms or updates each rule"
+    output: "Updated last_verified and next_review dates on all reviewed rules"
+
+  annual:
+    description: "Full audit of all jurisdiction rules"
+    process:
+      - "Review all California rules against current Civil Code, B&P Code, etc."
+      - "Review all LA rules against current LAMC"
+      - "Review all BH rules against current BH Municipal Code"
+      - "Verify all tax rates are current"
+      - "Verify all form references are current (CAR updates forms annually)"
+      - "Verify all retrofit requirements are current"
+    recommended: "Consult with real estate attorney for significant changes"
+    output: "Annual audit report with all changes documented"
+
+  on_car_form_update:
+    description: "CAR typically releases updated forms annually"
+    trigger: "New CAR form versions published"
+    process:
+      - "Compare new form fields against workflow task definitions"
+      - "Update DocuSign templates to match new forms"
+      - "Update document validation rules for new field layouts"
+      - "Update extraction rules for any changed field positions"
+
+# -----------------------------------------------------------------------------
+# VERSIONING
+# -----------------------------------------------------------------------------
+
+versioning:
+
+  rule_files:
+    location: "jurisdictions/{jurisdiction_name}.yaml"
+    changelog: "Each rule has an inline changelog array"
+    archive: "Previous versions stored in jurisdictions/archive/"
+
+  naming_convention:
+    current: "{jurisdiction}.yaml"
+    archived: "archive/{jurisdiction}_{year}.yaml"
+
+  every_update_must_include:
+    - "Date of change"
+    - "Legal citation for the change"
+    - "Description of what changed"
+    - "Who verified the change"
+    - "Effective date of the new rule"

@@ -1,0 +1,82 @@
+# CAR Seller Property Questionnaire (SPQ) — Form Template
+# Supplements TDS with detailed property condition questions
+
+form:
+  name: Seller Property Questionnaire
+  code: SPQ
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-01-15
+  gate: GATE-003
+
+fields:
+  foundation_issues:
+    section: "A"
+    label: "Foundation cracks, settling, or movement"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Structural concern — compare with inspection report"
+
+  roof_issues:
+    section: "A"
+    label: "Roof leaks, age, or needed repairs"
+    type: yes_no
+    flag_if: "yes"
+
+  plumbing_issues:
+    section: "A"
+    label: "Plumbing leaks, sewer line problems"
+    type: yes_no
+    flag_if: "yes"
+
+  electrical_issues:
+    section: "A"
+    label: "Electrical problems or outdated wiring"
+    type: yes_no
+    flag_if: "yes"
+
+  water_damage:
+    section: "B"
+    label: "Water intrusion, flooding, or drainage issues"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Water damage — check insurance claims history"
+
+  mold:
+    section: "B"
+    label: "Mold or mildew presence"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Health/safety concern — may need remediation"
+
+  pest_issues:
+    section: "B"
+    label: "Termite or pest damage"
+    type: yes_no
+    flag_if: "yes"
+
+  neighborhood_issues:
+    section: "C"
+    label: "Neighborhood noise, nuisances, or disputes"
+    type: yes_no
+    flag_if: "yes"
+
+  legal_issues:
+    section: "D"
+    label: "Pending lawsuits, liens, or encumbrances"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Legal issue — verify with prelim title report"
+
+  deaths_on_property:
+    section: "E"
+    label: "Deaths on property within last 3 years"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "CA Civil Code §1710.2 — must disclose if within 3 years"
+
+flags:
+  - "Blank/unanswered questions (seller may be avoiding disclosure)"
+  - "Contradictions between SPQ and TDS answers"
+  - "Multiple 'yes' answers suggesting deferred maintenance"
+  - "Legal issues disclosed — cross-reference with title report"

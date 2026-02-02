@@ -1,0 +1,76 @@
+#compdef tc
+
+# ZSH completion for tc (Transaction Coordinator CLI)
+# Install: cp completions/_tc ~/.zsh/completions/ && compinit
+
+_tc() {
+    local -a commands
+    commands=(
+        'new:Create a new transaction'
+        'extract:Extract contract terms from PDF via Claude'
+        'status:Transaction dashboard'
+        'deadlines:Show all deadlines'
+        'gates:Show verification gates'
+        'info:Show full gate details'
+        'verify:Sign off on a verification gate'
+        'review:Generate agent-only review copy'
+        'taxes:Calculate transfer taxes'
+        'checklist:Jurisdiction compliance checklist'
+        'push:Send push notification'
+        'email:Send email from alias'
+        'digest:Daily digest of all transactions'
+        'advance:Advance to next phase'
+        'forms:List CAR form templates'
+        'form-diff:Review form template fields'
+        'list:List all transactions'
+        'delete:Delete a transaction'
+        'timeline:Visual deadline timeline'
+        'export:Export transaction as JSON'
+        'log:Show audit trail'
+        'summary:Full transaction summary'
+        'import:Restore transaction from JSON'
+        'cron:Show crontab entry for daily digest'
+        'report:Generate broker compliance report'
+    )
+
+    _arguments -C \
+        '1:command:->command' \
+        '*::options:->options'
+
+    case $state in
+        command)
+            _describe 'command' commands
+            ;;
+        options)
+            case $words[1] in
+                info|verify)
+                    _arguments '1:gate_id:(GATE-001 GATE-002 GATE-003 GATE-004 GATE-005 GATE-010 GATE-011 GATE-012 GATE-020 GATE-021 GATE-022 GATE-030 GATE-031 GATE-040 GATE-041 GATE-050 GATE-051 GATE-060 GATE-061 GATE-062 GATE-063 GATE-070 GATE-071 GATE-080)'
+                    ;;
+                extract)
+                    _arguments \
+                        '1:pdf:_files -g "*.pdf"' \
+                        '--form[CAR form type]:form:(rpa tds cr1 spq ad sbsa nhd avid)'
+                    ;;
+                review)
+                    _arguments \
+                        '1:gate_id:(GATE-001 GATE-002 GATE-003 GATE-004 GATE-005 GATE-010 GATE-011 GATE-012 GATE-020 GATE-021 GATE-022 GATE-030 GATE-031 GATE-040 GATE-041 GATE-050 GATE-051 GATE-060 GATE-061 GATE-062 GATE-063 GATE-070 GATE-071 GATE-080)' \
+                        '2:pdf:_files -g "*.pdf"'
+                    ;;
+                form-diff)
+                    _arguments '1:form_file:_files -g "*.yaml"'
+                    ;;
+                export|report)
+                    _arguments '--out[Output file]:file:_files -g "*.json"'
+                    ;;
+                import)
+                    _arguments '1:file:_files -g "*.json"'
+                    ;;
+                new)
+                    _arguments '1:address:'
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+_tc "$@"

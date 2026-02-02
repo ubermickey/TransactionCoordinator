@@ -1,0 +1,355 @@
+# =============================================================================
+# DEADLINE ENGINE
+# =============================================================================
+#
+# Manages all transaction deadlines — both REVIEWABLE (contract-dependent)
+# and FIXED (set by statute/regulation).
+#
+# Every REVIEWABLE deadline is extracted from the executed contract.
+# Every FIXED deadline is hardcoded from jurisdiction rules.
+# The engine recalculates downstream dates when amendments change any deadline.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# DEADLINE TYPES
+# -----------------------------------------------------------------------------
+
+deadline_types:
+
+  REVIEWABLE:
+    description: "Deadline depends on contract terms. Extracted from executed RPA or amendment."
+    editable: true
+    edit_requires: "Executed amendment signed by all parties"
+    agent_gate_on_change: true  # agent must verify when any REVIEWABLE date changes
+
+  FIXED:
+    description: "Deadline set by statute or regulation. Same for every transaction."
+    editable: false
+    override_allowed: false
+    source: "Jurisdiction rules"
+
+# -----------------------------------------------------------------------------
+# MASTER DEADLINE LIST
+# -----------------------------------------------------------------------------
+# Populated per-transaction from contract extraction + jurisdiction rules.
+# Defaults shown below; actual values come from the executed contract.
+
+deadlines:
+
+  # --- ANCHOR DATE ---
+
+  - id: DL-000
+    name: Contract Acceptance Date
+    type: REVIEWABLE
+    source: "Executed RPA — date of final acceptance"
+    description: "All offset deadlines calculate from this date"
+    is_anchor: true
+
+  # --- CONTRACT EXECUTION PHASE ---
+
+  - id: DL-001
+    name: Earnest Money Deposit Delivery
+    type: REVIEWABLE
+    default_offset_days: 3
+    day_type: business_days
+    offset_from: DL-000  # acceptance date
+    source: "RPA Section 3A"
+    agent_gate: GATE-011
+    reminders:
+      - days_before: 1
+        to: [agent, buyer_agent]
+        message: "EMD due tomorrow — confirm deposit delivery to escrow"
+      - days_before: 0
+        to: [agent]
+        message: "EMD due TODAY — verify deposit received"
+        escalation: true
+
+  # --- INSPECTION PHASE ---
+
+  - id: DL-010
+    name: Investigation Contingency Deadline
+    type: REVIEWABLE
+    default_offset_days: 17
+    day_type: calendar_days
+    offset_from: DL-000
+    source: "RPA Section 14B(1)"
+    agent_gate: GATE-022
+    critical: true
+    critical_reason: "Buyer loses right to cancel on inspection grounds after this date (if removed)"
+    reminders:
+      - days_before: 7
+        to: [agent]
+        message: "Investigation contingency expires in 7 days — schedule inspections if not done"
+      - days_before: 5
+        to: [agent]
+        message: "Investigation contingency expires in 5 days — ensure all reports received"
+      - days_before: 3
+        to: [agent]
+        message: "Investigation contingency expires in 3 days — client must decide: remove or cancel"
+      - days_before: 2
+        to: [agent, buyer_agent, listing_agent]
+        message: "Investigation contingency expires in 2 days"
+      - days_before: 1
+        to: [agent]
+        message: "Investigation contingency expires TOMORROW — CR-1 must be signed or cancellation filed"
+        escalation: true
+      - days_before: 0
+        to: [agent]
+        message: "Investigation contingency expires TODAY"
+        escalation: true
+
+  # --- APPRAISAL PHASE ---
+
+  - id: DL-020
+    name: Appraisal Contingency Deadline
+    type: REVIEWABLE
+    default_offset_days: 17
+    day_type: calendar_days
+    offset_from: DL-000
+    source: "RPA Section 14B(2)"
+    agent_gate: GATE-031
+    critical: true
+    critical_reason: "Buyer loses right to cancel on appraisal grounds after this date (if removed)"
+    reminders:
+      - days_before: 5
+        to: [agent]
+        message: "Appraisal contingency expires in 5 days — confirm appraisal completed"
+      - days_before: 3
+        to: [agent]
+        message: "Appraisal contingency expires in 3 days — client must decide"
+      - days_before: 1
+        to: [agent]
+        message: "Appraisal contingency expires TOMORROW"
+        escalation: true
+      - days_before: 0
+        to: [agent]
+        message: "Appraisal contingency expires TODAY"
+        escalation: true
+
+  # --- FINANCING PHASE ---
+
+  - id: DL-030
+    name: Loan Contingency Deadline
+    type: REVIEWABLE
+    default_offset_days: 17
+    day_type: calendar_days
+    offset_from: DL-000
+    source: "RPA Section 14B(3)"
+    agent_gate: GATE-041
+    critical: true
+    critical_reason: "Buyer's deposit at risk if loan falls through after contingency removed"
+    reminders:
+      - days_before: 7
+        to: [agent]
+        message: "Loan contingency expires in 7 days — verify loan status with lender"
+      - days_before: 5
+        to: [agent]
+        message: "Loan contingency expires in 5 days — confirm conditional approval status"
+      - days_before: 3
+        to: [agent]
+        message: "Loan contingency expires in 3 days — client must decide"
+      - days_before: 1
+        to: [agent]
+        message: "Loan contingency expires TOMORROW"
+        escalation: true
+      - days_before: 0
+        to: [agent]
+        message: "Loan contingency expires TODAY"
+        escalation: true
+
+  # --- TITLE & ESCROW PHASE ---
+
+  - id: DL-040
+    name: HOA Document Review Period
+    type: FIXED
+    fixed_days: 5
+    day_type: calendar_days
+    offset_from: hoa_document_delivery_date
+    source: "Civil Code §4525 (Davis-Stirling Act)"
+    agent_gate: GATE-051
+    conditions: "property_has_hoa == true"
+    cannot_be_shortened: true
+    statutory: true
+    reminders:
+      - days_before: 3
+        to: [agent]
+        message: "HOA review period: 3 days remaining — ensure client has reviewed documents"
+      - days_before: 1
+        to: [agent]
+        message: "HOA review period expires TOMORROW"
+      - days_before: 0
+        to: [agent]
+        message: "HOA review period expires TODAY — buyer's right to cancel on HOA grounds ends"
+
+  # --- PRE-CLOSING PHASE ---
+
+  - id: DL-050
+    name: Closing Disclosure Delivery Deadline
+    type: FIXED
+    fixed_days: 3
+    day_type: business_days
+    offset_from: close_of_escrow
+    direction: before  # 3 business days BEFORE close
+    source: "TRID (TILA-RESPA Integrated Disclosure Rule)"
+    agent_gate: GATE-061
+    statutory: true
+    federal: true
+    cannot_be_shortened: true
+    reminders:
+      - days_before: 1
+        to: [agent]
+        message: "Closing disclosure must be delivered to buyer by tomorrow to meet TRID 3-day rule"
+        escalation: true
+
+  - id: DL-051
+    name: Final Walkthrough
+    type: REVIEWABLE
+    default_offset_days: -5
+    day_type: calendar_days
+    offset_from: DL-060  # close of escrow
+    source: "RPA Section 16"
+    agent_gate: GATE-062
+    reminders:
+      - days_before: 3
+        to: [agent]
+        message: "Final walkthrough should be scheduled — 3 days until target date"
+      - days_before: 1
+        to: [agent]
+        message: "Final walkthrough is scheduled for tomorrow — confirm with all parties"
+      - days_before: 0
+        to: [agent]
+        message: "Final walkthrough is TODAY"
+
+  # --- CLOSING ---
+
+  - id: DL-060
+    name: Close of Escrow
+    type: REVIEWABLE
+    source: "RPA Section 1C"
+    agent_gate: GATE-071
+    critical: true
+    critical_reason: "Failure to close by this date may constitute breach of contract"
+    reminders:
+      - days_before: 14
+        to: [agent]
+        message: "Close of escrow in 2 weeks — verify all items on track"
+      - days_before: 7
+        to: [agent]
+        message: "Close of escrow in 1 week — verify lender clear to close, all CRs filed"
+      - days_before: 3
+        to: [agent]
+        message: "Close of escrow in 3 days — confirm signing scheduled, funds ready"
+      - days_before: 1
+        to: [agent]
+        message: "Close of escrow TOMORROW — confirm all documents signed, funds in escrow"
+        escalation: true
+      - days_before: 0
+        to: [agent]
+        message: "Close of escrow TODAY — monitor recording"
+        escalation: true
+
+  # --- POST-CLOSING ---
+
+  - id: DL-070
+    name: File Retention Expiry
+    type: FIXED
+    fixed_years: 3
+    offset_from: DL-060  # close of escrow date
+    source: "Business & Professions Code §10148"
+    agent_gate: GATE-080
+    reminders:
+      - days_before: 90
+        to: [agent]
+        message: "Transaction file retention period expires in 90 days — confirm archive is intact"
+      - days_before: 0
+        to: [agent]
+        message: "File retention period has expired — file may be purged per DRE rules"
+
+  - id: DL-071
+    name: 1099-S Filing Deadline
+    type: FIXED
+    fixed_date: "January 31 of the year following close"
+    source: "IRS reporting requirements"
+    responsible_party: escrow_company
+    reminders:
+      - days_before: 30
+        to: [agent]
+        message: "1099-S filing deadline approaching — confirm escrow company is handling"
+
+# -----------------------------------------------------------------------------
+# DEADLINE AMENDMENT HANDLING
+# -----------------------------------------------------------------------------
+
+amendment_rules:
+
+  when_deadline_changes:
+    trigger: "Executed amendment modifying any REVIEWABLE deadline"
+    process:
+      - step: "AI extracts new deadline(s) from amendment"
+        automation: AUTO
+      - step: "AI recalculates all downstream deadlines affected by the change"
+        automation: AUTO
+      - step: "AI generates change summary showing old vs. new dates"
+        automation: AUTO
+      - step: "Agent verifies amended dates are correct"
+        automation: AGENT_GATE
+        gate: GATE-010  # re-triggers contract terms verification
+      - step: "Update deadline tracker and SkySlope"
+        automation: AUTO
+      - step: "Notify all affected parties of new dates"
+        automation: AI_DRAFT
+
+  cascading_changes:
+    description: "Some deadline changes affect other deadlines"
+    examples:
+      - change: "Close of escrow extended by 14 days"
+        affects:
+          - "DL-050: Closing disclosure delivery (recalculate from new COE)"
+          - "DL-051: Final walkthrough (recalculate from new COE)"
+          - "DL-070: File retention expiry (recalculate from new COE)"
+        does_not_affect:
+          - "DL-010: Investigation contingency (already passed or independent)"
+          - "DL-020: Appraisal contingency (already passed or independent)"
+          - "DL-030: Loan contingency (already passed or independent)"
+
+# -----------------------------------------------------------------------------
+# REMINDER ESCALATION RULES
+# -----------------------------------------------------------------------------
+
+escalation:
+
+  standard_reminder:
+    channel: email
+    to: agent
+
+  escalation_level_1:
+    trigger: "Deadline is tomorrow and no action taken"
+    channel: [email, sms]
+    to: agent
+    message_prefix: "URGENT: "
+
+  escalation_level_2:
+    trigger: "Deadline is today and no action taken"
+    channel: [email, sms, phone_call]
+    to: agent
+    message_prefix: "CRITICAL: "
+
+  escalation_level_3:
+    trigger: "Deadline has PASSED and no action taken"
+    channel: [email, sms, phone_call]
+    to: agent
+    message_prefix: "OVERDUE: "
+    additional_action: "Flag transaction as AT RISK in dashboard"
+
+# -----------------------------------------------------------------------------
+# BUSINESS DAY CALCULATION
+# -----------------------------------------------------------------------------
+
+business_day_rules:
+  excluded:
+    - "Saturdays"
+    - "Sundays"
+    - "Federal holidays (New Year's, MLK Day, Presidents Day, Memorial Day, Independence Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving, Christmas)"
+    - "California state holidays (César Chávez Day — March 31)"
+  note: "Calendar day deadlines count ALL days including weekends and holidays"

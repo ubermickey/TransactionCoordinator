@@ -1,0 +1,95 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:10'
+file: Rental_Property_Owner_Intake_Form_-_1225_ts35843.pdf
+folder: Residential Lease Listing Agreement Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 7
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 3
+  text: maintenance; but can subsequently give 30 day written notice to the housing prov
+  days: 30
+  bbox: &id001
+    x0: 72.0
+    y0: 294.3
+    x1: 507.4
+    y1: 304.4
+field_map:
+- page: 1
+  field: Read the questions carefully and take your time.
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 193.9
+    x1: 282.5
+    y1: 203.9
+  region: upper
+  time_length_days: null
+- page: 2
+  field: (1) If yes, what are the days on which trash pickup is sched
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 545.3
+    x1: 329.0
+    y1: 555.4
+  region: lower
+  time_length_days: null
+- page: 3
+  field: maintenance; but can subsequently give 30 day written notice
+  category: date_area
+  bbox: *id001
+  region: upper
+  time_length_days: 30
+- page: 3
+  field: addenda and that such information is true and correct to the
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 586.6
+    x1: 576.0
+    y1: 596.6
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 475.5
+    y0: 624.9
+    x1: 497.0
+    y1: 634.9
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 475.5
+    y0: 640.9
+    x1: 497.0
+    y1: 650.9
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 671.9
+    x1: 498.5
+    y1: 681.9
+  region: footer
+  time_length_days: null

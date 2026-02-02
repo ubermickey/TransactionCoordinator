@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# TC Tmux Layout — monitors transactions in a split-pane session
+# Usage: ./tc-tmux [session-name]
+
+SESSION="${1:-tc}"
+DIR="$(cd "$(dirname "$0")" && pwd)"
+TC="$DIR/tc"
+
+# Kill existing session if present
+tmux kill-session -t "$SESSION" 2>/dev/null
+
+tmux new-session -d -s "$SESSION" -n main
+
+# Top-left: status dashboard
+tmux send-keys "$TC status" Enter
+
+# Top-right: gates
+tmux split-window -h
+tmux send-keys "$TC gates" Enter
+
+# Bottom-left: deadlines
+tmux select-pane -t 0
+tmux split-window -v
+tmux send-keys "$TC deadlines" Enter
+
+# Bottom-right: digest
+tmux select-pane -t 2
+tmux split-window -v
+tmux send-keys "$TC digest" Enter
+
+# Select top-left pane
+tmux select-pane -t 0
+
+tmux attach-session -t "$SESSION"

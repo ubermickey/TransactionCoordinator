@@ -1,0 +1,61 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:07'
+file: Square_Foot_and_Lot_Size_Advisory_-_1224_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 4
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 484.8
+    y0: 518.5
+    x1: 506.3
+    y1: 528.6
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 484.8
+    y0: 532.6
+    x1: 506.3
+    y1: 542.6
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 485.3
+    y0: 609.0
+    x1: 506.8
+    y1: 619.1
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 485.3
+    y0: 623.0
+    x1: 506.8
+    y1: 633.1
+  region: lower
+  time_length_days: null

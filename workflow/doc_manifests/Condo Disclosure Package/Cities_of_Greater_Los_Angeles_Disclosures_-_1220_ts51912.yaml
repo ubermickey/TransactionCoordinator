@@ -1,0 +1,79 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:06'
+file: Cities_of_Greater_Los_Angeles_Disclosures_-_1220_ts51912.pdf
+folder: Condo Disclosure Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 2
+  date_areas_from_text: 4
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's Initials  (
+  category: signature_area
+  bbox:
+    x0: 142.7
+    y0: 662.8
+    x1: 215.7
+    y1: 674.0
+  region: lower
+- page: 1
+  field: )      Seller's Initials  (
+  category: signature_area
+  bbox:
+    x0: 294.7
+    y0: 662.8
+    x1: 387.0
+    y1: 674.0
+  region: lower
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 252.0
+    y0: 584.9
+    x1: 273.1
+    y1: 596.0
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 584.9
+    x1: 525.1
+    y1: 596.0
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 252.0
+    y0: 632.9
+    x1: 273.1
+    y1: 644.0
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 632.9
+    x1: 525.1
+    y1: 644.0
+  region: lower
+  time_length_days: null

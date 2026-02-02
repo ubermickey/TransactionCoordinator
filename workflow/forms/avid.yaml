@@ -1,0 +1,87 @@
+# CAR Agent Visual Inspection Disclosure (AVID) — Form Template
+# Legal basis: CA Civil Code §2079-2079.6
+# Agent must conduct reasonably competent visual inspection
+
+form:
+  name: Agent Visual Inspection Disclosure
+  code: AVID
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-02-01
+  gate: GATE-002
+
+fields:
+  inspection_date:
+    section: "1"
+    label: "Date of visual inspection"
+    type: date
+    required: true
+    verify: "Must be a date when agent personally inspected"
+
+  general_condition:
+    section: "A"
+    label: "General condition of property"
+    type: text
+    required: true
+
+  structural_observations:
+    section: "A"
+    label: "Foundation, walls, roof observations"
+    type: text
+    flag_if: "concerns noted"
+    flag_reason: "Compare with professional inspection report"
+
+  plumbing_electrical:
+    section: "B"
+    label: "Plumbing and electrical observations"
+    type: text
+
+  water_stains:
+    section: "B"
+    label: "Water stains, mold, or moisture"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Water damage — recommend professional inspection"
+
+  exterior_drainage:
+    section: "C"
+    label: "Exterior grading and drainage"
+    type: text
+
+  fencing_walls:
+    section: "C"
+    label: "Fencing, retaining walls, driveways"
+    type: text
+
+  safety_hazards:
+    section: "D"
+    label: "Safety hazards observed"
+    type: text
+    flag_if: "any"
+    flag_reason: "Safety concern — disclose immediately"
+
+  non_permitted_work:
+    section: "E"
+    label: "Apparent non-permitted additions or modifications"
+    type: yes_no
+    flag_if: "yes"
+    flag_reason: "Non-permitted work — verify with city building department"
+
+  listing_agent_signature:
+    section: "signature"
+    label: "Listing agent signature"
+    type: signature
+    required: true
+
+  selling_agent_signature:
+    section: "signature"
+    label: "Selling agent signature"
+    type: signature
+    required: true
+
+flags:
+  - "Inspection date missing or unreasonable"
+  - "Blank sections (agent must document observations for each area)"
+  - "Safety hazards noted without follow-up documentation"
+  - "Non-permitted work without building department verification"
+  - "Observations contradict seller's TDS/SPQ disclosures"

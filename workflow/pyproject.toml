@@ -1,0 +1,22 @@
+[project]
+name = "tc"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "typer[all]>=0.9",
+    "anthropic>=0.40",
+    "pyyaml>=6.0",
+    "pymupdf>=1.24",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+    "flask>=3.0",
+]
+
+# Entry point via: python3 -m tcli (or use the tc shell wrapper)
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["tcli"]

@@ -1,0 +1,80 @@
+# CAR Agency Disclosure (AD) — Form Template
+# Legal basis: Civil Code §2079.13-2079.24
+# Must be provided BEFORE buyer or seller signs purchase agreement
+
+form:
+  name: Agency Disclosure
+  code: AD
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-01-15
+  gate: GATE-001
+
+fields:
+  listing_agent_name:
+    section: "1"
+    label: "Listing Agent"
+    maps_to: parties.seller_agent
+    type: text
+    required: true
+
+  listing_agent_license:
+    section: "1"
+    label: "Listing Agent DRE License #"
+    type: text
+
+  selling_agent_name:
+    section: "2"
+    label: "Selling Agent / Buyer's Agent"
+    maps_to: parties.buyer_agent
+    type: text
+    required: true
+
+  selling_agent_license:
+    section: "2"
+    label: "Selling Agent DRE License #"
+    type: text
+
+  agency_relationship:
+    section: "3"
+    label: "Agency confirmation"
+    type: checklist
+    options:
+      - "Listing agent represents Seller exclusively"
+      - "Selling agent represents Buyer exclusively"
+      - "Agent represents both Buyer and Seller (Dual Agency)"
+    required: true
+    verify: "Must match actual relationship in this transaction"
+
+  dual_agency_consent:
+    section: "3"
+    label: "Dual agency consent signatures"
+    type: signature
+    required_if: "agency_relationship == dual_agency"
+    flag_if: "missing"
+    flag_reason: "Dual agency requires written consent from BOTH parties"
+
+  buyer_signature:
+    section: "signature"
+    label: "Buyer acknowledgment signature"
+    type: signature
+    required: true
+
+  seller_signature:
+    section: "signature"
+    label: "Seller acknowledgment signature"
+    type: signature
+    required: true
+
+  disclosure_date:
+    section: "signature"
+    label: "Date of disclosure"
+    type: date
+    required: true
+    verify: "Must be BEFORE buyer/seller sign the RPA"
+
+flags:
+  - "Dual agency without both parties' written consent"
+  - "Disclosure date AFTER RPA acceptance date (timing violation)"
+  - "Missing agent license numbers"
+  - "Agency relationship doesn't match transaction setup"

@@ -1,0 +1,865 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:15'
+file: Vacant_Land_Listing_Agreement_-_1225_ts47412.pdf
+folder: Vacant Land Listing Agreement Package
+page_count: 18
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 16
+  date_areas_from_text: 68
+  fillable_blanks_from_text: 4
+  test_address_references: 0
+time_length_review:
+- page: 7
+  text: identification acceptable to Broker, within 5 Days of the beginning date of this
+  days: 5
+  bbox: &id001
+    x0: 72.0
+    y0: 425.6
+    x1: 576.0
+    y1: 435.6
+- page: 9
+  text: on Broker's behalf, Broker or Manager has the right to cancel this Agreement, in
+  days: 5
+  bbox: &id002
+    x0: 54.0
+    y0: 504.1
+    x1: 522.8
+    y1: 514.1
+- page: 10
+  text: 3 days after execution of this Agreement, evidence of authority to act in that c
+  days: 3
+  bbox: &id003
+    x0: 54.0
+    y0: 156.1
+    x1: 576.1
+    y1: 166.1
+- page: 11
+  text: "to the MLS within 1 business day of any public marketing (\u201CClear Cooperation\u201D)."
+  days: 1
+  bbox: &id004
+    x0: 72.0
+    y0: 590.3
+    x1: 388.4
+    y1: 600.4
+- page: 13
+  text: clients of an outside brokerage, the Property listing will be submitted to the M
+  days: 1
+  bbox: &id005
+    x0: 72.0
+    y0: 460.9
+    x1: 479.4
+    y1: 470.9
+field_map:
+- page: 1
+  field: disclosure form. You should read its contents each time it i
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 564.3
+    x1: 576.0
+    y1: 574.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 498.1
+    y1: 648.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 498.1
+    y1: 664.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 692.4
+    x1: 498.5
+    y1: 702.4
+  region: footer
+  time_length_days: null
+- page: 2
+  field: is not prepared by the buyer's agent, the buyer's agent shal
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 329.8
+    x1: 576.0
+    y1: 338.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: sign, and date a written declaration of the facts of the ref
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 361.8
+    x1: 251.9
+    y1: 370.7
+  region: middle
+  time_length_days: null
+- page: 2
+  field: 2079.23 (a) A contract between the principal and agent may b
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 647.5
+    x1: 576.0
+    y1: 656.4
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.5
+    y0: 188.3
+    x1: 481.4
+    y1: 199.4
+  region: upper
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.5
+    y0: 232.3
+    x1: 481.4
+    y1: 243.4
+  region: upper
+  time_length_days: null
+- page: 5
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 730.2
+    x1: 413.9
+    y1: 739.1
+  region: footer
+- page: 5
+  field: 'Date Prepared:'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 66.4
+    x1: 97.0
+    y1: 76.4
+  region: header
+  time_length_days: null
+- page: 5
+  field: (date) Ending at 11:59 P.M. on
+  category: date_area
+  bbox:
+    x0: 366.6
+    y0: 202.5
+    x1: 477.7
+    y1: 211.4
+  region: upper
+  time_length_days: null
+- page: 5
+  field: (date)
+  category: date_area
+  bbox:
+    x0: 533.2
+    y0: 202.5
+    x1: 556.3
+    y1: 211.4
+  region: upper
+  time_length_days: null
+- page: 5
+  field: calendar days after the Listing Period or any
+  category: date_area
+  bbox:
+    x0: 415.9
+    y0: 380.0
+    x1: 574.6
+    y1: 388.9
+  region: middle
+  time_length_days: null
+- page: 5
+  field: (date) or
+  category: date_area
+  bbox:
+    x0: 440.7
+    y0: 695.2
+    x1: 473.1
+    y1: 704.1
+  region: footer
+  time_length_days: null
+- page: 5
+  field: days after the
+  category: date_area
+  bbox:
+    x0: 506.9
+    y0: 695.2
+    x1: 557.5
+    y1: 704.1
+  region: footer
+  time_length_days: null
+- page: 6
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 738.1
+    x1: 413.9
+    y1: 747.0
+  region: footer
+- page: 6
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.5
+    y0: 15.3
+    x1: 474.5
+    y1: 25.4
+  region: header
+  time_length_days: null
+- page: 6
+  field: days of the Beginning Date of this
+  category: date_area
+  bbox:
+    x0: 443.4
+    y0: 51.8
+    x1: 564.2
+    y1: 60.7
+  region: header
+  time_length_days: null
+- page: 6
+  field: after the expiration of the Listing Period, or any extension
+  category: date_area
+  bbox:
+    x0: 108.0
+    y0: 522.9
+    x1: 340.9
+    y1: 533.0
+  region: lower
+  time_length_days: null
+- page: 6
+  field: paragraph 2C(3), or the same period of time after any cancel
+  category: date_area
+  bbox:
+    x0: 108.0
+    y0: 542.7
+    x1: 576.1
+    y1: 552.7
+  region: lower
+  time_length_days: null
+- page: 6
+  field: Broker's right to compensation pursuant to this paragraph sh
+  category: date_area
+  bbox:
+    x0: 108.0
+    y0: 612.9
+    x1: 576.1
+    y1: 623.0
+  region: lower
+  time_length_days: null
+- page: 7
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 737.0
+    x1: 413.9
+    y1: 745.9
+  region: footer
+- page: 7
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 474.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 7
+  field: (3) If the Property is sold to anyone specified in paragraph
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 115.6
+    x1: 576.0
+    y1: 125.9
+  region: upper
+  time_length_days: null
+- page: 7
+  field: identification acceptable to Broker, within 5 Days of the be
+  category: date_area
+  bbox: *id001
+  region: middle
+  time_length_days: 5
+- page: 7
+  field: may not make an offer if there is an instruction that all of
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 488.9
+    x1: 576.1
+    y1: 498.9
+  region: lower
+  time_length_days: null
+- page: 7
+  field: "\u201Cpreemptive\u201D offer that will expire shortly, hoping that Own"
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 499.9
+    x1: 576.0
+    y1: 509.9
+  region: lower
+  time_length_days: null
+- page: 7
+  field: 'OR (B) Owner Instructs Broker not to Present Offers until a '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 565.6
+    x1: 576.0
+    y1: 575.9
+  region: lower
+  time_length_days: null
+- page: 7
+  field: 'INVESTIGATIONS AND REPORTS: Owner agrees, within the time sp'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 672.6
+    x1: 576.0
+    y1: 682.7
+  region: footer
+  time_length_days: null
+- page: 8
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 738.5
+    x1: 413.9
+    y1: 747.4
+  region: footer
+- page: 8
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 474.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 8
+  field: buyer refusing representation by Broker. Broker shall provid
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 391.9
+    x1: 576.1
+    y1: 401.9
+  region: middle
+  time_length_days: null
+- page: 8
+  field: relationship with, Broker terminate at the expiration of thi
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 462.9
+    x1: 576.0
+    y1: 472.9
+  region: middle
+  time_length_days: null
+- page: 9
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 740.5
+    x1: 413.9
+    y1: 749.4
+  region: footer
+- page: 9
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 474.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 9
+  field: on Broker's behalf, Broker or Manager has the right to cance
+  category: date_area
+  bbox: *id002
+  region: lower
+  time_length_days: 5
+- page: 10
+  field: '22. LEGALLY AUTHORIZED SIGNER: Wherever the signature or ini'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 116.1
+    x1: 576.0
+    y1: 126.2
+  region: upper
+- page: 10
+  field: 'ENTITY OWNER: (Note: If this paragraph is completed, a Repre'
+  category: signature_area
+  bbox:
+    x0: 65.4
+    y0: 218.6
+    x1: 576.0
+    y1: 228.6
+  region: upper
+- page: 10
+  field: 'OWNER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 402.1
+    x1: 158.9
+    y1: 412.2
+  region: middle
+- page: 10
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 416.4
+    x1: 114.0
+    y1: 426.4
+  region: middle
+- page: 10
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 474.3
+    x1: 114.0
+    y1: 484.4
+  region: lower
+- page: 10
+  field: Additional Signature Addendum attached (C.A.R. Form ASA)
+  category: signature_area
+  bbox:
+    x0: 62.0
+    y0: 529.3
+    x1: 306.9
+    y1: 539.4
+  region: lower
+- page: 10
+  field: 'BROKER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 545.1
+    x1: 145.4
+    y1: 555.2
+  region: lower
+- page: 10
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 474.5
+    y1: 26.4
+  region: header
+  time_length_days: null
+- page: 10
+  field: 3 days after execution of this Agreement, evidence of author
+  category: date_area
+  bbox: *id003
+  region: upper
+  time_length_days: 3
+- page: 10
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 471.5
+    y0: 416.4
+    x1: 495.5
+    y1: 426.4
+  region: middle
+  time_length_days: null
+- page: 10
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 471.5
+    y0: 474.3
+    x1: 495.5
+    y1: 484.4
+  region: lower
+  time_length_days: null
+- page: 10
+  field: Date
+  category: date_area
+  bbox:
+    x0: 469.0
+    y0: 588.4
+    x1: 490.5
+    y1: 598.4
+  region: lower
+  time_length_days: null
+- page: 10
+  field: Date
+  category: date_area
+  bbox:
+    x0: 469.0
+    y0: 617.3
+    x1: 490.5
+    y1: 627.4
+  region: lower
+  time_length_days: null
+- page: 11
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 724.9
+    x1: 417.2
+    y1: 734.9
+  region: footer
+- page: 11
+  field: "to the MLS within 1 business day of any public marketing (\u201CC"
+  category: date_area
+  bbox: *id004
+  region: lower
+  time_length_days: 1
+- page: 12
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 734.9
+    x1: 417.2
+    y1: 744.9
+  region: footer
+- page: 12
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 485.5
+    y0: 15.9
+    x1: 509.5
+    y1: 25.9
+  region: header
+  time_length_days: null
+- page: 12
+  field: period, or another time specified by the seller. The seller'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 575.9
+    x1: 576.0
+    y1: 585.9
+  region: lower
+  time_length_days: null
+- page: 12
+  field: 'DAYS ON MARKET: Regardless of the marketing option chosen, S'
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 615.6
+    x1: 576.0
+    y1: 625.6
+  region: lower
+  time_length_days: null
+- page: 13
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 485.5
+    y0: 15.9
+    x1: 509.5
+    y1: 25.9
+  region: header
+  time_length_days: null
+- page: 13
+  field: 'the rules set by the NAR and that not all choices below may '
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 51.3
+    x1: 458.9
+    y1: 61.4
+  region: header
+  time_length_days: null
+- page: 13
+  field: (date), or
+  category: date_area
+  bbox:
+    x0: 260.5
+    y0: 280.4
+    x1: 298.6
+    y1: 290.4
+  region: upper
+  time_length_days: null
+- page: 13
+  field: Exposure. Seller instructs Broker to EXCLUDE the Property fr
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 380.9
+    x1: 576.0
+    y1: 390.9
+  region: middle
+  time_length_days: null
+- page: 13
+  field: clients of an outside brokerage, the Property listing will b
+  category: date_area
+  bbox: *id005
+  region: middle
+  time_length_days: 1
+- page: 13
+  field: (date).
+  category: date_area
+  bbox:
+    x0: 547.2
+    y0: 489.4
+    x1: 573.2
+    y1: 499.4
+  region: lower
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 623.4
+    x1: 505.0
+    y1: 633.4
+  region: lower
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 637.3
+    x1: 505.0
+    y1: 647.4
+  region: lower
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 668.4
+    x1: 505.0
+    y1: 678.4
+  region: footer
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 682.3
+    x1: 505.0
+    y1: 692.4
+  region: footer
+  time_length_days: null
+- page: 14
+  field: 'on behalf of a brokerage, obtains the signature of a seller '
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 331.7
+    x1: 576.2
+    y1: 344.0
+  region: middle
+- page: 14
+  field: 'of a brokerage, obtains the signature of a buyer on a buyer '
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 356.7
+    x1: 576.1
+    y1: 369.0
+  region: middle
+- page: 14
+  field: broker services to be performed, and the broker's time and e
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 163.2
+    x1: 552.0
+    y1: 175.5
+  region: upper
+  time_length_days: null
+- page: 14
+  field: brokerage company to represent both seller and buyer in a re
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 319.2
+    x1: 576.1
+    y1: 331.5
+  region: middle
+  time_length_days: null
+- page: 14
+  field: cases, know who the eventual buyer will be for a seller's pr
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 344.2
+    x1: 576.2
+    y1: 356.5
+  region: middle
+  time_length_days: null
+- page: 14
+  field: the broker's time and expenses, among other considerations.
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 530.2
+    x1: 369.3
+    y1: 542.5
+  region: lower
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 464.9
+    y0: 623.2
+    x1: 491.2
+    y1: 635.5
+  region: lower
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 464.9
+    y0: 645.2
+    x1: 491.2
+    y1: 657.5
+  region: lower
+  time_length_days: null
+- page: 16
+  field: prospective buyers at the same time. These prospective buyer
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 192.2
+    x1: 576.1
+    y1: 203.4
+  region: upper
+  time_length_days: null
+- page: 16
+  field: properties at the same time. As a result, Brokerage will att
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 265.8
+    x1: 576.1
+    y1: 276.9
+  region: upper
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 490.0
+    y0: 77.8
+    x1: 513.9
+    y1: 88.9
+  region: header
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 490.0
+    y0: 93.7
+    x1: 513.9
+    y1: 104.9
+  region: header
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 114.8
+    x1: 513.3
+    y1: 125.9
+  region: upper
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 130.8
+    x1: 513.3
+    y1: 141.9
+  region: upper
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 166.2
+    x1: 513.4
+    y1: 177.4
+  region: upper
+  time_length_days: null
+- page: 17
+  field: Date
+  category: date_area
+  bbox:
+    x0: 489.5
+    y0: 203.3
+    x1: 513.4
+    y1: 214.4
+  region: upper
+  time_length_days: null
+- page: 18
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 393.3
+    x1: 481.2
+    y1: 404.4
+  region: middle
+  time_length_days: null
+- page: 18
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 422.3
+    x1: 481.2
+    y1: 433.4
+  region: middle
+  time_length_days: null

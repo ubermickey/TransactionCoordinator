@@ -1,0 +1,77 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:05'
+file: Affiliated_Business_Arrangement_Disclosure_Statement_-_321_ts51552.pdf
+folder: Commercial and Residential Income listing agreement package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 4
+  date_areas_from_text: 2
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Buyer's Signature
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 284.8
+    x1: 124.9
+    y1: 295.8
+  region: upper
+- page: 2
+  field: Seller's Signature
+  category: signature_area
+  bbox:
+    x0: 324.0
+    y0: 284.8
+    x1: 393.8
+    y1: 295.8
+  region: upper
+- page: 2
+  field: Buyer's Signature
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 344.7
+    x1: 124.9
+    y1: 355.8
+  region: middle
+- page: 2
+  field: Seller's Signature
+  category: signature_area
+  bbox:
+    x0: 324.0
+    y0: 344.7
+    x1: 393.8
+    y1: 355.8
+  region: middle
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 247.8
+    x1: 72.8
+    y1: 258.8
+  region: upper
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 324.0
+    y0: 247.8
+    x1: 342.8
+    y1: 258.8
+  region: upper
+  time_length_days: null

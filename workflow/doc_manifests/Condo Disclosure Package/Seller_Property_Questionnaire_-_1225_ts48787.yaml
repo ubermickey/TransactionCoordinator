@@ -1,0 +1,155 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:06'
+file: Seller_Property_Questionnaire_-_1225_ts48787.pdf
+folder: Condo Disclosure Package
+page_count: 4
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 6
+  date_areas_from_text: 8
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 216.0
+    y0: 722.2
+    x1: 267.3
+    y1: 731.2
+  region: footer
+- page: 1
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 722.2
+    x1: 446.8
+    y1: 731.2
+  region: footer
+- page: 1
+  field: MANY DISCLOSURES MUST BE MADE WITHIN CERTAIN TIME LIMITS. TI
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 117.6
+    x1: 583.2
+    y1: 127.6
+  region: upper
+  time_length_days: null
+- page: 1
+  field: Answer based on actual knowledge and recollection at this ti
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 255.5
+    x1: 327.5
+    y1: 265.6
+  region: upper
+  time_length_days: null
+- page: 1
+  field: Read the questions carefully and take your time.
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 282.5
+    x1: 264.5
+    y1: 292.6
+  region: upper
+  time_length_days: null
+- page: 2
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 216.0
+    y0: 745.7
+    x1: 267.3
+    y1: 754.6
+  region: footer
+- page: 2
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 745.7
+    x1: 446.8
+    y1: 754.6
+  region: footer
+- page: 3
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 216.0
+    y0: 738.9
+    x1: 267.3
+    y1: 747.9
+  region: footer
+- page: 3
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 738.9
+    x1: 446.8
+    y1: 747.9
+  region: footer
+- page: 4
+  field: addenda and that such information is true and correct to the
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 579.5
+    x1: 583.2
+    y1: 589.6
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 619.6
+    x1: 487.0
+    y1: 629.6
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 630.6
+    x1: 487.0
+    y1: 640.6
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 667.1
+    x1: 487.0
+    y1: 677.1
+  region: lower
+  time_length_days: null
+- page: 4
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 678.0
+    x1: 487.0
+    y1: 688.1
+  region: footer
+  time_length_days: null

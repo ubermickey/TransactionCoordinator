@@ -1,0 +1,187 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:06'
+file: Fire_Hardening_and_Defensible_Space_Advisory_Disclosure_and_Addendum_-_625_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 4
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 4
+  date_areas_from_text: 13
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 216.0
+    y0: 730.0
+    x1: 267.3
+    y1: 738.9
+  region: footer
+- page: 1
+  field: Seller's Initials
+  category: signature_area
+  bbox:
+    x0: 359.5
+    y0: 729.8
+    x1: 414.7
+    y1: 738.7
+  region: footer
+- page: 1
+  field: Have you (Seller) completed any of the following low-cost re
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 504.4
+    x1: 576.1
+    y1: 514.4
+  region: lower
+  time_length_days: null
+- page: 2
+  field: vegetation management ordinance (hereafter, State or local d
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 150.6
+    x1: 520.4
+    y1: 160.7
+  region: upper
+- page: 2
+  field: the date of Seller's signature below, and the answers on par
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 585.1
+    x1: 576.0
+    y1: 595.1
+  region: lower
+- page: 2
+  field: vegetation management ordinance (hereafter, State or local d
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 150.6
+    x1: 520.4
+    y1: 160.7
+  region: upper
+  time_length_days: null
+- page: 2
+  field: ) Days after Seller's execution of this FHDS form or the tim
+  category: date_area
+  bbox:
+    x0: 167.2
+    y0: 200.4
+    x1: 576.0
+    y1: 210.4
+  region: upper
+  time_length_days: null
+- page: 2
+  field: ) Days after Seller's execution of this FHDS form or the tim
+  category: date_area
+  bbox:
+    x0: 137.7
+    y0: 242.4
+    x1: 576.1
+    y1: 252.4
+  region: upper
+  time_length_days: null
+- page: 2
+  field: 'prior to Close of Escrow. Seller shall obtain documentation '
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 386.6
+    x1: 576.0
+    y1: 396.6
+  region: middle
+  time_length_days: null
+- page: 2
+  field: compliance and Deliver to Buyer prior to the time for Buyer'
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 449.6
+    x1: 435.8
+    y1: 459.6
+  region: middle
+  time_length_days: null
+- page: 2
+  field: the date of Seller's signature below, and the answers on par
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 585.1
+    x1: 576.0
+    y1: 595.1
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 474.5
+    y0: 608.6
+    x1: 496.0
+    y1: 618.7
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 474.5
+    y0: 622.6
+    x1: 496.0
+    y1: 632.6
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 465.0
+    y0: 662.1
+    x1: 486.5
+    y1: 672.2
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 465.0
+    y0: 676.1
+    x1: 486.5
+    y1: 686.1
+  region: footer
+  time_length_days: null
+- page: 3
+  field: effective on the date of sale, check
+  category: date_area
+  bbox:
+    x0: 243.9
+    y0: 258.9
+    x1: 392.4
+    y1: 269.0
+  region: upper
+  time_length_days: null
+- page: 3
+  field: longer be effective as of the date of
+  category: date_area
+  bbox:
+    x0: 243.9
+    y0: 331.8
+    x1: 394.4
+    y1: 341.8
+  region: middle
+  time_length_days: null

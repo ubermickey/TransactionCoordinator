@@ -1,0 +1,195 @@
+# =============================================================================
+# JURISDICTION RULES: BEVERLY HILLS (CITY)
+# =============================================================================
+#
+# Inherits from: california.yaml, los_angeles.yaml (county-level)
+# Beverly Hills is an independent city within LA County.
+# It does NOT inherit City of LA rules (no 9A report, no LA city transfer tax,
+# no Measure ULA, no LA RSO).
+# It DOES inherit LA County and California state rules.
+#
+# =============================================================================
+
+jurisdiction:
+  name: Beverly Hills
+  level: city
+  parent: california  # county-level: los_angeles (county only, NOT city of LA)
+  inherits_from:
+    - california           # all state rules
+    - los_angeles_county   # county transfer tax, county recording
+  does_NOT_inherit:
+    - los_angeles_city_tax     # no LA city transfer tax
+    - los_angeles_measure_ula  # no Measure ULA
+    - los_angeles_9a_report    # no 9A report (BH has own building dept)
+    - los_angeles_rso          # BH has its own rent stabilization
+  last_full_audit: 2026-01-15
+  next_full_audit: 2026-07-15
+
+# -----------------------------------------------------------------------------
+# TRANSFER TAXES
+# -----------------------------------------------------------------------------
+tax_rules:
+
+  - id: BH-TAX-001
+    name: Beverly Hills Transfer Tax
+    citation: "Beverly Hills Municipal Code"
+    rate: 4.50
+    per: 1000
+    basis: sale_price
+    paid_by: seller  # customary
+    note: "This REPLACES the City of LA transfer tax. County transfer tax still applies."
+    type: FIXED
+    agent_gate: GATE-061
+    agent_must_verify:
+      - "Beverly Hills transfer tax correctly calculated on closing disclosure"
+      - "NOT confused with City of LA transfer tax"
+      - "County transfer tax ($1.10/$1000) also correctly applied"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# POINT-OF-SALE RETROFIT REQUIREMENTS
+# -----------------------------------------------------------------------------
+retrofit_requirements:
+
+  # In addition to California state retrofits (smoke, CO, water heater)
+
+  - id: BH-RETRO-001
+    name: Seismic Gas Shut-Off Valve
+    citation: "Beverly Hills Municipal Code §9-1-1010"
+    requirement: "Automatic seismic gas shut-off valve must be installed on the gas supply line"
+    applies_to: "All residential properties at point of sale"
+    point_of_sale: true
+    responsible_party: seller
+    compliance_evidence: "Installation certificate from licensed plumber or contractor"
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "Gas shut-off valve has been installed"
+      - "Installation certificate obtained and filed"
+      - "Certificate uploaded to SkySlope"
+    last_verified: 2026-01-15
+
+  - id: BH-RETRO-002
+    name: Low-Flow Plumbing Fixtures
+    citation: "Beverly Hills Municipal Code (water conservation ordinance)"
+    requirement: "All plumbing fixtures must meet low-flow requirements"
+    specifications:
+      toilets: "1.28 gallons per flush maximum"
+      showerheads: "2.0 gallons per minute maximum"
+      faucets: "1.2 gallons per minute maximum (bathroom); 1.8 GPM (kitchen)"
+    applies_to: "All residential properties at point of sale"
+    point_of_sale: true
+    responsible_party: seller
+    compliance_evidence: "Plumber certification or self-certification with documentation"
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "Low-flow fixtures installed or confirmed compliant"
+      - "Compliance documentation obtained"
+      - "Documentation uploaded to SkySlope"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# RENT STABILIZATION
+# -----------------------------------------------------------------------------
+rent_stabilization:
+
+  - id: BH-RSO-001
+    name: Beverly Hills Rent Stabilization Ordinance
+    citation: "Beverly Hills Municipal Code Chapter 4, Title 11"
+    description: "Separate from and independent of the LA RSO"
+    applies_to: "Multi-family residential units built before September 20, 1978"
+    impact_on_sale:
+      - "BH rent stabilization registration must be current"
+      - "Tenant protections transfer with the property"
+      - "Buyer assumes all BH rent stabilization obligations"
+      - "Different rules than LA RSO — must apply BH-specific provisions"
+    agent_gate: GATE-050
+    agent_must_verify:
+      - "BH rent stabilization status confirmed (separate from LA RSO)"
+      - "If applicable: registration current, tenant information disclosed"
+      - "Buyer understands BH-specific tenant protections"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# BUILDING & ZONING
+# -----------------------------------------------------------------------------
+building_zoning:
+
+  - id: BH-BUILD-001
+    name: Beverly Hills Building & Safety Division
+    description: "Beverly Hills has its own building department (not LADBS)"
+    permit_verification: "Verify permits through BH Community Development Department"
+    agent_gate: GATE-063
+    agent_must_verify:
+      - "Permits verified through Beverly Hills (NOT LA)"
+      - "No open violations or unpermitted work"
+    last_verified: 2026-01-15
+
+  - id: BH-BUILD-002
+    name: Beverly Hills Historic Preservation
+    citation: "Beverly Hills Municipal Code Title 10, Chapter 3, Article 32"
+    description: "Properties may be designated as historic landmarks or be in historic districts"
+    impact:
+      - "Exterior modifications may require Historic Preservation Commission approval"
+      - "Demolition restrictions"
+      - "Potential Mills Act tax benefits"
+    agent_gate: GATE-050
+    agent_must_verify:
+      - "Historic designation status checked"
+      - "If designated: buyer informed of restrictions and benefits"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# ASSESSMENT DISTRICTS
+# -----------------------------------------------------------------------------
+assessment_districts:
+
+  - id: BH-ASSESS-001
+    name: Beverly Hills Special Assessment Districts
+    description: "Check for any BH-specific assessment districts or bonds"
+    appears_on: "Preliminary title report and tax bill"
+    agent_gate: GATE-050
+    agent_must_verify:
+      - "Any BH assessment districts identified from title report"
+      - "Buyer informed of ongoing assessment obligations"
+    last_verified: 2026-01-15
+
+# -----------------------------------------------------------------------------
+# COMPLETE BEVERLY HILLS COMPLIANCE CHECKLIST
+# -----------------------------------------------------------------------------
+#
+# For a BH transaction, the agent must verify ALL of the following:
+#
+# From california.yaml:
+#   □ TDS complete and reviewed (CA-FORM-001)
+#   □ SPQ complete and reviewed (CA-FORM-002)
+#   □ NHD report ordered and reviewed (CA-FORM-003)
+#   □ Agency disclosure provided (CA-FORM-004)
+#   □ SBSA delivered (CA-FORM-005)
+#   □ Smoke detectors compliant (CA-RETRO-001)
+#   □ CO detectors compliant (CA-RETRO-002)
+#   □ Water heater braced (CA-RETRO-003)
+#   □ HARPTA assessed if applicable (CA-TAX-003)
+#   □ Mello-Roos disclosed if applicable (CA-TAX-004)
+#   □ HOA documents delivered if applicable (CA-HOA-001, CA-HOA-002)
+#
+# From los_angeles.yaml (county-level only):
+#   □ LA County transfer tax calculated (LA-TAX-001)
+#   □ Recording with LA County Registrar-Recorder (LA-REC-001)
+#
+# Beverly Hills specific:
+#   □ BH transfer tax calculated — NOT LA city tax (BH-TAX-001)
+#   □ Seismic gas shut-off valve installed (BH-RETRO-001)
+#   □ Low-flow plumbing fixtures compliant (BH-RETRO-002)
+#   □ BH rent stabilization checked (BH-RSO-001)
+#   □ Permits verified through BH building dept (BH-BUILD-001)
+#   □ Historic designation checked (BH-BUILD-002)
+#   □ Assessment districts checked (BH-ASSESS-001)
+#
+# NOT applicable (City of LA only):
+#   ✗ 9A Report (LA-COMP-001) — BH has own building dept
+#   ✗ Measure ULA (LA-TAX-003) — does not apply to BH
+#   ✗ City of LA transfer tax (LA-TAX-002) — BH has own rate
+#   ✗ LA RSO (LA-RSO-001) — BH has own rent stabilization
+#   ✗ LA soft-story ordinance (LA-COMP-003) — check BH-specific rules
+#
+# =============================================================================

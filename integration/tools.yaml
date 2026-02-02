@@ -1,0 +1,375 @@
+# =============================================================================
+# INTEGRATION LAYER: SKYSLOPE + DOCUSIGN + GOOGLE DRIVE
+# =============================================================================
+#
+# Defines how each tool integrates into the automated workflow.
+# Three tools, one principle: Draft → Sign → Store for compliance.
+#
+#   Google Drive  = working files, templates, tracking, collaboration
+#   DocuSign      = signature execution and delivery
+#   SkySlope      = compliance, audit trail, broker review, final storage
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# GOOGLE DRIVE
+# -----------------------------------------------------------------------------
+
+google_drive:
+
+  role: "Working files, templates, collaboration, tracking, backup archive"
+  api: "Google Drive API v3, Google Sheets API v4, Google Apps Script"
+  automation_level: HIGH
+
+  # --- AGENT PRIVATE REVIEW FOLDER (separate from transaction folders) ---
+  agent_private_folder:
+    root: "Agent Private/Reviews/{year}/{address}"
+    permissions: "Agent ONLY — no shared access, no link sharing, never visible to any other party"
+    subfolders:
+      - path: "Pending"
+        description: "Review copies awaiting agent verification — highlighted, filtered pages"
+      - path: "Completed"
+        description: "Review copies after agent sign-off — archived with timestamp"
+      - path: "Flagged"
+        description: "Review copies with unresolved RED items"
+    naming: "{address}_{gate_id}_{document_type}_REVIEW.pdf"
+    note: "See workflow/agent_review_overlay.yaml for full overlay specification"
+
+  # --- SHARED TRANSACTION FOLDERS (original clean documents) ---
+  folder_structure_template:
+    root: "Transactions/{year}/{address}"
+    subfolders:
+      - path: "01_Listing"
+        contains: "Listing agreement, MLS data, marketing materials"
+      - path: "02_Contract"
+        contains: "RPA, counter offers, addenda, amendments"
+      - path: "03_Disclosures"
+        contains: "TDS, SPQ, NHD, agency disclosure, SBSA, all other disclosures"
+      - path: "04_Inspections"
+        contains: "All inspection reports, RR, repair agreements"
+      - path: "05_Appraisal"
+        contains: "Appraisal report"
+      - path: "06_Loan"
+        contains: "Pre-approval, loan estimate, conditional approval, clear to close"
+      - path: "07_Title_Escrow"
+        contains: "Preliminary title report, HOA documents, escrow instructions"
+      - path: "08_Contingency_Removals"
+        contains: "All CR-1 forms"
+      - path: "09_Closing"
+        contains: "Closing disclosure, grant deed, settlement statement, recording confirmation"
+      - path: "10_Compliance"
+        contains: "Retrofit certificates, 9A report, jurisdiction-specific compliance docs"
+      - path: "Notes"
+        contains: "Deadline tracker spreadsheet, transaction notes, communication log"
+
+  automated_actions:
+
+    - id: GD-AUTO-001
+      name: Create Transaction Folder
+      trigger: "New transaction created"
+      action: "Create folder structure from template"
+      automation: AUTO
+
+    - id: GD-AUTO-002
+      name: Create Deadline Tracker
+      trigger: "Contract terms extracted"
+      action: "Copy deadline tracker template, populate with extracted dates"
+      automation: AUTO
+      template: "TC Templates/deadline_tracker_template.gsheet"
+
+    - id: GD-AUTO-003
+      name: File Incoming Documents
+      trigger: "New document received (email attachment, DocuSign completion)"
+      action: "AI classifies document type and moves to correct subfolder"
+      automation: AUTO
+      fallback: "If classification confidence < 70%, place in root folder and flag for agent"
+
+    - id: GD-AUTO-006
+      name: Generate Agent Review Copy
+      trigger: "AGENT_GATE triggered on a document"
+      action:
+        - "AI identifies which pages require agent verification for this gate"
+        - "AI extracts only those pages from the original document"
+        - "AI applies color-coded highlight overlays per gate_overlays rules"
+        - "AI adds margin annotations explaining each highlighted item"
+        - "AI generates summary cover page with verification checklist"
+        - "Review copy saved to Agent Private/Reviews/{year}/{address}/Pending/"
+        - "Original document is NEVER modified"
+        - "Notification sent to agent with direct link to review copy"
+      automation: AUTO
+      privacy: "Review copy is AGENT-ONLY — never shared, never uploaded to SkySlope"
+      reference: "See workflow/agent_review_overlay.yaml for highlight colors, page filtering, and per-gate rules"
+
+    - id: GD-AUTO-007
+      name: Archive Completed Review Copy
+      trigger: "Agent signs off on a gate"
+      action:
+        - "Move review copy from Pending/ to Completed/"
+        - "Timestamp the sign-off"
+        - "Log gate verification in transaction audit trail"
+      automation: AUTO
+
+    - id: GD-AUTO-004
+      name: Generate Jurisdiction Checklist
+      trigger: "Property address entered"
+      action: "AI reads address, determines applicable jurisdictions, generates compliance checklist"
+      automation: AUTO
+      output: "Notes/compliance_checklist.gsheet"
+
+    - id: GD-AUTO-005
+      name: Update Deadline Tracker on Amendment
+      trigger: "Amendment document processed"
+      action: "AI extracts changed terms, updates deadline tracker, highlights changes"
+      automation: AUTO
+      agent_notification: true
+
+  ai_draft_actions:
+
+    - id: GD-DRAFT-001
+      name: Draft Communication Emails
+      trigger: "Phase transition or deadline reminder"
+      action: "AI generates email from template with transaction-specific data"
+      automation: AI_DRAFT
+      agent_reviews_before_sending: true
+
+    - id: GD-DRAFT-002
+      name: Draft Status Updates
+      trigger: "Weekly or on-demand"
+      action: "AI reads current transaction state and generates summary for stakeholders"
+      automation: AI_DRAFT
+      agent_reviews_before_sending: true
+
+# -----------------------------------------------------------------------------
+# DOCUSIGN
+# -----------------------------------------------------------------------------
+
+docusign:
+
+  role: "Electronic signature execution, delivery, and completion tracking"
+  api: "DocuSign eSignature REST API v2.1"
+  webhooks: "DocuSign Connect for real-time envelope status updates"
+  automation_level: HIGH
+
+  envelope_templates:
+    description: "Pre-built DocuSign templates for common transaction documents"
+    templates:
+      - name: "Agency Disclosure (AD)"
+        signers: [buyer, seller, buyer_agent, listing_agent]
+        gate: GATE-001
+
+      - name: "Seller Disclosure Packet (TDS + SPQ)"
+        signers: [seller]
+        gate: GATE-003
+
+      - name: "Buyer Disclosure Acknowledgment"
+        signers: [buyer]
+        gate: GATE-012
+
+      - name: "Contingency Removal (CR-1)"
+        signers: [buyer]
+        gates: [GATE-022, GATE-031, GATE-041]
+        variants:
+          - "Investigation Contingency Removal"
+          - "Appraisal Contingency Removal"
+          - "Loan Contingency Removal"
+          - "All Contingencies Removal"
+
+      - name: "Request for Repair (RR)"
+        signers: [buyer]
+        gate: GATE-021
+
+      - name: "Amendment to Purchase Agreement"
+        signers: [buyer, seller]
+        gate: GATE-010
+
+  automated_actions:
+
+    - id: DS-AUTO-001
+      name: Envelope Completion Webhook
+      trigger: "DocuSign Connect event: envelope completed"
+      action:
+        - "Receive completed envelope data"
+        - "Run signature validation checks (SIG-001 through SIG-010)"
+        - "Extract signed document PDF"
+        - "Pass to AI for content extraction and cross-document validation"
+        - "File to Google Drive (correct subfolder)"
+        - "Upload to SkySlope"
+        - "Update deadline tracker"
+        - "Notify agent of completion and any validation issues"
+      automation: AUTO
+      on_validation_fail:
+        - "Do NOT auto-file"
+        - "Generate error report with specific issues"
+        - "Notify agent: 'Action required — document validation failed'"
+
+    - id: DS-AUTO-002
+      name: Envelope Status Monitoring
+      trigger: "Scheduled check every 4 hours for pending envelopes"
+      action:
+        - "Check status of all outstanding envelopes"
+        - "If delivered but not signed after 24 hours: reminder to signer"
+        - "If not delivered: alert agent"
+      automation: AUTO
+
+    - id: DS-AUTO-003
+      name: Envelope Declined Handler
+      trigger: "DocuSign Connect event: recipient declined"
+      action:
+        - "Alert agent immediately"
+        - "Include reason for decline (if provided)"
+        - "Flag associated agent gate as blocked"
+      automation: AUTO
+      escalation: immediate
+
+  ai_draft_actions:
+
+    - id: DS-DRAFT-001
+      name: Prepare Envelope for Sending
+      trigger: "Workflow task requires signature"
+      action:
+        - "AI selects correct template"
+        - "AI pre-fills known fields from transaction data"
+        - "AI sets recipient list from transaction parties"
+        - "Agent reviews envelope before sending"
+      automation: AI_DRAFT
+      agent_reviews_before_sending: true
+      note: "AI NEVER sends a DocuSign envelope without agent review and approval"
+
+  signature_validation:
+    reference: "See workflow/document_validation.yaml for full validation rules"
+    run_on: "Every envelope completion"
+    blocks_gate_until_resolved: true
+
+# -----------------------------------------------------------------------------
+# SKYSLOPE
+# -----------------------------------------------------------------------------
+
+skyslope:
+
+  role: "Compliance, audit trail, broker review, final document storage, DRE retention"
+  api: "Limited — SkySlope API availability varies; manual upload may be required"
+  automation_level: LOW_TO_MEDIUM
+
+  automated_actions:
+
+    - id: SS-AUTO-001
+      name: Create Transaction
+      trigger: "New transaction initiated"
+      action: "Create new transaction in SkySlope with property and party details"
+      automation: AUTO
+      fallback: "If API unavailable: generate data for manual entry"
+
+    - id: SS-AUTO-002
+      name: Upload Completed Documents
+      trigger: "Document validated and filed in Google Drive"
+      action: "Upload document to SkySlope transaction checklist"
+      automation: AUTO
+      fallback: "If API unavailable: notify agent to manually upload"
+
+    - id: SS-AUTO-003
+      name: Update Transaction Timeline
+      trigger: "Deadline calculated or amended"
+      action: "Update key dates in SkySlope transaction record"
+      automation: AUTO
+      fallback: "If API unavailable: generate date summary for manual entry"
+
+  agent_actions:
+    description: "Actions that may require manual SkySlope interaction due to API limitations"
+
+    - id: SS-AGENT-001
+      name: Verify Checklist Completeness
+      trigger: "Pre-closing (GATE-080)"
+      action: "Agent verifies all SkySlope checklist items show green/complete"
+      automation: AGENT_GATE
+      gate: GATE-080
+
+    - id: SS-AGENT-002
+      name: Submit for Broker Review
+      trigger: "Post-closing"
+      action: "Agent submits transaction for broker review in SkySlope"
+      automation: AGENT_GATE  # broker review requires agent initiation
+      gate: GATE-080
+
+  compliance_tracking:
+    description: "SkySlope is the system of record for DRE compliance"
+    retention_period: "3 years from close (CA B&P Code §10148)"
+    audit_trail: "SkySlope maintains timestamped log of all uploads and reviews"
+
+# -----------------------------------------------------------------------------
+# INTEGRATION FLOW
+# -----------------------------------------------------------------------------
+
+integration_flow:
+
+  document_lifecycle:
+    description: "Every document follows this path"
+    flow:
+      - step: 1
+        action: "Draft or receive document"
+        tool: google_drive
+        details: "AI drafts from template or receives incoming document"
+
+      - step: 2
+        action: "Send for signature (if needed)"
+        tool: docusign
+        details: "AI prepares envelope; agent approves before sending"
+        gate_check: "Agent reviews recipient list and document content"
+
+      - step: 3
+        action: "Validate completed document"
+        tool: ai_layer
+        details: "Run signature validation + cross-document validation"
+
+      - step: 3.5
+        action: "Generate agent review copy (if gate triggered)"
+        tool: ai_layer + google_drive
+        details: "Extract relevant pages, apply highlights, save to agent's PRIVATE review folder"
+        privacy: "Review copy is AGENT-ONLY — original document proceeds clean to step 4"
+        reference: "workflow/agent_review_overlay.yaml"
+
+      - step: 4
+        action: "File ORIGINAL (clean) document to transaction folder"
+        tool: google_drive
+        details: "AI classifies and files to correct subfolder — no highlights on this copy"
+
+      - step: 5
+        action: "Upload to compliance system"
+        tool: skyslope
+        details: "Upload to SkySlope checklist for broker review"
+
+      - step: 6
+        action: "Update tracking"
+        tool: google_drive
+        details: "Update deadline tracker, note completion"
+
+  gate_enforcement:
+    description: "How AGENT_GATEs interact with the integration layer"
+    rules:
+      - "No document passes from step 3 to step 4 if validation fails"
+      - "No DocuSign envelope is sent without agent review (step 2)"
+      - "No phase transition occurs until all phase gates are cleared"
+      - "Gate status is tracked in the deadline tracker spreadsheet"
+      - "Agent receives a single daily digest of all pending gates across all transactions"
+
+  daily_digest:
+    description: "AI generates a daily summary for the agent"
+    schedule: "Every morning at 8:00 AM"
+    contents:
+      - "Transactions requiring agent action (pending gates)"
+      - "Upcoming deadlines (next 7 days) across all active transactions"
+      - "Documents awaiting signature"
+      - "Validation issues requiring resolution"
+      - "New documents received since last digest"
+    delivery: email
+    automation: AUTO
+
+  weekly_report:
+    description: "AI generates a weekly transaction status report"
+    schedule: "Every Monday at 8:00 AM"
+    contents:
+      - "All active transactions with current phase and status"
+      - "Transactions at risk (overdue deadlines, stalled gates)"
+      - "Transactions closing this week"
+      - "Completed transactions pending file archival"
+    delivery: email
+    automation: AUTO

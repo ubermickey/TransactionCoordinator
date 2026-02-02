@@ -1,0 +1,111 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:11'
+file: Disclosure_Information_Advisory_-_1225_ts17813.pdf
+folder: Residential Listing Agreement Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 9
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: lead to a claim or a lawsuit against you which can be very c
+  category: date_area
+  bbox:
+    x0: 46.8
+    y0: 122.6
+    x1: 583.3
+    y1: 133.8
+  region: upper
+  time_length_days: null
+- page: 1
+  field: either from the previous owner at the time of purchase or fr
+  category: date_area
+  bbox:
+    x0: 64.8
+    y0: 218.2
+    x1: 583.2
+    y1: 229.3
+  region: upper
+  time_length_days: null
+- page: 1
+  field: Allow yourself plenty of time to fully complete the Disclosu
+  category: date_area
+  bbox:
+    x0: 64.8
+    y0: 314.1
+    x1: 363.6
+    y1: 325.3
+  region: middle
+  time_length_days: null
+- page: 2
+  field: 'you can explain the reasons, such as that you have not seen '
+  category: date_area
+  bbox:
+    x0: 28.8
+    y0: 428.2
+    x1: 583.4
+    y1: 439.3
+  region: middle
+  time_length_days: null
+- page: 2
+  field: 'and sold for the first time on or after January 1, 2003. If '
+  category: date_area
+  bbox:
+    x0: 28.8
+    y0: 492.1
+    x1: 583.4
+    y1: 503.3
+  region: lower
+  time_length_days: null
+- page: 2
+  field: 1, 1994 (and other properties built before that date) must d
+  category: date_area
+  bbox:
+    x0: 28.8
+    y0: 608.2
+    x1: 583.4
+    y1: 619.3
+  region: lower
+  time_length_days: null
+- page: 3
+  field: If any disclosure that you have made becomes inadequate, inc
+  category: date_area
+  bbox:
+    x0: 64.8
+    y0: 349.6
+    x1: 583.2
+    y1: 360.8
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 442.8
+    y0: 529.6
+    x1: 463.9
+    y1: 540.8
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 442.8
+    y0: 558.6
+    x1: 463.9
+    y1: 569.8
+  region: lower
+  time_length_days: null

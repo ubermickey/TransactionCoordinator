@@ -1,0 +1,280 @@
+================================================================================
+  TRANSACTION COORDINATOR — API SETUP GUIDE
+================================================================================
+
+  Which APIs you need, what they cost, and step-by-step how to get them.
+  Listed in the order you should set them up.
+
+
+================================================================================
+  1. ANTHROPIC (Claude) — REQUIRED FOR MVP
+================================================================================
+
+  What it does:  Reads your purchase agreements and extracts contract terms
+                 (parties, price, dates, contingencies) automatically.
+
+  Cost:          ~$0.05–0.15 per PDF extraction (Claude Sonnet)
+                 Typical month with 10 transactions: ~$1–2
+                 No monthly minimum. Pay only for what you use.
+
+  How to get it:
+
+    1. Go to https://console.anthropic.com
+    2. Sign up with email or Google account
+    3. Add a payment method (credit card)
+    4. Go to API Keys (left sidebar)
+    5. Click "Create Key"
+    6. Name it "TC" or "Transaction Coordinator"
+    7. Copy the key (starts with sk-ant-...)
+    8. Paste into your .env file:
+
+         ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+  Notes:
+    - New accounts get $5 free credit
+    - Set a monthly spending limit under Settings > Limits (recommend $20)
+    - Key is secret — never share it or commit it to git
+
+
+================================================================================
+  2. PUSHOVER — RECOMMENDED (Push Notifications)
+================================================================================
+
+  What it does:  Sends push notifications to your iPhone/Android when gates
+                 need review, deadlines approach, or documents are ready.
+
+  Cost:          $5 one-time per platform (iOS or Android)
+                 No monthly fee. No per-message fee.
+                 Unlimited notifications forever after the one-time purchase.
+
+  How to get it:
+
+    1. Download "Pushover" app from App Store or Google Play
+    2. Create account in the app
+    3. Note your User Key (shown on the main screen after login)
+    4. Go to https://pushover.net/apps/build
+    5. Create an application:
+         - Name: "Transaction Coordinator"
+         - Type: Script/Shell
+         - Description: "RE transaction alerts"
+    6. Note the API Token/Key it gives you
+    7. Add both to your .env file:
+
+         TC_PUSHOVER_TOKEN=your-app-token
+         TC_PUSHOVER_USER=your-user-key
+
+  Test it:       tc push "Test notification"
+
+  Alternative — ntfy (FREE):
+
+    If you don't want to pay $5, ntfy.sh is completely free:
+
+    1. Download "ntfy" app from App Store or Google Play
+    2. Pick a topic name (e.g., "my-tc-alerts-xyz123")
+       Use something unique — topics are public by default
+    3. Subscribe to that topic in the app
+    4. Add to .env:
+
+         TC_NTFY_TOPIC=my-tc-alerts-xyz123
+
+    Both can be configured simultaneously — notifications go to both.
+
+
+================================================================================
+  3. GMAIL SMTP — RECOMMENDED (Email from Your Alias)
+================================================================================
+
+  What it does:  Sends emails from your email alias (e.g., you@yourbrokerage.com)
+                 through Gmail's SMTP server. Used for deadline reminders,
+                 gate notifications, and custom emails.
+
+  Cost:          Free (uses your existing Gmail/Google Workspace account)
+
+  How to get it:
+
+    STEP A — Set up your alias in Gmail (if not already done):
+
+      1. Open Gmail on web
+      2. Settings (gear icon) > See all settings > Accounts and Import
+      3. Under "Send mail as", click "Add another email address"
+      4. Enter your alias (e.g., you@yourbrokerage.com)
+      5. Follow verification steps (Gmail sends a confirmation code)
+
+    STEP B — Create an App Password:
+
+      1. Go to https://myaccount.google.com/security
+      2. Make sure 2-Step Verification is ON (required)
+      3. Go to https://myaccount.google.com/apppasswords
+      4. Select app: "Other (Custom name)" > enter "TC"
+      5. Click Generate
+      6. Copy the 16-character password (format: xxxx xxxx xxxx xxxx)
+         Remove the spaces when pasting
+
+    STEP C — Add to .env:
+
+         TC_SMTP_HOST=smtp.gmail.com
+         TC_SMTP_PORT=587
+         TC_SMTP_USER=youractual@gmail.com
+         TC_SMTP_PASS=xxxxxxxxxxxxxxxx
+         TC_SMTP_FROM=you@yourbrokerage.com
+
+    If using Google Workspace instead of personal Gmail, the SMTP_USER
+    is your workspace email and SMTP_FROM is your alias.
+
+  Test it:       tc email you@gmail.com "Test subject" "Test body"
+
+  Notes:
+    - Gmail SMTP limit: 500 emails/day (personal) or 2000/day (Workspace)
+    - More than enough for a TC workflow
+    - The App Password is NOT your Gmail password — it's a separate credential
+
+
+================================================================================
+  4. GOOGLE DRIVE API — OPTIONAL (Document Storage Automation)
+================================================================================
+
+  What it does:  Automatically creates transaction folder structures,
+                 uploads review copies to your private agent folder,
+                 and organizes documents by classification.
+
+  Cost:          Free (Google Drive API has no per-call charges)
+                 Uses your existing Google Drive storage quota (15 GB free,
+                 or whatever your Workspace plan includes)
+
+  How to get it:
+
+    1. Go to https://console.cloud.google.com
+    2. Create a new project (name: "Transaction Coordinator")
+    3. Enable APIs:
+         - Go to APIs & Services > Library
+         - Search "Google Drive API" > Enable
+         - Search "Gmail API" > Enable (if you want to use API instead of SMTP)
+    4. Create OAuth credentials:
+         - Go to APIs & Services > Credentials
+         - Click "Create Credentials" > OAuth client ID
+         - Application type: Desktop app
+         - Name: "TC CLI"
+         - Download the JSON file
+    5. Set up OAuth consent screen:
+         - Go to APIs & Services > OAuth consent screen
+         - User type: External (or Internal if using Workspace)
+         - App name: "Transaction Coordinator"
+         - Add scopes: drive.file, gmail.send
+         - Add yourself as a test user
+    6. Save the credentials JSON file somewhere safe
+    7. Add to .env:
+
+         GOOGLE_CREDENTIALS_FILE=/path/to/credentials.json
+         GOOGLE_TOKEN_FILE=~/.tc/google_token.json
+
+    First run will open a browser for OAuth consent. After that, the
+    token auto-refreshes.
+
+  Notes:
+    - This is the most complex API setup — defer until core CLI is proven
+    - Google Cloud project is free (no billing needed for Drive API)
+    - The OAuth consent screen says "unverified app" — that's fine for
+      personal use, just click "Advanced" > "Go to TC (unsafe)"
+
+
+================================================================================
+  5. DOCUSIGN eSignature API — OPTIONAL (Signature Validation)
+================================================================================
+
+  What it does:  Automatically checks if DocuSign envelopes are properly
+                 signed: all signatures present, fields populated, dates
+                 logical, no timing anomalies.
+
+  Cost:          Free for up to 100 envelopes/month on developer plan.
+                 Production plans start at ~$25/month (DocuSign Personal).
+                 You likely already pay for DocuSign through your brokerage.
+
+  How to get it:
+
+    STEP A — Developer sandbox (free, for testing):
+
+      1. Go to https://developers.docusign.com
+      2. Create a developer account (free)
+      3. Go to Apps and Keys
+      4. Note your Integration Key (client ID)
+      5. Generate an RSA keypair (or use secret key auth)
+      6. Note your API Account ID
+      7. Your sandbox base URL: https://demo.docusign.net/restapi
+
+    STEP B — Production access (when ready for real envelopes):
+
+      1. Log into your actual DocuSign account
+      2. Go to Settings > Apps and Keys (admin access required)
+         If you don't have admin: ask your brokerage's DocuSign admin
+      3. Create an app with the same Integration Key
+      4. Get your production API Account ID
+      5. Submit for "Go Live" review (DocuSign reviews your integration)
+         Takes 1-3 business days
+
+    STEP C — Add to .env:
+
+         DOCUSIGN_INTEGRATION_KEY=your-integration-key
+         DOCUSIGN_SECRET_KEY=your-secret-key
+         DOCUSIGN_ACCOUNT_ID=your-account-id
+         DOCUSIGN_BASE_URL=https://na4.docusign.net/restapi
+
+    Use demo URL for testing, production URL for real transactions.
+
+  Notes:
+    - If your brokerage manages DocuSign, you may need their permission
+      to create API integrations
+    - The developer sandbox has fake envelopes for testing
+    - This is genuinely optional — you already review DocuSign manually,
+      the API just automates the completeness checks
+
+
+================================================================================
+  SUMMARY
+================================================================================
+
+  API                 Cost                  Priority    Setup Difficulty
+  ─────────────────── ───────────────────── ─────────── ─────────────────
+  Anthropic (Claude)  ~$1-2/month           REQUIRED    Easy (5 min)
+  Pushover            $5 one-time           Recommended Easy (5 min)
+  ntfy                Free                  Alternative Easy (2 min)
+  Gmail SMTP          Free                  Recommended Easy (10 min)
+  Google Drive API    Free                  Optional    Medium (20 min)
+  DocuSign API        Free dev / ~$25/mo    Optional    Hard (30+ min)
+
+  Total cost to run MVP:  ~$1-7/month (just Anthropic + optional Pushover)
+
+  Recommended setup order:
+    1. Anthropic (needed for extraction — the core feature)
+    2. Pushover or ntfy (so you get notified on your phone)
+    3. Gmail SMTP (so you can send from your alias)
+    4. Google Drive (when you want automated file organization)
+    5. DocuSign (when you want automated signature validation)
+
+
+================================================================================
+  YOUR .env FILE SHOULD LOOK LIKE THIS WHEN COMPLETE
+================================================================================
+
+  ANTHROPIC_API_KEY=sk-ant-xxxxxxxxxxxxxxxxxxxxx
+
+  TC_SMTP_HOST=smtp.gmail.com
+  TC_SMTP_PORT=587
+  TC_SMTP_USER=yourname@gmail.com
+  TC_SMTP_PASS=xxxxxxxxxxxx
+  TC_SMTP_FROM=you@yourbrokerage.com
+
+  TC_PUSHOVER_TOKEN=xxxxxxxxxxxxxxxxxxxxx
+  TC_PUSHOVER_USER=xxxxxxxxxxxxxxxxxxxxx
+  TC_NTFY_TOPIC=my-tc-alerts-unique-string
+
+  TC_DATA_DIR=~/.tc
+
+  # Add these when ready:
+  # GOOGLE_CREDENTIALS_FILE=/path/to/credentials.json
+  # GOOGLE_TOKEN_FILE=~/.tc/google_token.json
+  # DOCUSIGN_INTEGRATION_KEY=
+  # DOCUSIGN_SECRET_KEY=
+  # DOCUSIGN_ACCOUNT_ID=
+  # DOCUSIGN_BASE_URL=https://na4.docusign.net/restapi
+
+================================================================================
