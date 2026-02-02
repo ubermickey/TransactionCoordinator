@@ -1,0 +1,254 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: 1_of_6_-_Residential_Environmental_Hazards_ts15373.pdf
+folder: RLMM Agreement Package
+page_count: 48
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 1
+  date_areas_from_text: 22
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 28
+  text: include a federal form about lead-based paint. Buyers have up to 10 days to chec
+  days: 10
+  bbox: &id001
+    x0: 90.0
+    y0: 480.7
+    x1: 558.0
+    y1: 494.1
+field_map:
+- page: 3
+  field: type of exposure than exposure to high levels of hazards for
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 541.8
+    x1: 558.0
+    y1: 558.3
+  region: lower
+  time_length_days: null
+- page: 9
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 495.2
+    x1: 489.9
+    y1: 508.6
+  region: lower
+  time_length_days: null
+- page: 11
+  field: 1, 2011. CO detectors trigger an alarm based on accumulation
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 384.6
+    x1: 558.0
+    y1: 398.0
+  region: middle
+  time_length_days: null
+- page: 11
+  field: Do not let your car idle for long periods of time inside the
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 569.7
+    x1: 433.9
+    y1: 583.1
+  region: lower
+  time_length_days: null
+- page: 13
+  field: most of their time indoors, and there are many indoor source
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 543.1
+    x1: 558.0
+    y1: 556.5
+  region: lower
+  time_length_days: null
+- page: 14
+  field: and new products. Emissions ordinarily decrease to low level
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 310.7
+    x1: 558.0
+    y1: 324.1
+  region: middle
+  time_length_days: null
+- page: 14
+  field: installed prior to 1982, formaldehyde concentrations have de
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 467.6
+    x1: 558.0
+    y1: 481.0
+  region: middle
+  time_length_days: null
+- page: 14
+  field: several day basis using standard analytical techniques and m
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 557.1
+    x1: 558.0
+    y1: 570.5
+  region: lower
+  time_length_days: null
+- page: 16
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 560.2
+    x1: 558.0
+    y1: 573.6
+  region: lower
+  time_length_days: null
+- page: 20
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 90.2
+    x1: 558.0
+    y1: 103.6
+  region: header
+  time_length_days: null
+- page: 23
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 378.7
+    x1: 558.0
+    y1: 392.1
+  region: middle
+  time_length_days: null
+- page: 24
+  field: they live in, or spend a lot of time in, a place built befor
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 475.4
+    x1: 558.0
+    y1: 491.9
+  region: lower
+  time_length_days: null
+- page: 28
+  field: include a federal form about lead-based paint. Buyers have u
+  category: date_area
+  bbox: *id001
+  region: lower
+  time_length_days: 10
+- page: 30
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 475.8
+    x1: 558.0
+    y1: 489.2
+  region: lower
+  time_length_days: null
+- page: 32
+  field: become soiled. In time, unchecked mold growth can cause seri
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 157.7
+    x1: 558.0
+    y1: 171.1
+  region: upper
+  time_length_days: null
+- page: 33
+  field: 'outdoor air sample also must be collected at the same time, '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 552.7
+    x1: 558.0
+    y1: 566.1
+  region: lower
+  time_length_days: null
+- page: 35
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 640.2
+    x1: 558.0
+    y1: 653.6
+  region: lower
+  time_length_days: null
+- page: 37
+  field: 'in a house. Passive detectors are devices left in place for '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 402.1
+    x1: 558.0
+    y1: 415.5
+  region: middle
+  time_length_days: null
+- page: 38
+  field: contaminants in the water may adversely affect this), safety
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 564.1
+    x1: 558.0
+    y1: 577.5
+  region: lower
+- page: 39
+  field: 'Note: Telephone numbers and prices were correct at the date '
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 556.8
+    x1: 558.0
+    y1: 570.2
+  region: lower
+  time_length_days: null
+- page: 42
+  field: Contact information provided was correct as of the date of p
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 97.8
+    x1: 558.0
+    y1: 111.2
+  region: header
+  time_length_days: null
+- page: 47
+  field: radon requires only that the detector be left in place for a
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 258.6
+    x1: 434.6
+    y1: 272.0
+  region: upper
+  time_length_days: null
+- page: 47
+  field: exposure to an environmental hazard. Risk depends on the tim
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 554.1
+    x1: 558.0
+    y1: 567.5
+  region: lower
+  time_length_days: null

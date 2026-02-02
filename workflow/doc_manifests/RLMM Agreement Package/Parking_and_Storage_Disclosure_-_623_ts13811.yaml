@@ -1,0 +1,61 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: Parking_and_Storage_Disclosure_-_623_ts13811.pdf
+folder: RLMM Agreement Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 4
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 476.7
+    y0: 354.8
+    x1: 503.4
+    y1: 366.0
+  region: middle
+  time_length_days: null
+- page: 1
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 476.7
+    y0: 372.8
+    x1: 503.4
+    y1: 384.0
+  region: middle
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 481.8
+    y0: 582.8
+    x1: 505.6
+    y1: 594.0
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 481.8
+    y0: 600.8
+    x1: 505.6
+    y1: 612.0
+  region: lower
+  time_length_days: null

@@ -27,7 +27,30 @@ CREATE TABLE IF NOT EXISTS audit(
   id INTEGER PRIMARY KEY AUTOINCREMENT, txn TEXT,
   action TEXT, detail TEXT,
   ts TEXT DEFAULT(datetime('now','localtime'))
+);
+CREATE TABLE IF NOT EXISTS docs(
+  txn TEXT, code TEXT, name TEXT, phase TEXT,
+  status TEXT DEFAULT 'required',
+  received TEXT, verified TEXT, notes TEXT,
+  PRIMARY KEY(txn, code)
 );"""
+
+# Columns added after initial schema — migrated on connect
+_MIGRATIONS = [
+    ("txns", "txn_type", "TEXT DEFAULT 'sale'"),
+    ("txns", "party_role", "TEXT DEFAULT 'listing'"),
+    ("txns", "brokerage", "TEXT DEFAULT ''"),
+    ("txns", "props", "TEXT DEFAULT '{}'"),
+]
+
+
+def _migrate(c: sqlite3.Connection):
+    """Add new columns to existing tables if missing."""
+    for table, col, typedef in _MIGRATIONS:
+        try:
+            c.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typedef}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
 
 
 @contextmanager
@@ -36,6 +59,7 @@ def conn():
     c = sqlite3.connect(str(DB))
     c.row_factory = sqlite3.Row
     c.executescript(SCHEMA)
+    _migrate(c)
     try:
         yield c
         c.commit()

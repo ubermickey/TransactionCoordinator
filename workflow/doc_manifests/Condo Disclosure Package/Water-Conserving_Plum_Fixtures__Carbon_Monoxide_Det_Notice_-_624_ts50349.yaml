@@ -1,0 +1,71 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:07'
+file: Water-Conserving_Plum_Fixtures__Carbon_Monoxide_Det_Notice_-_624_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 5
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: single-family dwellings, duplex, lodging house, dormitory, h
+  category: date_area
+  bbox:
+    x0: 82.8
+    y0: 332.8
+    x1: 560.7
+    y1: 342.8
+  region: middle
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.8
+    y0: 598.8
+    x1: 497.8
+    y1: 608.8
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.8
+    y0: 612.7
+    x1: 497.8
+    y1: 622.8
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.8
+    y0: 630.7
+    x1: 497.8
+    y1: 640.8
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 478.8
+    y0: 644.8
+    x1: 497.8
+    y1: 654.8
+  region: lower
+  time_length_days: null

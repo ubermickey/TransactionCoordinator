@@ -1,0 +1,125 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:09'
+file: Rental_Property_Owner_Disclosure_-_623_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 10
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 1
+  text: 'To Broker: Within 3 days of providing this Rental Property Owner Disclosure to B'
+  days: 3
+  bbox: &id001
+    x0: 108.0
+    y0: 514.6
+    x1: 469.2
+    y1: 524.6
+field_map:
+- page: 1
+  field: Read the questions carefully and take your time.
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 247.5
+    x1: 282.5
+    y1: 257.6
+  region: upper
+  time_length_days: null
+- page: 1
+  field: 'To Broker: Within 3 days of providing this Rental Property O'
+  category: date_area
+  bbox: *id001
+  region: lower
+  time_length_days: 3
+- page: 2
+  field: If yes to B(1), identify the location and date(s) of the tre
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 65.0
+    x1: 338.9
+    y1: 75.1
+  region: header
+  time_length_days: null
+- page: 2
+  field: (1) If yes to B, identify the location and date(s) of the tr
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 149.0
+    x1: 327.9
+    y1: 159.1
+  region: upper
+  time_length_days: null
+- page: 2
+  field: addenda and that such information is true and correct to the
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 427.9
+    x1: 576.0
+    y1: 437.9
+  region: middle
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 470.5
+    y0: 483.0
+    x1: 492.0
+    y1: 493.1
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 470.5
+    y0: 499.0
+    x1: 492.0
+    y1: 509.1
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.0
+    y0: 554.0
+    x1: 493.5
+    y1: 564.1
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.0
+    y0: 570.0
+    x1: 493.5
+    y1: 580.1
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 614.0
+    x1: 498.5
+    y1: 624.1
+  region: lower
+  time_length_days: null

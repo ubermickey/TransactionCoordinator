@@ -1,0 +1,146 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: Lead-Based_Paint_and_Lead-Based_Paint_Hazards_Disclosure_1_-_1224_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 3
+  date_areas_from_text: 9
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 1
+  text: 'For Sales Transactions Only: Buyer has 10 days unless otherwise agreed in the re'
+  days: 10
+  bbox: &id001
+    x0: 72.0
+    y0: 581.6
+    x1: 576.0
+    y1: 592.8
+- page: 2
+  text: 'For Sales Transactions Only: Buyer acknowledges the right for 10 days, unless ot'
+  days: 10
+  bbox: &id002
+    x0: 72.0
+    y0: 321.1
+    x1: 576.2
+    y1: 332.3
+field_map:
+- page: 1
+  field: Buyer's/Tenant's Initials
+  category: signature_area
+  bbox:
+    x0: 360.0
+    y0: 709.6
+    x1: 443.9
+    y1: 718.6
+  region: footer
+- page: 1
+  field: 'For Sales Transactions Only: Buyer has 10 days unless otherw'
+  category: date_area
+  bbox: *id001
+  region: lower
+  time_length_days: 10
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 645.8
+    x1: 509.9
+    y1: 657.0
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 672.3
+    x1: 509.9
+    y1: 683.5
+  region: footer
+  time_length_days: null
+- page: 2
+  field: Associate-Licensee or Broker Signature
+  category: signature_area
+  bbox:
+    x0: 324.0
+    y0: 153.9
+    x1: 497.8
+    y1: 165.0
+  region: upper
+- page: 2
+  field: Associate-Licensee or Broker Signature
+  category: signature_area
+  bbox:
+    x0: 306.0
+    y0: 582.8
+    x1: 495.2
+    y1: 594.0
+  region: lower
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 449.3
+    y0: 36.6
+    x1: 468.4
+    y1: 45.5
+  region: header
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 540.0
+    y0: 153.9
+    x1: 573.4
+    y1: 165.0
+  region: upper
+  time_length_days: null
+- page: 2
+  field: 'For Sales Transactions Only: Buyer acknowledges the right fo'
+  category: date_area
+  bbox: *id002
+  region: middle
+  time_length_days: 10
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 270.0
+    y0: 425.9
+    x1: 296.6
+    y1: 437.0
+  region: middle
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 540.0
+    y0: 425.9
+    x1: 575.0
+    y1: 437.0
+  region: middle
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 522.0
+    y0: 582.8
+    x1: 573.6
+    y1: 594.0
+  region: lower
+  time_length_days: null

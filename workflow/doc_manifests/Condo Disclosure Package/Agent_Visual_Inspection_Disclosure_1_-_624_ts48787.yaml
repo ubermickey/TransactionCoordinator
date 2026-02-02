@@ -1,0 +1,126 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:06'
+file: Agent_Visual_Inspection_Disclosure_1_-_624_ts48787.pdf
+folder: Condo Disclosure Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 5
+  date_areas_from_text: 6
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 447.3
+    y1: 730.7
+  region: footer
+- page: 2
+  field: Buyer's Initials
+  category: signature_area
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 447.3
+    y1: 742.1
+  region: footer
+- page: 3
+  field: (Signature of Associate Licensee or Broker who performed the
+  category: signature_area
+  bbox:
+    x0: 90.0
+    y0: 419.3
+    x1: 408.3
+    y1: 429.4
+  region: middle
+- page: 3
+  field: (The initials below and Broker signature are not required bu
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 566.4
+    x1: 576.0
+    y1: 577.6
+  region: lower
+- page: 3
+  field: (Associate Licensee or Broker Signature)
+  category: signature_area
+  bbox:
+    x0: 144.0
+    y0: 639.4
+    x1: 326.2
+    y1: 650.6
+  region: lower
+- page: 3
+  field: accessible areas of the Property on the date specified above
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 337.2
+    x1: 325.8
+    y1: 348.3
+  region: middle
+  time_length_days: null
+- page: 3
+  field: 'Inspection Date/Time:'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 378.4
+    x1: 133.2
+    y1: 389.6
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 427.8
+    y0: 407.4
+    x1: 451.7
+    y1: 418.6
+  region: middle
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 429.0
+    y0: 519.5
+    x1: 452.9
+    y1: 530.6
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 429.0
+    y0: 534.5
+    x1: 452.9
+    y1: 545.6
+  region: lower
+  time_length_days: null
+- page: 3
+  field: Date
+  category: date_area
+  bbox:
+    x0: 427.8
+    y0: 627.5
+    x1: 454.5
+    y1: 638.6
+  region: lower
+  time_length_days: null

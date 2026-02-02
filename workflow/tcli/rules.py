@@ -12,13 +12,26 @@ def _load(path: Path):
     return yaml.safe_load(path.read_text())
 
 
-def phases():    return _load(ROOT / "phases.yaml")["phases"]
-def gates():     return _load(ROOT / "agent_verification_gates.yaml")["gates"]
-def deadlines(): return _load(ROOT / "deadlines.yaml")["deadlines"]
+def phases():       return _load(ROOT / "phases.yaml")["phases"]
+def lease_phases(): return _load(ROOT / "phases.yaml").get("lease_phases", [])
+def gates():        return _load(ROOT / "agent_verification_gates.yaml")["gates"]
+def deadlines():    return _load(ROOT / "deadlines.yaml")["deadlines"]
+
+
+def de_gates(brokerage_name: str) -> list[dict]:
+    """Return brokerage-specific gates from agent_verification_gates.yaml."""
+    data = _load(ROOT / "agent_verification_gates.yaml")
+    all_de = data.get("de_gates", [])
+    return [g for g in all_de if g.get("brokerage", "") == brokerage_name]
 
 
 def gate(gid: str) -> dict | None:
-    return next((g for g in gates() if g["id"] == gid), None)
+    """Find a gate by ID in standard gates + DE gates."""
+    g = next((g for g in gates() if g["id"] == gid), None)
+    if g:
+        return g
+    data = _load(ROOT / "agent_verification_gates.yaml")
+    return next((g for g in data.get("de_gates", []) if g["id"] == gid), None)
 
 
 def jurisdiction(name: str):
@@ -33,7 +46,23 @@ def resolve(city: str) -> list[str]:
     return ["california"]
 
 
+BROKERAGE_DIR = ROOT / "brokerages"
 FORMS_DIR = ROOT / "forms"
+
+
+def brokerage(name: str) -> dict | None:
+    """Load brokerage YAML by name (e.g. 'douglas_elliman')."""
+    if not name:
+        return None
+    path = BROKERAGE_DIR / f"{name}.yaml"
+    return _load(path) if path.exists() else None
+
+
+def brokerage_list() -> list[str]:
+    """Return available brokerage config names."""
+    if not BROKERAGE_DIR.exists():
+        return []
+    return sorted(p.stem for p in BROKERAGE_DIR.glob("*.yaml"))
 
 
 def form_template(code: str | None) -> dict | None:

@@ -1,0 +1,101 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:10'
+file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+folder: RLMM Agreement Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 8
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 274.9
+    x1: 501.4
+    y1: 284.9
+  region: upper
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 288.8
+    x1: 501.4
+    y1: 298.8
+  region: upper
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 323.3
+    x1: 501.4
+    y1: 333.3
+  region: middle
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 337.3
+    x1: 501.4
+    y1: 347.4
+  region: middle
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 557.1
+    x1: 501.4
+    y1: 567.1
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 571.0
+    x1: 501.4
+    y1: 581.1
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 605.5
+    x1: 501.4
+    y1: 615.6
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 482.4
+    y0: 619.6
+    x1: 501.4
+    y1: 629.6
+  region: lower
+  time_length_days: null

@@ -1,0 +1,41 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:14'
+file: Sellers_Vacant_Land_Advisory_-_623_ts47412.pdf
+folder: Vacant Land Listing Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 2
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.5
+    y0: 202.7
+    x1: 481.4
+    y1: 213.8
+  region: upper
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.5
+    y0: 246.7
+    x1: 481.4
+    y1: 257.8
+  region: upper
+  time_length_days: null

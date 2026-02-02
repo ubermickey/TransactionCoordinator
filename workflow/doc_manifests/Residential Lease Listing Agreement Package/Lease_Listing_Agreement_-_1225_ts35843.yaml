@@ -1,0 +1,654 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:10'
+file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+folder: Residential Lease Listing Agreement Package
+page_count: 13
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 11
+  date_areas_from_text: 49
+  fillable_blanks_from_text: 2
+  test_address_references: 0
+time_length_review:
+- page: 3
+  text: provided to Broker within 3 Days of completing (or
+  days: 3
+  bbox: &id001
+    x0: 72.0
+    y0: 417.3
+    x1: 273.2
+    y1: 427.4
+- page: 3
+  text: Form RPOI) within 3 Days of request by Broker (or
+  days: 3
+  bbox: &id002
+    x0: 72.0
+    y0: 439.6
+    x1: 273.4
+    y1: 449.6
+- page: 4
+  text: the right to cancel this Agreement, in writing, within 5 calendar days after its
+  days: 5
+  bbox: &id003
+    x0: 54.0
+    y0: 435.3
+    x1: 401.9
+    y1: 445.4
+- page: 5
+  text: 3 Days after execution of this Agreement, evidence of authority to act in that c
+  days: 3
+  bbox: &id004
+    x0: 50.4
+    y0: 80.3
+    x1: 576.1
+    y1: 90.3
+- page: 6
+  text: 'To Broker: Within 3 days of providing this Rental Property Owner Disclosure to B'
+  days: 3
+  bbox: &id005
+    x0: 108.0
+    y0: 515.5
+    x1: 469.2
+    y1: 525.6
+- page: 8
+  text: with 30 days written notice. (See Rental Property Owner Intake Form, C.A.R. Form
+  days: 30
+  bbox: &id006
+    x0: 54.0
+    y0: 448.6
+    x1: 412.8
+    y1: 458.6
+- page: 8
+  text: 'Out Inspection, C.A.R. Form PMOI). A housing provider, within 21 days after all '
+  days: 21
+  bbox: &id007
+    x0: 72.0
+    y0: 620.1
+    x1: 576.1
+    y1: 630.1
+- page: 9
+  text: 'If the tenant''s application is not considered, within 7 days: (i) the screening '
+  days: 7
+  bbox: &id008
+    x0: 90.0
+    y0: 165.3
+    x1: 576.1
+    y1: 175.4
+- page: 9
+  text: 'applicants must be returned by the sooner of these two events: (i) within 7 days'
+  days: 7
+  bbox: &id009
+    x0: 72.0
+    y0: 228.3
+    x1: 576.1
+    y1: 238.4
+- page: 9
+  text: (ii) within 30 days of the date the applicant submitted their application.
+  days: 30
+  bbox: &id010
+    x0: 72.0
+    y0: 237.3
+    x1: 350.4
+    y1: 247.4
+- page: 10
+  text: also have the authority to declare a local state of emergency. These Executive O
+  days: 30
+  bbox: &id011
+    x0: 54.0
+    y0: 59.0
+    x1: 576.0
+    y1: 69.1
+field_map:
+- page: 1
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 378.0
+    y0: 718.8
+    x1: 425.2
+    y1: 726.6
+  region: footer
+- page: 1
+  field: 'Date Prepared:'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 84.0
+    x1: 97.0
+    y1: 94.1
+  region: header
+  time_length_days: null
+- page: 1
+  field: beginning (date)
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 117.1
+    x1: 117.9
+    y1: 127.1
+  region: upper
+  time_length_days: null
+- page: 1
+  field: and ending at 11:59 P.M. on (date)
+  category: date_area
+  bbox:
+    x0: 241.8
+    y0: 117.1
+    x1: 382.0
+    y1: 127.1
+  region: upper
+  time_length_days: null
+- page: 1
+  field: resulting from such offer begins during or after the expirat
+  category: date_area
+  bbox:
+    x0: 108.0
+    y0: 531.1
+    x1: 506.9
+    y1: 541.1
+  region: lower
+  time_length_days: null
+- page: 1
+  field: calendar days after
+  category: date_area
+  bbox:
+    x0: 495.7
+    y0: 541.8
+    x1: 576.0
+    y1: 551.8
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 378.0
+    y0: 733.8
+    x1: 425.2
+    y1: 741.6
+  region: footer
+- page: 2
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 471.5
+    y1: 32.6
+  region: header
+  time_length_days: null
+- page: 2
+  field: (2) If Premises are leased or rented to anyone listed in par
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 306.3
+    x1: 576.0
+    y1: 316.6
+  region: upper
+  time_length_days: null
+- page: 3
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 378.0
+    y0: 738.3
+    x1: 425.2
+    y1: 746.1
+  region: footer
+- page: 3
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 471.5
+    y1: 32.6
+  region: header
+  time_length_days: null
+- page: 3
+  field: provided to Broker within 3 Days of completing (or
+  category: date_area
+  bbox: *id001
+  region: middle
+  time_length_days: 3
+- page: 3
+  field: Form RPOI) within 3 Days of request by Broker (or
+  category: date_area
+  bbox: *id002
+  region: middle
+  time_length_days: 3
+- page: 4
+  field: Owner's Initials
+  category: signature_area
+  bbox:
+    x0: 378.0
+    y0: 732.3
+    x1: 425.2
+    y1: 740.1
+  region: footer
+- page: 4
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 471.5
+    y1: 32.6
+  region: header
+  time_length_days: null
+- page: 4
+  field: expiration of this Agreement.
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 185.5
+    x1: 186.5
+    y1: 195.6
+  region: upper
+  time_length_days: null
+- page: 4
+  field: the right to cancel this Agreement, in writing, within 5 cal
+  category: date_area
+  bbox: *id003
+  region: middle
+  time_length_days: 5
+- page: 4
+  field: '20. TIME OF ESSENCE; ENTIRE CONTRACT; CHANGES: Time is of th'
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 609.3
+    x1: 576.0
+    y1: 619.4
+  region: lower
+  time_length_days: null
+- page: 5
+  field: '21. LEGALLY AUTHORIZED SIGNER: Wherever the signature or ini'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 36.3
+    x1: 576.0
+    y1: 46.3
+  region: header
+- page: 5
+  field: 'ENTITY RENTAL PROPERTY OWNERS: (Note: If this paragraph is c'
+  category: signature_area
+  bbox:
+    x0: 72.0
+    y0: 151.3
+    x1: 576.0
+    y1: 161.3
+  region: upper
+- page: 5
+  field: 'RENTAL PROPERTY OWNER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 346.3
+    x1: 231.8
+    y1: 356.4
+  region: middle
+- page: 5
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 362.5
+    x1: 96.0
+    y1: 372.6
+  region: middle
+- page: 5
+  field: (Signature) By,
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 451.6
+    x1: 96.0
+    y1: 461.6
+  region: middle
+- page: 5
+  field: Additional Signature Addendum attached (C.A.R. Form ASA)
+  category: signature_area
+  bbox:
+    x0: 44.0
+    y0: 535.5
+    x1: 288.9
+    y1: 545.6
+  region: lower
+- page: 5
+  field: 'BROKER SIGNATURE(S):'
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 554.3
+    x1: 145.4
+    y1: 564.4
+  region: lower
+- page: 5
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 471.5
+    y1: 32.6
+  region: header
+  time_length_days: null
+- page: 5
+  field: 3 Days after execution of this Agreement, evidence of author
+  category: date_area
+  bbox: *id004
+  region: header
+  time_length_days: 3
+- page: 5
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 473.5
+    y0: 362.5
+    x1: 497.5
+    y1: 372.6
+  region: middle
+  time_length_days: null
+- page: 5
+  field: 'Date:'
+  category: date_area
+  bbox:
+    x0: 473.5
+    y0: 451.6
+    x1: 497.5
+    y1: 461.6
+  region: middle
+  time_length_days: null
+- page: 5
+  field: Date
+  category: date_area
+  bbox:
+    x0: 485.0
+    y0: 601.6
+    x1: 509.0
+    y1: 611.6
+  region: lower
+  time_length_days: null
+- page: 5
+  field: Date
+  category: date_area
+  bbox:
+    x0: 485.0
+    y0: 623.5
+    x1: 506.5
+    y1: 633.6
+  region: lower
+  time_length_days: null
+- page: 6
+  field: Read the questions carefully and take your time.
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 248.5
+    x1: 282.5
+    y1: 258.6
+  region: upper
+  time_length_days: null
+- page: 6
+  field: 'To Broker: Within 3 days of providing this Rental Property O'
+  category: date_area
+  bbox: *id005
+  region: lower
+  time_length_days: 3
+- page: 7
+  field: If yes to B(1), identify the location and date(s) of the tre
+  category: date_area
+  bbox:
+    x0: 90.0
+    y0: 65.0
+    x1: 338.9
+    y1: 75.1
+  region: header
+  time_length_days: null
+- page: 7
+  field: (1) If yes to B, identify the location and date(s) of the tr
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 149.0
+    x1: 327.9
+    y1: 159.1
+  region: upper
+  time_length_days: null
+- page: 7
+  field: addenda and that such information is true and correct to the
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 427.9
+    x1: 576.0
+    y1: 437.9
+  region: middle
+  time_length_days: null
+- page: 7
+  field: Date
+  category: date_area
+  bbox:
+    x0: 470.5
+    y0: 483.0
+    x1: 492.0
+    y1: 493.1
+  region: lower
+  time_length_days: null
+- page: 7
+  field: Date
+  category: date_area
+  bbox:
+    x0: 470.5
+    y0: 499.0
+    x1: 492.0
+    y1: 509.1
+  region: lower
+  time_length_days: null
+- page: 7
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.0
+    y0: 554.0
+    x1: 493.5
+    y1: 564.1
+  region: lower
+  time_length_days: null
+- page: 7
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.0
+    y0: 570.0
+    x1: 493.5
+    y1: 580.1
+  region: lower
+  time_length_days: null
+- page: 7
+  field: Date
+  category: date_area
+  bbox:
+    x0: 477.0
+    y0: 614.0
+    x1: 498.5
+    y1: 624.1
+  region: lower
+  time_length_days: null
+- page: 8
+  field: occupancy of 30 or more days. Rental property owners intendi
+  category: date_area
+  bbox:
+    x0: 36.0
+    y0: 101.5
+    x1: 576.0
+    y1: 111.6
+  region: header
+  time_length_days: null
+- page: 8
+  field: 'require notification or registration any time a property is '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 160.6
+    x1: 576.1
+    y1: 170.6
+  region: upper
+  time_length_days: null
+- page: 8
+  field: with 30 days written notice. (See Rental Property Owner Inta
+  category: date_area
+  bbox: *id006
+  region: middle
+  time_length_days: 30
+- page: 8
+  field: Out Inspection, C.A.R. Form PMOI). A housing provider, withi
+  category: date_area
+  bbox: *id007
+  region: lower
+  time_length_days: 21
+- page: 8
+  field: security deposit by check made out to all adult tenants on t
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 674.1
+    x1: 576.1
+    y1: 684.1
+  region: footer
+  time_length_days: null
+- page: 9
+  field: HOUSING PROVIDER DISCLOSES WRITTEN CRITERIA TO A TENANT AT T
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 120.3
+    x1: 489.0
+    y1: 130.4
+  region: upper
+  time_length_days: null
+- page: 9
+  field: If the tenant's application is not considered, within 7 days
+  category: date_area
+  bbox: *id008
+  region: upper
+  time_length_days: 7
+- page: 9
+  field: 'HOUSING PROVIDER DOES NOT DISCLOSE WRITTEN CRITERIA AT TIME '
+  category: date_area
+  bbox:
+    x0: 72.0
+    y0: 192.3
+    x1: 576.1
+    y1: 202.4
+  region: upper
+  time_length_days: null
+- page: 9
+  field: applicants must be returned by the sooner of these two event
+  category: date_area
+  bbox: *id009
+  region: upper
+  time_length_days: 7
+- page: 9
+  field: (ii) within 30 days of the date the applicant submitted thei
+  category: date_area
+  bbox: *id010
+  region: upper
+  time_length_days: 30
+- page: 10
+  field: also have the authority to declare a local state of emergenc
+  category: date_area
+  bbox: *id011
+  region: header
+  time_length_days: 30
+- page: 10
+  field: Date
+  category: date_area
+  bbox:
+    x0: 481.0
+    y0: 303.0
+    x1: 502.5
+    y1: 313.1
+  region: upper
+  time_length_days: null
+- page: 10
+  field: Date
+  category: date_area
+  bbox:
+    x0: 481.0
+    y0: 319.0
+    x1: 502.5
+    y1: 329.1
+  region: middle
+  time_length_days: null
+- page: 12
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.5
+    y0: 588.4
+    x1: 494.0
+    y1: 598.4
+  region: lower
+  time_length_days: null
+- page: 12
+  field: Date
+  category: date_area
+  bbox:
+    x0: 472.5
+    y0: 602.4
+    x1: 494.0
+    y1: 612.4
+  region: lower
+  time_length_days: null
+- page: 12
+  field: Date
+  category: date_area
+  bbox:
+    x0: 473.0
+    y0: 619.3
+    x1: 494.5
+    y1: 629.4
+  region: lower
+  time_length_days: null
+- page: 12
+  field: Date
+  category: date_area
+  bbox:
+    x0: 473.0
+    y0: 633.4
+    x1: 494.5
+    y1: 643.4
+  region: lower
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 393.3
+    x1: 481.2
+    y1: 404.4
+  region: middle
+  time_length_days: null
+- page: 13
+  field: Date
+  category: date_area
+  bbox:
+    x0: 457.3
+    y0: 422.3
+    x1: 481.2
+    y1: 433.4
+  region: middle
+  time_length_days: null

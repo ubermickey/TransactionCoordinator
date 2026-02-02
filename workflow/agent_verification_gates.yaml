@@ -767,3 +767,146 @@ gates:
 #   GATE-061: Closing disclosure (3 business days before close — TRID)
 #
 # =============================================================================
+
+
+# =============================================================================
+# DOUGLAS ELLIMAN — BROKERAGE-SPECIFIC GATES
+# =============================================================================
+# These gates are ONLY loaded when brokerage=douglas_elliman on the transaction.
+# They supplement (not replace) the standard gates above.
+# =============================================================================
+
+de_gates:
+
+  # ---------------------------------------------------------------------------
+  - id: DE-GATE-001
+    phase: PRE_CONTRACT
+    name: DE Addendum to Listing Agreement signed
+    type: HARD_GATE
+    brokerage: douglas_elliman
+    conditions: null
+
+    legal_basis:
+      statute: "DE internal compliance policy; CA B&P Code §10142"
+      obligation: "Ensure DE-specific listing addendum is executed alongside standard listing agreement"
+      liability: "Brokerage compliance failure; potential commission dispute"
+
+    what_agent_verifies:
+      - "DE Addendum to Listing Agreement is fully executed by seller"
+      - "Commission structure matches DE manager/broker agreement"
+      - "Marketing authorization form signed"
+      - "DE supplemental disclosure requirements communicated to seller"
+
+    ai_prepares:
+      - "Pre-fills DE addendum with listing details from MLS/input"
+      - "Flags any non-standard commission terms for manager review"
+      - "Generates DE marketing authorization form"
+
+    cannot_proceed_until: "DE listing addendum is signed by all parties"
+
+  # ---------------------------------------------------------------------------
+  - id: DE-GATE-002
+    phase: CONTRACT_EXECUTION
+    name: Manager/Broker Commission Agreement signed
+    type: HARD_GATE
+    brokerage: douglas_elliman
+    conditions: null
+
+    legal_basis:
+      statute: "DE internal policy; CA B&P Code §10137"
+      obligation: "Commission split agreement between agent and DE must be executed before escrow"
+      liability: "Commission dispute; potential DRE complaint if not documented"
+
+    what_agent_verifies:
+      - "Commission agreement reflects negotiated terms"
+      - "Manager/broker has countersigned"
+      - "Referral fees (if any) are documented and compliant"
+      - "Commission splits match listing agreement terms"
+
+    ai_prepares:
+      - "Generates commission agreement from contract terms"
+      - "Calculates splits per DE schedule"
+      - "Flags referral obligations"
+
+    cannot_proceed_until: "Manager/broker commission agreement is fully executed"
+
+  # ---------------------------------------------------------------------------
+  - id: DE-GATE-003
+    phase: POST_CLOSING
+    name: DE File Compliance Review completed
+    type: HARD_GATE
+    brokerage: douglas_elliman
+    conditions: null
+
+    legal_basis:
+      statute: "DE internal compliance; CA B&P Code §10148"
+      obligation: "Complete file review per DE standards before archival"
+      liability: "DRE audit failure; brokerage compliance violation"
+
+    what_agent_verifies:
+      - "All required DE forms are in the file"
+      - "DE supplemental disclosures (all 13 items) completed"
+      - "Commission disbursement matches agreement"
+      - "File meets DE compliance department checklist"
+      - "Broker review submission completed in SkySlope/system"
+
+    ai_prepares:
+      - "Runs automated completeness check against DE document list"
+      - "Highlights missing or unsigned documents"
+      - "Generates file compliance summary for broker review"
+
+    cannot_proceed_until: "DE compliance review checklist is complete and broker-approved"
+
+  # ---------------------------------------------------------------------------
+  - id: DE-GATE-004
+    phase: PRE_CONTRACT
+    name: DE Supplemental Disclosures completed
+    type: HARD_GATE
+    brokerage: douglas_elliman
+    conditions: null
+
+    legal_basis:
+      statute: "DE internal policy; CA Civil Code §1102"
+      obligation: "All 13 DE supplemental disclosure items completed and delivered"
+      liability: "Incomplete disclosure; rescission risk; brokerage compliance failure"
+
+    what_agent_verifies:
+      - "All 13 supplemental disclosure items are completed"
+      - "Brokerage relationship confirmation signed"
+      - "Commission structure disclosed"
+      - "Dual agency possibility acknowledged"
+      - "FIRPTA/CA 593 withholding advisory delivered"
+      - "Data privacy and marketing consent obtained"
+
+    ai_prepares:
+      - "Pre-fills DE supplemental form with transaction details"
+      - "Checks each of 13 items for completeness"
+      - "Flags items requiring seller signature"
+
+    cannot_proceed_until: "All 13 DE supplemental disclosure items are completed and signed"
+
+  # ---------------------------------------------------------------------------
+  - id: DE-GATE-005
+    phase: CONTRACT_EXECUTION
+    name: DE Buyer Broker Compensation Notice delivered
+    type: HARD_GATE
+    brokerage: douglas_elliman
+    conditions: null
+
+    legal_basis:
+      statute: "NAR settlement compliance; CA B&P Code §10147.5"
+      obligation: "Written buyer broker compensation notice must be delivered and acknowledged"
+      liability: "Compensation dispute; NAR compliance violation; potential antitrust exposure"
+
+    what_agent_verifies:
+      - "Buyer broker compensation notice reflects agreed terms"
+      - "Buyer has acknowledged receipt of compensation disclosure"
+      - "Compensation source (seller, buyer, split) is documented"
+      - "Notice complies with current NAR settlement requirements"
+
+    ai_prepares:
+      - "Generates compensation notice from contract terms"
+      - "Flags if compensation terms differ from MLS offering"
+      - "Tracks delivery and acknowledgment status"
+
+    cannot_proceed_until: "Buyer broker compensation notice is delivered and acknowledged"

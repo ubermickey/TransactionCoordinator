@@ -1,0 +1,41 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:14'
+file: Addendum_to_Vacant_Land_Listing_Agreement_-_925_ts47412.pdf
+folder: Vacant Land Listing Agreement Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 2
+  fillable_blanks_from_text: 5
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: 'BY:________________________  Date:'
+  category: date_area
+  bbox:
+    x0: 288.0
+    y0: 658.2
+    x1: 499.8
+    y1: 670.4
+  region: lower
+  time_length_days: null
+- page: 1
+  field: 'BY:________________________  Date:'
+  category: date_area
+  bbox:
+    x0: 288.0
+    y0: 708.8
+    x1: 499.8
+    y1: 721.0
+  region: footer
+  time_length_days: null

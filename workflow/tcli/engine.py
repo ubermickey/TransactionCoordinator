@@ -68,12 +68,33 @@ def calc_deadlines(txn_id: str, anchor: date, data: dict):
                     (txn_id, did, dl["name"], dl["type"], due.isoformat(), "pending"),
                 )
 
+# ── Phase Order ──────────────────────────────────────────────────────────────
+
+SALE_PHASE_ORDER = [p["id"] for p in rules.phases()]
+LEASE_PHASE_ORDER = [p["id"] for p in rules.lease_phases()]
+
+
+def phase_order(txn_type: str = "sale") -> list[str]:
+    """Return the phase list for a transaction type."""
+    if txn_type == "lease":
+        return LEASE_PHASE_ORDER
+    return SALE_PHASE_ORDER
+
+
+def default_phase(txn_type: str = "sale") -> str:
+    """Return the first phase for a transaction type."""
+    return phase_order(txn_type)[0]
+
 # ── Gates ────────────────────────────────────────────────────────────────────
 
-def init_gates(txn_id: str):
+def init_gates(txn_id: str, brokerage: str = ""):
+    """Create gate records. Includes DE-specific gates when brokerage matches."""
     with db.conn() as c:
         for g in rules.gates():
             c.execute("INSERT OR IGNORE INTO gates(txn,gid) VALUES(?,?)", (txn_id, g["id"]))
+        if brokerage:
+            for g in rules.de_gates(brokerage):
+                c.execute("INSERT OR IGNORE INTO gates(txn,gid) VALUES(?,?)", (txn_id, g["id"]))
 
 
 def verify(txn_id: str, gate_id: str, notes: str = ""):
@@ -97,19 +118,36 @@ def deadline_rows(txn_id: str) -> list[dict]:
 
 # ── Phase Advancement ────────────────────────────────────────────────────────
 
-PHASE_ORDER = [p["id"] for p in rules.phases()]
+def _txn_phase_order(txn_id: str) -> list[str]:
+    """Get the phase order for a transaction based on its type."""
+    with db.conn() as c:
+        t = db.txn(c, txn_id)
+    return phase_order(t.get("txn_type", "sale"))
+
 
 def can_advance(txn_id: str) -> tuple[bool, list[str]]:
     """Check if all gates for current phase are verified."""
     with db.conn() as c:
         t = db.txn(c, txn_id)
     phase = t["phase"]
-    phase_def = next((p for p in rules.phases() if p["id"] == phase), None)
+    txn_type = t.get("txn_type", "sale")
+    brokerage = t.get("brokerage", "")
+
+    # Check standard phases
+    all_phases = rules.phases() if txn_type != "lease" else rules.lease_phases()
+    phase_def = next((p for p in all_phases if p["id"] == phase), None)
     if not phase_def:
         return False, ["Unknown phase"]
+
+    # Combine standard + brokerage gates for lookup
+    all_gates_defs = {g["id"]: g for g in rules.gates()}
+    if brokerage:
+        for g in rules.de_gates(brokerage):
+            all_gates_defs[g["id"]] = g
+
     blocking = []
     for g in gate_rows(txn_id):
-        info = rules.gate(g["gid"])
+        info = all_gates_defs.get(g["gid"])
         if info and info["phase"] == phase and g["status"] != "verified" and info["type"] == "HARD_GATE":
             blocking.append(f"{g['gid']}: {info['name']}")
     return len(blocking) == 0, blocking
@@ -122,10 +160,11 @@ def advance_phase(txn_id: str) -> str | None:
         return None
     with db.conn() as c:
         t = db.txn(c, txn_id)
-    idx = PHASE_ORDER.index(t["phase"]) if t["phase"] in PHASE_ORDER else -1
-    if idx + 1 >= len(PHASE_ORDER):
+    po = phase_order(t.get("txn_type", "sale"))
+    idx = po.index(t["phase"]) if t["phase"] in po else -1
+    if idx + 1 >= len(po):
         return None
-    new_phase = PHASE_ORDER[idx + 1]
+    new_phase = po[idx + 1]
     with db.conn() as c:
         c.execute("UPDATE txns SET phase=?, updated=datetime('now','localtime') WHERE id=?", (new_phase, txn_id))
         db.log(c, txn_id, "phase_advanced", f"{t['phase']} -> {new_phase}")

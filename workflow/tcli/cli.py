@@ -9,7 +9,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
-from . import db, engine, notify, overlay, rules
+from . import db, engine, notify, overlay, rules, checklist
 
 app = typer.Typer(help="Real estate transaction coordinator", no_args_is_help=True)
 con = Console()
@@ -26,20 +26,47 @@ def _tid(txn_id: str | None) -> str:
     return t["id"]
 
 
+def _populate_docs(tid: str, txn_type: str, party_role: str, brokerage: str, props: dict):
+    """Resolve and insert document checklist into docs table."""
+    docs = checklist.resolve(txn_type, party_role, brokerage, props)
+    with db.conn() as c:
+        for d in docs:
+            c.execute(
+                "INSERT OR IGNORE INTO docs(txn,code,name,phase,status) VALUES(?,?,?,?,?)",
+                (tid, d["code"], d["name"], d["phase"], "required"),
+            )
+        db.log(c, tid, "docs_populated", f"{len(docs)} documents from {brokerage}")
+
+
 # ── Core ─────────────────────────────────────────────────────────────────────
 
 @app.command()
-def new(address: str):
+def new(
+    address: str,
+    txn_type: str = typer.Option("sale", "--type", help="Transaction type: sale, lease"),
+    party_role: str = typer.Option("listing", "--role", help="Party role: listing, buyer"),
+    brokerage: str = typer.Option("", "--brokerage", help="Brokerage (e.g. douglas_elliman)"),
+):
     """Create a new transaction."""
     tid = uuid4().hex[:8]
     city = address.split(",")[1].strip() if "," in address else ""
     juris = rules.resolve(city)
+    initial_phase = engine.default_phase(txn_type)
     with db.conn() as c:
-        c.execute("INSERT INTO txns(id,address,jurisdictions) VALUES(?,?,?)", (tid, address, json.dumps(juris)))
-        db.log(c, tid, "created", address)
-    engine.init_gates(tid)
+        c.execute(
+            "INSERT INTO txns(id,address,phase,jurisdictions,txn_type,party_role,brokerage,props) VALUES(?,?,?,?,?,?,?,?)",
+            (tid, address, initial_phase, json.dumps(juris), txn_type, party_role, brokerage, "{}"),
+        )
+        db.log(c, tid, "created", f"{address} type={txn_type} role={party_role} brokerage={brokerage}")
+    engine.init_gates(tid, brokerage=brokerage)
     con.print(f"[green]Created[/] {tid} — {address}")
+    con.print(f"Type: {txn_type}  |  Role: {party_role}  |  Phase: {initial_phase}")
     con.print(f"Jurisdictions: {', '.join(juris)}")
+    if brokerage:
+        _populate_docs(tid, txn_type, party_role, brokerage, {})
+        with db.conn() as c:
+            count = c.execute("SELECT COUNT(*) FROM docs WHERE txn=?", (tid,)).fetchone()[0]
+        con.print(f"Brokerage: {brokerage}  |  Documents: {count} required")
 
 
 @app.command()
@@ -74,13 +101,27 @@ def status(txn_id: str = typer.Option(None, "--txn")):
     v = sum(1 for g in gs if g["status"] == "verified")
     today = date.today()
 
+    txn_type = t.get("txn_type", "sale")
+    brokerage = t.get("brokerage", "")
     lines = [f"[bold]{t['address']}[/]", f"Phase: {t['phase']}  |  ID: {tid}"]
+    lines.append(f"Type: {txn_type}  |  Role: {t.get('party_role', 'listing')}")
+    if brokerage:
+        lines.append(f"Brokerage: {brokerage}")
     if p := (data.get("parties") or {}):
         lines.append(f"Buyer: {p.get('buyer','?')}  |  Seller: {p.get('seller','?')}")
     if f := (data.get("financial") or {}):
         if pr := f.get("purchase_price"):
             lines.append(f"Price: ${pr:,.0f}")
     lines.append(f"Gates: {v}/{len(gs)} verified  |  Deadlines: {len(dls)} tracked")
+
+    # Doc stats
+    with db.conn() as c:
+        doc_rows = c.execute("SELECT status, COUNT(*) as cnt FROM docs WHERE txn=? GROUP BY status", (tid,)).fetchall()
+    if doc_rows:
+        doc_stats = {r["status"]: r["cnt"] for r in doc_rows}
+        total = sum(doc_stats.values())
+        recv = doc_stats.get("received", 0) + doc_stats.get("verified", 0)
+        lines.append(f"Documents: {recv}/{total} received")
 
     # Next 3 deadlines
     upcoming = []
@@ -106,6 +147,157 @@ def status(txn_id: str = typer.Option(None, "--txn")):
                 break
 
     con.print(Panel("\n".join(lines), title="Status"))
+
+
+# ── Documents ────────────────────────────────────────────────────────────────
+
+@app.command()
+def docs(txn_id: str = typer.Option(None, "--txn"), phase: str = typer.Option(None, "--phase", help="Filter by phase")):
+    """Show document checklist for a transaction."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        if phase:
+            rows = c.execute("SELECT * FROM docs WHERE txn=? AND phase=? ORDER BY phase, code", (tid, phase)).fetchall()
+        else:
+            rows = c.execute("SELECT * FROM docs WHERE txn=? ORDER BY phase, code", (tid,)).fetchall()
+    if not rows:
+        con.print("[dim]No documents tracked. Use --brokerage with 'tc new' to auto-populate.[/]")
+        return
+    tbl = Table(title="Document Checklist")
+    tbl.add_column("Code")
+    tbl.add_column("Name")
+    tbl.add_column("Phase")
+    tbl.add_column("Status")
+    tbl.add_column("Received")
+    for r in rows:
+        s = r["status"]
+        if s == "verified":
+            style = "green"
+        elif s == "received":
+            style = "yellow"
+        elif s == "na":
+            style = "dim"
+        else:
+            style = "red"
+        tbl.add_row(r["code"], r["name"], r["phase"], f"[{style}]{s}[/{style}]", r["received"] or "")
+    con.print(tbl)
+    # Summary
+    stats = {}
+    for r in rows:
+        stats[r["status"]] = stats.get(r["status"], 0) + 1
+    parts = [f"{v} {k}" for k, v in sorted(stats.items())]
+    con.print(f"[dim]{', '.join(parts)} — {len(rows)} total[/]")
+
+
+@app.command(name="doc-receive")
+def doc_receive(code: str, txn_id: str = typer.Option(None, "--txn")):
+    """Mark a document as received."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+        if not row:
+            con.print(f"[red]Document {code} not found for this transaction.[/]")
+            raise typer.Exit(1)
+        c.execute(
+            "UPDATE docs SET status='received', received=datetime('now','localtime') WHERE txn=? AND code=?",
+            (tid, code),
+        )
+        db.log(c, tid, "doc_received", code)
+    con.print(f"[green]Received:[/] {code} — {row['name']}")
+
+
+@app.command(name="doc-verify")
+def doc_verify(code: str, txn_id: str = typer.Option(None, "--txn")):
+    """Mark a document as verified by agent."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+        if not row:
+            con.print(f"[red]Document {code} not found for this transaction.[/]")
+            raise typer.Exit(1)
+        c.execute(
+            "UPDATE docs SET status='verified', verified=datetime('now','localtime') WHERE txn=? AND code=?",
+            (tid, code),
+        )
+        db.log(c, tid, "doc_verified", code)
+    con.print(f"[green]Verified:[/] {code} — {row['name']}")
+
+
+@app.command(name="doc-na")
+def doc_na(code: str, note: str = typer.Option("", "--note", help="Reason for N/A"), txn_id: str = typer.Option(None, "--txn")):
+    """Mark a document as not applicable."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+        if not row:
+            con.print(f"[red]Document {code} not found for this transaction.[/]")
+            raise typer.Exit(1)
+        c.execute(
+            "UPDATE docs SET status='na', notes=? WHERE txn=? AND code=?",
+            (note, tid, code),
+        )
+        db.log(c, tid, "doc_na", f"{code}: {note}")
+    con.print(f"[dim]N/A:[/] {code} — {row['name']}")
+
+
+# ── Properties ───────────────────────────────────────────────────────────────
+
+@app.command()
+def props(
+    txn_id: str = typer.Option(None, "--txn"),
+    set_flag: str = typer.Option(None, "--set", help="Set flag (e.g. is_condo=true)"),
+):
+    """View or set property flags for conditional document requirements."""
+    tid = _tid(txn_id)
+    with db.conn() as c:
+        t = db.txn(c, tid)
+
+    current = json.loads(t.get("props", "{}"))
+
+    if set_flag:
+        key, _, val = set_flag.partition("=")
+        key = key.strip()
+        val = val.strip().lower()
+        current[key] = val in ("true", "1", "yes")
+        with db.conn() as c:
+            c.execute("UPDATE txns SET props=?, updated=datetime('now','localtime') WHERE id=?",
+                      (json.dumps(current), tid))
+            db.log(c, tid, "props_updated", f"{key}={current[key]}")
+
+        # Re-resolve docs if brokerage is set
+        brokerage = t.get("brokerage", "")
+        if brokerage:
+            with db.conn() as c:
+                existing = {r["code"] for r in c.execute("SELECT code FROM docs WHERE txn=?", (tid,))}
+            new_docs = checklist.re_resolve(
+                t.get("txn_type", "sale"), t.get("party_role", "listing"),
+                brokerage, current, existing,
+            )
+            if new_docs:
+                with db.conn() as c:
+                    for d in new_docs:
+                        c.execute(
+                            "INSERT OR IGNORE INTO docs(txn,code,name,phase,status) VALUES(?,?,?,?,?)",
+                            (tid, d["code"], d["name"], d["phase"], "required"),
+                        )
+                    db.log(c, tid, "docs_re_resolved", f"+{len(new_docs)} docs from props change")
+                con.print(f"[green]+{len(new_docs)} new documents added[/]")
+
+        con.print(f"[green]Set {key}={current[key]}[/]")
+    else:
+        if not current:
+            con.print("[dim]No property flags set. Use --set flag=true to add.[/]")
+            con.print("[dim]Available: is_condo, is_pre_1978, has_solar, has_hoa, is_trust_sale,[/]")
+            con.print("[dim]  price_above_5m, has_pool, has_septic, is_manufactured,[/]")
+            con.print("[dim]  is_new_construction, is_short_sale, is_probate, has_tenant[/]")
+            return
+        tbl = Table(title="Property Flags")
+        tbl.add_column("Flag")
+        tbl.add_column("Value")
+        for k, v in sorted(current.items()):
+            style = "green" if v else "dim"
+            tbl.add_row(k, f"[{style}]{v}[/{style}]")
+        con.print(tbl)
 
 
 # ── Deadlines ────────────────────────────────────────────────────────────────
@@ -233,8 +425,8 @@ def taxes(txn_id: str = typer.Option(None, "--txn")):
     con.print(tbl)
 
 
-@app.command()
-def checklist(txn_id: str = typer.Option(None, "--txn")):
+@app.command(name="checklist")
+def jurisdiction_checklist(txn_id: str = typer.Option(None, "--txn")):
     """Show jurisdiction compliance checklist."""
     tid = _tid(txn_id)
     with db.conn() as c:
@@ -390,19 +582,21 @@ def list_txns():
     tbl = Table(title="Transactions")
     tbl.add_column("ID")
     tbl.add_column("Address")
+    tbl.add_column("Type")
     tbl.add_column("Phase")
     tbl.add_column("Gates", justify="right")
     tbl.add_column("Created")
     for r in rows:
-        gs = engine.gate_rows(r["id"])
+        t = dict(r)
+        gs = engine.gate_rows(t["id"])
         v = sum(1 for g in gs if g["status"] == "verified")
-        tbl.add_row(r["id"], r["address"], r["phase"], f"{v}/{len(gs)}", r["created"])
+        tbl.add_row(t["id"], t["address"], t.get("txn_type", "sale"), t["phase"], f"{v}/{len(gs)}", t["created"])
     con.print(tbl)
 
 
 @app.command()
 def delete(txn_id: str):
-    """Delete a transaction and its gates/deadlines."""
+    """Delete a transaction and its gates/deadlines/docs."""
     with db.conn() as c:
         t = db.txn(c, txn_id)
     if not t:
@@ -411,6 +605,7 @@ def delete(txn_id: str):
     if typer.confirm(f"Delete {t['address']} ({txn_id})?"):
         with db.conn() as c:
             db.log(c, txn_id, "deleted", t["address"])
+            c.execute("DELETE FROM docs WHERE txn=?", (txn_id,))
             c.execute("DELETE FROM deadlines WHERE txn=?", (txn_id,))
             c.execute("DELETE FROM gates WHERE txn=?", (txn_id,))
             c.execute("DELETE FROM txns WHERE id=?", (txn_id,))
@@ -455,12 +650,16 @@ def export(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(N
     with db.conn() as c:
         t = db.txn(c, tid)
     payload = {
-        "transaction": {**t, "data": json.loads(t["data"]), "jurisdictions": json.loads(t["jurisdictions"])},
+        "transaction": {**t, "data": json.loads(t["data"]), "jurisdictions": json.loads(t["jurisdictions"]),
+                        "props": json.loads(t.get("props", "{}"))},
         "gates": engine.gate_rows(tid),
         "deadlines": engine.deadline_rows(tid),
+        "docs": [],
         "audit": [],
     }
     with db.conn() as c:
+        for r in c.execute("SELECT * FROM docs WHERE txn=? ORDER BY phase, code", (tid,)):
+            payload["docs"].append(dict(r))
         for r in c.execute("SELECT * FROM audit WHERE txn=? ORDER BY ts", (tid,)):
             payload["audit"].append(dict(r))
     text = json.dumps(payload, indent=2, default=str)
@@ -504,6 +703,9 @@ def summary(txn_id: str = typer.Option(None, "--txn")):
 
     con.print(Panel(f"[bold]{t['address']}[/]", title="Transaction Summary"))
     con.print(f"  ID: {tid}  |  Phase: {t['phase']}  |  Created: {t['created']}")
+    con.print(f"  Type: {t.get('txn_type', 'sale')}  |  Role: {t.get('party_role', 'listing')}")
+    if t.get("brokerage"):
+        con.print(f"  Brokerage: {t['brokerage']}")
     con.print(f"  Jurisdictions: {', '.join(json.loads(t['jurisdictions']))}")
 
     if p := data.get("parties"):
@@ -563,9 +765,12 @@ def import_txn(file: Path):
             con.print(f"[red]Transaction {tid} already exists.[/]")
             raise typer.Exit(1)
         c.execute(
-            "INSERT INTO txns(id,address,phase,jurisdictions,data,created,updated) VALUES(?,?,?,?,?,?,?)",
-            (tid, t["address"], t["phase"], json.dumps(t["jurisdictions"]),
-             json.dumps(t["data"]), t["created"], t["updated"]),
+            "INSERT INTO txns(id,address,phase,jurisdictions,data,created,updated,txn_type,party_role,brokerage,props) "
+            "VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+            (tid, t["address"], t["phase"], json.dumps(t.get("jurisdictions", [])),
+             json.dumps(t.get("data", {})), t["created"], t["updated"],
+             t.get("txn_type", "sale"), t.get("party_role", "listing"),
+             t.get("brokerage", ""), json.dumps(t.get("props", {}))),
         )
         for g in payload.get("gates", []):
             c.execute("INSERT OR IGNORE INTO gates(txn,gid,status,triggered,verified,notes) VALUES(?,?,?,?,?,?)",
@@ -573,6 +778,10 @@ def import_txn(file: Path):
         for d in payload.get("deadlines", []):
             c.execute("INSERT OR IGNORE INTO deadlines(txn,did,name,type,due,status) VALUES(?,?,?,?,?,?)",
                       (d["txn"], d["did"], d["name"], d["type"], d.get("due"), d["status"]))
+        for d in payload.get("docs", []):
+            c.execute("INSERT OR IGNORE INTO docs(txn,code,name,phase,status,received,verified,notes) VALUES(?,?,?,?,?,?,?,?)",
+                      (d["txn"], d["code"], d["name"], d["phase"], d["status"],
+                       d.get("received"), d.get("verified"), d.get("notes")))
         db.log(c, tid, "imported", str(file))
     con.print(f"[green]Imported {tid} — {t['address']}[/]")
 
@@ -612,6 +821,9 @@ def report(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(N
         "=" * 60,
         f"Property:       {t['address']}",
         f"Transaction ID: {tid}",
+        f"Type:           {t.get('txn_type', 'sale')}",
+        f"Role:           {t.get('party_role', 'listing')}",
+        f"Brokerage:      {t.get('brokerage', 'N/A')}",
         f"Phase:          {t['phase']}",
         f"Jurisdictions:  {', '.join(juris)}",
         f"Report Date:    {today}",
@@ -651,6 +863,16 @@ def report(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(N
         flag = " ** OVERDUE **" if delta < 0 else " * URGENT *" if delta <= 3 else ""
         lines.append(f"  {d['due']}  {d['name']}  ({delta}d){flag}")
     lines.append("")
+
+    # Document checklist
+    with db.conn() as c:
+        doc_rows = c.execute("SELECT * FROM docs WHERE txn=? ORDER BY phase, code", (tid,)).fetchall()
+    if doc_rows:
+        lines += ["DOCUMENT CHECKLIST", "-" * 40]
+        for d in doc_rows:
+            mark = "[x]" if d["status"] in ("received", "verified") else "[-]" if d["status"] == "na" else "[ ]"
+            lines.append(f"  {mark} {d['code']:16s} {d['name']}  ({d['status']})")
+        lines.append("")
 
     lines += ["JURISDICTION COMPLIANCE", "-" * 40]
     for name in juris:

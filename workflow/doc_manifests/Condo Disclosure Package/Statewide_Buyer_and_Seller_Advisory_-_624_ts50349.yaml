@@ -1,0 +1,306 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:07'
+file: Statewide_Buyer_and_Seller_Advisory_-_624_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 15
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 9
+  date_areas_from_text: 20
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review:
+- page: 8
+  text: out the Property for short periods of time (usually 30 Days or less). In short t
+  days: 30
+  bbox: &id001
+    x0: 54.0
+    y0: 260.0
+    x1: 576.2
+    y1: 271.1
+field_map:
+- page: 1
+  field: If the Seller is unwilling or unable to satisfy your request
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 226.9
+    x1: 576.1
+    y1: 238.1
+  region: upper
+  time_length_days: null
+- page: 2
+  field: 11. Electronic Signatures ..................................
+  category: signature_area
+  bbox:
+    x0: 36.0
+    y0: 252.1
+    x1: 298.8
+    y1: 262.5
+  region: upper
+- page: 4
+  field: periods of time and then become active because of heat, humi
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 129.9
+    x1: 576.0
+    y1: 141.1
+  region: upper
+  time_length_days: null
+- page: 4
+  field: age, deterioration of materials and the load imposed on a Sy
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 302.0
+    x1: 576.0
+    y1: 313.1
+  region: upper
+  time_length_days: null
+- page: 5
+  field: Water well or spring capacity, quantity output and quality m
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 116.4
+    x1: 576.0
+    y1: 127.6
+  region: upper
+  time_length_days: null
+- page: 6
+  field: the length of time it may take for processing of a Californi
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 207.4
+    x1: 576.1
+    y1: 218.6
+  region: upper
+  time_length_days: null
+- page: 7
+  field: of Escrow, whether for a limited or extended period of time,
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 53.4
+    x1: 576.0
+    y1: 64.6
+  region: header
+  time_length_days: null
+- page: 7
+  field: Buyer does not own the land, (ii) the right to occupy the la
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 160.2
+    x1: 576.2
+    y1: 171.4
+  region: upper
+  time_length_days: null
+- page: 7
+  field: criminal penalties, some of which mandate prison time, remai
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 278.0
+    x1: 576.2
+    y1: 289.1
+  region: upper
+  time_length_days: null
+- page: 8
+  field: Additionally, some city and county governments may impose ad
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 152.9
+    x1: 576.2
+    y1: 164.1
+  region: upper
+  time_length_days: null
+- page: 8
+  field: 'out the Property for short periods of time (usually 30 Days '
+  category: date_area
+  bbox: *id001
+  region: upper
+  time_length_days: 30
+- page: 9
+  field: to satisfy him/herself with regard to any sources of and amo
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 512.0
+    x1: 576.2
+    y1: 523.1
+  region: lower
+  time_length_days: null
+- page: 11
+  field: 'SIGNING DOCUMENTS ELECTRONICALLY: The ability to use electro'
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 591.7
+    x1: 576.0
+    y1: 602.9
+  region: lower
+- page: 11
+  field: it carefully. Although electronic signature programs make it
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 613.0
+    x1: 576.0
+    y1: 624.1
+  region: lower
+- page: 11
+  field: understand the entire document, and agree to all of its term
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 634.0
+    x1: 576.0
+    y1: 645.1
+  region: lower
+- page: 11
+  field: 'or initial line, even if you have reviewed an earlier draft '
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 644.5
+    x1: 576.1
+    y1: 655.6
+  region: lower
+- page: 11
+  field: be bound by it. Some signature or initial lines are optional
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 665.4
+    x1: 576.0
+    y1: 676.6
+  region: lower
+- page: 11
+  field: arbitration clauses. If there are more than one buyer or sel
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 686.4
+    x1: 576.1
+    y1: 697.6
+  region: footer
+- page: 11
+  field: "\u201CCalifornia property tax law requires the Assessor to revalu"
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 273.2
+    x1: 576.2
+    y1: 286.6
+  region: upper
+  time_length_days: null
+- page: 11
+  field: Buyers and Sellers are cautioned to only sign if they have t
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 623.4
+    x1: 576.1
+    y1: 634.6
+  region: lower
+  time_length_days: null
+- page: 12
+  field: sign or initial for another. Print or electronically store a
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 22.0
+    x1: 576.1
+    y1: 33.1
+  region: header
+- page: 12
+  field: The clause usually provides that a seller will retain a buye
+  category: signature_area
+  bbox:
+    x0: 54.0
+    y0: 65.4
+    x1: 576.1
+    y1: 76.6
+  region: header
+- page: 13
+  field: period of time or in perpetuity, (ii) are typically calculat
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 134.7
+    x1: 576.2
+    y1: 145.9
+  region: upper
+  time_length_days: null
+- page: 13
+  field: that government entities and manufacturers may at any time i
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 182.9
+    x1: 576.0
+    y1: 194.1
+  region: upper
+  time_length_days: null
+- page: 13
+  field: at one time may have purported to discriminate against perso
+  category: date_area
+  bbox:
+    x0: 54.0
+    y0: 623.4
+    x1: 576.0
+    y1: 634.6
+  region: lower
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 258.0
+    x1: 489.5
+    y1: 268.1
+  region: upper
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 274.5
+    x1: 489.5
+    y1: 284.6
+  region: upper
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 295.1
+    x1: 489.5
+    y1: 305.1
+  region: upper
+  time_length_days: null
+- page: 15
+  field: Date
+  category: date_area
+  bbox:
+    x0: 468.0
+    y0: 311.5
+    x1: 489.5
+    y1: 321.6
+  region: upper
+  time_length_days: null

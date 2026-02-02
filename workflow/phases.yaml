@@ -491,3 +491,131 @@ phases:
         automation: AI_DRAFT
         tool: google_drive
         details: "AI tracks any outstanding items and drafts follow-up communications"
+
+
+# =============================================================================
+# LEASE TRANSACTION PHASES
+# =============================================================================
+# Loaded when txn_type=lease. Replaces the standard 9-phase sale workflow.
+# =============================================================================
+
+lease_phases:
+
+  - id: LEASE_PRE
+    name: Lease Pre-Listing
+    order: 1
+    description: "Property prepared for lease, disclosures gathered, lease terms defined"
+    entry_criteria:
+      - "Property owner engagement or listing agreement signed"
+      - "Property information and condition documented"
+    exit_criteria:
+      - "All required lease disclosures completed"
+      - "Lease terms and pricing established"
+    tasks:
+      - action: "Prepare lease listing package"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts lease listing with property details, pricing, and terms"
+      - action: "Generate required lease disclosures"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI pre-fills required disclosures (lead paint, bed bug, mold, flood, etc.)"
+      - action: "Set up showing schedule"
+        automation: AUTO
+        tool: google_drive
+        details: "AI configures showing availability based on owner preferences"
+
+  - id: LEASE_LISTING
+    name: Lease Active Listing
+    order: 2
+    description: "Property actively marketed for lease, showings conducted"
+    entry_criteria:
+      - "Lease listing package complete"
+      - "All pre-listing disclosures prepared"
+    exit_criteria:
+      - "Application(s) received from qualified prospect(s)"
+    tasks:
+      - action: "Publish listing to MLS and syndication"
+        automation: AUTO
+        tool: skyslope
+        details: "AI publishes lease listing to configured platforms"
+      - action: "Track showing activity and feedback"
+        automation: AUTO
+        tool: google_drive
+        details: "AI logs showing requests, feedback, and inquiry volume"
+
+  - id: LEASE_APPLICATION
+    name: Application Review
+    order: 3
+    description: "Tenant applications received, screened, and evaluated"
+    entry_criteria:
+      - "At least one rental application received"
+    exit_criteria:
+      - "Tenant selected and approved by owner"
+      - "Adverse action notices sent to declined applicants (if any)"
+    tasks:
+      - action: "Process rental application"
+        automation: AUTO
+        tool: google_drive
+        details: "AI logs application, orders credit/background screening"
+      - action: "Review screening results"
+        automation: AGENT_GATE
+        tool: google_drive
+        details: "Agent reviews screening results, verifies income, contacts references"
+      - action: "Present qualified applicants to owner"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI summarizes applicant profiles for owner review"
+
+  - id: LEASE_EXECUTION
+    name: Lease Execution
+    order: 4
+    description: "Lease agreement prepared, signed, deposits collected, move-in coordinated"
+    entry_criteria:
+      - "Tenant approved by owner"
+      - "Lease terms finalized"
+    exit_criteria:
+      - "Lease fully executed by all parties"
+      - "Security deposit and first month's rent collected"
+      - "Move-in inspection completed"
+    tasks:
+      - action: "Prepare lease agreement"
+        automation: AI_DRAFT
+        tool: google_drive
+        details: "AI drafts CAR lease form with negotiated terms and addenda"
+      - action: "Collect security deposit and rent"
+        automation: AGENT_GATE
+        tool: google_drive
+        details: "Agent confirms deposit receipt and proper trust account handling"
+      - action: "Conduct move-in inspection"
+        automation: AGENT_GATE
+        tool: google_drive
+        details: "Agent documents property condition at move-in with photos and checklist"
+      - action: "Distribute keys and access devices"
+        automation: AGENT_GATE
+        tool: google_drive
+        details: "Agent confirms key handoff and documents access device assignment"
+
+  - id: LEASE_POST
+    name: Post-Lease Compliance
+    order: 5
+    description: "File archived, commissions processed, ongoing compliance tracked"
+    entry_criteria:
+      - "Lease fully executed"
+      - "Tenant moved in"
+    exit_criteria:
+      - "File archived per brokerage and DRE requirements"
+      - "Commission processed"
+    tasks:
+      - action: "Archive lease file"
+        automation: AUTO
+        tool: skyslope
+        details: "AI verifies all lease documents present and submits for broker review"
+      - action: "Process lease commission"
+        automation: AUTO
+        tool: google_drive
+        details: "AI logs commission in tracking system"
+      - action: "Set lease renewal reminder"
+        automation: AUTO
+        tool: google_drive
+        details: "AI creates calendar reminder 60 days before lease expiration"

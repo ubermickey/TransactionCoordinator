@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Transaction Coordinator</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" id="hamburger" aria-label="Toggle sidebar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="3" y1="5" x2="17" y2="5"/>
+          <line x1="3" y1="10" x2="17" y2="10"/>
+          <line x1="3" y1="15" x2="17" y2="15"/>
+        </svg>
+      </button>
+      <span class="logo">TC</span>
+      <span class="topbar-title">Transaction Coordinator</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-primary" id="btn-new">+ New</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-empty" id="sidebar-empty">No transactions</div>
+      <ul class="txn-list" id="txn-list"></ul>
+    </aside>
+    <main class="main" id="main">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">&#x1F3E0;</div>
+        <h2>No transactions yet</h2>
+        <p>Create your first transaction to get started.</p>
+        <button class="btn btn-primary btn-lg" id="btn-new-empty">+ Create Transaction</button>
+      </div>
+      <div class="txn-detail" id="txn-detail" style="display:none">
+        <div class="detail-header" id="detail-header"></div>
+        <div class="phase-stepper" id="phase-stepper"></div>
+        <nav class="tab-bar" id="tab-bar">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="docs">Documents</button>
+          <button class="tab" data-tab="gates">Gates</button>
+          <button class="tab" data-tab="deadlines">Deadlines</button>
+          <button class="tab" data-tab="audit">Audit</button>
+        </nav>
+        <div class="tab-content" id="tab-content"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New Transaction Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Transaction</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="form-new" class="modal-body">
+        <label class="field-label">
+          Property Address
+          <input type="text" id="inp-address" placeholder="123 Main St, Beverly Hills, CA 90210" required autofocus>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Type
+            <select id="inp-type">
+              <option value="sale">Sale</option>
+              <option value="lease">Lease</option>
+            </select>
+          </label>
+          <label class="field-label">
+            Role
+            <select id="inp-role">
+              <option value="listing">Listing Agent</option>
+              <option value="buyer">Buyer Agent</option>
+            </select>
+          </label>
+        </div>
+        <label class="field-label">
+          Brokerage
+          <select id="inp-brokerage">
+            <option value="">None</option>
+          </select>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Chat FAB -->
+  <button class="chat-fab" id="chat-fab" aria-label="Open chat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- Chat Panel -->
+  <aside class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+      <span class="chat-header-title">TC Assistant</span>
+      <button class="chat-header-close" id="chat-close">&times;</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-area">
+      <form class="chat-input-row" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask about this transaction..." autocomplete="off">
+        <button type="submit" id="chat-send">Send</button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Command Palette -->
+  <div class="cmd-backdrop" id="cmd-backdrop">
+    <div class="cmd-dialog">
+      <input class="cmd-input" id="cmd-input" type="text" placeholder="Search transactions, gates, deadlines, docs..." autocomplete="off">
+      <div class="cmd-results" id="cmd-results"></div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Overlay -->
+  <div class="shortcuts-overlay" id="shortcuts-overlay">
+    <div class="shortcuts-dialog">
+      <h3>Keyboard Shortcuts</h3>
+      <div class="shortcuts-list">
+        <div class="shortcut-row"><span>Command Palette</span><kbd>&#8984;K</kbd></div>
+        <div class="shortcut-row"><span>Toggle Chat</span><kbd>&#8984;J</kbd></div>
+        <div class="shortcut-row"><span>New Transaction</span><kbd>&#8984;N</kbd></div>
+        <div class="shortcut-row"><span>Overview Tab</span><kbd>1</kbd></div>
+        <div class="shortcut-row"><span>Documents Tab</span><kbd>2</kbd></div>
+        <div class="shortcut-row"><span>Gates Tab</span><kbd>3</kbd></div>
+        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>4</kbd></div>
+        <div class="shortcut-row"><span>Audit Tab</span><kbd>5</kbd></div>
+        <div class="shortcut-row"><span>Close Panel</span><kbd>Esc</kbd></div>
+        <div class="shortcut-row"><span>Show This Help</span><kbd>?</kbd></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

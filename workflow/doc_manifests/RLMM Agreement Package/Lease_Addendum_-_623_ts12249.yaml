@@ -1,0 +1,101 @@
+version: 1.0.0
+last_analyzed: '2026-02-01T16:15:08'
+file: Lease_Addendum_-_623_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled: 0
+  empty: 0
+  signature_widgets: 0
+  date_widgets: 0
+  address_widgets: 0
+  other_fillable_widgets: 0
+  signature_areas_from_text: 0
+  date_areas_from_text: 8
+  fillable_blanks_from_text: 0
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 234.0
+    y0: 602.4
+    x1: 263.9
+    y1: 614.7
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 602.4
+    x1: 528.1
+    y1: 614.7
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 234.0
+    y0: 654.5
+    x1: 263.9
+    y1: 666.8
+  region: lower
+  time_length_days: null
+- page: 1
+  field: Date
+  category: date_area
+  bbox:
+    x0: 486.0
+    y0: 654.5
+    x1: 528.1
+    y1: 666.8
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 234.0
+    y0: 492.5
+    x1: 263.9
+    y1: 504.8
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 492.5
+    x1: 527.8
+    y1: 504.8
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 234.0
+    y0: 544.5
+    x1: 263.9
+    y1: 556.7
+  region: lower
+  time_length_days: null
+- page: 2
+  field: Date
+  category: date_area
+  bbox:
+    x0: 504.0
+    y0: 544.5
+    x1: 527.8
+    y1: 556.7
+  region: lower
+  time_length_days: null
