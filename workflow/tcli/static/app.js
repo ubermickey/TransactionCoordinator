@@ -427,7 +427,7 @@ const CmdPalette = (() => {
 
 const Shortcuts = (() => {
   let helpOpen = false;
-  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'signatures', '4': 'gates', '5': 'deadlines', '6': 'audit' };
+  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'signatures', '4': 'contingencies', '5': 'gates', '6': 'deadlines', '7': 'audit' };
 
   function isInput() {
     const tag = document.activeElement?.tagName;
@@ -549,6 +549,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   const sigForm = $('#form-add-sig');
   if (sigForm) sigForm.addEventListener('submit', handleAddSig);
+
+  // Contingency modal
+  const contClose = $('#cont-modal-close');
+  const contCancel = $('#cont-btn-cancel');
+  const contBackdrop = $('#cont-modal-backdrop');
+  if (contClose) contClose.addEventListener('click', closeContModal);
+  if (contCancel) contCancel.addEventListener('click', closeContModal);
+  if (contBackdrop) contBackdrop.addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeContModal();
+  });
+  const contForm = $('#form-add-cont');
+  if (contForm) contForm.addEventListener('submit', handleAddCont);
 
   // Tabs
   $$('#tab-bar .tab').forEach(t => {
@@ -711,6 +723,7 @@ function switchTab(tab) {
     overview: renderOverview,
     docs: renderDocs,
     signatures: renderSignatures,
+    contingencies: renderContingencies,
     gates: renderGates,
     deadlines: renderDeadlines,
     audit: renderAudit,
@@ -1686,6 +1699,186 @@ async function handleAddSig(e) {
   Toast.show('Field added', 'success');
   closeSigModal();
   renderSignatures();
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  CONTINGENCIES TAB
+// ══════════════════════════════════════════════════════════════════════════════
+
+let _contData = [];
+let _contSummary = {};
+
+async function renderContingencies() {
+  showSkeleton('gate-cards');
+  const res = await get(`/api/txns/${currentTxn}/contingencies`);
+  if (res._error) return;
+  _contData = res.items || [];
+  _contSummary = res.summary || {};
+
+  const el = $('#tab-content');
+  let html = '';
+
+  // Summary bar
+  const s = _contSummary;
+  html += `<div class="cont-summary">
+    <div class="cont-summary-item"><span class="cont-summary-val">${s.total || 0}</span><span class="cont-summary-lbl">Total</span></div>
+    <div class="cont-summary-item"><span class="cont-summary-val cont-active">${s.active || 0}</span><span class="cont-summary-lbl">Active</span></div>
+    <div class="cont-summary-item"><span class="cont-summary-val cont-removed">${s.removed || 0}</span><span class="cont-summary-lbl">Removed</span></div>
+    <div class="cont-summary-item"><span class="cont-summary-val cont-overdue">${s.overdue || 0}</span><span class="cont-summary-lbl">Overdue</span></div>
+    <button class="btn btn-primary btn-sm" onclick="openContModal()">+ Add</button>
+  </div>`;
+
+  if (_contData.length === 0) {
+    html += '<div class="card"><p style="color:var(--text-secondary)">No contingencies tracked. Add contingencies manually or extract a contract PDF to auto-populate.</p></div>';
+    el.innerHTML = html;
+    return;
+  }
+
+  html += '<div id="cont-list-area"></div>';
+  el.innerHTML = html;
+  renderContList(_contData);
+}
+
+function renderContList(items) {
+  const area = document.getElementById('cont-list-area');
+  if (!area) return;
+
+  area.innerHTML = items.map(item => {
+    const urgencyCls = { overdue: 'cont-overdue', urgent: 'cont-urgent', soon: 'cont-soon', ok: 'cont-ok' }[item.urgency] || '';
+    const statusCls = { active: 'cont-status-active', removed: 'cont-status-removed', waived: 'cont-status-waived', expired: 'cont-status-expired' }[item.status] || '';
+    const isActive = item.status === 'active';
+
+    // Progress bar computation
+    const totalDays = item.default_days || 17;
+    const elapsed = totalDays - (item.days_remaining || 0);
+    const pct = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
+
+    let html = `<div class="cont-card ${urgencyCls}">
+      <div class="cont-card-header">
+        <div class="cont-card-title">
+          <span class="cont-type-icon">${contIcon(item.type)}</span>
+          <span class="cont-name">${esc(item.name || item.type)}</span>
+          <span class="cont-status-badge ${statusCls}">${esc(item.status).toUpperCase()}</span>
+        </div>
+        <div class="cont-deadline-info">
+          ${item.deadline_date ? `<span class="cont-deadline-date">${esc(item.deadline_date)}</span>` : ''}
+        </div>
+      </div>`;
+
+    if (isActive && item.deadline_date) {
+      html += `<div class="cont-progress-section">
+        <div class="cont-progress-bar">
+          <div class="cont-progress-fill ${urgencyCls}" style="width:${pct}%"></div>
+        </div>
+        <span class="cont-days-label">${item.days_remaining ?? '?'} of ${totalDays} days remaining</span>
+      </div>`;
+    }
+
+    // NBP section
+    if (item.nbp_sent_at) {
+      const nbpCls = (item.nbp_days_remaining || 0) <= 0 ? 'cont-nbp-expired' : 'cont-nbp-active';
+      html += `<div class="cont-nbp-section ${nbpCls}">
+        <span class="cont-nbp-label">NBP Issued:</span>
+        <span>${esc(item.nbp_sent_at)}</span>
+        <span class="cont-nbp-expires">Expires: ${esc(item.nbp_expires_at)}</span>
+        ${item.nbp_days_remaining !== null ? `<span class="cont-nbp-countdown">${item.nbp_days_remaining}d remaining</span>` : ''}
+      </div>`;
+    }
+
+    // Metadata row
+    html += `<div class="cont-meta-row">`;
+    if (item.related_gate) {
+      html += `<span class="cont-gate-link" onclick="switchTab('gates')">${esc(item.related_gate)}</span>`;
+    }
+    if (item.related_deadline) {
+      html += `<span class="cont-dl-link">${esc(item.related_deadline)}</span>`;
+    }
+    if (item.removed_at) {
+      html += `<span class="cont-removed-date">Removed: ${esc(item.removed_at)}</span>`;
+    }
+    if (item.waived_at) {
+      html += `<span class="cont-waived-date">Waived: ${esc(item.waived_at)}</span>`;
+    }
+    if (item.notes) {
+      html += `<span class="cont-note">"${esc(item.notes)}"</span>`;
+    }
+    html += `</div>`;
+
+    // Actions
+    if (isActive) {
+      html += `<div class="cont-actions">
+        <button class="btn btn-success btn-sm" onclick="contRemove(${item.id})">Remove (CR-1 Signed)</button>
+        <button class="btn btn-warning btn-sm" onclick="contNBP(${item.id})"${item.nbp_sent_at ? ' disabled' : ''}>Issue NBP</button>
+        <button class="btn btn-muted btn-sm" onclick="contWaive(${item.id})">Waive</button>
+      </div>`;
+    }
+
+    html += `</div>`;
+    return html;
+  }).join('');
+}
+
+function contIcon(type) {
+  return { investigation: '\uD83D\uDD0D', appraisal: '\uD83C\uDFE0', loan: '\uD83C\uDFE6', hoa: '\uD83C\uDFE2' }[type] || '\uD83D\uDCCB';
+}
+
+async function contRemove(cid) {
+  if (!confirm('Confirm contingency removal — this means the CR-1 has been signed by the buyer.')) return;
+  const res = await post(`/api/txns/${currentTxn}/contingencies/${cid}/remove`);
+  if (res._error) return;
+  Toast.show('Contingency removed, gate auto-verified', 'success');
+  renderContingencies();
+}
+
+async function contNBP(cid) {
+  if (!confirm('Issue Notice to Buyer to Perform? Buyer will have 2 days to remove or cancel.')) return;
+  const res = await post(`/api/txns/${currentTxn}/contingencies/${cid}/nbp`);
+  if (res._error) return;
+  Toast.show('NBP issued — 2 day countdown started', 'warning');
+  renderContingencies();
+}
+
+async function contWaive(cid) {
+  if (!confirm('Mark this contingency as waived per original contract terms?')) return;
+  const res = await post(`/api/txns/${currentTxn}/contingencies/${cid}/waive`);
+  if (res._error) return;
+  Toast.show('Contingency waived', 'info');
+  renderContingencies();
+}
+
+// ── Contingency Add Modal ────────────────────────────────────────────────
+
+function openContModal() {
+  document.getElementById('cont-modal-backdrop').style.display = '';
+  document.getElementById('cont-type').focus();
+}
+
+function closeContModal() {
+  document.getElementById('cont-modal-backdrop').style.display = 'none';
+  const form = document.getElementById('form-add-cont');
+  if (form) form.reset();
+}
+
+async function handleAddCont(e) {
+  e.preventDefault();
+  const ctype = document.getElementById('cont-type').value;
+  const days = parseInt(document.getElementById('cont-days').value) || 17;
+  const deadline = document.getElementById('cont-deadline').value;
+  const notes = document.getElementById('cont-notes').value.trim();
+
+  if (!ctype) {
+    Toast.show('Type is required', 'warning');
+    return;
+  }
+
+  const body = { type: ctype, days, notes };
+  if (deadline) body.deadline_date = deadline;
+
+  const res = await post(`/api/txns/${currentTxn}/contingencies`, body);
+  if (res._error) return;
+  Toast.show('Contingency added', 'success');
+  closeContModal();
+  renderContingencies();
 }
 
 // ── Audit Tab ───────────────────────────────────────────────────────────────

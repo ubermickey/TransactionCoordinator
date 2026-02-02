@@ -2,7 +2,7 @@
 import json
 import os
 import re
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from uuid import uuid4
 
@@ -10,6 +10,7 @@ import yaml
 from flask import Flask, jsonify, render_template, request
 
 from . import checklist, db, doc_versions, engine, integrations, rules
+from .engine import CONT_GATE
 
 app = Flask(__name__)
 
@@ -63,7 +64,7 @@ def list_txns():
 @app.route("/api/txns", methods=["POST"])
 def create_txn():
     body = request.json or {}
-    address = body.get("address", "").strip()
+    address = (body.get("address") or "").strip()
     if not address:
         return jsonify({"error": "address required"}), 400
     txn_type = body.get("type", "sale")
@@ -123,6 +124,7 @@ def delete_txn(tid):
         if not t:
             return jsonify({"error": "not found"}), 404
         db.log(c, tid, "deleted", t["address"])
+        c.execute("DELETE FROM contingencies WHERE txn=?", (tid,))
         c.execute("DELETE FROM outbox WHERE txn=?", (tid,))
         c.execute("DELETE FROM envelope_tracking WHERE txn=?", (tid,))
         c.execute("DELETE FROM sig_reviews WHERE txn=?", (tid,))
@@ -568,6 +570,157 @@ def get_envelopes(tid):
             (tid,),
         ).fetchall()
     return jsonify([dict(r) for r in rows])
+
+
+# ── Contingencies ─────────────────────────────────────────────────────────
+
+CONT_DL = {"investigation": "DL-010", "appraisal": "DL-020", "loan": "DL-030", "hoa": "DL-040"}
+CONT_NAMES = {
+    "investigation": "Investigation Contingency",
+    "appraisal": "Appraisal Contingency",
+    "loan": "Loan Contingency",
+    "hoa": "HOA Document Review",
+}
+
+
+@app.route("/api/txns/<tid>/contingencies")
+def get_contingencies(tid):
+    """List contingencies with days_remaining and urgency computed in SQL."""
+    with db.conn() as c:
+        if not db.txn(c, tid):
+            return jsonify({"error": "not found"}), 404
+        items = [dict(r) for r in c.execute(
+            "SELECT *,"
+            " CAST(julianday(deadline_date) - julianday('now','localtime') AS INTEGER) AS days_remaining,"
+            " CASE"
+            "   WHEN julianday(deadline_date) - julianday('now','localtime') < 0 THEN 'overdue'"
+            "   WHEN julianday(deadline_date) - julianday('now','localtime') <= 2 THEN 'urgent'"
+            "   WHEN julianday(deadline_date) - julianday('now','localtime') <= 5 THEN 'soon'"
+            "   ELSE 'ok'"
+            " END AS urgency,"
+            " CASE WHEN nbp_expires_at IS NOT NULL"
+            "   THEN CAST(julianday(nbp_expires_at) - julianday('now','localtime') AS INTEGER)"
+            " END AS nbp_days_remaining"
+            " FROM contingencies WHERE txn=? ORDER BY deadline_date",
+            (tid,),
+        ).fetchall()]
+        for item in items:
+            item["related_gate"] = CONT_GATE.get(item["type"], "")
+            item["related_deadline"] = CONT_DL.get(item["type"], "")
+        summary = c.execute(
+            "SELECT COUNT(*) AS total,"
+            " SUM(status='active') AS active,"
+            " SUM(status='removed') AS removed,"
+            " SUM(status='waived') AS waived,"
+            " SUM(status='active' AND julianday(deadline_date) < julianday('now','localtime')) AS overdue"
+            " FROM contingencies WHERE txn=?",
+            (tid,),
+        ).fetchone()
+    return jsonify({"items": items, "summary": dict(summary)})
+
+
+@app.route("/api/txns/<tid>/contingencies", methods=["POST"])
+def add_contingency(tid):
+    """Manually add a contingency."""
+    body = request.json or {}
+    ctype = body.get("type", "").strip()
+    days = body.get("days", 17)
+    deadline = body.get("deadline_date", "")
+    notes = body.get("notes", "")
+    if not ctype:
+        return jsonify({"error": "type required"}), 400
+    name = CONT_NAMES.get(ctype, body.get("name", ctype.replace("_", " ").title() + " Contingency"))
+
+    # If no deadline given, compute from acceptance date
+    if not deadline:
+        with db.conn() as c:
+            t = db.txn(c, tid)
+            if not t:
+                return jsonify({"error": "txn not found"}), 404
+            data = json.loads(t.get("data") or "{}")
+            acceptance = (data.get("dates") or {}).get("acceptance")
+            if acceptance:
+                from datetime import timedelta
+                deadline = (date.fromisoformat(acceptance) + timedelta(days=int(days))).isoformat()
+
+    with db.conn() as c:
+        try:
+            c.execute(
+                "INSERT INTO contingencies(txn,type,name,default_days,deadline_date,notes)"
+                " VALUES(?,?,?,?,?,?)",
+                (tid, ctype, name, days, deadline, notes),
+            )
+        except Exception:
+            return jsonify({"error": f"contingency '{ctype}' already exists for this transaction"}), 409
+        cid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+        db.log(c, tid, "cont_added", f"{name} ({days}d, due {deadline})")
+        row = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
+    return jsonify(dict(row)), 201
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/remove", methods=["POST"])
+def remove_contingency(tid, cid):
+    """Mark contingency as removed (CR-1 signed). Auto-verifies linked gate."""
+    with db.conn() as c:
+        if not (row := c.execute("SELECT * FROM contingencies WHERE id=? AND txn=?", (cid, tid)).fetchone()):
+            return jsonify({"error": "not found"}), 404
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c.execute(
+            "UPDATE contingencies SET status='removed', removed_at=? WHERE id=?",
+            (now, cid),
+        )
+        # Auto-verify the linked gate
+        if gid := CONT_GATE.get(row["type"]):
+            c.execute(
+                "UPDATE gates SET status='verified', verified=datetime('now','localtime')"
+                " WHERE txn=? AND gid=? AND status='pending'",
+                (tid, gid),
+            )
+            db.log(c, tid, "gate_verified", f"{gid} (via contingency removal)")
+        db.log(c, tid, "cont_removed", f"{row['name']} removed (CR-1)")
+        updated = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
+    return jsonify(dict(updated))
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/nbp", methods=["POST"])
+def nbp_contingency(tid, cid):
+    """Record Notice to Buyer to Perform. Computes 2-day expiry."""
+    with db.conn() as c:
+        if not (row := c.execute("SELECT * FROM contingencies WHERE id=? AND txn=?", (cid, tid)).fetchone()):
+            return jsonify({"error": "not found"}), 404
+        if row["status"] != "active":
+            return jsonify({"error": "can only issue NBP on active contingencies"}), 400
+        now = date.today()
+        expires = (now + timedelta(days=2)).isoformat()
+        c.execute(
+            "UPDATE contingencies SET nbp_sent_at=?, nbp_expires_at=? WHERE id=?",
+            (now.isoformat(), expires, cid),
+        )
+        db.log(c, tid, "cont_nbp", f"NBP issued for {row['name']}, expires {expires}")
+        updated = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
+    return jsonify(dict(updated))
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/waive", methods=["POST"])
+def waive_contingency(tid, cid):
+    """Mark contingency as waived (per original contract terms)."""
+    with db.conn() as c:
+        if not (row := c.execute("SELECT * FROM contingencies WHERE id=? AND txn=?", (cid, tid)).fetchone()):
+            return jsonify({"error": "not found"}), 404
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        c.execute(
+            "UPDATE contingencies SET status='waived', waived_at=? WHERE id=?",
+            (now, cid),
+        )
+        if gid := CONT_GATE.get(row["type"]):
+            c.execute(
+                "UPDATE gates SET status='verified', verified=datetime('now','localtime')"
+                " WHERE txn=? AND gid=? AND status='pending'",
+                (tid, gid),
+            )
+        db.log(c, tid, "cont_waived", f"{row['name']} waived")
+        updated = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
+    return jsonify(dict(updated))
 
 
 # ── Meta ─────────────────────────────────────────────────────────────────────

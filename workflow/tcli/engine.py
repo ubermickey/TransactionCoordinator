@@ -25,6 +25,13 @@ DL_KEY = {                              # map deadline IDs -> extraction keys
     "DL-030": "loan_days",
 }
 
+CONT_MAP = {  # deadline ID -> (contingency type, name, gate)
+    "DL-010": ("investigation", "Investigation Contingency", "GATE-022"),
+    "DL-020": ("appraisal", "Appraisal Contingency", "GATE-031"),
+    "DL-030": ("loan", "Loan Contingency", "GATE-041"),
+}
+CONT_GATE = {v[0]: v[2] for v in CONT_MAP.values()}
+
 def calc_deadlines(txn_id: str, anchor: date, data: dict):
     dates = data.get("dates", {})
     cont = data.get("contingencies", {})
@@ -67,6 +74,22 @@ def calc_deadlines(txn_id: str, anchor: date, data: dict):
                     "INSERT OR REPLACE INTO deadlines VALUES(?,?,?,?,?,?)",
                     (txn_id, did, dl["name"], dl["type"], due.isoformat(), "pending"),
                 )
+
+        # Auto-populate contingencies from resolved deadlines
+        _populate_contingencies(c, txn_id, cont, resolved)
+
+def _populate_contingencies(c, txn_id: str, cont_data: dict, resolved: dict):
+    """Insert contingency records from extracted contract data."""
+    for did, (ctype, cname, _gate) in CONT_MAP.items():
+        if did not in resolved:
+            continue
+        days = cont_data.get(DL_KEY.get(did)) or 17
+        c.execute(
+            "INSERT OR IGNORE INTO contingencies(txn,type,name,default_days,deadline_date)"
+            " VALUES(?,?,?,?,?)",
+            (txn_id, ctype, cname, days, resolved[did].isoformat()),
+        )
+
 
 # ── Phase Order ──────────────────────────────────────────────────────────────
 

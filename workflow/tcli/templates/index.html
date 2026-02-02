@@ -44,6 +44,7 @@
           <button class="tab active" data-tab="overview">Overview</button>
           <button class="tab" data-tab="docs">Documents</button>
           <button class="tab" data-tab="signatures">Signatures</button>
+          <button class="tab" data-tab="contingencies">Contingencies</button>
           <button class="tab" data-tab="gates">Gates</button>
           <button class="tab" data-tab="deadlines">Deadlines</button>
           <button class="tab" data-tab="audit">Audit</button>
@@ -136,6 +137,47 @@
     </div>
   </div>
 
+  <!-- Add Contingency Modal -->
+  <div class="modal-backdrop" id="cont-modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Contingency</h3>
+        <button class="modal-close" id="cont-modal-close">&times;</button>
+      </div>
+      <form id="form-add-cont" class="modal-body">
+        <label class="field-label">
+          Type
+          <select id="cont-type" required>
+            <option value="">Select type...</option>
+            <option value="investigation">Investigation</option>
+            <option value="appraisal">Appraisal</option>
+            <option value="loan">Loan</option>
+            <option value="hoa">HOA Review</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Days
+            <input type="number" id="cont-days" value="17" min="1" max="365" required>
+          </label>
+          <label class="field-label">
+            Deadline Date
+            <input type="date" id="cont-deadline">
+          </label>
+        </div>
+        <label class="field-label">
+          Notes
+          <textarea id="cont-notes" rows="2" placeholder="Optional notes..."></textarea>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cont-btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Contingency</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
@@ -180,9 +222,10 @@
         <div class="shortcut-row"><span>Overview Tab</span><kbd>1</kbd></div>
         <div class="shortcut-row"><span>Documents Tab</span><kbd>2</kbd></div>
         <div class="shortcut-row"><span>Signatures Tab</span><kbd>3</kbd></div>
-        <div class="shortcut-row"><span>Gates Tab</span><kbd>4</kbd></div>
-        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>5</kbd></div>
-        <div class="shortcut-row"><span>Audit Tab</span><kbd>6</kbd></div>
+        <div class="shortcut-row"><span>Contingencies Tab</span><kbd>4</kbd></div>
+        <div class="shortcut-row"><span>Gates Tab</span><kbd>5</kbd></div>
+        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>6</kbd></div>
+        <div class="shortcut-row"><span>Audit Tab</span><kbd>7</kbd></div>
         <div class="shortcut-row"><span>Close Panel</span><kbd>Esc</kbd></div>
         <div class="shortcut-row"><span>Show This Help</span><kbd>?</kbd></div>
       </div>

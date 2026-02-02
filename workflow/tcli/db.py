@@ -78,6 +78,22 @@ CREATE TABLE IF NOT EXISTS outbox(
   sent_at TEXT,
   related_sig_id INTEGER,
   related_envelope_id INTEGER
+);
+CREATE TABLE IF NOT EXISTS contingencies(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT,
+  type TEXT,
+  name TEXT,
+  status TEXT DEFAULT 'active',
+  default_days INTEGER,
+  deadline_date TEXT,
+  removed_at TEXT,
+  waived_at TEXT,
+  nbp_sent_at TEXT,
+  nbp_expires_at TEXT,
+  cr1_sig_review_id INTEGER,
+  notes TEXT DEFAULT '',
+  UNIQUE(txn, type)
 );"""
 
 # Columns added after initial schema — migrated on connect
