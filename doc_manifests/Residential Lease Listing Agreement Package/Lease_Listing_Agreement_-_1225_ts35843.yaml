@@ -1,0 +1,1746 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:07'
+file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+folder: Residential Lease Listing Agreement Package
+page_count: 13
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 114
+  entry_categories:
+    entry_address: 11
+    entry_dollar: 5
+    entry_blank: 51
+    entry_percent: 1
+    entry_days: 1
+    entry_signature: 8
+    entry_date: 29
+    entry_contact: 4
+    entry_brokerage: 1
+    entry_license: 3
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: County of
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 139.0
+    x1: 272.0
+    y1: 151.1
+  region: upper
+  context: "County of , California, described as (\u201CPremises\u201D). , ,"
+  ul_bbox:
+    x0: 97.0
+    y0: 145.1
+    x1: 272.0
+    y1: 151.1
+- page: 1
+  field: Dollars $
+  category: entry_dollar
+  bbox:
+    x0: 394.0
+    y0: 177.0
+    x1: 504.5
+    y1: 189.1
+  region: upper
+  context: 'A. RENT AMOUNT: Dollars $ per B. SECURITY DEPOSIT (see C.A.R. Form SDDA for more information regarding allowable
+    amounts'
+  ul_bbox:
+    x0: 434.5
+    y0: 183.1
+    x1: 504.5
+    y1: 189.1
+- page: 1
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 388.5
+    y0: 210.0
+    x1: 576.0
+    y1: 222.1
+  region: upper
+  context: 'C. TYPE OF TENANCY: (Check all that apply): Month-to-month; One year Other D. ITEMS INCLUDED IN LEASE/RENTAL:
+    All fixtur'
+  ul_bbox:
+    x0: 416.0
+    y0: 216.1
+    x1: 576.0
+    y1: 222.1
+- page: 1
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 236.5
+    y0: 432.1
+    x1: 314.0
+    y1: 444.1
+  region: middle
+  context: from doing so by RPO); or (ii) $ ; or (iii) . (B) RPO agrees to pay Broker additional compensation of , if a
+  ul_bbox:
+    x0: 244.0
+    y0: 438.1
+    x1: 314.0
+    y1: 444.1
+- page: 1
+  field: percent of
+  category: entry_percent
+  bbox:
+    x0: 250.0
+    y0: 465.0
+    x1: 365.0
+    y1: 477.1
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ ; or (iii) (3) For either a fixed term or month-to-month:'
+  ul_bbox:
+    x0: 295.0
+    y0: 471.1
+    x1: 365.0
+    y1: 477.1
+- page: 1
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 402.0
+    y0: 465.0
+    x1: 474.6
+    y1: 477.1
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ ; or (iii) (3) For either a fixed term or month-to-month:'
+  ul_bbox:
+    x0: 409.5
+    y0: 471.1
+    x1: 474.6
+    y1: 477.1
+- page: 1
+  field: calendar days
+  category: entry_days
+  bbox:
+    x0: 473.0
+    y0: 541.8
+    x1: 555.6
+    y1: 554.1
+  region: lower
+  context: '(B) Continuation of Right to Compensation for Broker Procured Tenant(s): If RPO, within calendar days after the
+    end of t'
+  ul_bbox:
+    x0: 473.0
+    y0: 548.1
+    x1: 493.0
+    y1: 554.1
+- page: 1
+  field: Owner's Initials
+  category: entry_signature
+  bbox:
+    x0: 378.0
+    y0: 718.8
+    x1: 472.4
+    y1: 728.6
+  region: footer
+  context: LL REVISED 12/25 (PAGE 1 OF 5) Owner's Initials /
+  ul_bbox:
+    x0: 433.4
+    y0: 722.6
+    x1: 472.4
+    y1: 728.6
+- page: 1
+  field: EXCLUSIVE
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 88.1
+    x1: 174.5
+    y1: 104.9
+  region: header
+  context: "Date Prepared: 1. EXCLUSIVE RIGHT TO LEASE: (\u201CRental Property Owner\u201D or \"RPO\")"
+  ul_bbox:
+    x0: 99.5
+    y0: 90.1
+    x1: 174.5
+    y1: 96.1
+- page: 1
+  field: 'LEASE:'
+  category: entry_blank
+  bbox:
+    x0: 154.2
+    y0: 94.9
+    x1: 385.9
+    y1: 107.1
+  region: header
+  context: "1. EXCLUSIVE RIGHT TO LEASE: (\u201CRental Property Owner\u201D or \"RPO\") hereby employs and grants (\u201C\
+    Broker\u201D) Douglas Elliman of "
+  ul_bbox:
+    x0: 188.5
+    y0: 101.1
+    x1: 427.0
+    y1: 107.1
+- page: 1
+  field: grants
+  category: entry_blank
+  bbox:
+    x0: 137.3
+    y0: 106.1
+    x1: 363.7
+    y1: 118.1
+  region: header
+  context: "hereby employs and grants (\u201CBroker\u201D) beginning (date) and ending at 11:59 P.M. on (date) (\u201CListing\
+    \ Period\u201D) Douglas Elli"
+  ul_bbox:
+    x0: 169.0
+    y0: 112.1
+    x1: 534.0
+    y1: 118.1
+- page: 1
+  field: (date)
+  category: entry_date
+  bbox:
+    x0: 93.9
+    y0: 117.1
+    x1: 241.8
+    y1: 129.1
+  region: upper
+  context: "beginning (date) and ending at 11:59 P.M. on (date) (\u201CListing Period\u201D) the exclusive and irrevocable\
+    \ right to lease or r"
+  ul_bbox:
+    x0: 121.8
+    y0: 123.1
+    x1: 241.8
+    y1: 129.1
+- page: 1
+  field: (date)
+  category: entry_date
+  bbox:
+    x0: 357.3
+    y0: 117.1
+    x1: 506.8
+    y1: 129.1
+  region: upper
+  context: "beginning (date) and ending at 11:59 P.M. on (date) (\u201CListing Period\u201D) the exclusive and irrevocable\
+    \ right to lease or r"
+  ul_bbox:
+    x0: 386.8
+    y0: 123.1
+    x1: 506.8
+    y1: 129.1
+- page: 1
+  field: City
+  category: entry_blank
+  bbox:
+    x0: 349.1
+    y0: 128.0
+    x1: 570.7
+    y1: 140.1
+  region: upper
+  context: the exclusive and irrevocable right to lease or rent the real property in the City of , County of , California,
+    describe
+  ul_bbox:
+    x0: 380.7
+    y0: 134.1
+    x1: 570.7
+    y1: 140.1
+- page: 1
+  field: described
+  category: entry_blank
+  bbox:
+    x0: 327.7
+    y0: 139.0
+    x1: 576.0
+    y1: 151.1
+  region: upper
+  context: "County of , California, described as (\u201CPremises\u201D). , ,"
+  ul_bbox:
+    x0: 381.0
+    y0: 145.1
+    x1: 576.0
+    y1: 151.1
+- page: 1
+  field: 'AMOUNT:'
+  category: entry_blank
+  bbox:
+    x0: 100.9
+    y0: 176.9
+    x1: 341.4
+    y1: 189.1
+  region: upper
+  context: 'A. RENT AMOUNT: Dollars $ per B. SECURITY DEPOSIT (see C.A.R. Form SDDA for more information regarding allowable
+    amounts'
+  ul_bbox:
+    x0: 144.0
+    y0: 183.1
+    x1: 394.0
+    y1: 189.1
+- page: 1
+  field: DEPOSIT
+  category: entry_blank
+  bbox:
+    x0: 121.2
+    y0: 187.8
+    x1: 267.0
+    y1: 200.1
+  region: upper
+  context: 'B. SECURITY DEPOSIT (see C.A.R. Form SDDA for more information regarding allowable amounts.) (NOTE: Prior to any
+    tenancy'
+  ul_bbox:
+    x0: 162.0
+    y0: 194.1
+    x1: 267.0
+    y1: 200.1
+- page: 1
+  field: Garage/Carport;
+  category: entry_blank
+  bbox:
+    x0: 265.5
+    y0: 287.1
+    x1: 515.5
+    y1: 299.1
+  region: upper
+  context: 'F. ITEMS EXCLUDED FROM LEASE/RENTAL: Garage/Carport; G. ADDITIONAL TERMS:'
+  ul_bbox:
+    x0: 346.0
+    y0: 293.1
+    x1: 576.0
+    y1: 299.1
+- page: 1
+  field: term
+  category: entry_blank
+  bbox:
+    x0: 108.0
+    y0: 414.1
+    x1: 165.9
+    y1: 431.1
+  region: middle
+  context: '(A) (i) percent of the total rent payments due under the term specified in paragraph 2C, (term shall be the term
+    in the '
+  ul_bbox:
+    x0: 130.9
+    y0: 416.1
+    x1: 165.9
+    y1: 422.1
+- page: 1
+  field: (iii)
+  category: entry_blank
+  bbox:
+    x0: 327.0
+    y0: 431.8
+    x1: 506.0
+    y1: 444.1
+  region: middle
+  context: from doing so by RPO); or (ii) $ ; or (iii) . (B) RPO agrees to pay Broker additional compensation of , if a
+  ul_bbox:
+    x0: 356.0
+    y0: 438.1
+    x1: 506.0
+    y1: 444.1
+- page: 1
+  field: compensation
+  category: entry_blank
+  bbox:
+    x0: 262.2
+    y0: 443.0
+    x1: 512.2
+    y1: 455.1
+  region: middle
+  context: (B) RPO agrees to pay Broker additional compensation of , if a fixed term lease is extended or renewed for an additional
+  ul_bbox:
+    x0: 332.3
+    y0: 449.1
+    x1: 557.3
+    y1: 455.1
+- page: 1
+  field: (i)
+  category: entry_blank
+  bbox:
+    x0: 203.9
+    y0: 464.9
+    x1: 250.1
+    y1: 477.1
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ ; or (iii) (3) For either a fixed term or month-to-month:'
+  ul_bbox:
+    x0: 220.0
+    y0: 471.1
+    x1: 250.1
+    y1: 477.1
+- page: 1
+  field: (iii)
+  category: entry_blank
+  bbox:
+    x0: 487.5
+    y0: 464.9
+    x1: 576.0
+    y1: 477.1
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ ; or (iii) (3) For either a fixed term or month-to-month:'
+  ul_bbox:
+    x0: 516.5
+    y0: 471.1
+    x1: 576.0
+    y1: 477.1
+- page: 2
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 500.3
+    y0: 221.5
+    x1: 573.6
+    y1: 233.6
+  region: upper
+  context: (1) For a fixed term lease, either percent of the total rent payments due under the lease or $ ; or ; OR
+  ul_bbox:
+    x0: 508.5
+    y0: 227.6
+    x1: 573.6
+    y1: 233.6
+- page: 2
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 252.2
+    y0: 254.5
+    x1: 329.7
+    y1: 266.6
+  region: upper
+  context: Broker's percentage compensation, or $ or .
+  ul_bbox:
+    x0: 259.7
+    y0: 260.6
+    x1: 329.7
+    y1: 266.6
+- page: 2
+  field: other
+  category: entry_blank
+  bbox:
+    x0: 392.2
+    y0: 439.6
+    x1: 576.0
+    y1: 451.6
+  region: middle
+  context: '1. First Month''s Rent: to Broker; due at execution, upon possession, other 2. Security Deposit: to Broker; due
+    at execut'
+  ul_bbox:
+    x0: 417.7
+    y0: 445.6
+    x1: 576.0
+    y1: 451.6
+- page: 2
+  field: other
+  category: entry_blank
+  bbox:
+    x0: 385.0
+    y0: 450.6
+    x1: 576.0
+    y1: 462.6
+  region: middle
+  context: '2. Security Deposit: to Broker; due at execution, upon possession, other 3. Other: to Broker; When due:'
+  ul_bbox:
+    x0: 410.5
+    y0: 456.6
+    x1: 576.0
+    y1: 462.6
+- page: 2
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 22.5
+    x1: 308.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 28.6
+    x1: 435.5
+    y1: 34.6
+- page: 2
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 576.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 474.0
+    y0: 28.6
+    x1: 576.0
+    y1: 34.6
+- page: 2
+  field: 'pay:'
+  category: entry_blank
+  bbox:
+    x0: 319.1
+    y0: 84.3
+    x1: 535.7
+    y1: 96.6
+  region: header
+  context: 'D. ADDITIONAL COMPENSATION: In addition, RPO agrees to pay:'
+  ul_bbox:
+    x0: 341.0
+    y0: 90.6
+    x1: 576.0
+    y1: 96.6
+- page: 2
+  field: compensation,
+  category: entry_blank
+  bbox:
+    x0: 257.8
+    y0: 173.6
+    x1: 341.7
+    y1: 190.6
+  region: upper
+  context: term or any extension of tenancy, compensation equal to percent of the selling price or total consideration in
+    said tran
+  ul_bbox:
+    x0: 311.7
+    y0: 175.6
+    x1: 341.7
+    y1: 181.6
+- page: 2
+  field: either
+  category: entry_blank
+  bbox:
+    x0: 182.3
+    y0: 221.5
+    x1: 252.4
+    y1: 233.6
+  region: upper
+  context: (1) For a fixed term lease, either percent of the total rent payments due under the lease or $ ; or ; OR
+  ul_bbox:
+    x0: 222.4
+    y0: 227.6
+    x1: 252.4
+    y1: 233.6
+- page: 2
+  field: specified
+  category: entry_blank
+  bbox:
+    x0: 177.2
+    y0: 236.6
+    x1: 415.5
+    y1: 253.3
+  region: upper
+  context: or ; OR (2) For a month to month rental, either percent of amount specified in paragraph 3B(2) used to calculate
+  ul_bbox:
+    x0: 111.0
+    y0: 238.6
+    x1: 361.0
+    y1: 244.6
+- page: 2
+  field: either
+  category: entry_blank
+  bbox:
+    x0: 208.4
+    y0: 243.6
+    x1: 300.7
+    y1: 255.6
+  region: upper
+  context: (2) For a month to month rental, either percent of amount specified in paragraph 3B(2) used to calculate Broker's
+    percen
+  ul_bbox:
+    x0: 250.7
+    y0: 249.6
+    x1: 300.7
+    y1: 255.6
+- page: 2
+  field: 'to:'
+  category: entry_blank
+  bbox:
+    x0: 294.2
+    y0: 295.6
+    x1: 506.5
+    y1: 307.6
+  region: upper
+  context: 'Premises unless the Premises are leased or rented to: (2) If Premises are leased or rented to anyone listed in
+    paragraph'
+  ul_bbox:
+    x0: 309.0
+    y0: 301.6
+    x1: 576.0
+    y1: 307.6
+- page: 2
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 90.0
+    y0: 461.5
+    x1: 315.0
+    y1: 473.6
+  region: middle
+  context: '3. Other: to Broker; When due: 4. Other: to Broker; When due:'
+  ul_bbox:
+    x0: 117.5
+    y0: 467.6
+    x1: 392.5
+    y1: 473.6
+- page: 2
+  field: 'due:'
+  category: entry_blank
+  bbox:
+    x0: 480.5
+    y0: 461.5
+    x1: 576.0
+    y1: 473.6
+  region: middle
+  context: '3. Other: to Broker; When due: 4. Other: to Broker; When due:'
+  ul_bbox:
+    x0: 503.5
+    y0: 467.6
+    x1: 576.0
+    y1: 473.6
+- page: 2
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 90.0
+    y0: 472.5
+    x1: 315.0
+    y1: 484.6
+  region: lower
+  context: '4. Other: to Broker; When due:'
+  ul_bbox:
+    x0: 117.5
+    y0: 478.6
+    x1: 392.5
+    y1: 484.6
+- page: 2
+  field: 'due:'
+  category: entry_blank
+  bbox:
+    x0: 480.5
+    y0: 472.5
+    x1: 576.0
+    y1: 484.6
+  region: lower
+  context: '4. Other: to Broker; When due:'
+  ul_bbox:
+    x0: 503.5
+    y0: 478.6
+    x1: 576.0
+    y1: 484.6
+- page: 2
+  field: 'authority:'
+  category: entry_blank
+  bbox:
+    x0: 230.7
+    y0: 705.5
+    x1: 469.9
+    y1: 717.6
+  region: footer
+  context: 'Premises. Exceptions to ownership, title and authority: .'
+  ul_bbox:
+    x0: 272.4
+    y0: 711.6
+    x1: 567.4
+    y1: 717.6
+- page: 3
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 22.5
+    x1: 308.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 28.6
+    x1: 435.5
+    y1: 34.6
+- page: 3
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 576.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 474.0
+    y0: 28.6
+    x1: 576.0
+    y1: 34.6
+- page: 4
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 22.5
+    x1: 308.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 28.6
+    x1: 435.5
+    y1: 34.6
+- page: 4
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.0
+    y0: 22.5
+    x1: 576.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 474.0
+    y0: 28.6
+    x1: 576.0
+    y1: 34.6
+- page: 5
+  field: 'Social Security/Tax ID # (for reporting purposes): _____________________________'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 432.6
+    x1: 286.0
+    y1: 442.6
+  region: middle
+  context: 'Social Security/Tax ID # (for reporting purposes): __________________________________________________________________'
+- page: 5
+  field: 'Social Security/Tax ID # (for reporting purposes): _____________________________'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 521.6
+    x1: 286.0
+    y1: 531.6
+  region: lower
+  context: 'Social Security/Tax ID # (for reporting purposes): __________________________________________________________________'
+- page: 5
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 404.6
+    x1: 276.5
+    y1: 416.6
+  region: middle
+  context: Address City State Zip
+  ul_bbox:
+    x0: 79.0
+    y0: 410.6
+    x1: 289.0
+    y1: 416.6
+- page: 5
+  field: City
+  category: entry_address
+  bbox:
+    x0: 289.0
+    y0: 404.6
+    x1: 449.5
+    y1: 416.6
+  region: middle
+  context: Address City State Zip
+  ul_bbox:
+    x0: 309.5
+    y0: 410.6
+    x1: 449.5
+    y1: 416.6
+- page: 5
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 495.5
+    y0: 404.6
+    x1: 576.0
+    y1: 416.6
+  region: middle
+  context: Address City State Zip
+  ul_bbox:
+    x0: 513.0
+    y0: 410.6
+    x1: 576.0
+    y1: 416.6
+- page: 5
+  field: Email
+  category: entry_contact
+  bbox:
+    x0: 36.0
+    y0: 418.5
+    x1: 266.0
+    y1: 430.6
+  region: middle
+  context: 'Email Phone #'
+  ul_bbox:
+    x0: 68.5
+    y0: 424.6
+    x1: 433.5
+    y1: 430.6
+- page: 5
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 493.6
+    x1: 276.5
+    y1: 505.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 79.0
+    y0: 499.6
+    x1: 289.0
+    y1: 505.6
+- page: 5
+  field: City
+  category: entry_address
+  bbox:
+    x0: 289.0
+    y0: 493.6
+    x1: 449.5
+    y1: 505.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 309.5
+    y0: 499.6
+    x1: 449.5
+    y1: 505.6
+- page: 5
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 495.5
+    y0: 493.6
+    x1: 576.0
+    y1: 505.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 513.0
+    y0: 499.6
+    x1: 576.0
+    y1: 505.6
+- page: 5
+  field: Email
+  category: entry_contact
+  bbox:
+    x0: 36.0
+    y0: 507.5
+    x1: 266.0
+    y1: 519.6
+  region: lower
+  context: 'Email Phone #'
+  ul_bbox:
+    x0: 68.5
+    y0: 513.6
+    x1: 433.5
+    y1: 519.6
+- page: 5
+  field: Real Estate Broker (Firm)
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 571.5
+    x1: 286.0
+    y1: 583.6
+  region: lower
+  context: 'Real Estate Broker (Firm) DRE Lic. # Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 140.5
+    y0: 577.6
+    x1: 430.5
+    y1: 583.6
+- page: 5
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 430.5
+    y0: 571.5
+    x1: 576.0
+    y1: 583.6
+  region: lower
+  context: 'Real Estate Broker (Firm) DRE Lic. # Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 478.5
+    y0: 577.6
+    x1: 576.0
+    y1: 583.6
+- page: 5
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 586.6
+    x1: 269.0
+    y1: 598.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 71.5
+    y0: 592.6
+    x1: 286.5
+    y1: 598.6
+- page: 5
+  field: City
+  category: entry_address
+  bbox:
+    x0: 286.5
+    y0: 586.6
+    x1: 452.0
+    y1: 598.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 307.0
+    y0: 592.6
+    x1: 452.0
+    y1: 598.6
+- page: 5
+  field: State
+  category: entry_address
+  bbox:
+    x0: 452.0
+    y0: 586.6
+    x1: 498.0
+    y1: 598.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 478.0
+    y0: 592.6
+    x1: 498.0
+    y1: 598.6
+- page: 5
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 498.0
+    y0: 586.6
+    x1: 576.0
+    y1: 598.6
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 515.5
+    y0: 592.6
+    x1: 576.0
+    y1: 598.6
+- page: 5
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 601.6
+    x1: 149.0
+    y1: 613.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 49.0
+    y0: 607.6
+    x1: 149.0
+    y1: 613.6
+- page: 5
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 249.0
+    y0: 601.6
+    x1: 369.5
+    y1: 613.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 279.5
+    y0: 607.6
+    x1: 369.5
+    y1: 613.6
+- page: 5
+  field: DRE Lic#
+  category: entry_license
+  bbox:
+    x0: 369.5
+    y0: 601.6
+    x1: 485.0
+    y1: 613.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 415.0
+    y0: 607.6
+    x1: 485.0
+    y1: 613.6
+- page: 5
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 485.0
+    y0: 601.6
+    x1: 576.0
+    y1: 613.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 511.5
+    y0: 607.6
+    x1: 576.0
+    y1: 613.6
+- page: 5
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 623.5
+    x1: 149.0
+    y1: 635.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 49.0
+    y0: 629.6
+    x1: 149.0
+    y1: 635.6
+- page: 5
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 249.0
+    y0: 623.5
+    x1: 369.5
+    y1: 635.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 279.5
+    y0: 629.6
+    x1: 369.5
+    y1: 635.6
+- page: 5
+  field: DRE Lic#
+  category: entry_license
+  bbox:
+    x0: 369.5
+    y0: 623.5
+    x1: 485.0
+    y1: 635.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 415.0
+    y0: 629.6
+    x1: 485.0
+    y1: 635.6
+- page: 5
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 485.0
+    y0: 623.5
+    x1: 576.0
+    y1: 635.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 509.0
+    y0: 629.6
+    x1: 576.0
+    y1: 635.6
+- page: 5
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 22.5
+    x1: 308.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 28.6
+    x1: 435.5
+    y1: 34.6
+- page: 5
+  field: case
+  category: entry_blank
+  bbox:
+    x0: 221.3
+    y0: 206.6
+    x1: 436.3
+    y1: 218.6
+  region: upper
+  context: 'full name of the estate, including case #): .'
+  ul_bbox:
+    x0: 256.0
+    y0: 212.6
+    x1: 576.0
+    y1: 218.6
+- page: 5
+  field: 'is/are:'
+  category: entry_blank
+  bbox:
+    x0: 294.4
+    y0: 327.5
+    x1: 444.3
+    y1: 339.6
+  region: middle
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , .'
+  ul_bbox:
+    x0: 324.3
+    y0: 333.6
+    x1: 444.3
+    y1: 339.6
+- page: 5
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 473.5
+    y0: 362.5
+    x1: 576.0
+    y1: 374.6
+  region: middle
+  context: '(Signature) By, Date:'
+  ul_bbox:
+    x0: 500.0
+    y0: 368.6
+    x1: 576.0
+    y1: 374.6
+- page: 5
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 207.8
+    y0: 390.5
+    x1: 389.5
+    y1: 402.6
+  region: middle
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 239.5
+    y0: 396.6
+    x1: 389.5
+    y1: 402.6
+- page: 5
+  field: applicable,
+  category: entry_blank
+  bbox:
+    x0: 425.0
+    y0: 390.5
+    x1: 576.0
+    y1: 402.6
+  region: middle
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 466.5
+    y0: 396.6
+    x1: 576.0
+    y1: 402.6
+- page: 5
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 473.5
+    y0: 451.6
+    x1: 576.0
+    y1: 463.6
+  region: middle
+  context: '(Signature) By, Date:'
+  ul_bbox:
+    x0: 500.0
+    y0: 457.6
+    x1: 576.0
+    y1: 463.6
+- page: 5
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 207.8
+    y0: 479.5
+    x1: 389.5
+    y1: 491.6
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 239.5
+    y0: 485.6
+    x1: 389.5
+    y1: 491.6
+- page: 5
+  field: applicable,
+  category: entry_blank
+  bbox:
+    x0: 425.0
+    y0: 479.5
+    x1: 576.0
+    y1: 491.6
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 466.5
+    y0: 485.6
+    x1: 576.0
+    y1: 491.6
+- page: 5
+  field: Tel.
+  category: entry_blank
+  bbox:
+    x0: 149.0
+    y0: 601.6
+    x1: 249.0
+    y1: 613.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 169.0
+    y0: 607.6
+    x1: 249.0
+    y1: 613.6
+- page: 5
+  field: Tel.
+  category: entry_blank
+  bbox:
+    x0: 151.5
+    y0: 623.5
+    x1: 249.0
+    y1: 635.6
+  region: lower
+  context: By Tel. E-mail DRE Lic# Date
+  ul_bbox:
+    x0: 169.0
+    y0: 629.6
+    x1: 249.0
+    y1: 635.6
+- page: 6
+  field: 'Unit #'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 100.1
+    x1: 87.0
+    y1: 112.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 62.0
+    y0: 106.1
+    x1: 87.0
+    y1: 112.1
+- page: 6
+  field: County
+  category: entry_blank
+  bbox:
+    x0: 318.4
+    y0: 93.1
+    x1: 542.2
+    y1: 110.1
+  region: header
+  context: 'makes the following disclosures with regard to the real property described as , Unit # , situated in , County
+    of , Calif'
+  ul_bbox:
+    x0: 348.5
+    y0: 95.1
+    x1: 573.5
+    y1: 101.1
+- page: 6
+  field: situated
+  category: entry_blank
+  bbox:
+    x0: 94.1
+    y0: 100.1
+    x1: 310.5
+    y1: 112.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 135.5
+    y0: 106.1
+    x1: 310.5
+    y1: 112.1
+- page: 6
+  field: County
+  category: entry_blank
+  bbox:
+    x0: 318.4
+    y0: 100.1
+    x1: 476.5
+    y1: 112.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 356.5
+    y0: 106.1
+    x1: 476.5
+    y1: 112.1
+- page: 7
+  field: Rental Property Owner
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 483.0
+    x1: 260.5
+    y1: 495.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 489.1
+    x1: 260.5
+    y1: 495.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 270.5
+    y0: 483.0
+    x1: 492.0
+    y1: 495.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 260.5
+    y0: 489.1
+    x1: 470.5
+    y1: 495.1
+- page: 7
+  field: Rental Property Owner
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 499.0
+    x1: 260.5
+    y1: 511.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 505.1
+    x1: 260.5
+    y1: 511.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 270.5
+    y0: 499.0
+    x1: 492.0
+    y1: 511.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 260.5
+    y0: 505.1
+    x1: 470.5
+    y1: 511.1
+- page: 7
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 554.0
+    x1: 262.0
+    y1: 566.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 560.1
+    x1: 262.0
+    y1: 566.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.0
+    y0: 554.0
+    x1: 493.5
+    y1: 566.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 262.0
+    y0: 560.1
+    x1: 472.0
+    y1: 566.1
+- page: 7
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 570.0
+    x1: 262.0
+    y1: 582.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 576.1
+    x1: 262.0
+    y1: 582.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.0
+    y0: 570.0
+    x1: 493.5
+    y1: 582.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 262.0
+    y0: 576.1
+    x1: 472.0
+    y1: 582.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 302.0
+    y0: 614.0
+    x1: 498.5
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 302.0
+    y0: 620.1
+    x1: 477.0
+    y1: 626.1
+- page: 7
+  field: 'treatment:'
+  category: entry_date
+  bbox:
+    x0: 301.7
+    y0: 65.0
+    x1: 522.0
+    y1: 77.1
+  region: header
+  context: 'If yes to B(1), identify the location and date(s) of the treatment:'
+  ul_bbox:
+    x0: 341.5
+    y0: 71.1
+    x1: 522.0
+    y1: 77.1
+- page: 7
+  field: 'treatment:'
+  category: entry_date
+  bbox:
+    x0: 290.3
+    y0: 149.0
+    x1: 522.0
+    y1: 161.1
+  region: upper
+  context: '(1) If yes to B, identify the location and date(s) of the treatment: (2) If yes to B, does RPO have any reports
+    or recor'
+  ul_bbox:
+    x0: 330.5
+    y0: 155.1
+    x1: 522.0
+    y1: 161.1
+- page: 7
+  field: Broker
+  category: entry_blank
+  bbox:
+    x0: 86.3
+    y0: 614.0
+    x1: 284.0
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 114.0
+    y0: 620.1
+    x1: 284.0
+    y1: 626.1
+- page: 7
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 477.0
+    y0: 614.0
+    x1: 576.0
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 501.0
+    y0: 620.1
+    x1: 576.0
+    y1: 626.1
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 281.0
+    y0: 303.0
+    x1: 502.5
+    y1: 315.1
+  region: upper
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 281.0
+    y0: 309.1
+    x1: 481.0
+    y1: 315.1
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 281.0
+    y0: 319.0
+    x1: 502.5
+    y1: 331.1
+  region: middle
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 281.0
+    y0: 325.1
+    x1: 481.0
+    y1: 331.1
+- page: 10
+  field: Owner
+  category: entry_blank
+  bbox:
+    x0: 131.7
+    y0: 303.0
+    x1: 281.0
+    y1: 315.1
+  region: upper
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 156.0
+    y0: 309.1
+    x1: 281.0
+    y1: 315.1
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 481.0
+    y0: 303.0
+    x1: 576.0
+    y1: 315.1
+  region: upper
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 505.0
+    y0: 309.1
+    x1: 576.0
+    y1: 315.1
+- page: 10
+  field: Owner
+  category: entry_blank
+  bbox:
+    x0: 131.7
+    y0: 319.0
+    x1: 281.0
+    y1: 331.1
+  region: middle
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 156.0
+    y0: 325.1
+    x1: 281.0
+    y1: 331.1
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 481.0
+    y0: 319.0
+    x1: 576.0
+    y1: 331.1
+  region: middle
+  context: Buyer/Rental Property Owner Date
+  ul_bbox:
+    x0: 505.0
+    y0: 325.1
+    x1: 576.0
+    y1: 331.1
+- page: 12
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 588.4
+    x1: 494.0
+    y1: 600.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 267.5
+    y0: 594.4
+    x1: 472.5
+    y1: 600.4
+- page: 12
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 602.4
+    x1: 494.0
+    y1: 614.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 267.5
+    y0: 608.4
+    x1: 472.5
+    y1: 614.4
+- page: 12
+  field: Seller/Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 92.5
+    y0: 606.4
+    x1: 267.6
+    y1: 629.4
+  region: lower
+  context: Buyer/Tenant Date Seller/Housing Provider
+  ul_bbox:
+    x0: 92.5
+    y0: 608.4
+    x1: 267.6
+    y1: 614.4
+- page: 12
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 619.3
+    x1: 494.5
+    y1: 631.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 625.4
+    x1: 473.0
+    y1: 631.4
+- page: 12
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 633.4
+    x1: 494.5
+    y1: 645.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 639.4
+    x1: 473.0
+    y1: 645.4
+- page: 12
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 588.4
+    x1: 267.6
+    y1: 600.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 92.5
+    y0: 594.4
+    x1: 267.6
+    y1: 600.4
+- page: 12
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 619.3
+    x1: 268.0
+    y1: 631.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 133.0
+    y0: 625.4
+    x1: 268.0
+    y1: 631.4
+- page: 12
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 633.4
+    x1: 268.0
+    y1: 645.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 133.0
+    y0: 639.4
+    x1: 268.0
+    y1: 645.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 393.3
+    x1: 481.2
+    y1: 406.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 168.8
+    y0: 400.4
+    x1: 457.3
+    y1: 406.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 422.3
+    x1: 481.2
+    y1: 435.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 168.8
+    y0: 429.4
+    x1: 457.3
+    y1: 435.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 393.3
+    x1: 576.0
+    y1: 406.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 400.4
+    x1: 576.0
+    y1: 406.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 422.3
+    x1: 576.0
+    y1: 435.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 429.4
+    x1: 576.0
+    y1: 435.4

@@ -1,0 +1,77 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:22'
+file: Wildfire_Disaster_Advisory_-_1225_ts66654.pdf
+folder: SFR Disclosures Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 4
+  entry_categories:
+    entry_date: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 260.5
+    y0: 234.6
+    x1: 482.0
+    y1: 246.6
+  region: upper
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 100.5
+    y0: 240.6
+    x1: 460.5
+    y1: 246.6
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 260.5
+    y0: 264.5
+    x1: 482.0
+    y1: 276.6
+  region: upper
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 100.5
+    y0: 270.6
+    x1: 460.5
+    y1: 276.6
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 460.5
+    y0: 234.6
+    x1: 576.0
+    y1: 246.6
+  region: upper
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 484.5
+    y0: 240.6
+    x1: 576.0
+    y1: 246.6
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 460.5
+    y0: 264.5
+    x1: 576.0
+    y1: 276.6
+  region: upper
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 484.5
+    y0: 270.6
+    x1: 576.0
+    y1: 276.6

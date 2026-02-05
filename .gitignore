@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment / secrets
+.env
+*.env.rtf
+.tc/
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Duplicate files (macOS copies)
+*\ 2
+*\ 2.*
+
+# Backups
+CAR Contract Packages_backup/
+
+# Session logs / AI context
+aicontext_log/
+2026-*.txt
+CLAUDE\ 2.md

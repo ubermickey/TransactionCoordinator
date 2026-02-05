@@ -1,0 +1,108 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:56:53'
+file: Affiliated_Business_Arrangement_Disclosure_Statement_-_321_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 6
+  entry_categories:
+    entry_date: 2
+    entry_signature: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 54.0
+    y0: 247.8
+    x1: 170.4
+    y1: 261.0
+  region: upper
+  context: Date Date
+  ul_bbox:
+    x0: 75.4
+    y0: 255.0
+    x1: 170.4
+    y1: 261.0
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 324.0
+    y0: 247.8
+    x1: 440.4
+    y1: 261.0
+  region: upper
+  context: Date Date
+  ul_bbox:
+    x0: 345.4
+    y0: 255.0
+    x1: 440.4
+    y1: 261.0
+- page: 2
+  field: Buyer's
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 278.0
+    x1: 168.6
+    y1: 295.8
+  region: upper
+  context: Buyer's Signature Seller's Signature
+  ul_bbox:
+    x0: 54.0
+    y0: 280.0
+    x1: 264.0
+    y1: 286.0
+- page: 2
+  field: Seller's
+  category: entry_signature
+  bbox:
+    x0: 324.0
+    y0: 278.0
+    x1: 439.5
+    y1: 295.8
+  region: upper
+  context: Buyer's Signature Seller's Signature
+  ul_bbox:
+    x0: 324.0
+    y0: 280.0
+    x1: 534.0
+    y1: 286.0
+- page: 2
+  field: Buyer's
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 338.0
+    x1: 168.6
+    y1: 355.8
+  region: middle
+  context: Buyer's Signature Seller's Signature
+  ul_bbox:
+    x0: 54.0
+    y0: 340.0
+    x1: 264.0
+    y1: 346.0
+- page: 2
+  field: Seller's
+  category: entry_signature
+  bbox:
+    x0: 324.0
+    y0: 338.0
+    x1: 439.5
+    y1: 355.8
+  region: middle
+  context: Buyer's Signature Seller's Signature
+  ul_bbox:
+    x0: 324.0
+    y0: 340.0
+    x1: 534.0
+    y1: 346.0

@@ -1,0 +1,51 @@
+# CAR Statewide Buyer and Seller Advisory (SBSA) — Form Template
+# Industry standard advisory document
+
+form:
+  name: Statewide Buyer and Seller Advisory
+  code: SBSA
+  publisher: CAR
+  version: "12/24"
+  last_verified: 2026-01-15
+  gate: GATE-012
+
+fields:
+  buyer_name:
+    section: header
+    label: "Buyer"
+    maps_to: parties.buyer
+    type: text
+
+  seller_name:
+    section: header
+    label: "Seller"
+    maps_to: parties.seller
+    type: text
+
+  property_address:
+    section: header
+    label: "Property Address"
+    maps_to: property.address
+    type: text
+
+  buyer_acknowledgment:
+    section: "signature"
+    label: "Buyer signature acknowledging receipt"
+    type: signature
+    required: true
+
+  seller_acknowledgment:
+    section: "signature"
+    label: "Seller signature acknowledging receipt"
+    type: signature
+    required: true
+
+  delivery_date:
+    section: "signature"
+    label: "Date delivered"
+    type: date
+    required: true
+
+flags:
+  - "Missing buyer or seller signature"
+  - "Delivery date after contingency removal (should be delivered early)"

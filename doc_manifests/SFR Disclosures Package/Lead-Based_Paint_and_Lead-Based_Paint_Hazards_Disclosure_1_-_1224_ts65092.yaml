@@ -1,0 +1,327 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:17'
+file: Lead-Based_Paint_and_Lead-Based_Paint_Hazards_Disclosure_1_-_1224_ts65092.pdf
+folder: SFR Disclosures Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 20
+  entry_categories:
+    entry_signature: 6
+    entry_blank: 9
+    entry_date: 5
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Buyer's/Tenant's Initials
+  category: entry_signature
+  bbox:
+    x0: 360.0
+    y0: 709.6
+    x1: 493.4
+    y1: 720.5
+  region: footer
+  context: LPD REVISED 12/24 (PAGE 1 OF 2) Buyer's/Tenant's Initials /
+  ul_bbox:
+    x0: 453.4
+    y0: 714.5
+    x1: 493.4
+    y1: 720.5
+- page: 1
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 313.6
+    y0: 109.4
+    x1: 544.1
+    y1: 122.5
+  region: header
+  context: 'Residential Lease or Month-to-Month Rental Agreement, Other: , dated , on property known as: ("Property") , ,'
+  ul_bbox:
+    x0: 348.0
+    y0: 116.5
+    x1: 570.0
+    y1: 122.5
+- page: 1
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 120.8
+    x1: 131.4
+    y1: 134.0
+  region: upper
+  context: 'dated , on property known as: ("Property") in which is referred to as Buyer or Tenant , ,'
+  ul_bbox:
+    x0: 64.8
+    y0: 128.0
+    x1: 131.4
+    y1: 134.0
+- page: 1
+  field: 'as:'
+  category: entry_blank
+  bbox:
+    x0: 223.3
+    y0: 120.8
+    x1: 437.1
+    y1: 134.0
+  region: upper
+  context: 'dated , on property known as: ("Property") in which is referred to as Buyer or Tenant , ,'
+  ul_bbox:
+    x0: 243.1
+    y0: 128.0
+    x1: 520.6
+    y1: 134.0
+- page: 1
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 239.3
+    y0: 132.3
+    x1: 475.7
+    y1: 145.5
+  region: upper
+  context: in which is referred to as Buyer or Tenant and is referred to as Seller or Housing Provider.
+  ul_bbox:
+    x0: 76.0
+    y0: 139.5
+    x1: 425.6
+    y1: 145.5
+- page: 1
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 191.1
+    y0: 143.9
+    x1: 426.3
+    y1: 157.0
+  region: upper
+  context: and is referred to as Seller or Housing Provider. Buyer/Tenant and Seller/Housing Provider are referred to as the
+    "Parti
+  ul_bbox:
+    x0: 55.9
+    y0: 151.0
+    x1: 377.9
+    y1: 157.0
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 461.2
+    y0: 639.5
+    x1: 576.0
+    y1: 657.0
+  region: lower
+  context: Seller or Housing Provider Date
+  ul_bbox:
+    x0: 461.2
+    y0: 641.5
+    x1: 576.0
+    y1: 647.5
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 461.2
+    y0: 666.0
+    x1: 576.0
+    y1: 683.5
+  region: footer
+  context: Seller or Housing Provider Date
+  ul_bbox:
+    x0: 461.2
+    y0: 668.0
+    x1: 576.0
+    y1: 674.0
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 249.3
+    y0: 36.6
+    x1: 468.4
+    y1: 47.5
+  region: header
+  context: 'Property Address: Date , ,'
+  ul_bbox:
+    x0: 102.2
+    y0: 41.5
+    x1: 449.3
+    y1: 47.5
+- page: 2
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 313.5
+    y0: 142.1
+    x1: 516.7
+    y1: 155.5
+  region: upper
+  context: By Agent (Broker representing Seller or Housing Provider) Associate-Licensee or Broker Signature Date Douglas Elliman
+    of
+  ul_bbox:
+    x0: 328.0
+    y0: 149.5
+    x1: 516.7
+    y1: 155.5
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 270.0
+    y0: 419.5
+    x1: 496.6
+    y1: 437.0
+  region: middle
+  context: Buyer or Tenant Date Buyer or Tenant Date
+  ul_bbox:
+    x0: 311.9
+    y0: 421.5
+    x1: 517.2
+    y1: 427.5
+- page: 2
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 307.9
+    y0: 571.1
+    x1: 516.7
+    y1: 584.5
+  region: lower
+  context: By Agent (Broker obtaining the Offer) Associate-Licensee or Broker Signature Date Douglas Elliman of California,
+    Inc.
+  ul_bbox:
+    x0: 322.4
+    y0: 578.5
+    x1: 516.7
+    y1: 584.5
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 449.3
+    y0: 36.6
+    x1: 576.0
+    y1: 47.5
+  region: header
+  context: 'Property Address: Date , ,'
+  ul_bbox:
+    x0: 470.5
+    y0: 41.5
+    x1: 576.0
+    y1: 47.5
+- page: 2
+  field: Associate-Licensee
+  category: entry_signature
+  bbox:
+    x0: 124.0
+    y0: 147.5
+    x1: 374.0
+    y1: 165.0
+  region: upper
+  context: By Agent (Broker representing Seller or Housing Provider) Associate-Licensee or Broker Signature Date Douglas Elliman
+    of
+  ul_bbox:
+    x0: 36.0
+    y0: 149.5
+    x1: 307.9
+    y1: 155.5
+- page: 2
+  field: Signature
+  category: entry_signature
+  bbox:
+    x0: 456.7
+    y0: 147.5
+    x1: 576.0
+    y1: 165.0
+  region: upper
+  context: By Agent (Broker representing Seller or Housing Provider) Associate-Licensee or Broker Signature Date Douglas Elliman
+    of
+  ul_bbox:
+    x0: 516.7
+    y0: 149.5
+    x1: 576.0
+    y1: 155.5
+- page: 2
+  field: initialed)
+  category: entry_blank
+  bbox:
+    x0: 100.4
+    y0: 240.8
+    x1: 189.2
+    y1: 254.0
+  region: upper
+  context: (2) (if initialed) / I have not received any records and reports regarding lead-based paint and/ or lead-based
+    paint haz
+  ul_bbox:
+    x0: 140.2
+    y0: 248.0
+    x1: 189.2
+    y1: 254.0
+- page: 2
+  field: paint
+  category: entry_blank
+  bbox:
+    x0: 151.0
+    y0: 246.0
+    x1: 241.0
+    y1: 263.5
+  region: upper
+  context: (2) (if initialed) / I have not received any records and reports regarding lead-based paint and/ or lead-based
+    paint haz
+  ul_bbox:
+    x0: 191.9
+    y0: 248.0
+    x1: 241.0
+    y1: 254.0
+- page: 2
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 44.9
+    y0: 419.5
+    x1: 244.7
+    y1: 437.0
+  region: middle
+  context: Buyer or Tenant Date Buyer or Tenant Date
+  ul_bbox:
+    x0: 44.9
+    y0: 421.5
+    x1: 244.7
+    y1: 427.5
+- page: 2
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 244.7
+    y0: 419.5
+    x1: 332.7
+    y1: 437.0
+  region: middle
+  context: Buyer or Tenant Date Buyer or Tenant Date
+  ul_bbox:
+    x0: 244.7
+    y0: 421.5
+    x1: 300.2
+    y1: 427.5
+- page: 2
+  field: Associate-Licensee
+  category: entry_signature
+  bbox:
+    x0: 106.0
+    y0: 576.5
+    x1: 356.0
+    y1: 594.0
+  region: lower
+  context: By Agent (Broker obtaining the Offer) Associate-Licensee or Broker Signature Date Douglas Elliman of California,
+    Inc.
+  ul_bbox:
+    x0: 36.0
+    y0: 578.5
+    x1: 302.4
+    y1: 584.5

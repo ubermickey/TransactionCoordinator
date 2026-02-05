@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Wrapper script — add workflow/ to your PATH or run ./tc from here
+DIR="$(cd "$(dirname "$0")" && pwd)"
+exec "$DIR/.venv/bin/python3" -m tcli "$@"

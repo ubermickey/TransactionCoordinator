@@ -1,0 +1,523 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:20'
+file: Real_Estate_Transfer_Disclosure_Statement_-_624_ts63533.pdf
+folder: SFR Disclosures Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 36
+  entry_categories:
+    entry_blank: 28
+    entry_signature: 3
+    entry_date: 5
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 424.8
+    y0: 518.0
+    x1: 557.3
+    y1: 530.1
+  region: lower
+  context: 'Carbon Monoxide Device(s) Smoke Detector(s) Security Gate(s) Garage: Other Gas Supply:'
+  ul_bbox:
+    x0: 457.3
+    y0: 524.1
+    x1: 557.3
+    y1: 530.1
+- page: 1
+  field: Buyer's Initials
+  category: entry_signature
+  bbox:
+    x0: 216.0
+    y0: 715.7
+    x1: 307.9
+    y1: 726.6
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 276.7
+    y0: 720.6
+    x1: 307.9
+    y1: 726.6
+- page: 1
+  field: Seller's Initials
+  category: entry_signature
+  bbox:
+    x0: 396.0
+    y0: 715.7
+    x1: 487.5
+    y1: 726.6
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 720.6
+    x1: 487.5
+    y1: 726.6
+- page: 1
+  field: unit(s)
+  category: entry_blank
+  bbox:
+    x0: 508.7
+    y0: 68.9
+    x1: 558.4
+    y1: 82.1
+  region: header
+  context: This property is a duplex, triplex or fourplex. A TDS is required for all units. This TDS is for ALL units (or
+    only unit
+  ul_bbox:
+    x0: 541.7
+    y0: 76.1
+    x1: 558.4
+    y1: 82.1
+- page: 1
+  field: COUNTY
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 91.7
+    x1: 253.7
+    y1: 105.1
+  region: header
+  context: ', COUNTY OF , STATE OF CALIFORNIA, DESCRIBED AS . , ,'
+  ul_bbox:
+    x0: 36.0
+    y0: 99.1
+    x1: 202.5
+    y1: 105.1
+- page: 1
+  field: STATE
+  category: entry_blank
+  bbox:
+    x0: 281.3
+    y0: 91.7
+    x1: 484.8
+    y1: 105.1
+  region: header
+  context: ', COUNTY OF , STATE OF CALIFORNIA, DESCRIBED AS . , ,'
+  ul_bbox:
+    x0: 281.3
+    y0: 99.1
+    x1: 442.2
+    y1: 105.1
+- page: 1
+  field: (DATE)
+  category: entry_date
+  bbox:
+    x0: 300.5
+    y0: 129.2
+    x1: 412.1
+    y1: 142.6
+  region: upper
+  context: "COMPLIANCE WITH \xA7 1102 OF THE CIVIL CODE AS OF (DATE) . IT IS NOT A WARRANTY OF ANY KIND BY THE SELLER(S) OR\
+    \ ANY AGENT(S"
+  ul_bbox:
+    x0: 339.9
+    y0: 136.6
+    x1: 412.1
+    y1: 142.6
+- page: 1
+  field: 'disclosures:'
+  category: entry_blank
+  bbox:
+    x0: 181.2
+    y0: 263.0
+    x1: 427.5
+    y1: 275.1
+  region: upper
+  context: 'Additional inspection reports or disclosures:'
+  ul_bbox:
+    x0: 230.0
+    y0: 269.1
+    x1: 576.0
+    y1: 275.1
+- page: 1
+  field: Controls
+  category: entry_blank
+  bbox:
+    x0: 308.5
+    y0: 573.0
+    x1: 371.5
+    y1: 585.1
+  region: lower
+  context: Intercom Central Heating Number Remote Controls Sauna Quick Release Mechanism on Bedroom Windows
+  ul_bbox:
+    x0: 351.5
+    y0: 579.1
+    x1: 371.5
+    y1: 585.1
+- page: 1
+  field: Fan(s)
+  category: entry_blank
+  bbox:
+    x0: 69.2
+    y0: 619.6
+    x1: 219.0
+    y1: 631.6
+  region: lower
+  context: 'Exhaust Fan(s) in 220 Volt Wiring in Fireplace(s) in Gas Starter Roof(s): Type: Age: (approx.)'
+  ul_bbox:
+    x0: 108.9
+    y0: 625.6
+    x1: 219.0
+    y1: 631.6
+- page: 1
+  field: Wiring
+  category: entry_blank
+  bbox:
+    x0: 255.4
+    y0: 619.6
+    x1: 404.5
+    y1: 631.6
+  region: lower
+  context: 'Exhaust Fan(s) in 220 Volt Wiring in Fireplace(s) in Gas Starter Roof(s): Type: Age: (approx.)'
+  ul_bbox:
+    x0: 294.5
+    y0: 625.6
+    x1: 404.5
+    y1: 631.6
+- page: 1
+  field: 'Age:'
+  category: entry_blank
+  bbox:
+    x0: 446.5
+    y0: 623.6
+    x1: 576.0
+    y1: 640.1
+  region: lower
+  context: 'Exhaust Fan(s) in 220 Volt Wiring in Fireplace(s) in Gas Starter Roof(s): Type: Age: (approx.)'
+  ul_bbox:
+    x0: 466.4
+    y0: 625.6
+    x1: 576.0
+    y1: 631.6
+- page: 1
+  field: Starter
+  category: entry_blank
+  bbox:
+    x0: 52.7
+    y0: 630.1
+    x1: 154.5
+    y1: 642.1
+  region: lower
+  context: 'Gas Starter Roof(s): Type: Age: (approx.) Other:'
+  ul_bbox:
+    x0: 84.5
+    y0: 636.1
+    x1: 154.5
+    y1: 642.1
+- page: 1
+  field: 'Type:'
+  category: entry_blank
+  bbox:
+    x0: 192.7
+    y0: 630.1
+    x1: 414.0
+    y1: 642.1
+  region: lower
+  context: 'Gas Starter Roof(s): Type: Age: (approx.) Other:'
+  ul_bbox:
+    x0: 216.5
+    y0: 636.1
+    x1: 446.5
+    y1: 642.1
+- page: 1
+  field: 'Age:'
+  category: entry_blank
+  bbox:
+    x0: 446.5
+    y0: 630.1
+    x1: 535.0
+    y1: 642.1
+  region: lower
+  context: 'Gas Starter Roof(s): Type: Age: (approx.) Other:'
+  ul_bbox:
+    x0: 470.0
+    y0: 636.1
+    x1: 535.0
+    y1: 642.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 439.5
+    y0: 681.6
+    x1: 576.1
+    y1: 693.6
+  region: footer
+  context: Seller Date
+  ul_bbox:
+    x0: 463.5
+    y0: 687.6
+    x1: 576.1
+    y1: 693.6
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 439.5
+    y0: 702.6
+    x1: 576.1
+    y1: 714.6
+  region: footer
+  context: Seller Date
+  ul_bbox:
+    x0: 463.5
+    y0: 708.6
+    x1: 576.1
+    y1: 714.6
+- page: 2
+  field: Buyer's Initials
+  category: entry_signature
+  bbox:
+    x0: 396.0
+    y0: 730.2
+    x1: 487.9
+    y1: 741.1
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 2 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 456.7
+    y0: 735.1
+    x1: 487.9
+    y1: 741.1
+- page: 2
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 69.9
+    y0: 23.7
+    x1: 300.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: B. Are you (Seller) aware of any significant defects/malfunctions in any of the following?
+    Yes/ '
+  ul_bbox:
+    x0: 102.2
+    y0: 28.6
+    x1: 462.6
+    y1: 34.6
+- page: 2
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 462.6
+    y0: 23.7
+    x1: 576.0
+    y1: 34.6
+  region: header
+  context: 'Property Address: Date: B. Are you (Seller) aware of any significant defects/malfunctions in any of the following?
+    Yes/ '
+  ul_bbox:
+    x0: 486.1
+    y0: 28.6
+    x1: 576.0
+    y1: 34.6
+- page: 2
+  field: 'necessary.):'
+  category: entry_blank
+  bbox:
+    x0: 324.5
+    y0: 98.1
+    x1: 574.5
+    y1: 110.1
+  region: header
+  context: 'If any of the above is checked, explain. (Attach additional sheets if necessary.):'
+  ul_bbox:
+    x0: 376.0
+    y0: 104.1
+    x1: 576.0
+    y1: 110.1
+- page: 2
+  field: 'necessary.):'
+  category: entry_blank
+  bbox:
+    x0: 324.4
+    y0: 551.0
+    x1: 569.9
+    y1: 563.1
+  region: lower
+  context: 'If the answer to any of these is yes, explain. (Attach additional sheets if necessary.):'
+  ul_bbox:
+    x0: 372.5
+    y0: 557.1
+    x1: 576.0
+    y1: 563.1
+- page: 3
+  field: By _____________________________________________________________________________
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 181.1
+    x1: 286.0
+    y1: 191.1
+  region: upper
+  context: By ___________________________________________________________________________________ Date _________________
+- page: 3
+  field: By _____________________________________________________________________________
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 341.6
+    x1: 286.0
+    y1: 351.6
+  region: middle
+  context: By ___________________________________________________________________________________ Date _________________
+- page: 3
+  field: '_______________________________________________________________________________ '
+  category: entry_blank
+  bbox:
+    x0: 69.5
+    y0: 416.9
+    x1: 319.5
+    y1: 426.9
+  region: middle
+  context: _______________________________________________________________________________ Date _________________
+- page: 3
+  field: '_______________________________________________________________________________ '
+  category: entry_blank
+  bbox:
+    x0: 69.5
+    y0: 441.8
+    x1: 319.5
+    y1: 451.8
+  region: middle
+  context: _______________________________________________________________________________ Date _________________
+- page: 3
+  field: '_______________________________________________________________________________ '
+  category: entry_blank
+  bbox:
+    x0: 70.0
+    y0: 466.8
+    x1: 320.0
+    y1: 476.8
+  region: middle
+  context: _______________________________________________________________________________ Date _________________
+- page: 3
+  field: '_______________________________________________________________________________ '
+  category: entry_blank
+  bbox:
+    x0: 70.0
+    y0: 491.9
+    x1: 320.0
+    y1: 501.9
+  region: lower
+  context: _______________________________________________________________________________ Date _________________
+- page: 3
+  field: By _____________________________________________________________________________
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 532.8
+    x1: 286.0
+    y1: 542.8
+  region: lower
+  context: By ___________________________________________________________________________________ Date _________________
+- page: 3
+  field: By _____________________________________________________________________________
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 571.9
+    x1: 286.0
+    y1: 581.9
+  region: lower
+  context: By ___________________________________________________________________________________ Date _________________
+- page: 3
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 69.9
+    y0: 23.2
+    x1: 300.0
+    y1: 34.1
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 102.2
+    y0: 28.1
+    x1: 462.6
+    y1: 34.1
+- page: 3
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 462.6
+    y0: 23.2
+    x1: 576.0
+    y1: 34.1
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 486.1
+    y0: 28.1
+    x1: 576.0
+    y1: 34.1
+- page: 3
+  field: Seller)
+  category: entry_blank
+  bbox:
+    x0: 147.2
+    y0: 166.0
+    x1: 376.0
+    y1: 178.1
+  region: upper
+  context: Agent (Broker Representing Seller) (Please Print) Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 178.5
+    y0: 172.1
+    x1: 518.5
+    y1: 178.1
+- page: 3
+  field: Offer)
+  category: entry_blank
+  bbox:
+    x0: 148.8
+    y0: 326.5
+    x1: 372.9
+    y1: 338.6
+  region: middle
+  context: Agent (Broker Obtaining the Offer) (Please Print) Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 175.5
+    y0: 332.6
+    x1: 515.5
+    y1: 338.6
+- page: 3
+  field: Seller)
+  category: entry_blank
+  bbox:
+    x0: 147.2
+    y0: 517.9
+    x1: 376.0
+    y1: 529.8
+  region: lower
+  context: Agent (Broker Representing Seller) (Please Print) Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 178.5
+    y0: 523.8
+    x1: 518.5
+    y1: 529.8
+- page: 3
+  field: Offer)
+  category: entry_blank
+  bbox:
+    x0: 148.8
+    y0: 556.8
+    x1: 372.9
+    y1: 568.9
+  region: lower
+  context: Agent (Broker Obtaining the Offer) (Please Print) Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 175.5
+    y0: 562.9
+    x1: 515.5
+    y1: 568.9

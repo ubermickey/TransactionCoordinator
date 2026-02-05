@@ -1,0 +1,138 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:56:58'
+file: Statewide_Buyer_and_Seller_Advisory_-_624_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 15
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 8
+  entry_categories:
+    entry_signature: 4
+    entry_date: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 15
+  field: BUYER
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 258.0
+    x1: 225.0
+    y1: 270.1
+  region: upper
+  context: BUYER Date
+  ul_bbox:
+    x0: 75.0
+    y0: 264.1
+    x1: 225.0
+    y1: 270.1
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 258.0
+    x1: 489.5
+    y1: 270.1
+  region: upper
+  context: BUYER Date
+  ul_bbox:
+    x0: 225.0
+    y0: 264.1
+    x1: 465.0
+    y1: 270.1
+- page: 15
+  field: BUYER
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 274.5
+    x1: 225.0
+    y1: 286.6
+  region: upper
+  context: BUYER Date
+  ul_bbox:
+    x0: 75.0
+    y0: 280.6
+    x1: 225.0
+    y1: 286.6
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 274.5
+    x1: 489.5
+    y1: 286.6
+  region: upper
+  context: BUYER Date
+  ul_bbox:
+    x0: 225.0
+    y0: 280.6
+    x1: 465.0
+    y1: 286.6
+- page: 15
+  field: SELLER
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 295.1
+    x1: 228.5
+    y1: 307.1
+  region: upper
+  context: SELLER Date
+  ul_bbox:
+    x0: 78.5
+    y0: 301.1
+    x1: 228.5
+    y1: 307.1
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 295.1
+    x1: 489.5
+    y1: 307.1
+  region: upper
+  context: SELLER Date
+  ul_bbox:
+    x0: 228.5
+    y0: 301.1
+    x1: 463.5
+    y1: 307.1
+- page: 15
+  field: SELLER
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 311.5
+    x1: 228.5
+    y1: 323.6
+  region: middle
+  context: SELLER Date
+  ul_bbox:
+    x0: 78.5
+    y0: 317.6
+    x1: 228.5
+    y1: 323.6
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 311.5
+    x1: 489.5
+    y1: 323.6
+  region: middle
+  context: SELLER Date
+  ul_bbox:
+    x0: 228.5
+    y0: 317.6
+    x1: 463.5
+    y1: 323.6

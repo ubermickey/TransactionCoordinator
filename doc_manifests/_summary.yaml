@@ -1,0 +1,512 @@
+run_date: '2026-02-04T18:57:23'
+total_analyzed: 76
+total_test_refs: 0
+total_time_lengths: 0
+time_length_details: []
+cross_reference:
+  total_required: 100
+  matched: 30
+  unmatched: 70
+  matches:
+  - code: DE_LISTING_AGR
+    brokerage_name: DE Listing Agreement / Addendum to Listing
+    pdf_file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: sale_listing
+  - code: DE_SUPP
+    brokerage_name: DE Supplemental Disclosures (Lease)
+    pdf_file: DE_Supplemental_Disclosures__Booklets_-_321_ts50349.pdf
+    folder: Condo Disclosure Package
+    section: lease_listing
+  - code: AD
+    brokerage_name: Agency Disclosure (AD)
+    pdf_file: Disclosure_1_Regarding_Real_Estate_Agency_Relationship_Sellers_Brokerage_Firm_to_Seller_-_1224_ts12249.pdf
+    folder: RLMM Agreement Package
+    section: lease_buyer
+  - code: TDS
+    brokerage_name: Transfer Disclosure Statement
+    pdf_file: Affiliated_Business_Arrangement_Disclosure_Statement_-_321_ts19375.pdf
+    folder: Residential Listing Agreement Package
+    section: sale_listing
+  - code: SPQ
+    brokerage_name: Seller Property Questionnaire
+    pdf_file: Seller_Property_Questionnaire_-_1225_ts48787.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: SBSA
+    brokerage_name: Statewide Buyer-Seller Advisory
+    pdf_file: Statewide_Buyer_and_Seller_Advisory_-_624_ts69656.pdf
+    folder: Residential Purchase Offer Agreement Package
+    section: sale_buyer
+  - code: SFA
+    brokerage_name: Seismic Hazards Mapping Act Disclosure
+    pdf_file: Lead-Based_Paint_and_Lead-Based_Paint_Hazards_Disclosure_1_-_1224_ts50349.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: FIRZ
+    brokerage_name: Fire Hazard Severity Zone Disclosure
+    pdf_file: Fire_Hardening_and_Defensible_Space_Advisory_Disclosure_and_Addendum_-_625_ts17813.pdf
+    folder: Residential Listing Agreement Package
+    section: sale_listing
+  - code: WFA
+    brokerage_name: Wildfire Advisory
+    pdf_file: Wildfire_Disaster_Advisory_-_1225_ts51912.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: LBP
+    brokerage_name: Lead-Based Paint Disclosure (Pre-1978)
+    pdf_file: Lead-Based_Paint_and_Lead-Based_Paint_Hazards_Disclosure_1_-_1224_ts50349.pdf
+    folder: Condo Disclosure Package
+    section: lease_listing
+  - code: SSD
+    brokerage_name: Supplemental Statutory Disclosures
+    pdf_file: DE_Supplemental_Disclosures__Booklets_-_321_ts50349.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: AVID
+    brokerage_name: Agent Visual Inspection Disclosure
+    pdf_file: Agent_Visual_Inspection_Disclosure_1_-_624_ts48787.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: WHSD
+    brokerage_name: Water Heater / Smoke Detector Compliance
+    pdf_file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: sale_listing
+  - code: SOLAR_TIP
+    brokerage_name: Solar Panel Transfer / Lease Disclosure
+    pdf_file: Real_Estate_Transfer_Disclosure_Statement_-_624_ts48787.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: RPA
+    brokerage_name: Residential Purchase Agreement
+    pdf_file: Addendum_to_Commercial__Residential_Income_Listing_Agreement_-_925_ts51552.pdf
+    folder: Commercial and Residential Income listing agreement package
+    section: sale_buyer
+  - code: PRBS
+    brokerage_name: Possible Representation of Both Buyer and Seller
+    pdf_file: Statewide_Buyer_and_Seller_Advisory_-_624_ts69656.pdf
+    folder: Residential Purchase Offer Agreement Package
+    section: sale_buyer
+  - code: BIA
+    brokerage_name: Buyer Inspection Advisory
+    pdf_file: Statewide_Buyer_and_Seller_Advisory_-_624_ts69656.pdf
+    folder: Residential Purchase Offer Agreement Package
+    section: sale_buyer
+  - code: WFI
+    brokerage_name: Wire Fraud Information Advisory
+    pdf_file: Wire_Fraud_and_Electronic_Funds_Transfer_Advisory_-_625_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: sale_buyer
+  - code: HOA_TRANSFER
+    brokerage_name: HOA Transfer Disclosure Package
+    pdf_file: Real_Estate_Transfer_Disclosure_Statement_-_624_ts48787.pdf
+    folder: Condo Disclosure Package
+    section: sale_listing
+  - code: SMOKE_CO
+    brokerage_name: Smoke/CO Detector Compliance
+    pdf_file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: sale_listing
+  - code: RETRO_WH
+    brokerage_name: Water Heater Strapping Certificate
+    pdf_file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: sale_listing
+  - code: DE_BUYER_ADD
+    brokerage_name: DE Addendum to Buyer Representation Agreement
+    pdf_file: Addendum_to_Lease_Listing_Agreement_-_925_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: sale_buyer
+  - code: DE_LEASE_LIST
+    brokerage_name: DE Lease Listing Agreement
+    pdf_file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: lease_listing
+  - code: SMOKE_CO_L
+    brokerage_name: Smoke/CO Detector Compliance (Lease)
+    pdf_file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: lease_listing
+  - code: CAR_LR
+    brokerage_name: Residential Lease Agreement (CAR LR)
+    pdf_file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: lease_buyer
+  - code: DE_LEASE_ADD
+    brokerage_name: DE Lease Addendum
+    pdf_file: Lease_Addendum_-_623_ts12249.pdf
+    folder: RLMM Agreement Package
+    section: lease_buyer
+  - code: SEC_DEP_REC
+    brokerage_name: Security Deposit Receipt
+    pdf_file: Security_Deposit_Disclosure_and_Addendum_-_624_ts13811.pdf
+    folder: RLMM Agreement Package
+    section: lease_listing
+  - code: W9_OWNER
+    brokerage_name: W-9 (Property Owner)
+    pdf_file: Rental_Property_Owner_Intake_Form_-_1225_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: lease_listing
+  - code: DE_LEASE_COMM
+    brokerage_name: DE Lease Commission Agreement
+    pdf_file: Lease_Listing_Agreement_-_1225_ts35843.pdf
+    folder: Residential Lease Listing Agreement Package
+    section: lease_listing
+  - code: PARKING_ADD
+    brokerage_name: Parking Space Addendum
+    pdf_file: Fire_Hardening_and_Defensible_Space_Advisory_Disclosure_and_Addendum_-_625_ts17813.pdf
+    folder: Residential Listing Agreement Package
+    section: lease_listing
+  missing_from_packages:
+  - code: NHD
+    name: Natural Hazard Disclosure Report
+    section: sale_listing
+    required: always
+    phase: PRE_CONTRACT
+  - code: FLD
+    name: Flood Hazard Boundary Disclosure
+    section: sale_listing
+    required: always
+    phase: PRE_CONTRACT
+  - code: EQFZ
+    name: Earthquake Fault Zone Disclosure
+    section: sale_listing
+    required: always
+    phase: PRE_CONTRACT
+  - code: MEG
+    name: Megan's Law Disclosure
+    section: lease_listing
+    required: always
+    phase: LEASE_PRE
+  - code: DE_MKT_AUTH
+    name: DE Marketing Authorization
+    section: sale_listing
+    required: always
+    phase: PRE_CONTRACT
+  - code: TRUST_CERT
+    name: Trust Certification
+    section: sale_listing
+    required: conditional
+    phase: PRE_CONTRACT
+  - code: PROB_CT_ORD
+    name: Probate Court Order / Letters Testamentary
+    section: sale_listing
+    required: conditional
+    phase: PRE_CONTRACT
+  - code: TENANT_EST
+    name: Tenant Estoppel Certificate
+    section: sale_listing
+    required: conditional
+    phase: PRE_CONTRACT
+  - code: DE_COMM_AGR
+    name: DE Manager/Broker Commission Agreement
+    section: sale_listing
+    required: always
+    phase: CONTRACT_EXECUTION
+  - code: DE_BUYER_COMP
+    name: DE Buyer Broker Compensation Notice
+    section: sale_buyer
+    required: always
+    phase: CONTRACT_EXECUTION
+  - code: EMD_REC
+    name: Earnest Money Deposit Receipt
+    section: sale_buyer
+    required: always
+    phase: CONTRACT_EXECUTION
+  - code: W9_SELLER
+    name: W-9 (Seller)
+    section: sale_listing
+    required: always
+    phase: CONTRACT_EXECUTION
+  - code: W9_BUYER
+    name: W-9 (Buyer)
+    section: sale_buyer
+    required: always
+    phase: CONTRACT_EXECUTION
+  - code: DE_CONDO_ADD
+    name: DE Condo/PUD Addendum
+    section: sale_listing
+    required: conditional
+    phase: CONTRACT_EXECUTION
+  - code: DE_HIGH_VAL
+    name: DE High-Value Property Addendum
+    section: sale_listing
+    required: conditional
+    phase: CONTRACT_EXECUTION
+  - code: INSP_RPT
+    name: Home Inspection Report
+    section: sale_buyer
+    required: always
+    phase: INSPECTION
+  - code: PEST_RPT
+    name: Pest/Termite Inspection Report
+    section: sale_listing
+    required: always
+    phase: INSPECTION
+  - code: ROOF_RPT
+    name: Roof Inspection Report
+    section: sale_listing
+    required: always
+    phase: INSPECTION
+  - code: SEWER_RPT
+    name: Sewer Lateral Inspection Report
+    section: sale_listing
+    required: always
+    phase: INSPECTION
+  - code: POOL_RPT
+    name: Pool/Spa Inspection Report
+    section: sale_listing
+    required: conditional
+    phase: INSPECTION
+  - code: SEPTIC_RPT
+    name: Septic System Inspection Report
+    section: sale_listing
+    required: conditional
+    phase: INSPECTION
+  - code: RR
+    name: Request for Repair
+    section: sale_buyer
+    required: always
+    phase: INSPECTION
+  - code: RRRR
+    name: Response to Request for Repair
+    section: sale_listing
+    required: always
+    phase: INSPECTION
+  - code: CR1_INV
+    name: "Contingency Removal \u2014 Investigation"
+    section: sale_buyer
+    required: always
+    phase: INSPECTION
+  - code: MANU_CERT
+    name: HCD Insignia / Manufactured Home Certification
+    section: sale_listing
+    required: conditional
+    phase: INSPECTION
+  - code: APPR_RPT
+    name: Appraisal Report
+    section: sale_buyer
+    required: always
+    phase: APPRAISAL
+  - code: CR1_APPR
+    name: "Contingency Removal \u2014 Appraisal"
+    section: sale_buyer
+    required: always
+    phase: APPRAISAL
+  - code: LOAN_PRE
+    name: Lender Pre-Approval Letter
+    section: sale_listing
+    required: always
+    phase: FINANCING
+  - code: LOAN_COMMIT
+    name: Loan Commitment Letter
+    section: sale_buyer
+    required: always
+    phase: FINANCING
+  - code: CR1_LOAN
+    name: "Contingency Removal \u2014 Loan"
+    section: sale_buyer
+    required: always
+    phase: FINANCING
+  - code: PTITLE
+    name: Preliminary Title Report
+    section: sale_buyer
+    required: always
+    phase: TITLE_ESCROW
+  - code: HOA_DOCS
+    name: HOA Documents (CC&Rs, Budget, Minutes, Rules)
+    section: sale_listing
+    required: conditional
+    phase: TITLE_ESCROW
+  - code: HOA_CERT
+    name: HOA Certification / Estoppel
+    section: sale_listing
+    required: conditional
+    phase: TITLE_ESCROW
+  - code: CCRS
+    name: CC&Rs / Governing Documents
+    section: sale_listing
+    required: conditional
+    phase: TITLE_ESCROW
+  - code: TITLE_INS
+    name: Title Insurance Commitment
+    section: sale_listing
+    required: always
+    phase: TITLE_ESCROW
+  - code: CR1_ALL
+    name: "Contingency Removal \u2014 All Remaining"
+    section: sale_buyer
+    required: always
+    phase: PRE_CLOSING
+  - code: CLOSING_DISC
+    name: Closing Disclosure (TRID)
+    section: sale_buyer
+    required: always
+    phase: PRE_CLOSING
+  - code: NET_SHEET
+    name: Estimated Net Sheet (Seller)
+    section: sale_listing
+    required: always
+    phase: PRE_CLOSING
+  - code: WALKTHRU
+    name: Final Walkthrough Confirmation
+    section: sale_buyer
+    required: always
+    phase: PRE_CLOSING
+  - code: DE_FILE_REV
+    name: DE File Compliance Review Checklist
+    section: sale_listing
+    required: always
+    phase: PRE_CLOSING
+  - code: SS_AUTH
+    name: Short Sale Lender Authorization
+    section: sale_listing
+    required: conditional
+    phase: PRE_CLOSING
+  - code: NEW_CONSTR_WR
+    name: New Construction Warranty Documents
+    section: sale_listing
+    required: conditional
+    phase: PRE_CLOSING
+  - code: GRANT_DEED
+    name: Grant Deed
+    section: sale_listing
+    required: always
+    phase: CLOSING
+  - code: NOTARIZED_SIG
+    name: Notarized Signature Pages
+    section: sale_buyer
+    required: always
+    phase: CLOSING
+  - code: FUND_RECEIPT
+    name: Proof of Fund Disbursement
+    section: sale_buyer
+    required: always
+    phase: CLOSING
+  - code: REC_DEED
+    name: Recorded Deed Confirmation
+    section: sale_buyer
+    required: always
+    phase: CLOSING
+  - code: IRS_1099
+    name: IRS Form 1099-S
+    section: sale_listing
+    required: always
+    phase: POST_CLOSING
+  - code: DE_CLOSE_PKG
+    name: DE Closed File Package
+    section: sale_listing
+    required: always
+    phase: POST_CLOSING
+  - code: COMM_STMT
+    name: Commission Statement / Disbursement
+    section: sale_listing
+    required: always
+    phase: POST_CLOSING
+  - code: KEYS
+    name: Key Transfer Confirmation
+    section: sale_buyer
+    required: always
+    phase: POST_CLOSING
+  - code: BUYER_REP_AGR
+    name: Buyer Representation Agreement
+    section: sale_buyer
+    required: always
+    phase: PRE_CONTRACT
+  - code: LOAN_PRE_B
+    name: Pre-Approval Letter
+    section: sale_buyer
+    required: always
+    phase: PRE_CONTRACT
+  - code: POF
+    name: Proof of Funds
+    section: sale_buyer
+    required: always
+    phase: PRE_CONTRACT
+  - code: BED_BUG
+    name: Bed Bug Disclosure
+    section: lease_listing
+    required: always
+    phase: LEASE_PRE
+  - code: MOLD_DISC
+    name: Mold Disclosure
+    section: lease_listing
+    required: always
+    phase: LEASE_PRE
+  - code: DEMO_DISC
+    name: Demolition Intent Disclosure
+    section: lease_listing
+    required: always
+    phase: LEASE_PRE
+  - code: FLOOD_DISC_L
+    name: Flood Zone Disclosure (Lease)
+    section: lease_listing
+    required: always
+    phase: LEASE_PRE
+  - code: LEASE_MKT
+    name: Lease Marketing Package
+    section: lease_listing
+    required: always
+    phase: LEASE_LISTING
+  - code: LEASE_APP
+    name: Rental Application
+    section: lease_buyer
+    required: always
+    phase: LEASE_APPLICATION
+  - code: CREDIT_RPT
+    name: Credit Report / Screening
+    section: lease_listing
+    required: always
+    phase: LEASE_APPLICATION
+  - code: INCOME_VER
+    name: Income Verification
+    section: lease_buyer
+    required: always
+    phase: LEASE_APPLICATION
+  - code: REF_CHECK
+    name: Reference Check Documentation
+    section: lease_listing
+    required: always
+    phase: LEASE_APPLICATION
+  - code: APP_DENY
+    name: Adverse Action Notice (if denied)
+    section: lease_listing
+    required: conditional
+    phase: LEASE_APPLICATION
+  - code: DE_MONIES_ACK
+    name: DE Monies Disposition Acknowledgement
+    section: lease_buyer
+    required: always
+    phase: LEASE_EXECUTION
+  - code: MOVE_IN_INSP
+    name: Move-In Inspection Checklist
+    section: lease_buyer
+    required: always
+    phase: LEASE_EXECUTION
+  - code: KEY_REC_L
+    name: Key Receipt / Access Device Agreement
+    section: lease_buyer
+    required: always
+    phase: LEASE_EXECUTION
+  - code: UTIL_DISC
+    name: Utility Responsibility Disclosure
+    section: lease_listing
+    required: always
+    phase: LEASE_EXECUTION
+  - code: PET_ADD
+    name: Pet Addendum
+    section: lease_listing
+    required: conditional
+    phase: LEASE_EXECUTION
+  - code: DE_LEASE_FILE
+    name: DE Lease File Package
+    section: lease_listing
+    required: always
+    phase: LEASE_POST
+  - code: LEASE_COMM_STMT
+    name: Lease Commission Statement
+    section: lease_listing
+    required: always
+    phase: LEASE_POST
+needs_attention: []

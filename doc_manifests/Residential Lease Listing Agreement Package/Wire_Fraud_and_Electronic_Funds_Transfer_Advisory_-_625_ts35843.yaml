@@ -1,0 +1,139 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:07'
+file: Wire_Fraud_and_Electronic_Funds_Transfer_Advisory_-_625_ts35843.pdf
+folder: Residential Lease Listing Agreement Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 8
+  entry_categories:
+    entry_date: 4
+    entry_signature: 1
+    entry_blank: 3
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 577.7
+    x1: 507.1
+    y1: 590.8
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 277.0
+    y0: 584.8
+    x1: 482.3
+    y1: 590.8
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 594.6
+    x1: 507.1
+    y1: 607.8
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 277.0
+    y0: 601.8
+    x1: 482.3
+    y1: 607.8
+- page: 1
+  field: Seller/Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 104.9
+    y0: 599.8
+    x1: 277.0
+    y1: 622.8
+  region: lower
+  context: Buyer/Tenant Date Seller/Housing Provider
+  ul_bbox:
+    x0: 104.9
+    y0: 601.8
+    x1: 277.0
+    y1: 607.8
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 288.6
+    y0: 611.6
+    x1: 507.1
+    y1: 624.8
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 288.6
+    y0: 618.8
+    x1: 482.8
+    y1: 624.8
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 288.6
+    y0: 628.6
+    x1: 507.1
+    y1: 641.8
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 288.6
+    y0: 635.8
+    x1: 482.8
+    y1: 641.8
+- page: 1
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 577.7
+    x1: 277.0
+    y1: 590.8
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 104.9
+    y0: 584.8
+    x1: 277.0
+    y1: 590.8
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 104.5
+    y0: 611.6
+    x1: 288.6
+    y1: 624.8
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 149.8
+    y0: 618.8
+    x1: 288.6
+    y1: 624.8
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 104.5
+    y0: 628.6
+    x1: 288.6
+    y1: 641.8
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 149.8
+    y0: 635.8
+    x1: 288.6
+    y1: 641.8

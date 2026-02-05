@@ -1,0 +1,327 @@
+# =============================================================================
+# DOCUMENT VALIDATION & DOCUSIGN SIGNATURE VERIFICATION
+# =============================================================================
+#
+# Defines how AI validates documents throughout the transaction.
+# Two layers:
+#   1. DocuSign API validation (signature completeness, field completion)
+#   2. AI content validation (cross-referencing data across documents)
+#
+# Every validation failure blocks the associated AGENT_GATE until resolved.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# DOCUSIGN SIGNATURE VALIDATION
+# -----------------------------------------------------------------------------
+# Run automatically via DocuSign Connect webhook when any envelope completes
+# or at any point via on-demand API call.
+
+signature_validation:
+
+  envelope_checks:
+
+    - id: SIG-001
+      name: Envelope Completion Status
+      check: "envelope.status == 'completed'"
+      on_fail: "BLOCK — document not fully executed"
+      severity: critical
+
+    - id: SIG-002
+      name: All Recipients Completed
+      check: "Every recipient has status == 'completed'"
+      on_fail: "BLOCK — identify which recipient(s) have not signed"
+      severity: critical
+      details_on_fail:
+        - "List each recipient with status != completed"
+        - "Show recipient name, email, role, current status"
+        - "If declined: flag immediately with reason"
+
+    - id: SIG-003
+      name: All Signature Fields Populated
+      check: "Every signHere tab has a value"
+      on_fail: "BLOCK — unsigned field detected"
+      severity: critical
+      details_on_fail:
+        - "Identify page number and field location"
+        - "Identify which signer's field is empty"
+
+    - id: SIG-004
+      name: All Initial Fields Populated
+      check: "Every initialHere tab has a value"
+      on_fail: "BLOCK — missing initials detected"
+      severity: critical
+      details_on_fail:
+        - "Identify page number and field location"
+        - "Identify which party's initials are missing"
+
+    - id: SIG-005
+      name: All Date Fields Populated
+      check: "Every dateSigned tab has a value"
+      on_fail: "WARNING — missing date field"
+      severity: high
+
+    - id: SIG-006
+      name: Date Consistency
+      check: "All dates are logical (not future-dated, not before contract acceptance)"
+      on_fail: "WARNING — date anomaly detected"
+      severity: high
+      validations:
+        - "Date is not in the future"
+        - "Date is not before the contract acceptance date"
+        - "Date is not before the document creation date"
+        - "Dates across signers are in logical order (if sequential signing)"
+
+    - id: SIG-007
+      name: Required Text Fields Complete
+      check: "Every required text tab has a non-empty value"
+      on_fail: "WARNING — blank required field"
+      severity: high
+
+    - id: SIG-008
+      name: Required Checkboxes Selected
+      check: "All required checkbox tabs have been checked"
+      on_fail: "WARNING — unchecked required selection"
+      severity: medium
+      examples:
+        - "Arbitration election (CAR RPA)"
+        - "Mediation election"
+        - "Agency confirmation"
+
+    - id: SIG-009
+      name: Signing Order (if sequential)
+      check: "Recipients signed in the correct routing order"
+      on_fail: "WARNING — signing order anomaly"
+      severity: medium
+
+    - id: SIG-010
+      name: Signing Timing Anomaly
+      check: "Time between envelope delivery and signature is reasonable (> 30 seconds)"
+      on_fail: "WARNING — unusually fast signing (may indicate signer did not review)"
+      severity: low
+      note: "This is informational only — cannot block based on speed"
+
+  authentication_checks:
+
+    - id: AUTH-001
+      name: Authentication Method Verification
+      check: "Each recipient's authentication method meets minimum standard for document type"
+      minimum_standards:
+        standard_documents: email  # email authentication sufficient
+        contingency_removals: email
+        purchase_agreement: email
+        closing_documents: sms_or_higher  # recommend SMS or ID verification
+      on_fail: "WARNING — authentication below recommended level"
+      severity: medium
+
+# -----------------------------------------------------------------------------
+# CROSS-DOCUMENT VALIDATION
+# -----------------------------------------------------------------------------
+# AI-powered validation that cross-references data across all transaction docs.
+# Run after each new document is added to the transaction.
+
+cross_document_validation:
+
+  - id: XDOC-001
+    name: Party Name Consistency
+    description: "Verify signer names are consistent across all documents"
+    checks:
+      - "Buyer name(s) match across RPA, disclosures, CR-1 forms, closing docs"
+      - "Seller name(s) match across all documents"
+      - "Entity names and vesting match"
+    on_mismatch: "FLAG — name inconsistency may cause title or recording issues"
+    agent_gate: GATE-070
+    severity: critical
+
+  - id: XDOC-002
+    name: Property Address Consistency
+    description: "Verify property address is identical across all documents"
+    checks:
+      - "Street address matches"
+      - "APN matches (if present)"
+      - "Legal description matches (on deed vs. title report)"
+    on_mismatch: "BLOCK — address discrepancy can void documents"
+    agent_gate: GATE-070
+    severity: critical
+
+  - id: XDOC-003
+    name: Financial Terms Consistency
+    description: "Verify financial terms match across contract, amendments, and closing"
+    checks:
+      - "Purchase price matches across RPA, amendments, closing disclosure"
+      - "Deposit amount matches RPA and escrow receipt"
+      - "Loan amount matches RPA, loan approval, and closing disclosure"
+      - "Credits and concessions match across all documents"
+    on_mismatch: "BLOCK — financial discrepancy"
+    agent_gate: GATE-061
+    severity: critical
+
+  - id: XDOC-004
+    name: Date Logic Validation
+    description: "Verify all dates across documents are in logical sequence"
+    expected_sequence:
+      - "Listing agreement date"
+      - "Offer date"
+      - "Acceptance date (anchor for all deadlines)"
+      - "Disclosure delivery dates"
+      - "Inspection dates"
+      - "Contingency removal dates"
+      - "Closing disclosure delivery date"
+      - "Signing dates"
+      - "Recording date"
+    checks:
+      - "No document signed before its predecessor in the sequence"
+      - "Contingency removals dated before or on their deadlines"
+      - "Closing disclosure delivered >= 3 business days before close (TRID)"
+    on_mismatch: "FLAG — date sequence anomaly"
+    agent_gate: GATE-060
+    severity: high
+
+  - id: XDOC-005
+    name: Contingency Removal Completeness
+    description: "Verify every active contingency has a corresponding signed CR-1"
+    checks:
+      - "For each contingency in the RPA that was NOT waived:"
+      - "  → A signed CR-1 exists"
+      - "  → CR-1 was signed on or before the contingency deadline"
+      - "  → CR-1 signer matches the buyer(s) in the RPA"
+      - "If contingency was waived in contract: no CR-1 needed (note waiver)"
+    on_mismatch: "BLOCK — missing or late contingency removal"
+    agent_gate: GATE-060
+    severity: critical
+
+  - id: XDOC-006
+    name: Disclosure Delivery Verification
+    description: "Verify all required disclosures were delivered to buyer"
+    checks:
+      - "TDS — delivered and signed/acknowledged"
+      - "SPQ — delivered and signed/acknowledged"
+      - "NHD — delivered and signed/acknowledged"
+      - "Agency Disclosure — delivered before contract signing"
+      - "SBSA — delivered"
+      - "Jurisdiction-specific disclosures per property address"
+    on_mismatch: "BLOCK — missing disclosure delivery"
+    agent_gate: GATE-012
+    severity: critical
+
+  - id: XDOC-007
+    name: Amendment Chain Integrity
+    description: "Verify amendments are properly executed and terms are consistent"
+    checks:
+      - "Each amendment references the original RPA correctly"
+      - "Amendment terms don't contradict each other"
+      - "Latest amendment terms supersede earlier ones"
+      - "All amendments signed by all required parties"
+      - "Deadline calculator updated to reflect amendment changes"
+    on_mismatch: "FLAG — amendment chain issue"
+    agent_gate: GATE-010
+    severity: high
+
+# -----------------------------------------------------------------------------
+# DOCUMENT COMPLETENESS BY PHASE
+# -----------------------------------------------------------------------------
+# Checklist of documents expected in each phase.
+# AI audits the transaction file against this list at each phase transition.
+
+phase_document_requirements:
+
+  PRE_CONTRACT:
+    required:
+      - "Listing agreement (if listing side)"
+      - "Agency Disclosure (AD)"
+      - "Visual inspection documentation"
+    required_if_applicable:
+      - "TDS (completed by seller)"
+      - "SPQ (completed by seller)"
+      - "NHD report (ordered)"
+
+  CONTRACT_EXECUTION:
+    required:
+      - "Fully executed Purchase Agreement (RPA)"
+      - "All counter offers (if any) — fully executed"
+      - "Earnest money deposit receipt"
+      - "TDS — delivered to buyer"
+      - "SPQ — delivered to buyer"
+      - "NHD — delivered to buyer"
+      - "Agency Disclosure — signed by all parties"
+      - "SBSA — delivered"
+    required_if_applicable:
+      - "Addenda (fully executed)"
+
+  INSPECTION:
+    required:
+      - "Home inspection report"
+    required_if_applicable:
+      - "Pest inspection report"
+      - "Roof, chimney, pool, sewer, or other specialty inspections"
+      - "Request for Repair (RR) — if repairs requested"
+      - "Repair response — if RR issued"
+    phase_exit_required:
+      - "CR-1 Investigation Contingency Removal — signed by buyer"
+      - "OR Cancellation of Contract"
+
+  APPRAISAL:
+    required_if_applicable:
+      - "Appraisal report (if financed)"
+    phase_exit_required:
+      - "CR-1 Appraisal Contingency Removal — signed by buyer"
+      - "OR Cancellation or renegotiation documentation"
+
+  FINANCING:
+    required_if_applicable:
+      - "Pre-approval letter"
+      - "Loan Estimate"
+      - "Conditional loan approval"
+    phase_exit_required:
+      - "CR-1 Loan Contingency Removal — signed by buyer"
+      - "OR Cancellation documentation"
+
+  TITLE_ESCROW:
+    required:
+      - "Preliminary title report"
+    required_if_applicable:
+      - "HOA document package (Davis-Stirling)"
+      - "Title issue resolution documentation"
+
+  PRE_CLOSING:
+    required:
+      - "Closing Disclosure / Settlement Statement"
+      - "Final walkthrough documentation"
+      - "All contingency removals on file"
+    required_if_applicable:
+      - "Jurisdiction compliance certificates"
+      - "Retrofit certificates (smoke, CO, water heater, gas shut-off, low-flow)"
+      - "9A report (LA) or BH building compliance"
+
+  CLOSING:
+    required:
+      - "Grant deed (signed, notarized)"
+      - "Final closing disclosure"
+      - "Escrow disbursement statement"
+      - "Recording confirmation (recording number)"
+    required_if_applicable:
+      - "Transfer tax declarations"
+      - "FIRPTA / HARPTA certifications or withholding"
+      - "1099-S reporting authorization"
+
+  POST_CLOSING:
+    required:
+      - "Complete archived file (all above documents)"
+      - "Commission disbursement record"
+    required_if_applicable:
+      - "Post-closing correction documents"
+
+# -----------------------------------------------------------------------------
+# AI EXTRACTION CONFIDENCE THRESHOLDS
+# -----------------------------------------------------------------------------
+
+extraction_confidence:
+  auto_populate_threshold: 0.95    # >= 95% confidence: auto-populate, no review needed
+  flag_for_review_threshold: 0.70  # 70-94%: auto-populate BUT flag for agent review
+  require_manual_input: 0.70       # < 70%: do NOT auto-populate; require agent input
+
+  fields_always_requiring_agent_review:
+    - "Any field from handwritten content"
+    - "Custom addendum language (non-standard clauses)"
+    - "Crossed-out or modified pre-printed terms"
+    - "Fields where AI extraction disagrees with a previous document"

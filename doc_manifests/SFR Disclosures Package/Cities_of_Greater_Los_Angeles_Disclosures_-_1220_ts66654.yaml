@@ -1,0 +1,153 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:16'
+file: Cities_of_Greater_Los_Angeles_Disclosures_-_1220_ts66654.pdf
+folder: SFR Disclosures Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 9
+  entry_categories:
+    entry_signature: 6
+    entry_blank: 3
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Initials
+  category: entry_signature
+  bbox:
+    x0: 175.1
+    y0: 662.8
+    x1: 249.0
+    y1: 676.0
+  region: lower
+  context: Buyer's Initials ( ) ( ) Seller's Initials ( ) ( )
+  ul_bbox:
+    x0: 215.6
+    y0: 670.0
+    x1: 249.0
+    y1: 676.0
+- page: 1
+  field: Seller's
+  category: entry_blank
+  bbox:
+    x0: 261.2
+    y0: 662.8
+    x1: 338.6
+    y1: 676.0
+  region: lower
+  context: Buyer's Initials ( ) ( ) Seller's Initials ( ) ( )
+  ul_bbox:
+    x0: 261.2
+    y0: 670.0
+    x1: 294.6
+    y1: 676.0
+- page: 1
+  field: Initials
+  category: entry_signature
+  bbox:
+    x0: 343.0
+    y0: 662.8
+    x1: 420.5
+    y1: 676.0
+  region: lower
+  context: Buyer's Initials ( ) ( ) Seller's Initials ( ) ( )
+  ul_bbox:
+    x0: 387.1
+    y0: 670.0
+    x1: 420.5
+    y1: 676.0
+- page: 2
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 72.0
+    y0: 578.0
+    x1: 238.5
+    y1: 596.0
+  region: lower
+  context: Buyer Date Seller Date Buyer
+  ul_bbox:
+    x0: 72.0
+    y0: 580.0
+    x1: 238.5
+    y1: 586.0
+- page: 2
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 324.0
+    y0: 578.0
+    x1: 490.5
+    y1: 596.0
+  region: lower
+  context: Buyer Date Seller Date Seller
+  ul_bbox:
+    x0: 324.0
+    y0: 580.0
+    x1: 490.5
+    y1: 586.0
+- page: 2
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 72.0
+    y0: 626.0
+    x1: 238.5
+    y1: 644.0
+  region: lower
+  context: Buyer Date Seller Date Buyer
+  ul_bbox:
+    x0: 72.0
+    y0: 628.0
+    x1: 238.5
+    y1: 634.0
+- page: 2
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 324.0
+    y0: 626.0
+    x1: 490.5
+    y1: 644.0
+  region: lower
+  context: Buyer Date Seller Date Seller
+  ul_bbox:
+    x0: 324.0
+    y0: 628.0
+    x1: 490.5
+    y1: 634.0
+- page: 2
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 252.0
+    y0: 578.0
+    x1: 352.3
+    y1: 596.0
+  region: lower
+  context: Buyer Date Seller Date
+  ul_bbox:
+    x0: 252.0
+    y0: 580.0
+    x1: 307.5
+    y1: 586.0
+- page: 2
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 252.0
+    y0: 626.0
+    x1: 349.5
+    y1: 644.0
+  region: lower
+  context: Buyer Date Seller Date
+  ul_bbox:
+    x0: 252.0
+    y0: 628.0
+    x1: 307.5
+    y1: 634.0

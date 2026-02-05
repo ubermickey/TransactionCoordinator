@@ -1,0 +1,279 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:03'
+file: Rental_Property_Owner_Disclosure_-_623_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 17
+  entry_categories:
+    entry_blank: 5
+    entry_signature: 4
+    entry_date: 8
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: 'Unit #'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 99.1
+    x1: 87.0
+    y1: 111.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 62.0
+    y0: 105.1
+    x1: 87.0
+    y1: 111.1
+- page: 1
+  field: County
+  category: entry_blank
+  bbox:
+    x0: 318.4
+    y0: 92.1
+    x1: 542.2
+    y1: 109.1
+  region: header
+  context: 'makes the following disclosures with regard to the real property described as , Unit # , situated in , County
+    of , Calif'
+  ul_bbox:
+    x0: 348.5
+    y0: 94.1
+    x1: 573.5
+    y1: 100.1
+- page: 1
+  field: situated
+  category: entry_blank
+  bbox:
+    x0: 94.1
+    y0: 99.1
+    x1: 310.5
+    y1: 111.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 135.5
+    y0: 105.1
+    x1: 310.5
+    y1: 111.1
+- page: 1
+  field: County
+  category: entry_blank
+  bbox:
+    x0: 318.4
+    y0: 99.1
+    x1: 476.5
+    y1: 111.1
+  region: header
+  context: "Unit # , situated in , County of , California (\u201CPremises\u201D). RPO authorizes the disclosures made on this\
+    \ form to be used "
+  ul_bbox:
+    x0: 356.5
+    y0: 105.1
+    x1: 476.5
+    y1: 111.1
+- page: 2
+  field: Rental Property Owner
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 483.0
+    x1: 260.5
+    y1: 495.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 489.1
+    x1: 260.5
+    y1: 495.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 270.5
+    y0: 483.0
+    x1: 492.0
+    y1: 495.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 260.5
+    y0: 489.1
+    x1: 470.5
+    y1: 495.1
+- page: 2
+  field: Rental Property Owner
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 499.0
+    x1: 260.5
+    y1: 511.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 505.1
+    x1: 260.5
+    y1: 511.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 270.5
+    y0: 499.0
+    x1: 492.0
+    y1: 511.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 260.5
+    y0: 505.1
+    x1: 470.5
+    y1: 511.1
+- page: 2
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 554.0
+    x1: 262.0
+    y1: 566.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 560.1
+    x1: 262.0
+    y1: 566.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.0
+    y0: 554.0
+    x1: 493.5
+    y1: 566.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 262.0
+    y0: 560.1
+    x1: 472.0
+    y1: 566.1
+- page: 2
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 570.0
+    x1: 262.0
+    y1: 582.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 576.1
+    x1: 262.0
+    y1: 582.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.0
+    y0: 570.0
+    x1: 493.5
+    y1: 582.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 262.0
+    y0: 576.1
+    x1: 472.0
+    y1: 582.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 302.0
+    y0: 614.0
+    x1: 498.5
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 302.0
+    y0: 620.1
+    x1: 477.0
+    y1: 626.1
+- page: 2
+  field: 'treatment:'
+  category: entry_date
+  bbox:
+    x0: 301.7
+    y0: 65.0
+    x1: 522.0
+    y1: 77.1
+  region: header
+  context: 'If yes to B(1), identify the location and date(s) of the treatment:'
+  ul_bbox:
+    x0: 341.5
+    y0: 71.1
+    x1: 522.0
+    y1: 77.1
+- page: 2
+  field: 'treatment:'
+  category: entry_date
+  bbox:
+    x0: 290.3
+    y0: 149.0
+    x1: 522.0
+    y1: 161.1
+  region: upper
+  context: '(1) If yes to B, identify the location and date(s) of the treatment: (2) If yes to B, does RPO have any reports
+    or recor'
+  ul_bbox:
+    x0: 330.5
+    y0: 155.1
+    x1: 522.0
+    y1: 161.1
+- page: 2
+  field: Broker
+  category: entry_blank
+  bbox:
+    x0: 86.3
+    y0: 614.0
+    x1: 284.0
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 114.0
+    y0: 620.1
+    x1: 284.0
+    y1: 626.1
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 477.0
+    y0: 614.0
+    x1: 576.0
+    y1: 626.1
+  region: lower
+  context: Real Estate Broker , By Date Douglas Elliman of California, Inc.
+  ul_bbox:
+    x0: 501.0
+    y0: 620.1
+    x1: 576.0
+    y1: 626.1

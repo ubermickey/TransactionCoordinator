@@ -1,0 +1,198 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:03'
+file: Lease_Addendum_-_623_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 12
+  entry_categories:
+    entry_signature: 8
+    entry_blank: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 596.0
+    x1: 237.0
+    y1: 614.7
+  region: lower
+  context: Tenant Date Housing Provider Date Tenant
+  ul_bbox:
+    x0: 54.0
+    y0: 598.0
+    x1: 237.0
+    y1: 604.0
+- page: 1
+  field: Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 318.2
+    y0: 596.0
+    x1: 501.2
+    y1: 614.7
+  region: lower
+  context: Tenant Date Housing Provider Date Housing Provider
+  ul_bbox:
+    x0: 318.2
+    y0: 598.0
+    x1: 501.2
+    y1: 604.0
+- page: 1
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 648.0
+    x1: 237.0
+    y1: 666.8
+  region: lower
+  context: Tenant Date Housing Provider Date Tenant
+  ul_bbox:
+    x0: 54.0
+    y0: 650.0
+    x1: 237.0
+    y1: 656.0
+- page: 1
+  field: Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 318.2
+    y0: 648.0
+    x1: 501.2
+    y1: 666.8
+  region: lower
+  context: Tenant Date Housing Provider Date Housing Provider
+  ul_bbox:
+    x0: 318.2
+    y0: 650.0
+    x1: 501.2
+    y1: 656.0
+- page: 1
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 240.0
+    y0: 596.0
+    x1: 351.4
+    y1: 614.7
+  region: lower
+  context: Tenant Date Housing Provider Date
+  ul_bbox:
+    x0: 240.0
+    y0: 598.0
+    x1: 301.0
+    y1: 604.0
+- page: 1
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 240.0
+    y0: 648.0
+    x1: 351.4
+    y1: 666.8
+  region: lower
+  context: Tenant Date Housing Provider Date
+  ul_bbox:
+    x0: 240.0
+    y0: 650.0
+    x1: 301.0
+    y1: 656.0
+- page: 2
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 486.0
+    x1: 237.0
+    y1: 504.8
+  region: lower
+  context: Tenant Date Housing Provider Date Tenant
+  ul_bbox:
+    x0: 54.0
+    y0: 488.0
+    x1: 237.0
+    y1: 494.0
+- page: 2
+  field: Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 318.2
+    y0: 486.0
+    x1: 501.2
+    y1: 504.8
+  region: lower
+  context: Tenant Date Housing Provider Date Housing Provider
+  ul_bbox:
+    x0: 318.2
+    y0: 488.0
+    x1: 501.2
+    y1: 494.0
+- page: 2
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 538.0
+    x1: 237.0
+    y1: 556.7
+  region: lower
+  context: Tenant Date Housing Provider Date Tenant
+  ul_bbox:
+    x0: 54.0
+    y0: 540.0
+    x1: 237.0
+    y1: 546.0
+- page: 2
+  field: Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 318.2
+    y0: 538.0
+    x1: 501.2
+    y1: 556.7
+  region: lower
+  context: Tenant Date Housing Provider Date Housing Provider
+  ul_bbox:
+    x0: 318.2
+    y0: 540.0
+    x1: 501.2
+    y1: 546.0
+- page: 2
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 240.0
+    y0: 486.0
+    x1: 351.4
+    y1: 504.8
+  region: lower
+  context: Tenant Date Housing Provider Date
+  ul_bbox:
+    x0: 240.0
+    y0: 488.0
+    x1: 301.0
+    y1: 494.0
+- page: 2
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 240.0
+    y0: 538.0
+    x1: 351.4
+    y1: 556.7
+  region: lower
+  context: Tenant Date Housing Provider Date
+  ul_bbox:
+    x0: 240.0
+    y0: 540.0
+    x1: 301.0
+    y1: 546.0

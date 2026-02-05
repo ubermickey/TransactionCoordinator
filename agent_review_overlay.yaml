@@ -1,0 +1,780 @@
+# =============================================================================
+# AGENT REVIEW OVERLAY SYSTEM
+# =============================================================================
+#
+# When a document triggers an AGENT_GATE, the system does NOT send you
+# the full document. Instead, AI:
+#
+#   1. Extracts ONLY the pages that require your verification
+#   2. Applies color-coded highlighting to the specific fields, clauses,
+#      and sections you are legally required to review
+#   3. Generates a private "Agent Review Copy" — a separate PDF
+#   4. Delivers it to your private review folder (agent eyes only)
+#
+# The original document is NEVER modified. The highlighting only exists
+# on the review copy. No client, no other party, no one in the transaction
+# ever sees the highlights. After you verify and sign off on the gate,
+# the review copy is archived in your private folder.
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# CORE PRINCIPLES
+# -----------------------------------------------------------------------------
+
+overlay_system:
+
+  principle: "Only show the agent what they need to verify. Nothing more."
+
+  document_handling:
+    original_document: "NEVER modified. Stays clean in transaction folder."
+    review_copy: "Separate annotated PDF generated per gate. Agent-only."
+    storage: "Private agent review folder — not in the shared transaction folder."
+    retention: "Archived after gate sign-off. Retained for audit trail."
+    visibility: "Agent ONLY. Never shared with clients, other agents, escrow, title, lender, or any third party."
+
+  delivery:
+    method: "Pushed to agent's private Google Drive folder + notification email with direct link"
+    format: "PDF with annotation overlays (non-destructive — overlays are a separate layer)"
+    naming: "{address}_{gate_id}_{document_type}_REVIEW.pdf"
+    example: "123_Main_St_GATE-010_RPA_REVIEW.pdf"
+
+# -----------------------------------------------------------------------------
+# HIGHLIGHT COLOR CODES
+# -----------------------------------------------------------------------------
+# Each color tells you what TYPE of verification is needed at a glance.
+
+highlight_colors:
+
+  YELLOW:
+    meaning: "VERIFY — Confirm this value/field is correct"
+    use_for:
+      - "Financial figures (price, deposit, loan amount, credits)"
+      - "Names and parties"
+      - "Property address and APN"
+      - "Dates and deadlines"
+    example: "Purchase price field highlighted yellow → verify the number is correct"
+
+  ORANGE:
+    meaning: "ATTENTION — AI detected a potential issue or anomaly"
+    use_for:
+      - "Fields where AI extraction confidence is below 95%"
+      - "Values that don't match a previous document"
+      - "Dates that seem unusual for this transaction"
+      - "Terms that deviate from standard CAR language"
+    example: "Contingency period highlighted orange → AI noticed it's shorter than typical"
+
+  RED:
+    meaning: "CRITICAL — Legal obligation requires your specific attention"
+    use_for:
+      - "Signature fields that are missing or problematic"
+      - "Statutory requirements that must be met"
+      - "Clauses that create legal liability"
+      - "Blank fields where an answer is legally required"
+      - "Contradictions between this document and another document"
+    example: "Blank TDS field highlighted red → seller left a required disclosure empty"
+
+  BLUE:
+    meaning: "REVIEWABLE — This value changes per contract; verify it matches this deal"
+    use_for:
+      - "All REVIEWABLE deadline dates"
+      - "Contingency periods (days)"
+      - "Custom terms or addendum language"
+      - "Any field that varies per transaction"
+    example: "Investigation contingency '10 days' highlighted blue → confirm this is what was negotiated"
+
+  GREEN:
+    meaning: "AI VERIFIED — No issues found; included for your awareness only"
+    use_for:
+      - "Fields AI validated with high confidence (>95%)"
+      - "Cross-document matches confirmed"
+      - "Signatures verified present and complete"
+    example: "Buyer signature highlighted green → AI confirmed signature present and authentic"
+    note: "Green items are included on the review page for context but don't require action"
+
+  PURPLE:
+    meaning: "JURISDICTION-SPECIFIC — Local requirement applies here"
+    use_for:
+      - "Sections triggered by California rules"
+      - "Sections triggered by LA or Beverly Hills rules"
+      - "Tax calculations affected by local rates"
+      - "Compliance items specific to the property's jurisdiction"
+    example: "Transfer tax line highlighted purple → Measure ULA applies to this $6M property"
+
+# -----------------------------------------------------------------------------
+# MARGIN ANNOTATIONS
+# -----------------------------------------------------------------------------
+# In addition to highlighting, each flagged item gets a margin note
+# explaining WHY you need to verify it.
+
+margin_annotations:
+
+  format:
+    position: right_margin
+    width: "2 inches"
+    font: "9pt, sans-serif"
+    background: "Light version of the highlight color"
+
+  content_per_annotation:
+    - gate_id: "Which gate this verification belongs to (e.g., GATE-010)"
+    - verification_item: "What specifically to verify (e.g., 'Confirm price matches counter offer')"
+    - legal_basis: "Brief citation (e.g., 'B&P §10177(d)')"
+    - ai_finding: "What AI found (e.g., 'Price: $2,450,000 — matches counter offer #2')"
+    - action_needed: "What you need to do (e.g., 'Confirm' or 'Resolve discrepancy')"
+
+  example:
+    highlight_color: YELLOW
+    field: "Purchase Price: $2,450,000"
+    margin_note: |
+      GATE-010 | Verify Price
+      B&P §10177(d)
+      AI: Matches counter offer #2
+      → Confirm correct
+
+# -----------------------------------------------------------------------------
+# PAGE FILTERING RULES
+# -----------------------------------------------------------------------------
+# For each gate, AI determines which pages of each document are relevant
+# and ONLY includes those pages in the review copy.
+
+page_filtering:
+
+  principle: "If a page has nothing for the agent to verify, it is excluded."
+
+  rules:
+    - "Include any page containing a field that requires agent verification (YELLOW, ORANGE, RED, BLUE, PURPLE highlight)"
+    - "Include GREEN-only pages only if they provide necessary context for an adjacent flagged page"
+    - "Exclude pages with only boilerplate text that has no variable content"
+    - "Exclude pages that are entirely standard CAR form language with no fields"
+    - "When in doubt, include the page — it's better to show one extra page than miss something"
+
+  page_header:
+    description: "Each review page gets a header strip identifying its source"
+    format: "Page {n} of {total_review_pages} | Source: {document_name} p.{original_page} | Gate: {gate_id}"
+    example: "Page 2 of 5 | Source: RPA p.4 | Gate: GATE-010"
+
+  summary_page:
+    description: "Every review copy starts with a summary cover page"
+    position: first_page
+    contents:
+      - gate_name: "e.g., Purchase Agreement Terms Verification"
+      - gate_type: "HARD_GATE"
+      - legal_basis: "Brief summary of your legal obligation"
+      - document_source: "Which document(s) this review covers"
+      - total_items_to_verify: "Count of highlighted items requiring action"
+      - breakdown_by_color: "e.g., 3 YELLOW (verify), 1 ORANGE (attention), 2 BLUE (reviewable)"
+      - items_list: "Numbered list of each item to verify with page reference"
+      - sign_off_section: "Checkbox or signature area for agent to confirm verification complete"
+
+# -----------------------------------------------------------------------------
+# REVIEW OVERLAY PER GATE
+# -----------------------------------------------------------------------------
+# Defines exactly what AI highlights on which documents for each gate.
+
+gate_overlays:
+
+  # --- PRE-CONTRACT ---
+
+  GATE-001:
+    name: Agency Relationship Verification
+    documents: ["Agency Disclosure (AD)"]
+    pages_to_include: "Pages containing agency relationship checkboxes and signature blocks"
+    highlights:
+      - field: "Agency relationship selection (buyer's agent / seller's agent / dual agent)"
+        color: RED
+        annotation: "Confirm correct relationship selected | Civil Code §2079.13"
+      - field: "Dual agency consent (if applicable)"
+        color: RED
+        annotation: "If dual agency: verify BOTH parties consented | Civil Code §2079.17"
+      - field: "Agent and broker identification"
+        color: YELLOW
+        annotation: "Verify names, license numbers are correct"
+      - field: "Date of disclosure"
+        color: BLUE
+        annotation: "REVIEWABLE | Must be BEFORE purchase agreement is signed"
+      - field: "All signature and initial fields"
+        color: GREEN
+        annotation: "AI verified: signatures present"
+        show_if_missing: RED
+
+  GATE-003:
+    name: Seller Disclosure Review
+    documents: ["Transfer Disclosure Statement (TDS)", "Seller Property Questionnaire (SPQ)"]
+    pages_to_include: "All pages containing disclosure questions and seller responses"
+    highlights:
+      - field: "Any blank or unanswered question"
+        color: RED
+        annotation: "Required field left blank — follow up with seller | Civil Code §1102"
+      - field: "Any 'Yes' answer on TDS indicating a known issue"
+        color: ORANGE
+        annotation: "Seller disclosed issue — verify details are sufficient"
+      - field: "Fields where TDS and SPQ answers contradict each other"
+        color: RED
+        annotation: "CONTRADICTION between TDS and SPQ — must resolve"
+      - field: "Fields contradicting your visual inspection findings"
+        color: RED
+        annotation: "Contradicts your inspection findings — must address | Civil Code §2079"
+      - field: "Seller signature and date"
+        color: YELLOW
+        annotation: "Verify seller signed and dated"
+
+  GATE-004:
+    name: Natural Hazard Disclosure Review
+    documents: ["NHD Report"]
+    pages_to_include: "Summary page and any pages showing hazard zone determination"
+    highlights:
+      - field: "Each of the six hazard zone determinations"
+        color: YELLOW
+        annotation: "Verify zone determination | Civil Code §1103"
+      - field: "Any zone marked 'IN' (property is within a hazard zone)"
+        color: RED
+        annotation: "Property IS in this hazard zone — ensure buyer is informed"
+      - field: "Property address and APN on report"
+        color: YELLOW
+        annotation: "Verify address matches the transaction property"
+      - field: "Report date"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify report is current for this transaction"
+
+  # --- CONTRACT EXECUTION ---
+
+  GATE-010:
+    name: Purchase Agreement Terms Verification
+    documents: ["Residential Purchase Agreement (RPA)", "Counter Offers", "Addenda"]
+    pages_to_include: "Pages containing material terms, financial terms, contingency elections, and special terms"
+    highlights:
+      - field: "Purchase price"
+        color: YELLOW
+        annotation: "Verify correct price | B&P §10177(d)"
+      - field: "Earnest money deposit amount"
+        color: YELLOW
+        annotation: "Verify deposit amount and delivery terms"
+      - field: "Close of escrow date"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify COE date is achievable"
+      - field: "Investigation contingency period (days)"
+        color: BLUE
+        annotation: "REVIEWABLE | Default 17 days — verify negotiated period"
+      - field: "Appraisal contingency period (days)"
+        color: BLUE
+        annotation: "REVIEWABLE | Default 17 days — verify negotiated period"
+      - field: "Loan contingency period (days)"
+        color: BLUE
+        annotation: "REVIEWABLE | Default 17 days — verify negotiated period"
+      - field: "Contingency waiver checkboxes"
+        color: RED
+        annotation: "CRITICAL — If any contingency is waived, client must understand the risk"
+      - field: "Loan terms (amount, type, rate)"
+        color: YELLOW
+        annotation: "Verify loan terms match pre-approval"
+      - field: "Seller credits or concessions"
+        color: YELLOW
+        annotation: "Verify credits match negotiated terms"
+      - field: "Personal property included/excluded"
+        color: YELLOW
+        annotation: "Verify inclusions/exclusions match client's understanding"
+      - field: "Additional terms / addenda"
+        color: ORANGE
+        annotation: "Non-standard language — verify enforceability and client understanding"
+      - field: "Arbitration/mediation elections"
+        color: YELLOW
+        annotation: "Verify client made informed election"
+      - field: "All signatures"
+        color: GREEN
+        annotation: "AI verified: signatures present"
+        show_if_missing: RED
+
+  GATE-011:
+    name: Earnest Money Deposit Handling
+    documents: ["RPA (deposit section)", "Escrow Deposit Receipt"]
+    pages_to_include: "RPA page with deposit terms; deposit receipt"
+    highlights:
+      - field: "Deposit amount"
+        color: YELLOW
+        annotation: "Verify matches contract | B&P §10145"
+      - field: "Deposit delivery deadline"
+        color: BLUE
+        annotation: "REVIEWABLE | Default 3 business days — verify"
+      - field: "Escrow company name"
+        color: YELLOW
+        annotation: "Verify deposit went to correct escrow"
+      - field: "Receipt confirmation"
+        color: RED
+        annotation: "Must have confirmation of receipt — trust fund compliance"
+
+  GATE-012:
+    name: All Disclosures Delivered
+    documents: ["Disclosure delivery tracking (generated by AI)"]
+    pages_to_include: "AI-generated summary page showing delivery status of each disclosure"
+    highlights:
+      - field: "Each required disclosure line item"
+        color: GREEN
+        annotation: "Delivered — AI confirmed via DocuSign timestamp"
+        show_if_missing: RED
+        missing_annotation: "NOT YET DELIVERED — must deliver before proceeding | Civil Code §1102.3"
+      - field: "Delivery timestamps"
+        color: YELLOW
+        annotation: "Verify delivery date is prior to contingency periods starting"
+      - field: "Jurisdiction-specific disclosures"
+        color: PURPLE
+        annotation: "Required by local jurisdiction — verify applicable items delivered"
+
+  # --- INSPECTION ---
+
+  GATE-020:
+    name: Inspection Report Material Facts Review
+    documents: ["Home Inspection Report", "Pest Report", "Specialty Reports"]
+    pages_to_include: "Pages containing material findings (safety, structural, functional) — exclude cosmetic-only pages"
+    highlights:
+      - field: "Safety hazards (electrical, gas, fire, structural)"
+        color: RED
+        annotation: "SAFETY — Must communicate to client | Civil Code §2079"
+      - field: "Structural issues (foundation, framing, roof)"
+        color: RED
+        annotation: "STRUCTURAL — Material fact requiring disclosure"
+      - field: "Major system deficiencies (HVAC, plumbing, electrical panels)"
+        color: ORANGE
+        annotation: "Major system issue — discuss with client"
+      - field: "Findings that contradict seller disclosures"
+        color: RED
+        annotation: "CONTRADICTS seller TDS/SPQ — must address"
+      - field: "Estimated repair costs (if provided)"
+        color: YELLOW
+        annotation: "Verify client understands cost implications"
+      - field: "Inspector recommendations for further evaluation"
+        color: ORANGE
+        annotation: "Inspector recommends specialist evaluation — discuss with client"
+    page_filter_details:
+      include: "Pages with severity: safety, structural, functional"
+      exclude: "Pages with ONLY cosmetic or maintenance items"
+      threshold: "Include page if ANY item on it is orange-level or above"
+
+  GATE-021:
+    name: Request for Repair / Response Review
+    documents: ["Request for Repair (RR)", "Seller Response"]
+    pages_to_include: "All pages with repair items and response terms"
+    highlights:
+      - field: "Each repair item requested"
+        color: YELLOW
+        annotation: "Verify reflects client's priorities"
+      - field: "Seller's response to each item (agree/decline/counter)"
+        color: ORANGE
+        annotation: "Review seller's response — does client accept these terms?"
+      - field: "Repair completion deadline"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify deadline is before close or walkthrough"
+      - field: "Cost caps or allowances"
+        color: YELLOW
+        annotation: "Verify financial terms are clear"
+      - field: "Signatures"
+        color: GREEN
+        annotation: "AI verified"
+        show_if_missing: RED
+
+  GATE-022:
+    name: Investigation Contingency Decision
+    documents: ["CR-1 (Investigation)", "Contingency Status Summary (AI-generated)"]
+    pages_to_include: "CR-1 signature page + AI summary of outstanding items"
+    highlights:
+      - field: "Contingency being removed"
+        color: RED
+        annotation: "CRITICAL — Client loses right to cancel on inspection grounds"
+      - field: "Buyer signature"
+        color: RED
+        annotation: "Must be client's informed, voluntary decision"
+      - field: "Date of removal"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify within contingency deadline"
+      - field: "Outstanding inspection items (AI summary)"
+        color: ORANGE
+        annotation: "These items are UNRESOLVED — client accepts by removing contingency"
+
+  # --- APPRAISAL ---
+
+  GATE-030:
+    name: Appraisal Results Review
+    documents: ["Appraisal Report"]
+    pages_to_include: "Summary page with value opinion + pages with property details and comparable sales"
+    highlights:
+      - field: "Appraised value"
+        color: YELLOW
+        annotation: "Compare against purchase price ($X)"
+      - field: "Appraised value vs. purchase price comparison"
+        color: RED
+        annotation: "LOW APPRAISAL — {gap_amount} below purchase price"
+        condition: "Only show RED if appraised_value < purchase_price"
+      - field: "Property details (bed/bath/sqft/lot)"
+        color: ORANGE
+        annotation: "Verify property details are accurate — errors affect the value opinion"
+      - field: "Comparable sales used"
+        color: YELLOW
+        annotation: "Review comps for reasonableness"
+      - field: "Condition adjustments"
+        color: YELLOW
+        annotation: "Review adjustment methodology"
+
+  GATE-031:
+    name: Appraisal Contingency Decision
+    documents: ["CR-1 (Appraisal)", "Appraisal value summary (AI-generated)"]
+    pages_to_include: "CR-1 signature page + AI appraisal summary"
+    highlights:
+      - field: "Contingency being removed"
+        color: RED
+        annotation: "CRITICAL — Client accepts appraisal risk"
+      - field: "Value gap (if any)"
+        color: RED
+        annotation: "Client must cover ${gap} difference — informed decision required"
+        condition: "Only if appraised_value < purchase_price"
+      - field: "Buyer signature"
+        color: RED
+        annotation: "Must be client's informed, voluntary decision"
+      - field: "Date of removal"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify within contingency deadline"
+
+  # --- FINANCING ---
+
+  GATE-041:
+    name: Loan Contingency Decision
+    documents: ["CR-1 (Loan)", "Loan status summary (AI-generated)"]
+    pages_to_include: "CR-1 signature page + AI loan status summary"
+    highlights:
+      - field: "Contingency being removed"
+        color: RED
+        annotation: "CRITICAL — Deposit at risk if loan falls through after removal"
+      - field: "Current loan approval status"
+        color: ORANGE
+        annotation: "Loan is {status} — full approval not yet received"
+        condition: "Only ORANGE if not fully approved"
+      - field: "Outstanding lender conditions"
+        color: ORANGE
+        annotation: "{count} conditions outstanding — risk if any cannot be met"
+      - field: "Buyer signature"
+        color: RED
+        annotation: "Must be client's informed, voluntary decision"
+      - field: "Date of removal"
+        color: BLUE
+        annotation: "REVIEWABLE | Verify within contingency deadline"
+
+  # --- TITLE & ESCROW ---
+
+  GATE-050:
+    name: Preliminary Title Report Review
+    documents: ["Preliminary Title Report"]
+    pages_to_include: "Summary page + pages listing all exceptions (liens, easements, CC&Rs)"
+    highlights:
+      - field: "Property owner name(s)"
+        color: YELLOW
+        annotation: "Verify matches seller in contract"
+      - field: "Legal description"
+        color: YELLOW
+        annotation: "Verify matches property"
+      - field: "Each lien listed"
+        color: RED
+        annotation: "Lien must be cleared or addressed before close"
+      - field: "Each easement listed"
+        color: ORANGE
+        annotation: "Review impact on property use — inform client"
+      - field: "CC&Rs reference"
+        color: ORANGE
+        annotation: "Review for material restrictions affecting client's intended use"
+      - field: "Property-specific exceptions (non-standard)"
+        color: RED
+        annotation: "Non-standard title exception — review and discuss with client"
+      - field: "Standard/general exceptions"
+        color: GREEN
+        annotation: "Standard exception — typically not a concern"
+      - field: "Tax and assessment status"
+        color: YELLOW
+        annotation: "Verify taxes are current — delinquent taxes affect title"
+
+  GATE-051:
+    name: HOA Document Review
+    documents: ["HOA Budget", "Reserve Study", "Meeting Minutes", "Litigation Disclosure"]
+    pages_to_include: "Financial summary pages + litigation disclosure + special assessment pages"
+    highlights:
+      - field: "Monthly dues amount"
+        color: YELLOW
+        annotation: "Verify matches what was disclosed in contract"
+      - field: "Special assessments (current or pending)"
+        color: RED
+        annotation: "Special assessment affects client's costs — must disclose"
+      - field: "Reserve fund balance and percent funded"
+        color: ORANGE
+        annotation: "Below 50% funded = potential future special assessment risk"
+        condition: "ORANGE if reserve_percent < 50; RED if < 25"
+      - field: "Pending litigation"
+        color: RED
+        annotation: "Active litigation against HOA — material fact"
+      - field: "Rule violations on the unit/property"
+        color: ORANGE
+        annotation: "Outstanding violations may transfer to buyer"
+      - field: "5-day review period deadline"
+        color: BLUE
+        annotation: "FIXED | Davis-Stirling 5-day statutory review | Civil Code §4525"
+
+  # --- PRE-CLOSING ---
+
+  GATE-060:
+    name: All Contingencies Removed
+    documents: ["Contingency Status Matrix (AI-generated)"]
+    pages_to_include: "AI-generated one-page summary showing every contingency and its status"
+    highlights:
+      - field: "Each contingency row"
+        color: GREEN
+        annotation: "CR-1 on file — signed on {date}"
+        show_if_missing: RED
+        missing_annotation: "NO CR-1 ON FILE — contingency not yet removed"
+      - field: "Contingencies removed after their deadline"
+        color: ORANGE
+        annotation: "Removed {days} days after deadline — verify this was acknowledged by all parties"
+      - field: "Waived contingencies"
+        color: YELLOW
+        annotation: "Waived in contract — no CR-1 needed, but verify client understood waiver"
+
+  GATE-061:
+    name: Closing Disclosure Review
+    documents: ["Closing Disclosure / Settlement Statement"]
+    pages_to_include: "Pages with financial figures (typically pages 1-3 of Closing Disclosure)"
+    highlights:
+      - field: "Purchase price"
+        color: YELLOW
+        annotation: "Must match contract: ${contract_price}"
+      - field: "Loan amount"
+        color: YELLOW
+        annotation: "Must match loan approval: ${approved_amount}"
+      - field: "Interest rate and terms"
+        color: YELLOW
+        annotation: "Verify matches loan commitment"
+      - field: "Earnest money deposit credit"
+        color: YELLOW
+        annotation: "Must match deposited amount: ${deposit_amount}"
+      - field: "Seller credits"
+        color: YELLOW
+        annotation: "Must match contract: ${contract_credits}"
+      - field: "Property tax proration"
+        color: ORANGE
+        annotation: "AI calculated: ${ai_calculated_proration} — verify"
+      - field: "County transfer tax"
+        color: PURPLE
+        annotation: "Rate: $1.10/$1000 | AI calculated: ${county_tax}"
+      - field: "City transfer tax"
+        color: PURPLE
+        annotation: "Rate varies by city | AI calculated: ${city_tax}"
+      - field: "Measure ULA tax (if applicable)"
+        color: PURPLE
+        annotation: "LA only, >$5M | Rate: {rate}% | AI calculated: ${ula_tax}"
+        condition: "Only show if City of LA AND price > $5M"
+      - field: "Agent commission"
+        color: YELLOW
+        annotation: "Verify correct commission amount"
+      - field: "Net to seller / cash to close for buyer"
+        color: RED
+        annotation: "BOTTOM LINE — Client must understand this number before signing"
+      - field: "Any line item where AI calculation differs from stated amount"
+        color: RED
+        annotation: "DISCREPANCY — AI calculated ${ai_amount} but document shows ${doc_amount}"
+
+  GATE-062:
+    name: Final Walkthrough
+    documents: ["Walkthrough Checklist (AI-generated)"]
+    pages_to_include: "AI-generated checklist derived from contract terms and repair agreement"
+    highlights:
+      - field: "Each agreed repair item"
+        color: YELLOW
+        annotation: "Verify repair completed per agreement"
+      - field: "Each fixture/personal property item from contract"
+        color: YELLOW
+        annotation: "Verify present in property"
+      - field: "Excluded items from contract"
+        color: ORANGE
+        annotation: "Verify REMOVED from property"
+      - field: "General condition assessment areas"
+        color: YELLOW
+        annotation: "Note any new damage or changes since inspection"
+
+  GATE-063:
+    name: Jurisdiction Compliance
+    documents: ["Compliance Checklist (AI-generated per jurisdiction)"]
+    pages_to_include: "AI-generated checklist for CA + applicable city"
+    highlights:
+      - field: "Each California retrofit requirement"
+        color: PURPLE
+        annotation: "CA requirement | Certificate: {status}"
+        show_if_missing: RED
+      - field: "Each city-specific requirement"
+        color: PURPLE
+        annotation: "{city} requirement | Status: {status}"
+        show_if_missing: RED
+      - field: "Transfer tax calculations"
+        color: PURPLE
+        annotation: "AI calculated total transfer taxes: ${total}"
+      - field: "9A Report status (LA)"
+        color: PURPLE
+        annotation: "LA City only | Status: {status}"
+        condition: "Only if City of LA"
+      - field: "Gas shut-off valve certificate (BH)"
+        color: PURPLE
+        annotation: "Beverly Hills point-of-sale | BH Muni Code §9-1-1010"
+        condition: "Only if Beverly Hills"
+      - field: "Low-flow fixture compliance (BH)"
+        color: PURPLE
+        annotation: "Beverly Hills point-of-sale | Water conservation ordinance"
+        condition: "Only if Beverly Hills"
+
+  # --- CLOSING ---
+
+  GATE-070:
+    name: Final Document Execution Verification
+    documents: ["Grant Deed", "Closing package (all documents)"]
+    pages_to_include: "Signature pages of each closing document + grant deed"
+    highlights:
+      - field: "Grant deed — grantor name(s)"
+        color: RED
+        annotation: "Must match seller exactly as on title"
+      - field: "Grant deed — grantee name(s) and vesting"
+        color: RED
+        annotation: "Must match buyer and desired vesting"
+      - field: "Grant deed — legal description"
+        color: RED
+        annotation: "Must match preliminary title report"
+      - field: "Notarization on grant deed"
+        color: RED
+        annotation: "Deed must be notarized for recording"
+      - field: "Each closing document — signature completeness"
+        color: GREEN
+        annotation: "AI verified all signatures present"
+        show_if_missing: RED
+      - field: "Funding confirmation"
+        color: RED
+        annotation: "Verify lender has funded / funds are in escrow"
+
+  GATE-071:
+    name: Recording and Disbursement
+    documents: ["Recording Confirmation", "Escrow Disbursement Statement"]
+    pages_to_include: "Recording confirmation page + disbursement summary page"
+    highlights:
+      - field: "Recording number"
+        color: RED
+        annotation: "Deed recorded — transaction is legally closed"
+      - field: "Recording date and time"
+        color: YELLOW
+        annotation: "Verify recording date matches expected close date"
+      - field: "Disbursement line items"
+        color: YELLOW
+        annotation: "Verify matches closing disclosure"
+      - field: "Commission disbursement"
+        color: YELLOW
+        annotation: "Verify correct amount disbursed"
+
+  # --- POST-CLOSING ---
+
+  GATE-080:
+    name: File Compliance
+    documents: ["File Completeness Report (AI-generated)"]
+    pages_to_include: "Single AI-generated page showing checklist of all required documents"
+    highlights:
+      - field: "Each required document"
+        color: GREEN
+        annotation: "On file in SkySlope"
+        show_if_missing: RED
+        missing_annotation: "MISSING — Must obtain before submitting for broker review"
+      - field: "SkySlope checklist status"
+        color: YELLOW
+        annotation: "Verify SkySlope shows all items complete"
+      - field: "Retention period"
+        color: BLUE
+        annotation: "3-year retention begins {close_date} — expires {expiry_date} | B&P §10148"
+
+# -----------------------------------------------------------------------------
+# PRIVATE REVIEW FOLDER
+# -----------------------------------------------------------------------------
+
+private_folder:
+
+  location: "Google Drive: /Agent Private/Reviews/{year}/{address}/"
+  permissions: "Agent ONLY — no shared access, no link sharing"
+  structure:
+    - path: "Pending/"
+      description: "Review copies awaiting agent verification"
+    - path: "Completed/"
+      description: "Review copies where agent has signed off on the gate"
+    - path: "Flagged/"
+      description: "Review copies with unresolved RED items"
+
+  lifecycle:
+    - step: "AI generates review copy"
+      action: "Saved to Pending/"
+    - step: "Agent reviews and signs off"
+      action: "Moved to Completed/ with timestamp"
+    - step: "If RED items unresolved"
+      action: "Moved to Flagged/ — remains until resolved"
+
+  cleanup:
+    after_transaction_close: "All review copies moved to Completed/ archive"
+    retention: "Same as transaction file (3 years per DRE)"
+
+# -----------------------------------------------------------------------------
+# NOTIFICATION TO AGENT
+# -----------------------------------------------------------------------------
+
+notification:
+
+  when_review_ready:
+    channel: [email, sms]
+    subject: "{address} — Review Required: {gate_name}"
+    body: |
+      GATE: {gate_id} — {gate_name}
+      TYPE: {HARD_GATE / SOFT_GATE}
+      DOCUMENT: {document_name}
+      REVIEW PAGES: {count} pages (of {total_original} original)
+      ITEMS TO VERIFY: {yellow_count} verify, {orange_count} attention, {red_count} critical, {blue_count} reviewable
+
+      CRITICAL ITEMS: {red_count}
+      {list of red items — one line each}
+
+      LINK: {direct_link_to_review_pdf}
+
+      After review, mark gate as verified in the workflow dashboard.
+
+  escalation_if_not_reviewed:
+    - after: 4_hours
+      action: "Resend notification with 'REMINDER' prefix"
+    - after: 24_hours
+      action: "Resend with 'URGENT' prefix"
+    - after: 48_hours
+      action: "Resend with 'OVERDUE' prefix + flag transaction as at risk"
+
+# -----------------------------------------------------------------------------
+# AGENT SIGN-OFF PROCESS
+# -----------------------------------------------------------------------------
+
+sign_off:
+
+  process:
+    - step: 1
+      action: "Agent opens review copy from private folder or notification link"
+    - step: 2
+      action: "Agent reviews each highlighted item"
+    - step: 3
+      action: "For any RED item: agent must either resolve the issue or acknowledge acceptance with a note"
+    - step: 4
+      action: "Agent marks gate as verified (checkbox, digital signature, or confirmation button)"
+    - step: 5
+      action: "System logs: gate_id, timestamp, agent_id, any notes"
+    - step: 6
+      action: "Review copy moved from Pending/ to Completed/"
+    - step: 7
+      action: "Workflow proceeds to next task"
+
+  audit_trail:
+    logged_per_gate:
+      - gate_id
+      - agent_name
+      - timestamp_of_sign_off
+      - review_copy_filename
+      - total_items_verified
+      - red_items_count_and_disposition
+      - agent_notes (if any)
+    stored_in: "Transaction log (Google Sheets) + SkySlope audit trail"
+    retention: "3 years (DRE requirement)"

@@ -1,0 +1,47 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:16'
+file: Disclosure_Information_Advisory_-_1225_ts63533.pdf
+folder: SFR Disclosures Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 2
+  entry_categories:
+    entry_date: 2
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 442.8
+    y0: 529.6
+    x1: 583.2
+    y1: 542.8
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 466.7
+    y0: 536.8
+    x1: 583.2
+    y1: 542.8
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 442.8
+    y0: 558.6
+    x1: 583.2
+    y1: 571.8
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 466.7
+    y0: 565.8
+    x1: 583.2
+    y1: 571.8

@@ -1,0 +1,1106 @@
+# =============================================================================
+# DOUGLAS ELLIMAN — BROKERAGE-SPECIFIC DOCUMENT REQUIREMENTS
+# =============================================================================
+#
+# Organized by transaction type and party role. Each form entry specifies:
+#   code:      Short identifier (CAR code or DE internal code)
+#   name:      Full form name
+#   required:  always | conditional
+#   condition: Property flag that must be true (only if required=conditional)
+#   phase:     Transaction phase when document is due
+#   role:      listing | buyer | both
+#   source:    CAR | DE | STATE | FEDERAL | OTHER
+#
+# Conditional flags (set via `tc props`):
+#   is_condo, is_pre_1978, has_solar, has_hoa, is_trust_sale,
+#   price_above_5m, has_pool, has_septic, is_manufactured, is_new_construction,
+#   is_short_sale, is_probate, has_tenant, is_multi_unit
+#
+# =============================================================================
+
+brokerage:
+  name: Douglas Elliman
+  code: douglas_elliman
+  region: California
+
+# =============================================================================
+# SALE TRANSACTION — LISTING SIDE
+# =============================================================================
+sale_listing:
+
+  # --- PRE_CONTRACT --------------------------------------------------------
+  - code: DE_LISTING_AGR
+    name: DE Listing Agreement / Addendum to Listing
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: DE
+
+  - code: DE_SUPP
+    name: DE Supplemental Disclosures (13-Item)
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: DE
+
+  - code: AD
+    name: Agency Disclosure (AD)
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: CAR
+
+  - code: TDS
+    name: Transfer Disclosure Statement
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: CAR
+
+  - code: SPQ
+    name: Seller Property Questionnaire
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: CAR
+
+  - code: NHD
+    name: Natural Hazard Disclosure Report
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: SBSA
+    name: Statewide Buyer-Seller Advisory
+    required: always
+    phase: PRE_CONTRACT
+    role: both
+    source: CAR
+
+  - code: FLD
+    name: Flood Hazard Boundary Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: EQFZ
+    name: Earthquake Fault Zone Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: SFA
+    name: Seismic Hazards Mapping Act Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: FIRZ
+    name: Fire Hazard Severity Zone Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: WFA
+    name: Wildfire Advisory
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: MEG
+    name: Megan's Law Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: LBP
+    name: Lead-Based Paint Disclosure (Pre-1978)
+    required: conditional
+    condition: is_pre_1978
+    phase: PRE_CONTRACT
+    role: listing
+    source: FEDERAL
+
+  - code: SSD
+    name: Supplemental Statutory Disclosures
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: AVID
+    name: Agent Visual Inspection Disclosure
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: CAR
+
+  - code: WHSD
+    name: Water Heater / Smoke Detector Compliance
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: STATE
+
+  - code: DE_MKT_AUTH
+    name: DE Marketing Authorization
+    required: always
+    phase: PRE_CONTRACT
+    role: listing
+    source: DE
+
+  - code: SOLAR_TIP
+    name: Solar Panel Transfer / Lease Disclosure
+    required: conditional
+    condition: has_solar
+    phase: PRE_CONTRACT
+    role: listing
+    source: CAR
+
+  - code: TRUST_CERT
+    name: Trust Certification
+    required: conditional
+    condition: is_trust_sale
+    phase: PRE_CONTRACT
+    role: listing
+    source: OTHER
+
+  - code: PROB_CT_ORD
+    name: Probate Court Order / Letters Testamentary
+    required: conditional
+    condition: is_probate
+    phase: PRE_CONTRACT
+    role: listing
+    source: OTHER
+
+  - code: TENANT_EST
+    name: Tenant Estoppel Certificate
+    required: conditional
+    condition: has_tenant
+    phase: PRE_CONTRACT
+    role: listing
+    source: OTHER
+
+  # --- CONTRACT_EXECUTION --------------------------------------------------
+  - code: RPA
+    name: Residential Purchase Agreement
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: DE_COMM_AGR
+    name: DE Manager/Broker Commission Agreement
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: listing
+    source: DE
+
+  - code: DE_BUYER_COMP
+    name: DE Buyer Broker Compensation Notice
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: DE
+
+  - code: PRBS
+    name: Possible Representation of Both Buyer and Seller
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: BIA
+    name: Buyer Inspection Advisory
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: CAR
+
+  - code: EMD_REC
+    name: Earnest Money Deposit Receipt
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: OTHER
+
+  - code: WFI
+    name: Wire Fraud Information Advisory
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: W9_SELLER
+    name: W-9 (Seller)
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: listing
+    source: FEDERAL
+
+  - code: W9_BUYER
+    name: W-9 (Buyer)
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: FEDERAL
+
+  - code: DE_CONDO_ADD
+    name: DE Condo/PUD Addendum
+    required: conditional
+    condition: is_condo
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: DE
+
+  - code: DE_HIGH_VAL
+    name: DE High-Value Property Addendum
+    required: conditional
+    condition: price_above_5m
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: DE
+
+  # --- INSPECTION ----------------------------------------------------------
+  - code: INSP_RPT
+    name: Home Inspection Report
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: OTHER
+
+  - code: PEST_RPT
+    name: Pest/Termite Inspection Report
+    required: always
+    phase: INSPECTION
+    role: listing
+    source: OTHER
+
+  - code: ROOF_RPT
+    name: Roof Inspection Report
+    required: always
+    phase: INSPECTION
+    role: listing
+    source: OTHER
+
+  - code: SEWER_RPT
+    name: Sewer Lateral Inspection Report
+    required: always
+    phase: INSPECTION
+    role: listing
+    source: OTHER
+
+  - code: POOL_RPT
+    name: Pool/Spa Inspection Report
+    required: conditional
+    condition: has_pool
+    phase: INSPECTION
+    role: listing
+    source: OTHER
+
+  - code: SEPTIC_RPT
+    name: Septic System Inspection Report
+    required: conditional
+    condition: has_septic
+    phase: INSPECTION
+    role: listing
+    source: OTHER
+
+  - code: RR
+    name: Request for Repair
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: CAR
+
+  - code: RRRR
+    name: Response to Request for Repair
+    required: always
+    phase: INSPECTION
+    role: listing
+    source: CAR
+
+  - code: CR1_INV
+    name: Contingency Removal — Investigation
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: CAR
+
+  - code: MANU_CERT
+    name: HCD Insignia / Manufactured Home Certification
+    required: conditional
+    condition: is_manufactured
+    phase: INSPECTION
+    role: listing
+    source: STATE
+
+  # --- APPRAISAL -----------------------------------------------------------
+  - code: APPR_RPT
+    name: Appraisal Report
+    required: always
+    phase: APPRAISAL
+    role: buyer
+    source: OTHER
+
+  - code: CR1_APPR
+    name: Contingency Removal — Appraisal
+    required: always
+    phase: APPRAISAL
+    role: buyer
+    source: CAR
+
+  # --- FINANCING -----------------------------------------------------------
+  - code: LOAN_PRE
+    name: Lender Pre-Approval Letter
+    required: always
+    phase: FINANCING
+    role: buyer
+    source: OTHER
+
+  - code: LOAN_COMMIT
+    name: Loan Commitment Letter
+    required: always
+    phase: FINANCING
+    role: buyer
+    source: OTHER
+
+  - code: CR1_LOAN
+    name: Contingency Removal — Loan
+    required: always
+    phase: FINANCING
+    role: buyer
+    source: CAR
+
+  # --- TITLE_ESCROW --------------------------------------------------------
+  - code: PTITLE
+    name: Preliminary Title Report
+    required: always
+    phase: TITLE_ESCROW
+    role: both
+    source: OTHER
+
+  - code: HOA_DOCS
+    name: HOA Documents (CC&Rs, Budget, Minutes, Rules)
+    required: conditional
+    condition: has_hoa
+    phase: TITLE_ESCROW
+    role: listing
+    source: OTHER
+
+  - code: HOA_CERT
+    name: HOA Certification / Estoppel
+    required: conditional
+    condition: has_hoa
+    phase: TITLE_ESCROW
+    role: listing
+    source: OTHER
+
+  - code: HOA_TRANSFER
+    name: HOA Transfer Disclosure Package
+    required: conditional
+    condition: has_hoa
+    phase: TITLE_ESCROW
+    role: listing
+    source: OTHER
+
+  - code: CCRS
+    name: CC&Rs / Governing Documents
+    required: conditional
+    condition: is_condo
+    phase: TITLE_ESCROW
+    role: listing
+    source: OTHER
+
+  - code: TITLE_INS
+    name: Title Insurance Commitment
+    required: always
+    phase: TITLE_ESCROW
+    role: both
+    source: OTHER
+
+  # --- PRE_CLOSING ---------------------------------------------------------
+  - code: CR1_ALL
+    name: Contingency Removal — All Remaining
+    required: always
+    phase: PRE_CLOSING
+    role: buyer
+    source: CAR
+
+  - code: CLOSING_DISC
+    name: Closing Disclosure (TRID)
+    required: always
+    phase: PRE_CLOSING
+    role: both
+    source: FEDERAL
+
+  - code: NET_SHEET
+    name: Estimated Net Sheet (Seller)
+    required: always
+    phase: PRE_CLOSING
+    role: listing
+    source: OTHER
+
+  - code: WALKTHRU
+    name: Final Walkthrough Confirmation
+    required: always
+    phase: PRE_CLOSING
+    role: buyer
+    source: CAR
+
+  - code: SMOKE_CO
+    name: Smoke/CO Detector Compliance
+    required: always
+    phase: PRE_CLOSING
+    role: listing
+    source: STATE
+
+  - code: RETRO_WH
+    name: Water Heater Strapping Certificate
+    required: always
+    phase: PRE_CLOSING
+    role: listing
+    source: STATE
+
+  - code: DE_FILE_REV
+    name: DE File Compliance Review Checklist
+    required: always
+    phase: PRE_CLOSING
+    role: listing
+    source: DE
+
+  - code: SS_AUTH
+    name: Short Sale Lender Authorization
+    required: conditional
+    condition: is_short_sale
+    phase: PRE_CLOSING
+    role: listing
+    source: OTHER
+
+  - code: NEW_CONSTR_WR
+    name: New Construction Warranty Documents
+    required: conditional
+    condition: is_new_construction
+    phase: PRE_CLOSING
+    role: listing
+    source: OTHER
+
+  # --- CLOSING -------------------------------------------------------------
+  - code: GRANT_DEED
+    name: Grant Deed
+    required: always
+    phase: CLOSING
+    role: listing
+    source: OTHER
+
+  - code: NOTARIZED_SIG
+    name: Notarized Signature Pages
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  - code: FUND_RECEIPT
+    name: Proof of Fund Disbursement
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  - code: REC_DEED
+    name: Recorded Deed Confirmation
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  # --- POST_CLOSING --------------------------------------------------------
+  - code: IRS_1099
+    name: IRS Form 1099-S
+    required: always
+    phase: POST_CLOSING
+    role: listing
+    source: FEDERAL
+
+  - code: DE_CLOSE_PKG
+    name: DE Closed File Package
+    required: always
+    phase: POST_CLOSING
+    role: listing
+    source: DE
+
+  - code: COMM_STMT
+    name: Commission Statement / Disbursement
+    required: always
+    phase: POST_CLOSING
+    role: listing
+    source: DE
+
+  - code: KEYS
+    name: Key Transfer Confirmation
+    required: always
+    phase: POST_CLOSING
+    role: both
+    source: OTHER
+
+
+# =============================================================================
+# SALE TRANSACTION — BUYER SIDE
+# =============================================================================
+sale_buyer:
+
+  - code: AD
+    name: Agency Disclosure (AD)
+    required: always
+    phase: PRE_CONTRACT
+    role: buyer
+    source: CAR
+
+  - code: BUYER_REP_AGR
+    name: Buyer Representation Agreement
+    required: always
+    phase: PRE_CONTRACT
+    role: buyer
+    source: CAR
+
+  - code: DE_BUYER_ADD
+    name: DE Addendum to Buyer Representation Agreement
+    required: always
+    phase: PRE_CONTRACT
+    role: buyer
+    source: DE
+
+  - code: SBSA
+    name: Statewide Buyer-Seller Advisory
+    required: always
+    phase: PRE_CONTRACT
+    role: both
+    source: CAR
+
+  - code: LOAN_PRE_B
+    name: Pre-Approval Letter
+    required: always
+    phase: PRE_CONTRACT
+    role: buyer
+    source: OTHER
+
+  - code: POF
+    name: Proof of Funds
+    required: always
+    phase: PRE_CONTRACT
+    role: buyer
+    source: OTHER
+
+  - code: RPA
+    name: Residential Purchase Agreement
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: DE_BUYER_COMP
+    name: DE Buyer Broker Compensation Notice
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: DE
+
+  - code: BIA
+    name: Buyer Inspection Advisory
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: CAR
+
+  - code: WFI
+    name: Wire Fraud Information Advisory
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: W9_BUYER
+    name: W-9 (Buyer)
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: FEDERAL
+
+  - code: EMD_REC
+    name: Earnest Money Deposit Receipt
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: OTHER
+
+  - code: PRBS
+    name: Possible Representation of Both Buyer and Seller
+    required: always
+    phase: CONTRACT_EXECUTION
+    role: both
+    source: CAR
+
+  - code: LBP
+    name: Lead-Based Paint Acknowledgment (Pre-1978)
+    required: conditional
+    condition: is_pre_1978
+    phase: CONTRACT_EXECUTION
+    role: buyer
+    source: FEDERAL
+
+  - code: INSP_RPT
+    name: Home Inspection Report
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: OTHER
+
+  - code: RR
+    name: Request for Repair
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: CAR
+
+  - code: CR1_INV
+    name: Contingency Removal — Investigation
+    required: always
+    phase: INSPECTION
+    role: buyer
+    source: CAR
+
+  - code: APPR_RPT
+    name: Appraisal Report
+    required: always
+    phase: APPRAISAL
+    role: buyer
+    source: OTHER
+
+  - code: CR1_APPR
+    name: Contingency Removal — Appraisal
+    required: always
+    phase: APPRAISAL
+    role: buyer
+    source: CAR
+
+  - code: LOAN_COMMIT
+    name: Loan Commitment Letter
+    required: always
+    phase: FINANCING
+    role: buyer
+    source: OTHER
+
+  - code: CR1_LOAN
+    name: Contingency Removal — Loan
+    required: always
+    phase: FINANCING
+    role: buyer
+    source: CAR
+
+  - code: PTITLE
+    name: Preliminary Title Report
+    required: always
+    phase: TITLE_ESCROW
+    role: both
+    source: OTHER
+
+  - code: CR1_ALL
+    name: Contingency Removal — All Remaining
+    required: always
+    phase: PRE_CLOSING
+    role: buyer
+    source: CAR
+
+  - code: CLOSING_DISC
+    name: Closing Disclosure (TRID)
+    required: always
+    phase: PRE_CLOSING
+    role: both
+    source: FEDERAL
+
+  - code: WALKTHRU
+    name: Final Walkthrough Confirmation
+    required: always
+    phase: PRE_CLOSING
+    role: buyer
+    source: CAR
+
+  - code: NOTARIZED_SIG
+    name: Notarized Signature Pages
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  - code: FUND_RECEIPT
+    name: Proof of Fund Disbursement
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  - code: REC_DEED
+    name: Recorded Deed Confirmation
+    required: always
+    phase: CLOSING
+    role: both
+    source: OTHER
+
+  - code: KEYS
+    name: Key Transfer Confirmation
+    required: always
+    phase: POST_CLOSING
+    role: both
+    source: OTHER
+
+
+# =============================================================================
+# LEASE TRANSACTION — LISTING SIDE
+# =============================================================================
+lease_listing:
+
+  # --- LEASE_PRE -----------------------------------------------------------
+  - code: DE_LEASE_LIST
+    name: DE Lease Listing Agreement
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: DE
+
+  - code: AD
+    name: Agency Disclosure (AD)
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: CAR
+
+  - code: DE_SUPP
+    name: DE Supplemental Disclosures (Lease)
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: DE
+
+  - code: LBP
+    name: Lead-Based Paint Disclosure (Pre-1978)
+    required: conditional
+    condition: is_pre_1978
+    phase: LEASE_PRE
+    role: listing
+    source: FEDERAL
+
+  - code: BED_BUG
+    name: Bed Bug Disclosure
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  - code: MEG
+    name: Megan's Law Disclosure
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  - code: SMOKE_CO_L
+    name: Smoke/CO Detector Compliance (Lease)
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  - code: MOLD_DISC
+    name: Mold Disclosure
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  - code: DEMO_DISC
+    name: Demolition Intent Disclosure
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  - code: FLOOD_DISC_L
+    name: Flood Zone Disclosure (Lease)
+    required: always
+    phase: LEASE_PRE
+    role: listing
+    source: STATE
+
+  # --- LEASE_LISTING -------------------------------------------------------
+  - code: LEASE_MKT
+    name: Lease Marketing Package
+    required: always
+    phase: LEASE_LISTING
+    role: listing
+    source: DE
+
+  # --- LEASE_APPLICATION ---------------------------------------------------
+  - code: LEASE_APP
+    name: Rental Application
+    required: always
+    phase: LEASE_APPLICATION
+    role: buyer
+    source: OTHER
+
+  - code: CREDIT_RPT
+    name: Credit Report / Screening
+    required: always
+    phase: LEASE_APPLICATION
+    role: listing
+    source: OTHER
+
+  - code: INCOME_VER
+    name: Income Verification
+    required: always
+    phase: LEASE_APPLICATION
+    role: buyer
+    source: OTHER
+
+  - code: REF_CHECK
+    name: Reference Check Documentation
+    required: always
+    phase: LEASE_APPLICATION
+    role: listing
+    source: OTHER
+
+  - code: APP_DENY
+    name: Adverse Action Notice (if denied)
+    required: conditional
+    condition: app_denied
+    phase: LEASE_APPLICATION
+    role: listing
+    source: FEDERAL
+
+  # --- LEASE_EXECUTION -----------------------------------------------------
+  - code: CAR_LR
+    name: Residential Lease Agreement (CAR LR)
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: CAR
+
+  - code: DE_LEASE_ADD
+    name: DE Lease Addendum
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: DE
+
+  - code: DE_MONIES_ACK
+    name: DE Monies Disposition Acknowledgement
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: DE
+
+  - code: SEC_DEP_REC
+    name: Security Deposit Receipt
+    required: always
+    phase: LEASE_EXECUTION
+    role: listing
+    source: STATE
+
+  - code: MOVE_IN_INSP
+    name: Move-In Inspection Checklist
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+  - code: KEY_REC_L
+    name: Key Receipt / Access Device Agreement
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+  - code: UTIL_DISC
+    name: Utility Responsibility Disclosure
+    required: always
+    phase: LEASE_EXECUTION
+    role: listing
+    source: STATE
+
+  - code: W9_OWNER
+    name: W-9 (Property Owner)
+    required: always
+    phase: LEASE_EXECUTION
+    role: listing
+    source: FEDERAL
+
+  - code: DE_LEASE_COMM
+    name: DE Lease Commission Agreement
+    required: always
+    phase: LEASE_EXECUTION
+    role: listing
+    source: DE
+
+  - code: PET_ADD
+    name: Pet Addendum
+    required: conditional
+    condition: has_pets
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+  - code: PARKING_ADD
+    name: Parking Space Addendum
+    required: conditional
+    condition: has_parking
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+  # --- LEASE_POST ----------------------------------------------------------
+  - code: DE_LEASE_FILE
+    name: DE Lease File Package
+    required: always
+    phase: LEASE_POST
+    role: listing
+    source: DE
+
+  - code: LEASE_COMM_STMT
+    name: Lease Commission Statement
+    required: always
+    phase: LEASE_POST
+    role: listing
+    source: DE
+
+
+# =============================================================================
+# LEASE TRANSACTION — BUYER (TENANT) SIDE
+# =============================================================================
+lease_buyer:
+
+  - code: AD
+    name: Agency Disclosure (AD)
+    required: always
+    phase: LEASE_PRE
+    role: buyer
+    source: CAR
+
+  - code: LEASE_APP
+    name: Rental Application
+    required: always
+    phase: LEASE_APPLICATION
+    role: buyer
+    source: OTHER
+
+  - code: INCOME_VER
+    name: Income Verification
+    required: always
+    phase: LEASE_APPLICATION
+    role: buyer
+    source: OTHER
+
+  - code: CAR_LR
+    name: Residential Lease Agreement (CAR LR)
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: CAR
+
+  - code: DE_LEASE_ADD
+    name: DE Lease Addendum
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: DE
+
+  - code: DE_MONIES_ACK
+    name: DE Monies Disposition Acknowledgement
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: DE
+
+  - code: MOVE_IN_INSP
+    name: Move-In Inspection Checklist
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+  - code: KEY_REC_L
+    name: Key Receipt / Access Device Agreement
+    required: always
+    phase: LEASE_EXECUTION
+    role: both
+    source: OTHER
+
+
+# =============================================================================
+# DE SUPPLEMENTAL DISCLOSURES — 13-ITEM BREAKDOWN
+# =============================================================================
+# The DE_SUPP form covers all 13 items below. This section documents them
+# for reference and automated completeness checking.
+
+de_supplemental_items:
+  - item: 1
+    name: Brokerage relationship confirmation
+  - item: 2
+    name: Commission structure disclosure
+  - item: 3
+    name: Dual agency possibility acknowledgement
+  - item: 4
+    name: Property condition as-is acknowledgement
+  - item: 5
+    name: Home warranty option disclosure
+  - item: 6
+    name: Pest inspection recommendation
+  - item: 7
+    name: Square footage verification advisory
+  - item: 8
+    name: Permit and zoning compliance advisory
+  - item: 9
+    name: Neighborhood and environmental factors
+  - item: 10
+    name: Insurance availability advisory
+  - item: 11
+    name: Tax reassessment advisory (Prop 13)
+  - item: 12
+    name: Foreign seller withholding (FIRPTA/CA 593)
+  - item: 13
+    name: Data privacy and marketing consent
+
+
+# =============================================================================
+# DE VERIFICATION GATES (see agent_verification_gates.yaml for full spec)
+# =============================================================================
+de_gates:
+  - id: DE-GATE-001
+    phase: PRE_CONTRACT
+    name: DE Addendum to Listing Agreement signed
+    type: HARD_GATE
+
+  - id: DE-GATE-002
+    phase: CONTRACT_EXECUTION
+    name: Manager/Broker Commission Agreement signed
+    type: HARD_GATE
+
+  - id: DE-GATE-003
+    phase: POST_CLOSING
+    name: DE File Compliance Review completed
+    type: HARD_GATE
+
+  - id: DE-GATE-004
+    phase: PRE_CONTRACT
+    name: DE Supplemental Disclosures completed
+    type: HARD_GATE
+
+  - id: DE-GATE-005
+    phase: CONTRACT_EXECUTION
+    name: DE Buyer Broker Compensation Notice delivered
+    type: HARD_GATE

@@ -1,0 +1,184 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:56:53'
+file: 5_of_6_-_Earthquake_Hazards_Report_-_720_ts50349.pdf
+folder: Condo Disclosure Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 11
+  entry_categories:
+    entry_blank: 3
+    entry_address: 4
+    entry_signature: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Name
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 100.9
+    x1: 280.7
+    y1: 114.0
+  region: header
+  context: Name Assessor's Parcel No.
+  ul_bbox:
+    x0: 83.4
+    y0: 108.0
+    x1: 399.8
+    y1: 114.0
+- page: 1
+  field: Street Address
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 120.8
+    x1: 304.0
+    y1: 134.0
+  region: upper
+  context: Street Address Year Built
+  ul_bbox:
+    x0: 123.0
+    y0: 128.0
+    x1: 400.5
+    y1: 134.0
+- page: 1
+  field: Year Built
+  category: entry_blank
+  bbox:
+    x0: 400.5
+    y0: 120.8
+    x1: 558.0
+    y1: 134.0
+  region: upper
+  context: Street Address Year Built
+  ul_bbox:
+    x0: 452.2
+    y0: 128.0
+    x1: 558.0
+    y1: 134.0
+- page: 1
+  field: City
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 140.8
+    x1: 223.8
+    y1: 154.0
+  region: upper
+  context: City County Zip Code
+  ul_bbox:
+    x0: 74.0
+    y0: 148.0
+    x1: 223.8
+    y1: 154.0
+- page: 1
+  field: County
+  category: entry_address
+  bbox:
+    x0: 223.8
+    y0: 140.8
+    x1: 413.8
+    y1: 154.0
+  region: upper
+  context: City County Zip Code
+  ul_bbox:
+    x0: 263.9
+    y0: 148.0
+    x1: 413.8
+    y1: 154.0
+- page: 1
+  field: Zip Code
+  category: entry_address
+  bbox:
+    x0: 413.8
+    y0: 140.8
+    x1: 558.0
+    y1: 154.0
+  region: upper
+  context: City County Zip Code
+  ul_bbox:
+    x0: 462.7
+    y0: 148.0
+    x1: 558.0
+    y1: 154.0
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 610.6
+    x1: 239.5
+    y1: 628.6
+  region: lower
+  context: Seller Seller Date Seller
+  ul_bbox:
+    x0: 54.0
+    y0: 612.6
+    x1: 239.5
+    y1: 618.6
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 252.0
+    y0: 610.6
+    x1: 437.5
+    y1: 628.6
+  region: lower
+  context: Seller Seller Date Seller
+  ul_bbox:
+    x0: 252.0
+    y0: 612.6
+    x1: 437.5
+    y1: 618.6
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 682.6
+    x1: 239.5
+    y1: 700.6
+  region: footer
+  context: Buyer Buyer Date Buyer
+  ul_bbox:
+    x0: 54.0
+    y0: 684.6
+    x1: 239.5
+    y1: 690.6
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 252.0
+    y0: 682.6
+    x1: 437.5
+    y1: 700.6
+  region: footer
+  context: Buyer Buyer Date Buyer
+  ul_bbox:
+    x0: 252.0
+    y0: 684.6
+    x1: 437.5
+    y1: 690.6
+- page: 1
+  field: No.
+  category: entry_blank
+  bbox:
+    x0: 488.1
+    y0: 100.9
+    x1: 558.0
+    y1: 114.0
+  region: header
+  context: Name Assessor's Parcel No.
+  ul_bbox:
+    x0: 505.7
+    y0: 108.0
+    x1: 558.0
+    y1: 114.0

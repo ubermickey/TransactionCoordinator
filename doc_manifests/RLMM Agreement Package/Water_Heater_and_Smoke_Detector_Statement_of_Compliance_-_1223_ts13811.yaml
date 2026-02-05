@@ -1,0 +1,258 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:04'
+file: Water_Heater_and_Smoke_Detector_Statement_of_Compliance_-_1223_ts13811.pdf
+folder: RLMM Agreement Package
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 16
+  entry_categories:
+    entry_signature: 8
+    entry_date: 8
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 274.9
+    x1: 217.0
+    y1: 286.8
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 280.8
+    x1: 217.0
+    y1: 286.8
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 274.9
+    x1: 501.4
+    y1: 286.8
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 217.0
+    y0: 280.8
+    x1: 477.0
+    y1: 286.8
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 288.8
+    x1: 217.0
+    y1: 300.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 294.9
+    x1: 217.0
+    y1: 300.9
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 288.8
+    x1: 501.4
+    y1: 300.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 217.0
+    y0: 294.9
+    x1: 477.0
+    y1: 300.9
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 323.3
+    x1: 217.5
+    y1: 335.4
+  region: middle
+  context: Buyer Date
+  ul_bbox:
+    x0: 67.5
+    y0: 329.4
+    x1: 217.5
+    y1: 335.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 323.3
+    x1: 501.4
+    y1: 335.4
+  region: middle
+  context: Buyer Date
+  ul_bbox:
+    x0: 217.5
+    y0: 329.4
+    x1: 477.5
+    y1: 335.4
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 337.3
+    x1: 217.5
+    y1: 349.3
+  region: middle
+  context: Buyer Date
+  ul_bbox:
+    x0: 67.5
+    y0: 343.3
+    x1: 217.5
+    y1: 349.3
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 337.3
+    x1: 501.4
+    y1: 349.3
+  region: middle
+  context: Buyer Date
+  ul_bbox:
+    x0: 217.5
+    y0: 343.3
+    x1: 477.5
+    y1: 349.3
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 557.1
+    x1: 217.0
+    y1: 569.1
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 563.1
+    x1: 217.0
+    y1: 569.1
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 557.1
+    x1: 501.4
+    y1: 569.1
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 217.0
+    y0: 563.1
+    x1: 477.0
+    y1: 569.1
+- page: 1
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 571.0
+    x1: 217.0
+    y1: 583.1
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 577.1
+    x1: 217.0
+    y1: 583.1
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 571.0
+    x1: 501.4
+    y1: 583.1
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 217.0
+    y0: 577.1
+    x1: 477.0
+    y1: 583.1
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 605.5
+    x1: 217.5
+    y1: 617.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 67.5
+    y0: 611.6
+    x1: 217.5
+    y1: 617.6
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 605.5
+    x1: 501.4
+    y1: 617.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 217.5
+    y0: 611.6
+    x1: 477.5
+    y1: 617.6
+- page: 1
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 619.6
+    x1: 217.5
+    y1: 631.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 67.5
+    y0: 625.6
+    x1: 217.5
+    y1: 631.6
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 282.4
+    y0: 619.6
+    x1: 501.4
+    y1: 631.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 217.5
+    y0: 625.6
+    x1: 477.5
+    y1: 631.6

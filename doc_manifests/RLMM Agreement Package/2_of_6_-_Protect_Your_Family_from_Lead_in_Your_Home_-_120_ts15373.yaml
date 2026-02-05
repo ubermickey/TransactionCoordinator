@@ -1,0 +1,73 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:02'
+file: 2_of_6_-_Protect_Your_Family_from_Lead_in_Your_Home_-_120_ts15373.pdf
+folder: RLMM Agreement Package
+page_count: 20
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 4
+  entry_categories:
+    entry_blank: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 7
+  field: "\xB9"
+  category: entry_blank
+  bbox:
+    x0: 52.4
+    y0: 609.9
+    x1: 251.4
+    y1: 639.4
+  region: lower
+  ul_bbox:
+    x0: 52.4
+    y0: 611.9
+    x1: 251.4
+    y1: 617.9
+- page: 10
+  field: "\xB3"
+  category: entry_blank
+  bbox:
+    x0: 53.9
+    y0: 670.0
+    x1: 156.0
+    y1: 701.5
+  region: footer
+  ul_bbox:
+    x0: 53.9
+    y0: 672.0
+    x1: 284.8
+    y1: 678.0
+- page: 15
+  field: Hearing-
+  category: entry_blank
+  bbox:
+    x0: 54.2
+    y0: 694.1
+    x1: 253.2
+    y1: 715.8
+  region: footer
+  ul_bbox:
+    x0: 54.2
+    y0: 696.1
+    x1: 253.2
+    y1: 702.1
+- page: 16
+  field: 1978,
+  category: entry_blank
+  bbox:
+    x0: 54.2
+    y0: 645.2
+    x1: 253.2
+    y1: 672.8
+  region: lower
+  ul_bbox:
+    x0: 54.2
+    y0: 647.2
+    x1: 253.2
+    y1: 653.2

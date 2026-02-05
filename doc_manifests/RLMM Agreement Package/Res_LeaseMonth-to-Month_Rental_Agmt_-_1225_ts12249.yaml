@@ -1,0 +1,3479 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:04'
+file: Res_LeaseMonth-to-Month_Rental_Agmt_-_1225_ts12249.pdf
+folder: RLMM Agreement Package
+page_count: 21
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 226
+  entry_categories:
+    entry_date: 37
+    entry_days: 8
+    entry_dollar: 11
+    entry_blank: 95
+    entry_contact: 18
+    entry_brokerage: 5
+    entry_percent: 1
+    entry_address: 31
+    entry_signature: 16
+    entry_license: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 36.0
+    y0: 59.9
+    x1: 134.4
+    y1: 71.9
+  region: header
+  context: Date , ("Tenant") and Rental Property Owner ("RPO"), Authorized
+  ul_bbox:
+    x0: 59.4
+    y0: 65.9
+    x1: 134.4
+    y1: 71.9
+- page: 1
+  field: 14 (or
+  category: entry_days
+  bbox:
+    x0: 112.5
+    y0: 150.6
+    x1: 167.0
+    y1: 162.9
+  region: upper
+  context: more than 14 (or ) days without Housing Provider's written consent. C. The following personal property, maintained
+    pursu
+  ul_bbox:
+    x0: 142.0
+    y0: 156.9
+    x1: 167.0
+    y1: 162.9
+- page: 1
+  field: Tenant agrees to pay $
+  category: entry_dollar
+  bbox:
+    x0: 72.0
+    y0: 390.9
+    x1: 284.5
+    y1: 402.9
+  region: middle
+  context: A. Tenant agrees to pay $ per month for the term of the Agreement. B. Rent is payable in advance on the 1st (or
+    ) day of
+  ul_bbox:
+    x0: 164.5
+    y0: 396.9
+    x1: 284.5
+    y1: 402.9
+- page: 1
+  field: ) day
+  category: entry_days
+  bbox:
+    x0: 240.0
+    y0: 400.6
+    x1: 328.4
+    y1: 412.9
+  region: middle
+  context: B. Rent is payable in advance on the 1st (or ) day of each calendar month, and is delinquent on the next day. C.
+    If Comm
+  ul_bbox:
+    x0: 240.0
+    y0: 406.9
+    x1: 305.0
+    y1: 412.9
+- page: 1
+  field: other
+  category: entry_blank
+  bbox:
+    x0: 108.5
+    y0: 470.9
+    x1: 234.0
+    y1: 482.9
+  region: lower
+  context: or other . Payment via electronic apps such as PayPal or Venmo will not ( will) be accepted. (2) Rent shall be
+    delivered
+  ul_bbox:
+    x0: 134.0
+    y0: 476.9
+    x1: 234.0
+    y1: 482.9
+- page: 1
+  field: Tenant agrees to pay $
+  category: entry_dollar
+  bbox:
+    x0: 72.0
+    y0: 570.9
+    x1: 264.5
+    y1: 582.9
+  region: lower
+  context: A. Tenant agrees to pay $ as a security deposit. (The maximum amount of security deposit paid on or before initial
+    occup
+  ul_bbox:
+    x0: 164.5
+    y0: 576.9
+    x1: 264.5
+    y1: 582.9
+- page: 1
+  field: Rental
+  category: entry_blank
+  bbox:
+    x0: 194.6
+    y0: 70.3
+    x1: 421.1
+    y1: 82.4
+  region: header
+  context: and Rental Property Owner ("RPO"), Authorized Broker or Agent, or Property Manager ("Housing Provider"), agree
+    as follow
+  ul_bbox:
+    x0: 54.6
+    y0: 76.4
+    x1: 394.6
+    y1: 82.4
+- page: 1
+  field: 'only:'
+  category: entry_blank
+  bbox:
+    x0: 445.2
+    y0: 120.9
+    x1: 576.0
+    y1: 132.9
+  region: upper
+  context: 'B. The Premises are for the sole use as a personal residence by the following named person(s) only: .'
+  ul_bbox:
+    x0: 471.0
+    y0: 126.9
+    x1: 576.0
+    y1: 132.9
+- page: 1
+  field: 'included:'
+  category: entry_blank
+  bbox:
+    x0: 371.4
+    y0: 160.6
+    x1: 576.0
+    y1: 172.9
+  region: upper
+  context: 'C. The following personal property, maintained pursuant to paragraph 12 , is included: or (if checked) the personal
+    prop'
+  ul_bbox:
+    x0: 409.4
+    y0: 166.9
+    x1: 576.0
+    y1: 172.9
+- page: 1
+  field: D.
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 174.9
+    x1: 257.0
+    y1: 190.6
+  region: upper
+  context: or (if checked) the personal property on the attached addendum is included. D. The Premises may be subject to a
+    local re
+  ul_bbox:
+    x0: 72.0
+    y0: 176.9
+    x1: 257.0
+    y1: 182.9
+- page: 1
+  field: (date)
+  category: entry_date
+  bbox:
+    x0: 166.0
+    y0: 190.6
+    x1: 268.2
+    y1: 202.9
+  region: upper
+  context: "2. TERM: The term begins on (date) (\"Commencement Date\u201D). If Tenant has not paid all amounts then due; (i)\
+    \ Tenant has no"
+  ul_bbox:
+    x0: 198.2
+    y0: 196.9
+    x1: 268.2
+    y1: 202.9
+- page: 1
+  field: (date)
+  category: entry_date
+  bbox:
+    x0: 262.9
+    y0: 300.6
+    x1: 364.2
+    y1: 312.9
+  region: upper
+  context: 'B. Lease: This Agreement shall terminate on (date) at AM/ PM. Tenant shall vacate the Premises upon termination
+    of the A'
+  ul_bbox:
+    x0: 294.2
+    y0: 306.9
+    x1: 364.2
+    y1: 312.9
+- page: 1
+  field: AM/
+  category: entry_blank
+  bbox:
+    x0: 378.9
+    y0: 300.9
+    x1: 444.0
+    y1: 312.9
+  region: upper
+  context: 'B. Lease: This Agreement shall terminate on (date) at AM/ PM. Tenant shall vacate the Premises upon termination
+    of the A'
+  ul_bbox:
+    x0: 378.9
+    y0: 306.9
+    x1: 413.9
+    y1: 312.9
+- page: 1
+  field: payable
+  category: entry_blank
+  bbox:
+    x0: 423.8
+    y0: 450.9
+    x1: 576.0
+    y1: 462.9
+  region: middle
+  context: (1) Rent shall be paid by personal check, money order, cashier's check, made payable to , wire/electronic payment
+    to ,
+  ul_bbox:
+    x0: 471.0
+    y0: 456.9
+    x1: 576.0
+    y1: 462.9
+- page: 1
+  field: electronic
+  category: entry_blank
+  bbox:
+    x0: 90.0
+    y0: 464.9
+    x1: 332.0
+    y1: 480.9
+  region: middle
+  context: ', wire/electronic payment to , or other . Payment via electronic apps such as PayPal or Venmo will not ( will)
+    be accept'
+  ul_bbox:
+    x0: 90.0
+    y0: 466.9
+    x1: 285.0
+    y1: 472.9
+- page: 1
+  field: payment
+  category: entry_blank
+  bbox:
+    x0: 363.4
+    y0: 460.9
+    x1: 573.6
+    y1: 472.9
+  region: middle
+  context: ', wire/electronic payment to , or other . Payment via electronic apps such as PayPal or Venmo will not ( will)
+    be accept'
+  ul_bbox:
+    x0: 408.5
+    y0: 466.9
+    x1: 573.6
+    y1: 472.9
+- page: 1
+  field: (name)
+  category: entry_blank
+  bbox:
+    x0: 197.0
+    y0: 480.9
+    x1: 421.2
+    y1: 492.9
+  region: lower
+  context: (2) Rent shall be delivered to (name) (whose phone number is) at (address)
+  ul_bbox:
+    x0: 226.0
+    y0: 486.9
+    x1: 576.0
+    y1: 492.9
+- page: 1
+  field: is)
+  category: entry_contact
+  bbox:
+    x0: 178.2
+    y0: 490.9
+    x1: 271.4
+    y1: 502.9
+  region: lower
+  context: '(whose phone number is) at (address) (or at any other location subsequently specified by Housing Provider in writing
+    to '
+  ul_bbox:
+    x0: 196.3
+    y0: 496.9
+    x1: 271.4
+    y1: 502.9
+- page: 1
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 296.1
+    y0: 494.9
+    x1: 523.8
+    y1: 510.9
+  region: lower
+  context: '(whose phone number is) at (address) (or at any other location subsequently specified by Housing Provider in writing
+    to '
+  ul_bbox:
+    x0: 326.0
+    y0: 496.9
+    x1: 576.0
+    y1: 502.9
+- page: 1
+  field: hours
+  category: entry_blank
+  bbox:
+    x0: 206.1
+    y0: 510.9
+    x1: 275.2
+    y1: 522.9
+  region: lower
+  context: paid personally, between the hours of and on the following days ). (3) If any payment is returned for non-sufficient
+    fun
+  ul_bbox:
+    x0: 240.2
+    y0: 516.9
+    x1: 275.2
+    y1: 522.9
+- page: 1
+  field: funds
+  category: entry_blank
+  bbox:
+    x0: 272.5
+    y0: 514.9
+    x1: 330.2
+    y1: 530.9
+  region: lower
+  context: paid personally, between the hours of and on the following days ). (3) If any payment is returned for non-sufficient
+    fun
+  ul_bbox:
+    x0: 295.2
+    y0: 516.9
+    x1: 330.2
+    y1: 522.9
+- page: 1
+  field: days
+  category: entry_blank
+  bbox:
+    x0: 399.9
+    y0: 510.9
+    x1: 568.6
+    y1: 522.9
+  region: lower
+  context: paid personally, between the hours of and on the following days ). (3) If any payment is returned for non-sufficient
+    fun
+  ul_bbox:
+    x0: 418.6
+    y0: 516.9
+    x1: 568.6
+    y1: 522.9
+- page: 2
+  field: 5 (or
+  category: entry_days
+  bbox:
+    x0: 392.2
+    y0: 239.4
+    x1: 451.2
+    y1: 251.7
+  region: upper
+  context: installment of Rent due from Tenant is not received by Housing Provider within 5 (or ) calendar days after the
+    date due,
+  ul_bbox:
+    x0: 421.1
+    y0: 245.7
+    x1: 451.2
+    y1: 251.7
+- page: 2
+  field: due, or if a check is returned, Tenant shall pay to Housing Provider, respective
+  category: entry_dollar
+  bbox:
+    x0: 72.0
+    y0: 250.1
+    x1: 322.0
+    y1: 262.2
+  region: upper
+  context: due, or if a check is returned, Tenant shall pay to Housing Provider, respectively, an additional sum of $ or %
+    of the R
+  ul_bbox:
+    x0: 490.2
+    y0: 256.2
+    x1: 565.2
+    y1: 262.2
+- page: 2
+  field: parking rental fee shall be an additional $
+  category: entry_dollar
+  bbox:
+    x0: 90.0
+    y0: 368.1
+    x1: 328.9
+    y1: 380.2
+  region: middle
+  context: parking rental fee shall be an additional $ per month. Parking space(s) are to be used only for parking properly
+    registe
+  ul_bbox:
+    x0: 258.9
+    y0: 374.2
+    x1: 328.9
+    y1: 380.2
+- page: 2
+  field: the Rent, storage space fee shall be an additional $
+  category: entry_dollar
+  bbox:
+    x0: 90.0
+    y0: 461.2
+    x1: 340.0
+    y1: 473.2
+  region: middle
+  context: the Rent, storage space fee shall be an additional $ per month. Tenant shall store only personal property Tenant
+    owns, a
+  ul_bbox:
+    x0: 293.6
+    y0: 467.2
+    x1: 367.1
+    y1: 473.2
+- page: 2
+  field: 3 (or
+  category: entry_days
+  bbox:
+    x0: 309.3
+    y0: 669.4
+    x1: 358.3
+    y1: 681.7
+  region: footer
+  context: complete and return the MII to Housing Provider within 3 (or ) days after Delivery. Tenant's failure to return
+    the MII w
+  ul_bbox:
+    x0: 338.3
+    y0: 675.7
+    x1: 358.3
+    y1: 681.7
+- page: 2
+  field: 3 (or
+  category: entry_days
+  bbox:
+    x0: 517.9
+    y0: 689.4
+    x1: 573.0
+    y1: 701.7
+  region: footer
+  context: C. Tenant will provide Housing Provider a list of items that are damaged or not in operable condition within 3
+    (or ) day
+  ul_bbox:
+    x0: 548.0
+    y0: 695.7
+    x1: 573.0
+    y1: 701.7
+- page: 2
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: E. Security deposit will not be returned until all Tenants have vacated the Premises and all keys
+    return'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 2
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: E. Security deposit will not be returned until all Tenants have vacated the Premises and all keys
+    return'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 2
+  field: (date)
+  category: entry_date
+  bbox:
+    x0: 59.3
+    y0: 137.1
+    x1: 140.2
+    y1: 148.0
+  region: upper
+  context: to (date)
+  ul_bbox:
+    x0: 59.3
+    y0: 142.0
+    x1: 117.1
+    y1: 148.0
+- page: 2
+  field: 'follows:'
+  category: entry_blank
+  bbox:
+    x0: 183.0
+    y0: 336.7
+    x1: 414.0
+    y1: 348.7
+  region: middle
+  context: 'A. Parking is permitted as follows: .'
+  ul_bbox:
+    x0: 216.5
+    y0: 342.7
+    x1: 576.0
+    y1: 348.7
+- page: 2
+  field: 'follows:'
+  category: entry_blank
+  bbox:
+    x0: 183.7
+    y0: 440.1
+    x1: 415.0
+    y1: 452.2
+  region: middle
+  context: 'A. Storage is permitted as follows: The right to separate storage space is, is not, included in the Rent charged
+    pursuan'
+  ul_bbox:
+    x0: 217.5
+    y0: 446.2
+    x1: 576.0
+    y1: 452.2
+- page: 2
+  field: 'charges:'
+  category: entry_blank
+  bbox:
+    x0: 389.4
+    y0: 512.4
+    x1: 573.5
+    y1: 524.7
+  region: lower
+  context: '9. UTILITIES: Tenant agrees to pay for all utilities and services, and the following charges: . except , which
+    shall be '
+  ul_bbox:
+    x0: 428.5
+    y0: 518.7
+    x1: 573.5
+    y1: 524.7
+- page: 2
+  field: except
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 522.6
+    x1: 263.7
+    y1: 534.7
+  region: lower
+  context: except , which shall be paid for by Housing Provider, or as agreed on a separate addendum. If any utilities are
+    not sepa
+  ul_bbox:
+    x0: 83.7
+    y0: 528.7
+    x1: 263.7
+    y1: 534.7
+- page: 3
+  field: 'treatment is: $'
+  category: entry_dollar
+  bbox:
+    x0: 72.0
+    y0: 354.1
+    x1: 186.5
+    y1: 366.2
+  region: middle
+  context: 'treatment is: $ per . H. The following items of personal property are included in the Premises without warranty
+    and Hous'
+  ul_bbox:
+    x0: 131.5
+    y0: 360.2
+    x1: 186.5
+    y1: 366.2
+- page: 3
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 11. STOVE AND REFRIGERATOR: , ,'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 3
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 11. STOVE AND REFRIGERATOR: , ,'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 3
+  field: 'except:'
+  category: entry_blank
+  bbox:
+    x0: 447.2
+    y0: 232.1
+    x1: 576.0
+    y1: 244.1
+  region: upper
+  context: 'B. Housing Provider Tenant HOA shall water the garden, landscaping, trees and shrubs, except: .'
+  ul_bbox:
+    x0: 481.0
+    y0: 238.1
+    x1: 576.0
+    y1: 244.1
+- page: 3
+  field: 'except:'
+  category: entry_blank
+  bbox:
+    x0: 461.8
+    y0: 253.1
+    x1: 576.0
+    y1: 265.2
+  region: upper
+  context: 'C. Housing Provider Tenant HOA shall maintain the garden, landscaping, trees and shrubs, except: .'
+  ul_bbox:
+    x0: 496.0
+    y0: 259.2
+    x1: 576.0
+    y1: 265.2
+- page: 3
+  field: maintain
+  category: entry_blank
+  bbox:
+    x0: 216.4
+    y0: 274.1
+    x1: 449.9
+    y1: 286.2
+  region: upper
+  context: D. Housing Provider Tenant shall maintain . E. Housing Provider and Tenant agree that State or local water use
+    restricti
+  ul_bbox:
+    x0: 252.4
+    y0: 280.2
+    x1: 562.5
+    y1: 286.2
+- page: 3
+  field: house
+  category: entry_blank
+  bbox:
+    x0: 72.0
+    y0: 337.2
+    x1: 182.2
+    y1: 353.6
+  region: middle
+  context: . This obligation shall only be applicable if the Premises is a house and the periodic pest control treatment is
+    being p
+  ul_bbox:
+    x0: 72.0
+    y0: 339.2
+    x1: 322.0
+    y1: 345.2
+- page: 3
+  field: personal
+  category: entry_blank
+  bbox:
+    x0: 164.0
+    y0: 358.2
+    x1: 264.5
+    y1: 374.7
+  region: middle
+  context: 'treatment is: $ per . H. The following items of personal property are included in the Premises without warranty
+    and Hous'
+  ul_bbox:
+    x0: 204.5
+    y0: 360.2
+    x1: 264.5
+    y1: 366.2
+- page: 3
+  field: 'allowed:'
+  category: entry_blank
+  bbox:
+    x0: 316.5
+    y0: 616.1
+    x1: 549.0
+    y1: 628.2
+  region: lower
+  context: 'the Premises. Smoking of the following substances only is allowed: . 16. RULES/REGULATIONS:'
+  ul_bbox:
+    x0: 351.5
+    y0: 622.2
+    x1: 566.5
+    y1: 628.2
+- page: 3
+  field: within
+  category: entry_days
+  bbox:
+    x0: 421.7
+    y0: 692.4
+    x1: 470.7
+    y1: 704.4
+  region: footer
+  context: (1) Housing Provider shall provide Tenant with a copy of the rules and regulations within days or .
+  ul_bbox:
+    x0: 450.7
+    y0: 698.4
+    x1: 470.7
+    y1: 704.4
+- page: 3
+  field: days
+  category: entry_blank
+  bbox:
+    x0: 470.7
+    y0: 692.4
+    x1: 576.0
+    y1: 704.4
+  region: footer
+  context: (1) Housing Provider shall provide Tenant with a copy of the rules and regulations within days or .
+  ul_bbox:
+    x0: 506.0
+    y0: 698.4
+    x1: 576.0
+    y1: 704.4
+- page: 4
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 17. (If checked) CONDOMINIUM; PLANNED UNIT DEVELOPMENT: , ,'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 4
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 17. (If checked) CONDOMINIUM; PLANNED UNIT DEVELOPMENT: , ,'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 4
+  field: restrictions,
+  category: entry_blank
+  bbox:
+    x0: 324.0
+    y0: 51.4
+    x1: 570.5
+    y1: 66.6
+  region: header
+  context: "governed by a homeowners' association (\u201CHOA\u201D). The name of the HOA is . Tenant agrees to comply with\
+    \ all HOA covenants, "
+  ul_bbox:
+    x0: 375.6
+    y0: 53.4
+    x1: 570.5
+    y1: 59.4
+- page: 4
+  field: within
+  category: entry_days
+  bbox:
+    x0: 369.3
+    y0: 130.9
+    x1: 421.4
+    y1: 142.9
+  region: upper
+  context: '(1) Housing Provider shall provide Tenant with a copy of the HOA Rules within days or . OR (2) Tenant has been
+    provided '
+  ul_bbox:
+    x0: 396.4
+    y0: 136.9
+    x1: 421.4
+    y1: 142.9
+- page: 4
+  field: Rules.
+  category: entry_blank
+  bbox:
+    x0: 419.4
+    y0: 134.9
+    x1: 570.9
+    y1: 150.9
+  region: upper
+  context: '(1) Housing Provider shall provide Tenant with a copy of the HOA Rules within days or . OR (2) Tenant has been
+    provided '
+  ul_bbox:
+    x0: 455.9
+    y0: 136.9
+    x1: 570.9
+    y1: 142.9
+- page: 4
+  field: door/gate
+  category: entry_blank
+  bbox:
+    x0: 461.4
+    y0: 219.9
+    x1: 561.5
+    y1: 241.9
+  region: upper
+  context: 'A. Tenant acknowledges receipt of (or Tenant will receive prior to the Commencement Date, or ):'
+  ul_bbox:
+    x0: 461.4
+    y0: 221.9
+    x1: 561.5
+    y1: 227.9
+- page: 4
+  field: key(s)
+  category: entry_blank
+  bbox:
+    x0: 82.5
+    y0: 231.9
+    x1: 147.6
+    y1: 243.9
+  region: upper
+  context: key(s) to Premises, remote control device(s) for garage door/gate opener(s), key(s) to mailbox, ,
+  ul_bbox:
+    x0: 82.5
+    y0: 237.9
+    x1: 122.5
+    y1: 243.9
+- page: 4
+  field: remote
+  category: entry_blank
+  bbox:
+    x0: 257.0
+    y0: 231.9
+    x1: 321.3
+    y1: 243.9
+  region: upper
+  context: key(s) to Premises, remote control device(s) for garage door/gate opener(s), key(s) to mailbox, ,
+  ul_bbox:
+    x0: 257.0
+    y0: 237.9
+    x1: 297.0
+    y1: 243.9
+- page: 4
+  field: key(s)
+  category: entry_blank
+  bbox:
+    x0: 82.5
+    y0: 244.9
+    x1: 146.8
+    y1: 256.9
+  region: upper
+  context: key(s) to mailbox, , key(s) to common area(s), ,
+  ul_bbox:
+    x0: 82.5
+    y0: 250.9
+    x1: 122.5
+    y1: 256.9
+- page: 4
+  field: area(s),
+  category: entry_blank
+  bbox:
+    x0: 206.8
+    y0: 248.9
+    x1: 446.5
+    y1: 267.9
+  region: upper
+  context: key(s) to mailbox, , key(s) to common area(s), ,
+  ul_bbox:
+    x0: 257.0
+    y0: 250.9
+    x1: 567.0
+    y1: 256.9
+- page: 4
+  field: B.
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 261.9
+    x1: 122.5
+    y1: 280.9
+  region: upper
+  context: key(s) to common area(s), , B.
+  ul_bbox:
+    x0: 82.5
+    y0: 263.9
+    x1: 122.5
+    y1: 269.9
+- page: 4
+  field: area(s),
+  category: entry_blank
+  bbox:
+    x0: 206.8
+    y0: 257.9
+    x1: 446.5
+    y1: 269.9
+  region: upper
+  context: key(s) to common area(s), , B.
+  ul_bbox:
+    x0: 257.0
+    y0: 263.9
+    x1: 567.0
+    y1: 269.9
+- page: 5
+  field: 5 (or
+  category: entry_days
+  bbox:
+    x0: 320.5
+    y0: 81.4
+    x1: 382.1
+    y1: 93.7
+  region: header
+  context: Housing Provider is unable to deliver possession within 5 (or ) calendar days after agreed Commencement Date, Tenant
+    may
+  ul_bbox:
+    x0: 352.1
+    y0: 87.7
+    x1: 382.1
+    y1: 93.7
+- page: 5
+  field: Tenant shall obtain liability insurance, in an amount not less than $
+  category: entry_dollar
+  bbox:
+    x0: 79.9
+    y0: 568.6
+    x1: 329.9
+    y1: 580.7
+  region: lower
+  context: 'C. Tenant shall obtain liability insurance, in an amount not less than $ for injury or damage to, or upon, the
+    Premises '
+  ul_bbox:
+    x0: 347.0
+    y0: 574.7
+    x1: 445.0
+    y1: 580.7
+- page: 5
+  field: JOINT
+  category: entry_blank
+  bbox:
+    x0: 57.1
+    y0: 20.9
+    x1: 283.4
+    y1: 36.6
+  region: header
+  context: 'Premises: Date: 24. JOINT AND INDIVIDUAL OBLIGATIONS: If there is more than one Tenant, each one shall be individually
+    a'
+  ul_bbox:
+    x0: 83.2
+    y0: 22.9
+    x1: 438.5
+    y1: 28.9
+- page: 5
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 15.8
+    x1: 576.0
+    y1: 28.9
+  region: header
+  context: 'Premises: Date: 24. JOINT AND INDIVIDUAL OBLIGATIONS: If there is more than one Tenant, each one shall be individually
+    a'
+  ul_bbox:
+    x0: 467.9
+    y0: 22.9
+    x1: 576.0
+    y1: 28.9
+- page: 5
+  field: (vii)
+  category: entry_blank
+  bbox:
+    x0: 417.4
+    y0: 177.6
+    x1: 576.0
+    y1: 189.9
+  region: upper
+  context: debris; (vi) give written notice to Housing Provider of Tenant's forwarding address; and (vii) .
+  ul_bbox:
+    x0: 441.0
+    y0: 183.9
+    x1: 576.0
+    y1: 189.9
+- page: 5
+  field: 'Provider:'
+  category: entry_blank
+  bbox:
+    x0: 87.6
+    y0: 697.6
+    x1: 293.0
+    y1: 709.6
+  region: footer
+  context: 'Housing Provider: Tenant:'
+  ul_bbox:
+    x0: 127.9
+    y0: 703.6
+    x1: 293.0
+    y1: 709.6
+- page: 5
+  field: RLMM
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 722.6
+    x1: 145.9
+    y1: 750.6
+  region: footer
+  ul_bbox:
+    x0: 54.0
+    y0: 724.6
+    x1: 294.0
+    y1: 730.6
+- page: 5
+  field: 'Tenant:'
+  category: entry_blank
+  bbox:
+    x0: 334.8
+    y0: 697.6
+    x1: 565.3
+    y1: 709.6
+  region: footer
+  context: 'Housing Provider: Tenant:'
+  ul_bbox:
+    x0: 367.8
+    y0: 703.6
+    x1: 572.8
+    y1: 709.6
+- page: 5
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 334.8
+    y0: 722.6
+    x1: 457.9
+    y1: 751.0
+  region: footer
+  ul_bbox:
+    x0: 334.8
+    y0: 724.6
+    x1: 574.8
+    y1: 730.6
+- page: 6
+  field: 'Tenant shall be entitled to reasonable attorney fees and costs collectively not '
+  category: entry_dollar
+  bbox:
+    x0: 54.0
+    y0: 336.4
+    x1: 304.0
+    y1: 348.4
+  region: middle
+  context: Tenant shall be entitled to reasonable attorney fees and costs collectively not to exceed $1,000 (or $ ), except
+    as prov
+  ul_bbox:
+    x0: 434.1
+    y0: 342.4
+    x1: 496.5
+    y1: 348.4
+- page: 6
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 34. TENANT ESTOPPEL CERTIFICATE: Tenant shall execute and return a tenant estoppel certificate
+    delivered'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 6
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 34. TENANT ESTOPPEL CERTIFICATE: Tenant shall execute and return a tenant estoppel certificate
+    delivered'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 7
+  field: Housing Provider's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 50.3
+    x1: 322.0
+    y1: 62.6
+  region: header
+  context: 'Housing Provider''s Brokerage Firm License Number Is the broker of (check one): the Housing Provider; or both
+    the Tenant '
+  ul_bbox:
+    x0: 225.6
+    y0: 56.6
+    x1: 425.7
+    y1: 62.6
+- page: 7
+  field: Tenant's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 102.9
+    x1: 322.0
+    y1: 115.2
+  region: header
+  context: 'Tenant''s Brokerage Firm License Number Is the broker of (check one): the Tenant; or both the Tenant and Housing
+    Provider'
+  ul_bbox:
+    x0: 180.1
+    y0: 109.2
+    x1: 425.2
+    y1: 115.2
+- page: 7
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 111.5
+    y0: 349.9
+    x1: 176.5
+    y1: 361.9
+  region: middle
+  context: '(ii) $ ; or (iii) ; (2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ;'
+  ul_bbox:
+    x0: 121.5
+    y0: 355.9
+    x1: 176.5
+    y1: 361.9
+- page: 7
+  field: percent of
+  category: entry_percent
+  bbox:
+    x0: 245.0
+    y0: 360.4
+    x1: 355.0
+    y1: 372.4
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ; (3) Payment is conditioned on Tenant taking
+    possess'
+  ul_bbox:
+    x0: 290.0
+    y0: 366.4
+    x1: 355.0
+    y1: 372.4
+- page: 7
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 392.0
+    y0: 360.4
+    x1: 452.0
+    y1: 372.4
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ; (3) Payment is conditioned on Tenant taking
+    possess'
+  ul_bbox:
+    x0: 402.0
+    y0: 366.4
+    x1: 452.0
+    y1: 372.4
+- page: 7
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 42. AGENCY: , ,'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 7
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 42. AGENCY: , ,'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 7
+  field: Agent
+  category: entry_blank
+  bbox:
+    x0: 152.1
+    y0: 71.6
+    x1: 373.2
+    y1: 83.6
+  region: header
+  context: 'Housing Provider''s Agent License Number Is (check one): the Housing Provider''s Agent. (salesperson or broker
+    associate);'
+  ul_bbox:
+    x0: 175.7
+    y0: 77.6
+    x1: 425.7
+    y1: 83.6
+- page: 7
+  field: Agent
+  category: entry_blank
+  bbox:
+    x0: 110.7
+    y0: 124.1
+    x1: 332.2
+    y1: 136.1
+  region: upper
+  context: 'Tenant''s Agent License Number Is (check one): the Tenant''s Agent. (salesperson or broker associate); or both
+    the Tenant'''
+  ul_bbox:
+    x0: 134.7
+    y0: 130.1
+    x1: 424.7
+    y1: 136.1
+- page: 7
+  field: (i)
+  category: entry_blank
+  bbox:
+    x0: 165.0
+    y0: 339.1
+    x1: 210.0
+    y1: 351.4
+  region: middle
+  context: '(1) Fixed term lease: (i) percent of the total rent payments due under the term specified in paragraph 2B ; or
+    (ii) $ ; '
+  ul_bbox:
+    x0: 185.0
+    y0: 345.4
+    x1: 210.0
+    y1: 351.4
+- page: 7
+  field: (i)
+  category: entry_blank
+  bbox:
+    x0: 203.9
+    y0: 353.9
+    x1: 308.5
+    y1: 370.4
+  region: middle
+  context: '(ii) $ ; or (iii) ; (2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ;'
+  ul_bbox:
+    x0: 218.5
+    y0: 355.9
+    x1: 308.5
+    y1: 361.9
+- page: 7
+  field: (i)
+  category: entry_blank
+  bbox:
+    x0: 203.9
+    y0: 360.1
+    x1: 245.0
+    y1: 372.4
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ; (3) Payment is conditioned on Tenant taking
+    possess'
+  ul_bbox:
+    x0: 220.0
+    y0: 366.4
+    x1: 245.0
+    y1: 372.4
+- page: 7
+  field: (iii)
+  category: entry_blank
+  bbox:
+    x0: 462.5
+    y0: 360.1
+    x1: 571.5
+    y1: 372.4
+  region: middle
+  context: '(2) For month-to-month rental: (i) percent of ; or (ii) $ or (iii) ; (3) Payment is conditioned on Tenant taking
+    possess'
+  ul_bbox:
+    x0: 491.5
+    y0: 366.4
+    x1: 571.5
+    y1: 372.4
+- page: 8
+  field: Real Estate Broker (Property Manager)
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 155.1
+    x1: 304.0
+    y1: 167.2
+  region: upper
+  context: 'Real Estate Broker (Property Manager) DRE Lic # (Agent) DRE Lic #'
+  ul_bbox:
+    x0: 212.5
+    y0: 161.2
+    x1: 442.5
+    y1: 167.2
+- page: 8
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 170.2
+    x1: 287.0
+    y1: 187.2
+  region: upper
+  context: '(Agent) DRE Lic # Address Telephone #'
+  ul_bbox:
+    x0: 86.0
+    y0: 172.2
+    x1: 441.0
+    y1: 178.2
+- page: 8
+  field: 'Telephone #'
+  category: entry_contact
+  bbox:
+    x0: 414.5
+    y0: 177.1
+    x1: 576.0
+    y1: 189.1
+  region: upper
+  context: 'Address Telephone #'
+  ul_bbox:
+    x0: 469.5
+    y0: 183.1
+    x1: 576.0
+    y1: 189.1
+- page: 8
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 72.0
+    y0: 515.1
+    x1: 305.0
+    y1: 527.2
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 107.5
+    y0: 521.2
+    x1: 322.5
+    y1: 527.2
+- page: 8
+  field: City
+  category: entry_address
+  bbox:
+    x0: 322.5
+    y0: 515.1
+    x1: 458.0
+    y1: 527.2
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 343.0
+    y0: 521.2
+    x1: 458.0
+    y1: 527.2
+- page: 8
+  field: State
+  category: entry_address
+  bbox:
+    x0: 458.0
+    y0: 515.1
+    x1: 504.0
+    y1: 527.2
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 484.0
+    y0: 521.2
+    x1: 504.0
+    y1: 527.2
+- page: 8
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 504.0
+    y0: 515.1
+    x1: 576.0
+    y1: 527.2
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 521.5
+    y0: 521.2
+    x1: 576.0
+    y1: 527.2
+- page: 8
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 72.0
+    y0: 526.1
+    x1: 212.0
+    y1: 538.2
+  region: lower
+  context: 'Telephone Text E-mail (Signature) By, Date:'
+  ul_bbox:
+    x0: 117.0
+    y0: 532.2
+    x1: 212.0
+    y1: 538.2
+- page: 8
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 329.5
+    y0: 526.1
+    x1: 557.5
+    y1: 538.2
+  region: lower
+  context: 'Telephone Text E-mail (Signature) By, Date:'
+  ul_bbox:
+    x0: 359.9
+    y0: 532.2
+    x1: 576.0
+    y1: 538.2
+- page: 8
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 72.0
+    y0: 572.1
+    x1: 305.0
+    y1: 584.1
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 107.5
+    y0: 578.1
+    x1: 322.5
+    y1: 584.1
+- page: 8
+  field: City
+  category: entry_address
+  bbox:
+    x0: 322.5
+    y0: 572.1
+    x1: 458.0
+    y1: 584.1
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 343.0
+    y0: 578.1
+    x1: 458.0
+    y1: 584.1
+- page: 8
+  field: State
+  category: entry_address
+  bbox:
+    x0: 458.0
+    y0: 572.1
+    x1: 504.0
+    y1: 584.1
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 484.0
+    y0: 578.1
+    x1: 504.0
+    y1: 584.1
+- page: 8
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 504.0
+    y0: 572.1
+    x1: 576.0
+    y1: 584.1
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 521.5
+    y0: 578.1
+    x1: 576.0
+    y1: 584.1
+- page: 8
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 72.0
+    y0: 583.1
+    x1: 212.0
+    y1: 595.1
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 117.0
+    y0: 589.1
+    x1: 212.0
+    y1: 595.1
+- page: 8
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 329.5
+    y0: 583.1
+    x1: 557.5
+    y1: 595.1
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 359.9
+    y0: 589.1
+    x1: 576.0
+    y1: 595.1
+- page: 8
+  field: Guarantor
+  category: entry_signature
+  bbox:
+    x0: 72.0
+    y0: 698.1
+    x1: 312.5
+    y1: 710.1
+  region: footer
+  context: Guarantor Date Address City State Zip
+  ul_bbox:
+    x0: 115.0
+    y0: 704.1
+    x1: 445.0
+    y1: 710.1
+- page: 8
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 445.0
+    y0: 698.1
+    x1: 576.0
+    y1: 710.1
+  region: footer
+  context: Guarantor Date Address City State Zip
+  ul_bbox:
+    x0: 469.0
+    y0: 704.1
+    x1: 576.0
+    y1: 710.1
+- page: 8
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 72.0
+    y0: 709.1
+    x1: 305.0
+    y1: 721.1
+  region: footer
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 107.5
+    y0: 715.1
+    x1: 322.5
+    y1: 721.1
+- page: 8
+  field: City
+  category: entry_address
+  bbox:
+    x0: 322.5
+    y0: 709.1
+    x1: 458.0
+    y1: 721.1
+  region: footer
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 343.0
+    y0: 715.1
+    x1: 458.0
+    y1: 721.1
+- page: 8
+  field: State
+  category: entry_address
+  bbox:
+    x0: 458.0
+    y0: 709.1
+    x1: 504.0
+    y1: 721.1
+  region: footer
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 484.0
+    y0: 715.1
+    x1: 504.0
+    y1: 721.1
+- page: 8
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 504.0
+    y0: 709.1
+    x1: 576.0
+    y1: 721.1
+  region: footer
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 521.5
+    y0: 715.1
+    x1: 576.0
+    y1: 721.1
+- page: 8
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 72.0
+    y0: 720.1
+    x1: 212.0
+    y1: 732.2
+  region: footer
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 117.0
+    y0: 726.2
+    x1: 212.0
+    y1: 732.2
+- page: 8
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 329.5
+    y0: 720.1
+    x1: 557.5
+    y1: 732.2
+  region: footer
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 359.9
+    y0: 726.2
+    x1: 576.0
+    y1: 732.2
+- page: 8
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 48. LEGALLY AUTHORIZED SIGNER: Wherever the signature or initials of the Legally Authorized Signer
+    ident'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 8
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: 48. LEGALLY AUTHORIZED SIGNER: Wherever the signature or initials of the Legally Authorized Signer
+    ident'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 8
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 103.1
+    x1: 282.3
+    y1: 115.2
+  region: header
+  context: . Housing Provider and Tenant acknowledge receipt of the attached interpreter/ translator agreement (C.A.R. Form
+    ITA).
+  ul_bbox:
+    x0: 54.0
+    y0: 109.2
+    x1: 244.0
+    y1: 115.2
+- page: 8
+  field: Address
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 177.1
+    x1: 287.0
+    y1: 189.1
+  region: upper
+  context: 'Address Telephone #'
+  ul_bbox:
+    x0: 89.5
+    y0: 183.1
+    x1: 414.5
+    y1: 189.1
+- page: 8
+  field: Agreement,
+  category: entry_blank
+  bbox:
+    x0: 281.0
+    y0: 334.1
+    x1: 437.0
+    y1: 361.9
+  region: middle
+  context: 'enter full name of the estate, including case #): .'
+  ul_bbox:
+    x0: 281.0
+    y0: 336.1
+    x1: 576.0
+    y1: 342.1
+- page: 8
+  field: 'is/are:'
+  category: entry_blank
+  bbox:
+    x0: 298.4
+    y0: 451.1
+    x1: 449.0
+    y1: 463.2
+  region: middle
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , .'
+  ul_bbox:
+    x0: 329.0
+    y0: 457.2
+    x1: 449.0
+    y1: 463.2
+- page: 8
+  field: By,
+  category: entry_signature
+  bbox:
+    x0: 102.0
+    y0: 482.1
+    x1: 314.0
+    y1: 494.1
+  region: lower
+  context: '(Signature) By, Date: Printed name of Tenant:'
+  ul_bbox:
+    x0: 116.5
+    y0: 488.1
+    x1: 466.5
+    y1: 494.1
+- page: 8
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 225.8
+    y0: 504.1
+    x1: 417.5
+    y1: 516.2
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 257.5
+    y0: 510.2
+    x1: 417.5
+    y1: 516.2
+- page: 8
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 212.0
+    y0: 526.1
+    x1: 329.5
+    y1: 538.2
+  region: lower
+  context: 'Telephone Text E-mail (Signature) By, Date:'
+  ul_bbox:
+    x0: 234.4
+    y0: 532.2
+    x1: 329.5
+    y1: 538.2
+- page: 8
+  field: By,
+  category: entry_signature
+  bbox:
+    x0: 102.0
+    y0: 539.1
+    x1: 314.0
+    y1: 551.1
+  region: lower
+  context: '(Signature) By, Date: Printed name of Tenant:'
+  ul_bbox:
+    x0: 116.5
+    y0: 545.1
+    x1: 466.5
+    y1: 551.1
+- page: 8
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 225.8
+    y0: 561.1
+    x1: 417.5
+    y1: 573.2
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 257.5
+    y0: 567.2
+    x1: 417.5
+    y1: 573.2
+- page: 8
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 212.0
+    y0: 583.1
+    x1: 329.5
+    y1: 595.1
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 234.4
+    y0: 589.1
+    x1: 329.5
+    y1: 595.1
+- page: 8
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 212.0
+    y0: 720.1
+    x1: 329.5
+    y1: 732.2
+  region: footer
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 234.4
+    y0: 726.2
+    x1: 329.5
+    y1: 732.2
+- page: 9
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 72.0
+    y0: 285.9
+    x1: 305.0
+    y1: 297.9
+  region: upper
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 107.5
+    y0: 291.9
+    x1: 322.5
+    y1: 297.9
+- page: 9
+  field: City
+  category: entry_address
+  bbox:
+    x0: 322.5
+    y0: 285.9
+    x1: 458.0
+    y1: 297.9
+  region: upper
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 343.0
+    y0: 291.9
+    x1: 458.0
+    y1: 297.9
+- page: 9
+  field: State
+  category: entry_address
+  bbox:
+    x0: 458.0
+    y0: 285.9
+    x1: 504.0
+    y1: 297.9
+  region: upper
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 484.0
+    y0: 291.9
+    x1: 504.0
+    y1: 297.9
+- page: 9
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 504.0
+    y0: 285.9
+    x1: 576.0
+    y1: 297.9
+  region: upper
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 521.5
+    y0: 291.9
+    x1: 576.0
+    y1: 297.9
+- page: 9
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 72.0
+    y0: 297.9
+    x1: 212.0
+    y1: 309.9
+  region: upper
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 117.0
+    y0: 303.9
+    x1: 212.0
+    y1: 309.9
+- page: 9
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 329.5
+    y0: 297.9
+    x1: 557.5
+    y1: 309.9
+  region: upper
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 359.9
+    y0: 303.9
+    x1: 576.0
+    y1: 309.9
+- page: 9
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 72.0
+    y0: 349.9
+    x1: 305.0
+    y1: 361.9
+  region: middle
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 107.5
+    y0: 355.9
+    x1: 322.5
+    y1: 361.9
+- page: 9
+  field: City
+  category: entry_address
+  bbox:
+    x0: 322.5
+    y0: 349.9
+    x1: 458.0
+    y1: 361.9
+  region: middle
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 343.0
+    y0: 355.9
+    x1: 458.0
+    y1: 361.9
+- page: 9
+  field: State
+  category: entry_address
+  bbox:
+    x0: 458.0
+    y0: 349.9
+    x1: 504.0
+    y1: 361.9
+  region: middle
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 484.0
+    y0: 355.9
+    x1: 504.0
+    y1: 361.9
+- page: 9
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 504.0
+    y0: 349.9
+    x1: 576.0
+    y1: 361.9
+  region: middle
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 521.5
+    y0: 355.9
+    x1: 576.0
+    y1: 361.9
+- page: 9
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 72.0
+    y0: 361.9
+    x1: 212.0
+    y1: 373.9
+  region: middle
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 117.0
+    y0: 367.9
+    x1: 212.0
+    y1: 373.9
+- page: 9
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 329.5
+    y0: 361.9
+    x1: 557.5
+    y1: 373.9
+  region: middle
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 359.9
+    y0: 367.9
+    x1: 576.0
+    y1: 373.9
+- page: 9
+  field: Tenant's Initials
+  category: entry_signature
+  bbox:
+    x0: 198.0
+    y0: 409.0
+    x1: 298.3
+    y1: 419.9
+  region: middle
+  context: Tenant's Initials / Housing Providers Initials /
+  ul_bbox:
+    x0: 262.7
+    y0: 413.9
+    x1: 298.3
+    y1: 419.9
+- page: 9
+  field: Housing Providers Initials
+  category: entry_signature
+  bbox:
+    x0: 345.5
+    y0: 409.0
+    x1: 483.0
+    y1: 419.9
+  region: middle
+  context: Tenant's Initials / Housing Providers Initials /
+  ul_bbox:
+    x0: 447.3
+    y0: 413.9
+    x1: 483.0
+    y1: 419.9
+- page: 9
+  field: Real Estate Broker (Tenant's Firm)
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 502.9
+    x1: 286.0
+    y1: 514.9
+  region: lower
+  context: 'Real Estate Broker (Tenant''s Firm) DRE Lic. # By (Agent) DRE Lic. # Date Douglas Elliman of California, Inc.
+    01947727'
+  ul_bbox:
+    x0: 173.7
+    y0: 508.9
+    x1: 448.1
+    y1: 514.9
+- page: 9
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 391.0
+    y0: 514.9
+    x1: 494.0
+    y1: 526.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 439.0
+    y0: 520.9
+    x1: 494.0
+    y1: 526.9
+- page: 9
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 526.9
+    x1: 269.0
+    y1: 538.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 71.5
+    y0: 532.9
+    x1: 281.5
+    y1: 538.9
+- page: 9
+  field: City
+  category: entry_address
+  bbox:
+    x0: 281.5
+    y0: 526.9
+    x1: 447.0
+    y1: 538.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 302.0
+    y0: 532.9
+    x1: 447.0
+    y1: 538.9
+- page: 9
+  field: State
+  category: entry_address
+  bbox:
+    x0: 447.0
+    y0: 526.9
+    x1: 498.0
+    y1: 538.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 473.0
+    y0: 532.9
+    x1: 498.0
+    y1: 538.9
+- page: 9
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 36.0
+    y0: 538.9
+    x1: 181.0
+    y1: 550.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 81.0
+    y0: 544.9
+    x1: 181.0
+    y1: 550.9
+- page: 9
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 303.5
+    y0: 538.9
+    x1: 531.5
+    y1: 550.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 333.9
+    y0: 544.9
+    x1: 576.0
+    y1: 550.9
+- page: 9
+  field: Real Estate Broker (Housing Provider's Firm)
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 560.9
+    x1: 286.0
+    y1: 572.9
+  region: lower
+  context: 'Real Estate Broker (Housing Provider''s Firm) DRE Lic. # By (Agent) DRE Lic. # Date Douglas Elliman of California,
+    Inc. 0'
+  ul_bbox:
+    x0: 218.2
+    y0: 566.9
+    x1: 448.1
+    y1: 572.9
+- page: 9
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 391.0
+    y0: 572.9
+    x1: 494.0
+    y1: 584.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 439.0
+    y0: 578.9
+    x1: 494.0
+    y1: 584.9
+- page: 9
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 584.9
+    x1: 269.0
+    y1: 596.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 71.5
+    y0: 590.9
+    x1: 281.5
+    y1: 596.9
+- page: 9
+  field: City
+  category: entry_address
+  bbox:
+    x0: 281.5
+    y0: 584.9
+    x1: 447.0
+    y1: 596.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 302.0
+    y0: 590.9
+    x1: 447.0
+    y1: 596.9
+- page: 9
+  field: State
+  category: entry_address
+  bbox:
+    x0: 447.0
+    y0: 584.9
+    x1: 498.0
+    y1: 596.9
+  region: lower
+  context: Address City State Zip Telephone Text E-mail
+  ul_bbox:
+    x0: 473.0
+    y0: 590.9
+    x1: 498.0
+    y1: 596.9
+- page: 9
+  field: Telephone
+  category: entry_contact
+  bbox:
+    x0: 36.0
+    y0: 596.9
+    x1: 181.0
+    y1: 608.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 81.0
+    y0: 602.9
+    x1: 181.0
+    y1: 608.9
+- page: 9
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 303.5
+    y0: 596.9
+    x1: 531.5
+    y1: 608.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 333.9
+    y0: 602.9
+    x1: 576.0
+    y1: 608.9
+- page: 9
+  field: 'Premises:'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 16.3
+    x1: 280.4
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: , ,'
+  ul_bbox:
+    x0: 83.2
+    y0: 23.4
+    x1: 438.5
+    y1: 29.4
+- page: 9
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 438.5
+    y0: 16.3
+    x1: 576.0
+    y1: 29.4
+  region: header
+  context: 'Premises: Date: , ,'
+  ul_bbox:
+    x0: 467.9
+    y0: 23.4
+    x1: 576.0
+    y1: 29.4
+- page: 9
+  field: purposes
+  category: entry_blank
+  bbox:
+    x0: 281.0
+    y0: 103.9
+    x1: 402.3
+    y1: 131.7
+  region: header
+  context: 'enter full name of the estate, including case #): .'
+  ul_bbox:
+    x0: 281.0
+    y0: 105.9
+    x1: 576.0
+    y1: 111.9
+- page: 9
+  field: 'is/are:'
+  category: entry_blank
+  bbox:
+    x0: 298.4
+    y0: 220.9
+    x1: 449.0
+    y1: 232.9
+  region: upper
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , .'
+  ul_bbox:
+    x0: 329.0
+    y0: 226.9
+    x1: 449.0
+    y1: 232.9
+- page: 9
+  field: By,
+  category: entry_signature
+  bbox:
+    x0: 102.0
+    y0: 249.9
+    x1: 314.0
+    y1: 261.9
+  region: upper
+  context: '(Signature) By, Date: Printed name of Housing Provider:'
+  ul_bbox:
+    x0: 116.5
+    y0: 255.9
+    x1: 466.5
+    y1: 261.9
+- page: 9
+  field: 'Provider:'
+  category: entry_blank
+  bbox:
+    x0: 172.0
+    y0: 261.9
+    x1: 409.5
+    y1: 273.9
+  region: upper
+  context: 'Printed name of Housing Provider: Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 212.0
+    y0: 267.9
+    x1: 576.0
+    y1: 273.9
+- page: 9
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 225.8
+    y0: 273.9
+    x1: 417.5
+    y1: 285.9
+  region: upper
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 257.5
+    y0: 279.9
+    x1: 417.5
+    y1: 285.9
+- page: 9
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 212.0
+    y0: 297.9
+    x1: 329.5
+    y1: 309.9
+  region: upper
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 234.4
+    y0: 303.9
+    x1: 329.5
+    y1: 309.9
+- page: 9
+  field: By,
+  category: entry_signature
+  bbox:
+    x0: 102.0
+    y0: 313.9
+    x1: 314.0
+    y1: 325.9
+  region: middle
+  context: '(Signature) By, Date: Printed name of Housing Provider:'
+  ul_bbox:
+    x0: 116.5
+    y0: 319.9
+    x1: 466.5
+    y1: 325.9
+- page: 9
+  field: 'Provider:'
+  category: entry_blank
+  bbox:
+    x0: 172.0
+    y0: 325.9
+    x1: 409.5
+    y1: 337.9
+  region: middle
+  context: 'Printed name of Housing Provider: Printed Name of Legally Authorized Signer: Title, if applicable,'
+  ul_bbox:
+    x0: 212.0
+    y0: 331.9
+    x1: 576.0
+    y1: 337.9
+- page: 9
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 225.8
+    y0: 337.9
+    x1: 417.5
+    y1: 349.9
+  region: middle
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 257.5
+    y0: 343.9
+    x1: 417.5
+    y1: 349.9
+- page: 9
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 212.0
+    y0: 361.9
+    x1: 329.5
+    y1: 373.9
+  region: middle
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 234.4
+    y0: 367.9
+    x1: 329.5
+    y1: 373.9
+- page: 9
+  field: Housing
+  category: entry_blank
+  bbox:
+    x0: 309.8
+    y0: 409.0
+    x1: 370.3
+    y1: 419.9
+  region: middle
+  context: Tenant's Initials / Housing Providers Initials /
+  ul_bbox:
+    x0: 309.8
+    y0: 413.9
+    x1: 345.5
+    y1: 419.9
+- page: 9
+  field: (Agent)
+  category: entry_blank
+  bbox:
+    x0: 48.7
+    y0: 514.9
+    x1: 241.0
+    y1: 526.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 81.0
+    y0: 520.9
+    x1: 241.0
+    y1: 526.9
+- page: 9
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 241.0
+    y0: 514.9
+    x1: 404.6
+    y1: 526.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 241.0
+    y0: 520.9
+    x1: 391.0
+    y1: 526.9
+- page: 9
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 181.0
+    y0: 538.9
+    x1: 303.5
+    y1: 550.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 203.5
+    y0: 544.9
+    x1: 303.5
+    y1: 550.9
+- page: 9
+  field: (Agent)
+  category: entry_blank
+  bbox:
+    x0: 48.7
+    y0: 572.9
+    x1: 241.0
+    y1: 584.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 81.0
+    y0: 578.9
+    x1: 241.0
+    y1: 584.9
+- page: 9
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 241.0
+    y0: 572.9
+    x1: 404.6
+    y1: 584.9
+  region: lower
+  context: 'By (Agent) DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 241.0
+    y0: 578.9
+    x1: 391.0
+    y1: 584.9
+- page: 9
+  field: Text
+  category: entry_blank
+  bbox:
+    x0: 181.0
+    y0: 596.9
+    x1: 303.5
+    y1: 608.9
+  region: lower
+  context: Telephone Text E-mail
+  ul_bbox:
+    x0: 203.5
+    y0: 602.9
+    x1: 303.5
+    y1: 608.9
+- page: 10
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 241.1
+    y0: 92.4
+    x1: 466.1
+    y1: 104.4
+  region: header
+  context: "Agreement, OR Residential Lease After Sale, Other (\u201CAgreement\u201D), dated , on property known as , ,"
+  ul_bbox:
+    x0: 269.6
+    y0: 98.4
+    x1: 514.6
+    y1: 104.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 274.0
+    y0: 517.3
+    x1: 495.5
+    y1: 529.4
+  region: lower
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 119.0
+    y0: 523.4
+    x1: 474.0
+    y1: 529.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 274.0
+    y0: 544.3
+    x1: 495.5
+    y1: 556.4
+  region: lower
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 119.0
+    y0: 550.4
+    x1: 474.0
+    y1: 556.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 275.0
+    y0: 574.3
+    x1: 496.5
+    y1: 586.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 160.0
+    y0: 580.4
+    x1: 475.0
+    y1: 586.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 275.0
+    y0: 601.3
+    x1: 496.5
+    y1: 613.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 160.0
+    y0: 607.4
+    x1: 475.0
+    y1: 613.4
+- page: 10
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 103.3
+    x1: 132.1
+    y1: 115.4
+  region: header
+  context: dated , on property known as , , ,
+  ul_bbox:
+    x0: 62.1
+    y0: 109.4
+    x1: 132.1
+    y1: 115.4
+- page: 10
+  field: known
+  category: entry_blank
+  bbox:
+    x0: 191.5
+    y0: 103.3
+    x1: 412.7
+    y1: 115.4
+  region: header
+  context: dated , on property known as , , ,
+  ul_bbox:
+    x0: 231.0
+    y0: 109.4
+    x1: 576.0
+    y1: 115.4
+- page: 11
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 325.5
+    y0: 90.2
+    x1: 553.3
+    y1: 103.4
+  region: header
+  context: Month Rental Agreement, OR Residential Lease After Sale, Other , dated , on property known as , , ,
+  ul_bbox:
+    x0: 356.8
+    y0: 97.4
+    x1: 573.2
+    y1: 103.4
+- page: 11
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 261.2
+    y0: 454.2
+    x1: 485.1
+    y1: 467.4
+  region: middle
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 128.2
+    y0: 461.4
+    x1: 461.2
+    y1: 467.4
+- page: 11
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 261.2
+    y0: 483.3
+    x1: 485.1
+    y1: 496.4
+  region: lower
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 128.2
+    y0: 490.4
+    x1: 461.2
+    y1: 496.4
+- page: 11
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 262.4
+    y0: 515.2
+    x1: 486.3
+    y1: 528.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 173.7
+    y0: 522.4
+    x1: 462.4
+    y1: 528.4
+- page: 11
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 262.4
+    y0: 544.2
+    x1: 486.3
+    y1: 557.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 173.7
+    y0: 551.4
+    x1: 462.4
+    y1: 557.4
+- page: 11
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 102.2
+    x1: 142.5
+    y1: 115.4
+  region: header
+  context: "dated , on property known as , in which is referred to as (\u201CTenant\u201D) , ,"
+  ul_bbox:
+    x0: 64.8
+    y0: 109.4
+    x1: 142.5
+    y1: 115.4
+- page: 11
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 384.1
+    y0: 107.4
+    x1: 573.2
+    y1: 125.4
+  region: header
+  context: "dated , on property known as , in which is referred to as (\u201CTenant\u201D) , ,"
+  ul_bbox:
+    x0: 251.3
+    y0: 109.4
+    x1: 573.2
+    y1: 115.4
+- page: 11
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 218.7
+    y0: 126.2
+    x1: 453.6
+    y1: 139.4
+  region: upper
+  context: "and is referred to as (\u201CHousing Provider\u201D)."
+  ul_bbox:
+    x0: 55.9
+    y0: 133.4
+    x1: 405.6
+    y1: 139.4
+- page: 12
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 119.4
+    y0: 97.3
+    x1: 204.9
+    y1: 110.4
+  region: header
+  context: "Rental Agreement dated on property known as in which is referred to as \u201CTenant\u201D , ,"
+  ul_bbox:
+    x0: 149.4
+    y0: 104.4
+    x1: 204.9
+    y1: 110.4
+- page: 12
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 389.3
+    y0: 102.4
+    x1: 576.0
+    y1: 119.9
+  region: header
+  context: "Rental Agreement dated on property known as in which is referred to as \u201CTenant\u201D , ,"
+  ul_bbox:
+    x0: 309.6
+    y0: 104.4
+    x1: 576.0
+    y1: 110.4
+- page: 12
+  field: referred
+  category: entry_blank
+  bbox:
+    x0: 223.7
+    y0: 120.2
+    x1: 458.5
+    y1: 133.4
+  region: upper
+  context: "and is referred to as \u201CHousing Provider\u201D."
+  ul_bbox:
+    x0: 55.4
+    y0: 127.4
+    x1: 410.6
+    y1: 133.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 261.2
+    y0: 538.3
+    x1: 485.1
+    y1: 551.4
+  region: lower
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 128.2
+    y0: 545.4
+    x1: 461.2
+    y1: 551.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 261.2
+    y0: 566.3
+    x1: 485.1
+    y1: 579.4
+  region: lower
+  context: Tenant (Signature) Date
+  ul_bbox:
+    x0: 128.2
+    y0: 573.4
+    x1: 461.2
+    y1: 579.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 262.4
+    y0: 596.2
+    x1: 486.3
+    y1: 609.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 173.7
+    y0: 603.4
+    x1: 462.4
+    y1: 609.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 262.4
+    y0: 624.2
+    x1: 486.3
+    y1: 637.4
+  region: lower
+  context: Housing Provider (Signature) Date
+  ul_bbox:
+    x0: 173.7
+    y0: 631.4
+    x1: 462.4
+    y1: 637.4
+- page: 14
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 239.6
+    y0: 87.3
+    x1: 464.6
+    y1: 99.4
+  region: header
+  context: "Agreement, OR Residential Lease After Sale, Other (\u201CAgreement\u201D), dated , on property located at (Street\
+    \ Address)"
+  ul_bbox:
+    x0: 267.5
+    y0: 93.4
+    x1: 517.5
+    y1: 99.4
+- page: 14
+  field: (Unit/Apartment)
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 111.4
+    x1: 129.7
+    y1: 123.4
+  region: header
+  context: "(Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D), between (\u201CTenant\u201D)"
+  ul_bbox:
+    x0: 104.6
+    y0: 117.4
+    x1: 129.7
+    y1: 123.4
+- page: 14
+  field: (City)
+  category: entry_address
+  bbox:
+    x0: 129.7
+    y0: 111.4
+    x1: 331.4
+    y1: 123.4
+  region: header
+  context: "(Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D), between (\u201CTenant\u201D)"
+  ul_bbox:
+    x0: 156.4
+    y0: 117.4
+    x1: 331.4
+    y1: 123.4
+- page: 14
+  field: (State)
+  category: entry_address
+  bbox:
+    x0: 331.4
+    y0: 111.4
+    x1: 388.6
+    y1: 123.4
+  region: header
+  context: "(Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D), between (\u201CTenant\u201D)"
+  ul_bbox:
+    x0: 363.6
+    y0: 117.4
+    x1: 388.6
+    y1: 123.4
+- page: 14
+  field: (Zip Code)
+  category: entry_address
+  bbox:
+    x0: 388.6
+    y0: 111.4
+    x1: 521.4
+    y1: 123.4
+  region: header
+  context: "(Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D), between (\u201CTenant\u201D)"
+  ul_bbox:
+    x0: 436.4
+    y0: 117.4
+    x1: 521.4
+    y1: 123.4
+- page: 14
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 99.4
+    x1: 121.3
+    y1: 111.4
+  region: header
+  context: "dated , on property located at (Street Address) (Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D\
+    ),"
+  ul_bbox:
+    x0: 61.3
+    y0: 105.4
+    x1: 121.3
+    y1: 111.4
+- page: 14
+  field: Address)
+  category: entry_blank
+  bbox:
+    x0: 249.9
+    y0: 99.4
+    x1: 481.1
+    y1: 111.4
+  region: header
+  context: "dated , on property located at (Street Address) (Unit/Apartment) (City) (State) (Zip Code) (\u201CPremises\u201D\
+    ),"
+  ul_bbox:
+    x0: 286.0
+    y0: 105.4
+    x1: 576.0
+    y1: 111.4
+- page: 14
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 465.1
+    y0: 468.4
+    x1: 576.0
+    y1: 480.4
+  region: middle
+  context: 'information to the following consumer reporting agency(ies) TransUnion, Equifax, Experian, Other: , Other: .'
+  ul_bbox:
+    x0: 496.0
+    y0: 474.4
+    x1: 576.0
+    y1: 480.4
+- page: 14
+  field: '6.'
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 483.4
+    x1: 244.0
+    y1: 502.2
+  region: lower
+  context: ', Other: . 6. HOW TO OPT-IN TO POSITIVE RENTAL INFORMATION REPORTING: Tenant may elect to opt-in to positive rental
+    info'
+  ul_bbox:
+    x0: 54.0
+    y0: 485.4
+    x1: 244.0
+    y1: 491.4
+- page: 14
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 257.0
+    y0: 479.4
+    x1: 484.4
+    y1: 491.4
+  region: lower
+  context: ', Other: . 6. HOW TO OPT-IN TO POSITIVE RENTAL INFORMATION REPORTING: Tenant may elect to opt-in to positive rental
+    info'
+  ul_bbox:
+    x0: 287.0
+    y0: 485.4
+    x1: 572.0
+    y1: 491.4
+- page: 14
+  field: 'address:'
+  category: entry_contact
+  bbox:
+    x0: 502.5
+    y0: 514.4
+    x1: 576.0
+    y1: 526.4
+  region: lower
+  context: A. Emailing a copy of this form, with the Tenant Opt-In box completed, to Housing Provider at the following email
+    addres
+  ul_bbox:
+    x0: 536.0
+    y0: 520.4
+    x1: 576.0
+    y1: 526.4
+- page: 14
+  field: 'address:'
+  category: entry_contact
+  bbox:
+    x0: 392.9
+    y0: 604.4
+    x1: 576.0
+    y1: 616.4
+  region: lower
+  context: 'that is signed and dated by Tenant) to Housing Provider at the following email address: ;'
+  ul_bbox:
+    x0: 431.0
+    y0: 610.4
+    x1: 576.0
+    y1: 616.4
+- page: 14
+  field: 'address:'
+  category: entry_blank
+  bbox:
+    x0: 364.8
+    y0: 637.3
+    x1: 576.0
+    y1: 649.4
+  region: lower
+  context: 'that is signed and dated by Tenant) to Housing Provider, at the following address: .'
+  ul_bbox:
+    x0: 399.0
+    y0: 643.4
+    x1: 576.0
+    y1: 649.4
+- page: 15
+  field: Tenantshall pay Housing Provider a monthly service feeof $
+  category: entry_dollar
+  bbox:
+    x0: 72.0
+    y0: 41.9
+    x1: 322.0
+    y1: 53.9
+  region: header
+  context: A. Tenantshall pay Housing Provider a monthly service feeof $ (not to exceed $10.00 or the actual cost, whichever
+    is low
+  ul_bbox:
+    x0: 306.2
+    y0: 47.9
+    x1: 336.2
+    y1: 53.9
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 105.5
+    y0: 124.3
+    x1: 262.4
+    y1: 136.4
+  region: upper
+  context: 'Housing Provider (Signature): Date: Housing Provider (Signature): Date:'
+  ul_bbox:
+    x0: 162.4
+    y0: 130.4
+    x1: 262.4
+    y1: 136.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 287.4
+    y0: 124.3
+    x1: 511.4
+    y1: 136.4
+  region: upper
+  context: 'Housing Provider (Signature): Date: Housing Provider (Signature): Date:'
+  ul_bbox:
+    x0: 262.4
+    y0: 130.4
+    x1: 487.4
+    y1: 136.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 105.5
+    y0: 137.4
+    x1: 262.4
+    y1: 149.4
+  region: upper
+  context: 'Housing Provider (Signature): Date:'
+  ul_bbox:
+    x0: 162.4
+    y0: 143.4
+    x1: 262.4
+    y1: 149.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 287.4
+    y0: 137.4
+    x1: 511.4
+    y1: 149.4
+  region: upper
+  context: 'Housing Provider (Signature): Date:'
+  ul_bbox:
+    x0: 262.4
+    y0: 143.4
+    x1: 487.4
+    y1: 149.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 64.5
+    y0: 206.4
+    x1: 271.5
+    y1: 218.4
+  region: upper
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 121.5
+    y0: 212.4
+    x1: 271.5
+    y1: 218.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 286.5
+    y0: 206.4
+    x1: 513.0
+    y1: 218.4
+  region: upper
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 271.5
+    y0: 212.4
+    x1: 486.5
+    y1: 218.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 64.5
+    y0: 220.3
+    x1: 271.5
+    y1: 232.4
+  region: upper
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 121.5
+    y0: 226.4
+    x1: 271.5
+    y1: 232.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 286.5
+    y0: 220.3
+    x1: 513.0
+    y1: 232.4
+  region: upper
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 271.5
+    y0: 226.4
+    x1: 486.5
+    y1: 232.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 82.5
+    y0: 413.4
+    x1: 309.5
+    y1: 425.4
+  region: middle
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 139.5
+    y0: 419.4
+    x1: 309.5
+    y1: 425.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 309.5
+    y0: 413.4
+    x1: 513.5
+    y1: 425.4
+  region: middle
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 309.5
+    y0: 419.4
+    x1: 489.5
+    y1: 425.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 82.5
+    y0: 427.3
+    x1: 309.5
+    y1: 439.4
+  region: middle
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 139.5
+    y0: 433.4
+    x1: 309.5
+    y1: 439.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 309.5
+    y0: 427.3
+    x1: 513.5
+    y1: 439.4
+  region: middle
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 309.5
+    y0: 433.4
+    x1: 489.5
+    y1: 439.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 82.5
+    y0: 574.3
+    x1: 309.5
+    y1: 586.4
+  region: lower
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 139.5
+    y0: 580.4
+    x1: 309.5
+    y1: 586.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 309.5
+    y0: 574.3
+    x1: 513.5
+    y1: 586.4
+  region: lower
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 309.5
+    y0: 580.4
+    x1: 489.5
+    y1: 586.4
+- page: 15
+  field: '(Signature):'
+  category: entry_signature
+  bbox:
+    x0: 82.5
+    y0: 588.4
+    x1: 309.5
+    y1: 600.4
+  region: lower
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 139.5
+    y0: 594.4
+    x1: 309.5
+    y1: 600.4
+- page: 15
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 309.5
+    y0: 588.4
+    x1: 513.5
+    y1: 600.4
+  region: lower
+  context: 'Tenant (Signature): Date:'
+  ul_bbox:
+    x0: 309.5
+    y0: 594.4
+    x1: 489.5
+    y1: 600.4
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 598.3
+    x1: 494.0
+    y1: 610.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 267.5
+    y0: 604.4
+    x1: 472.5
+    y1: 610.4
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 612.4
+    x1: 494.0
+    y1: 624.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 267.5
+    y0: 618.4
+    x1: 472.5
+    y1: 624.4
+- page: 17
+  field: Seller/Housing Provider
+  category: entry_signature
+  bbox:
+    x0: 92.5
+    y0: 616.4
+    x1: 267.6
+    y1: 639.4
+  region: lower
+  context: Buyer/Tenant Date Seller/Housing Provider
+  ul_bbox:
+    x0: 92.5
+    y0: 618.4
+    x1: 267.6
+    y1: 624.4
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 629.4
+    x1: 494.5
+    y1: 641.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 635.4
+    x1: 473.0
+    y1: 641.4
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 643.3
+    x1: 494.5
+    y1: 655.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 649.4
+    x1: 473.0
+    y1: 655.4
+- page: 17
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 598.3
+    x1: 267.6
+    y1: 610.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 92.5
+    y0: 604.4
+    x1: 267.6
+    y1: 610.4
+- page: 17
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 629.4
+    x1: 268.0
+    y1: 641.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 133.0
+    y0: 635.4
+    x1: 268.0
+    y1: 641.4
+- page: 17
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 643.3
+    x1: 268.0
+    y1: 655.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 133.0
+    y0: 649.4
+    x1: 268.0
+    y1: 655.4

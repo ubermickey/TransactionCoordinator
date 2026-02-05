@@ -1,0 +1,473 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:16'
+file: Agent_Visual_Inspection_Disclosure_1_-_624_ts65092.pdf
+folder: SFR Disclosures Package
+page_count: 3
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 30
+  entry_categories:
+    entry_address: 1
+    entry_signature: 4
+    entry_blank: 13
+    entry_brokerage: 4
+    entry_date: 8
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: County of
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 97.9
+    x1: 227.4
+    y1: 111.1
+  region: header
+  context: County of , State of California, described as ("Property").
+  ul_bbox:
+    x0: 83.1
+    y0: 105.1
+    x1: 227.4
+    y1: 111.1
+- page: 1
+  field: Buyer's Initials
+  category: entry_signature
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 487.9
+    y1: 732.6
+  region: footer
+  context: AVID REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 456.7
+    y0: 726.6
+    x1: 487.9
+    y1: 732.6
+- page: 1
+  field: City
+  category: entry_blank
+  bbox:
+    x0: 370.2
+    y0: 85.9
+    x1: 573.3
+    y1: 99.1
+  region: header
+  context: 'This inspection disclosure concerns the residential property situated in the City of , County of , State of California, '
+  ul_bbox:
+    x0: 406.7
+    y0: 93.1
+    x1: 573.3
+    y1: 99.1
+- page: 1
+  field: described
+  category: entry_blank
+  bbox:
+    x0: 325.0
+    y0: 97.9
+    x1: 575.0
+    y1: 111.1
+  region: header
+  context: County of , State of California, described as ("Property").
+  ul_bbox:
+    x0: 381.7
+    y0: 105.1
+    x1: 576.0
+    y1: 111.1
+- page: 1
+  field: unit(s)
+  category: entry_blank
+  bbox:
+    x0: 56.4
+    y0: 133.9
+    x1: 132.1
+    y1: 147.1
+  region: upper
+  context: only unit(s) ). Inspection Performed By (Real Estate Broker Firm Name)
+  ul_bbox:
+    x0: 87.7
+    y0: 141.1
+    x1: 132.1
+    y1: 147.1
+- page: 1
+  field: Name)
+  category: entry_brokerage
+  bbox:
+    x0: 267.3
+    y0: 145.9
+    x1: 490.9
+    y1: 159.1
+  region: upper
+  context: Inspection Performed By (Real Estate Broker Firm Name) California law requires , with limited exceptions, that
+    a real es
+  ul_bbox:
+    x0: 294.0
+    y0: 153.1
+    x1: 576.0
+    y1: 159.1
+- page: 2
+  field: unit
+  category: entry_blank
+  bbox:
+    x0: 310.8
+    y0: 23.5
+    x1: 382.2
+    y1: 36.6
+  region: header
+  context: 'If this Property is a duplex, triplex, or fourplex, this AVID is for unit # .'
+  ul_bbox:
+    x0: 337.8
+    y0: 30.6
+    x1: 382.2
+    y1: 36.6
+- page: 2
+  field: 'areas):'
+  category: entry_blank
+  bbox:
+    x0: 183.2
+    y0: 295.7
+    x1: 417.6
+    y1: 309.1
+  region: upper
+  context: 'Hall/Stairs (excluding common areas):'
+  ul_bbox:
+    x0: 220.6
+    y0: 303.1
+    x1: 576.0
+    y1: 309.1
+- page: 3
+  field: 'Real Estate Broker (Name of Firm that performed the inspection):'
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 354.5
+    x1: 286.0
+    y1: 367.6
+  region: middle
+  context: 'Real Estate Broker (Name of Firm that performed the inspection): Inspection Performed By (Name of individual agent
+    or br'
+  ul_bbox:
+    x0: 328.0
+    y0: 361.6
+    x1: 576.0
+    y1: 367.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 427.8
+    y0: 407.4
+    x1: 576.0
+    y1: 420.6
+  region: middle
+  context: By Date (Signature of Associate Licensee or Broker who performed the inspection)
+  ul_bbox:
+    x0: 454.5
+    y0: 414.6
+    x1: 576.0
+    y1: 420.6
+- page: 3
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 519.5
+    x1: 251.4
+    y1: 532.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 526.6
+    x1: 251.4
+    y1: 532.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 251.4
+    y0: 519.5
+    x1: 452.9
+    y1: 532.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 251.4
+    y0: 526.6
+    x1: 429.0
+    y1: 532.6
+- page: 3
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 534.5
+    x1: 251.4
+    y1: 547.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 541.6
+    x1: 251.4
+    y1: 547.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 251.4
+    y0: 534.5
+    x1: 452.9
+    y1: 547.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 251.4
+    y0: 541.6
+    x1: 429.0
+    y1: 547.6
+- page: 3
+  field: Real Estate Broker (that did NOT fill out this AVID)
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 612.4
+    x1: 286.0
+    y1: 625.6
+  region: lower
+  context: Real Estate Broker (that did NOT fill out this AVID)
+  ul_bbox:
+    x0: 262.2
+    y0: 619.6
+    x1: 576.0
+    y1: 625.6
+- page: 3
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 627.5
+    x1: 239.2
+    y1: 640.6
+  region: lower
+  context: By Date (Associate Licensee or Broker Signature)
+  ul_bbox:
+    x0: 50.5
+    y0: 634.6
+    x1: 239.2
+    y1: 640.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 239.2
+    y0: 627.5
+    x1: 454.5
+    y1: 640.6
+  region: lower
+  context: By Date (Associate Licensee or Broker Signature)
+  ul_bbox:
+    x0: 239.2
+    y0: 634.6
+    x1: 427.9
+    y1: 640.6
+- page: 3
+  field: unit
+  category: entry_blank
+  bbox:
+    x0: 310.8
+    y0: 23.5
+    x1: 382.2
+    y1: 36.6
+  region: header
+  context: 'If this Property is a duplex, triplex, or fourplex, this AVID is for unit # .'
+  ul_bbox:
+    x0: 337.8
+    y0: 30.6
+    x1: 382.2
+    y1: 36.6
+- page: 3
+  field: 'rooms/structures:'
+  category: entry_blank
+  bbox:
+    x0: 191.7
+    y0: 159.2
+    x1: 441.7
+    y1: 172.6
+  region: upper
+  context: 'See Addendum for additional rooms/structures:'
+  ul_bbox:
+    x0: 280.6
+    y0: 166.6
+    x1: 576.0
+    y1: 172.6
+- page: 3
+  field: 'areas):'
+  category: entry_blank
+  bbox:
+    x0: 206.4
+    y0: 187.2
+    x1: 442.5
+    y1: 200.6
+  region: upper
+  context: 'Garage/Parking (excluding common areas):'
+  ul_bbox:
+    x0: 245.5
+    y0: 194.6
+    x1: 576.0
+    y1: 200.6
+- page: 3
+  field: Front/Sides/Back
+  category: entry_blank
+  bbox:
+    x0: 175.5
+    y0: 239.2
+    x1: 425.5
+    y1: 252.6
+  region: upper
+  context: 'Exterior Building and Yard - Front/Sides/Back :'
+  ul_bbox:
+    x0: 258.3
+    y0: 246.6
+    x1: 576.0
+    y1: 252.6
+- page: 3
+  field: 'Above:'
+  category: entry_blank
+  bbox:
+    x0: 287.7
+    y0: 279.2
+    x1: 518.5
+    y1: 292.6
+  region: upper
+  context: 'Other Observed or Known Conditions Not Specified Above:'
+  ul_bbox:
+    x0: 321.8
+    y0: 286.6
+    x1: 576.0
+    y1: 292.6
+- page: 3
+  field: 'broker):'
+  category: entry_brokerage
+  bbox:
+    x0: 274.4
+    y0: 366.5
+    x1: 510.4
+    y1: 379.6
+  region: middle
+  context: 'Inspection Performed By (Name of individual agent or broker): Inspection Date/Time: Weather conditions:'
+  ul_bbox:
+    x0: 313.4
+    y0: 373.6
+    x1: 576.0
+    y1: 379.6
+- page: 3
+  field: 'Date/Time:'
+  category: entry_date
+  bbox:
+    x0: 86.9
+    y0: 378.4
+    x1: 202.7
+    y1: 391.6
+  region: middle
+  context: 'Inspection Date/Time: Weather conditions: Other persons present:'
+  ul_bbox:
+    x0: 136.1
+    y0: 385.6
+    x1: 202.7
+    y1: 391.6
+- page: 3
+  field: Weather
+  category: entry_blank
+  bbox:
+    x0: 202.7
+    y0: 378.4
+    x1: 302.8
+    y1: 391.6
+  region: middle
+  context: 'Inspection Date/Time: Weather conditions: Other persons present:'
+  ul_bbox:
+    x0: 202.7
+    y0: 385.6
+    x1: 269.3
+    y1: 391.6
+- page: 3
+  field: 'conditions:'
+  category: entry_blank
+  bbox:
+    x0: 307.6
+    y0: 378.4
+    x1: 557.6
+    y1: 391.6
+  region: middle
+  context: 'Inspection Date/Time: Weather conditions: Other persons present:'
+  ul_bbox:
+    x0: 363.2
+    y0: 385.6
+    x1: 576.0
+    y1: 391.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 429.0
+    y0: 519.5
+    x1: 576.0
+    y1: 532.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 455.7
+    y0: 526.6
+    x1: 576.0
+    y1: 532.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 429.0
+    y0: 534.5
+    x1: 576.0
+    y1: 547.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 455.7
+    y0: 541.6
+    x1: 576.0
+    y1: 547.6
+- page: 3
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 595.4
+    x1: 106.6
+    y1: 608.6
+  region: lower
+  context: Seller /
+  ul_bbox:
+    x0: 73.2
+    y0: 602.6
+    x1: 106.6
+    y1: 608.6
+- page: 3
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 427.8
+    y0: 627.5
+    x1: 576.0
+    y1: 640.6
+  region: lower
+  context: By Date (Associate Licensee or Broker Signature)
+  ul_bbox:
+    x0: 457.3
+    y0: 634.6
+    x1: 576.0
+    y1: 640.6

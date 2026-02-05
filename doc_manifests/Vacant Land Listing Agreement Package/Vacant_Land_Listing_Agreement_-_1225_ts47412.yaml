@@ -1,0 +1,2268 @@
+version: 3.0.0
+last_analyzed: '2026-02-04T18:57:23'
+file: Vacant_Land_Listing_Agreement_-_1225_ts47412.pdf
+folder: Vacant Land Listing Agreement Package
+page_count: 18
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 149
+  entry_categories:
+    entry_signature: 19
+    entry_date: 37
+    entry_license: 9
+    entry_blank: 51
+    entry_brokerage: 7
+    entry_dollar: 4
+    entry_percent: 1
+    entry_days: 3
+    entry_address: 12
+    entry_contact: 6
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 166.7
+    y0: 638.4
+    x1: 336.5
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 644.4
+    x1: 336.5
+    y1: 650.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 336.5
+    y0: 638.4
+    x1: 498.1
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 336.5
+    y0: 644.4
+    x1: 476.6
+    y1: 650.4
+- page: 1
+  field: Tenant
+  category: entry_signature
+  bbox:
+    x0: 166.7
+    y0: 654.3
+    x1: 336.5
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 660.4
+    x1: 336.5
+    y1: 666.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 336.5
+    y0: 654.3
+    x1: 498.1
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 336.5
+    y0: 660.4
+    x1: 476.6
+    y1: 666.4
+- page: 1
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 437.0
+    y0: 671.3
+    x1: 576.0
+    y1: 683.4
+  region: footer
+  context: 'Agent DRE Lic. # Real Estate Broker (Firm) Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 485.0
+    y0: 677.4
+    x1: 576.0
+    y1: 683.4
+- page: 1
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 692.4
+    x1: 204.0
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 49.0
+    y0: 698.4
+    x1: 204.0
+    y1: 704.4
+- page: 1
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 354.0
+    y0: 692.4
+    x1: 477.0
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 402.0
+    y0: 698.4
+    x1: 477.0
+    y1: 704.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 477.0
+    y0: 692.4
+    x1: 576.0
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 501.0
+    y0: 698.4
+    x1: 576.0
+    y1: 704.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 576.0
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.5
+    y0: 644.4
+    x1: 576.0
+    y1: 650.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 576.0
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.5
+    y0: 660.4
+    x1: 576.0
+    y1: 666.4
+- page: 1
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 204.0
+    y0: 692.4
+    x1: 367.6
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 204.0
+    y0: 698.4
+    x1: 354.0
+    y1: 704.4
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 437.8
+    x1: 572.7
+    y1: 446.7
+  region: middle
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 458.8
+    x1: 572.7
+    y1: 467.7
+  region: middle
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 479.8
+    x1: 572.7
+    y1: 488.7
+  region: lower
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 500.8
+    x1: 572.7
+    y1: 509.7
+  region: lower
+  context: License Number ______________
+- page: 2
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 437.8
+    x1: 304.0
+    y1: 448.8
+  region: middle
+  context: 'Seller''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the sel'
+  ul_bbox:
+    x0: 139.0
+    y0: 442.8
+    x1: 448.6
+    y1: 448.8
+- page: 2
+  field: Seller's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 458.8
+    x1: 303.1
+    y1: 469.9
+  region: middle
+  context: 'Seller''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Seller''s Agent.
+    (salespers'
+  ul_bbox:
+    x0: 104.3
+    y0: 463.9
+    x1: 447.8
+    y1: 469.9
+- page: 2
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 479.8
+    x1: 304.0
+    y1: 491.0
+  region: lower
+  context: 'Buyer''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the buye'
+  ul_bbox:
+    x0: 139.0
+    y0: 485.0
+    x1: 448.6
+    y1: 491.0
+- page: 2
+  field: Buyer's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 500.8
+    x1: 303.5
+    y1: 511.5
+  region: lower
+  context: 'Buyer''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Buyer''s Agent.
+    (salesperson'
+  ul_bbox:
+    x0: 105.0
+    y0: 505.5
+    x1: 448.6
+    y1: 511.5
+- page: 4
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 188.3
+    x1: 279.6
+    y1: 201.4
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 91.2
+    y0: 195.4
+    x1: 457.6
+    y1: 201.4
+- page: 4
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.5
+    y0: 188.3
+    x1: 576.0
+    y1: 201.4
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 484.2
+    y0: 195.4
+    x1: 576.0
+    y1: 201.4
+- page: 4
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 54.0
+    y0: 232.3
+    x1: 279.6
+    y1: 245.4
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 91.2
+    y0: 239.4
+    x1: 457.6
+    y1: 245.4
+- page: 4
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.5
+    y0: 232.3
+    x1: 576.0
+    y1: 245.4
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 484.2
+    y0: 239.4
+    x1: 576.0
+    y1: 245.4
+- page: 5
+  field: OTHER
+  category: entry_blank
+  bbox:
+    x0: 423.9
+    y0: 101.4
+    x1: 576.0
+    y1: 113.4
+  region: header
+  context: 'the exclusive and irrevocable right to: SELL, LEASE, EXCHANGE, OPTION, or OTHER the real property described as
+    ,'
+  ul_bbox:
+    x0: 461.0
+    y0: 107.4
+    x1: 576.0
+    y1: 113.4
+- page: 5
+  field: Dollars ($
+  category: entry_dollar
+  bbox:
+    x0: 489.0
+    y0: 224.3
+    x1: 578.9
+    y1: 235.1
+  region: upper
+  context: Dollars ($ )
+  ul_bbox:
+    x0: 525.5
+    y0: 229.1
+    x1: 578.9
+    y1: 235.1
+- page: 5
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 508.7
+    y0: 297.9
+    x1: 579.8
+    y1: 308.8
+  region: upper
+  context: C(1) 4B Compensation to Owner's Broker (only Owner's side of transaction) % of the listing price AND, if any, ;
+    OR $ ; O
+  ul_bbox:
+    x0: 517.5
+    y0: 302.8
+    x1: 579.8
+    y1: 308.8
+- page: 5
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 512.2
+    y0: 334.9
+    x1: 578.9
+    y1: 345.9
+  region: middle
+  context: 'C(2) 4C Additional Compensation if buyer is unrepresented % of the purchase price AND, if any, ; OR $ , OR see
+    attached '
+  ul_bbox:
+    x0: 521.1
+    y0: 339.9
+    x1: 578.9
+    y1: 345.9
+- page: 5
+  field: Owner's Initials
+  category: entry_signature
+  bbox:
+    x0: 360.0
+    y0: 730.2
+    x1: 467.7
+    y1: 741.1
+  region: footer
+  context: VLL REVISED 12/25 (PAGE 1 OF 6) Owner's Initials /
+  ul_bbox:
+    x0: 423.2
+    y0: 735.1
+    x1: 467.7
+    y1: 741.1
+- page: 5
+  field: 'Prepared:'
+  category: entry_date
+  bbox:
+    x0: 57.8
+    y0: 66.4
+    x1: 189.5
+    y1: 78.4
+  region: header
+  context: 'Date Prepared: 1. EXCLUSIVE AUTHORIZATION: ("Owner")'
+  ul_bbox:
+    x0: 99.5
+    y0: 72.4
+    x1: 189.5
+    y1: 78.4
+- page: 5
+  field: 'AUTHORIZATION:'
+  category: entry_blank
+  bbox:
+    x0: 109.0
+    y0: 79.1
+    x1: 359.0
+    y1: 91.4
+  region: header
+  context: '1. EXCLUSIVE AUTHORIZATION: ("Owner") hereby employs and grants ("Broker") Douglas Elliman of California, Inc.'
+  ul_bbox:
+    x0: 192.2
+    y0: 85.4
+    x1: 532.2
+    y1: 91.4
+- page: 5
+  field: grants
+  category: entry_blank
+  bbox:
+    x0: 141.7
+    y0: 90.4
+    x1: 369.4
+    y1: 102.4
+  region: header
+  context: 'hereby employs and grants ("Broker") the exclusive and irrevocable right to: SELL, LEASE, EXCHANGE, OPTION, or
+    OTHER Dou'
+  ul_bbox:
+    x0: 176.7
+    y0: 96.4
+    x1: 531.7
+    y1: 102.4
+- page: 5
+  field: situated
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 123.3
+    x1: 228.2
+    y1: 135.4
+  region: upper
+  context: situated (City), (County), California, (Zip Code), Assessor's Parcel No. ("Property") for the Listing Period in
+    paragrap
+  ul_bbox:
+    x0: 88.2
+    y0: 129.4
+    x1: 228.2
+    y1: 135.4
+- page: 5
+  field: (City),
+  category: entry_blank
+  bbox:
+    x0: 228.2
+    y0: 123.3
+    x1: 372.6
+    y1: 135.4
+  region: upper
+  context: situated (City), (County), California, (Zip Code), Assessor's Parcel No. ("Property") for the Listing Period in
+    paragrap
+  ul_bbox:
+    x0: 257.6
+    y0: 129.4
+    x1: 372.6
+    y1: 135.4
+- page: 5
+  field: California,
+  category: entry_blank
+  bbox:
+    x0: 411.4
+    y0: 123.3
+    x1: 528.2
+    y1: 135.4
+  region: upper
+  context: situated (City), (County), California, (Zip Code), Assessor's Parcel No. ("Property") for the Listing Period in
+    paragrap
+  ul_bbox:
+    x0: 458.2
+    y0: 129.4
+    x1: 528.2
+    y1: 135.4
+- page: 5
+  field: No.
+  category: entry_blank
+  bbox:
+    x0: 129.2
+    y0: 134.4
+    x1: 234.2
+    y1: 146.4
+  region: upper
+  context: Assessor's Parcel No. ("Property") for the Listing Period in paragraph 2A(1).
+  ul_bbox:
+    x0: 144.2
+    y0: 140.4
+    x1: 234.2
+    y1: 146.4
+- page: 5
+  field: Beginning
+  category: entry_blank
+  bbox:
+    x0: 275.4
+    y0: 202.5
+    x1: 366.7
+    y1: 213.3
+  region: upper
+  context: A(1) Listing Period Beginning (date) Ending at 11:59 P.M. on (date)
+  ul_bbox:
+    x0: 313.3
+    y0: 207.3
+    x1: 366.7
+    y1: 213.3
+- page: 5
+  field: P.M.
+  category: entry_date
+  bbox:
+    x0: 451.8
+    y0: 202.5
+    x1: 533.2
+    y1: 213.3
+  region: upper
+  context: A(1) Listing Period Beginning (date) Ending at 11:59 P.M. on (date)
+  ul_bbox:
+    x0: 479.8
+    y0: 207.3
+    x1: 533.2
+    y1: 213.3
+- page: 5
+  field: Dollars
+  category: entry_dollar
+  bbox:
+    x0: 289.0
+    y0: 224.3
+    x1: 514.5
+    y1: 235.1
+  region: upper
+  context: Dollars ($ )
+  ul_bbox:
+    x0: 275.4
+    y0: 229.1
+    x1: 489.0
+    y1: 235.1
+- page: 5
+  field: '%'
+  category: entry_percent
+  bbox:
+    x0: 275.4
+    y0: 297.9
+    x1: 305.4
+    y1: 308.8
+  region: upper
+  context: C(1) 4B Compensation to Owner's Broker (only Owner's side of transaction) % of the listing price AND, if any, ;
+    OR $ ; O
+  ul_bbox:
+    x0: 275.4
+    y0: 302.8
+    x1: 302.1
+    y1: 308.8
+- page: 5
+  field: any,
+  category: entry_blank
+  bbox:
+    x0: 405.2
+    y0: 297.9
+    x1: 483.0
+    y1: 308.8
+  region: upper
+  context: C(1) 4B Compensation to Owner's Broker (only Owner's side of transaction) % of the listing price AND, if any, ;
+    OR $ ; O
+  ul_bbox:
+    x0: 420.6
+    y0: 302.8
+    x1: 483.0
+    y1: 308.8
+- page: 5
+  field: buyer
+  category: entry_blank
+  bbox:
+    x0: 236.8
+    y0: 335.1
+    x1: 302.1
+    y1: 345.9
+  region: middle
+  context: 'C(2) 4C Additional Compensation if buyer is unrepresented % of the purchase price AND, if any, ; OR $ , OR see
+    attached '
+  ul_bbox:
+    x0: 275.4
+    y0: 339.9
+    x1: 302.1
+    y1: 345.9
+- page: 5
+  field: any,
+  category: entry_blank
+  bbox:
+    x0: 416.6
+    y0: 334.9
+    x1: 486.5
+    y1: 345.9
+  region: middle
+  context: 'C(2) 4C Additional Compensation if buyer is unrepresented % of the purchase price AND, if any, ; OR $ , OR see
+    attached '
+  ul_bbox:
+    x0: 433.1
+    y0: 339.9
+    x1: 486.5
+    y1: 345.9
+- page: 5
+  field: Period").
+  category: entry_days
+  bbox:
+    x0: 363.5
+    y0: 382.9
+    x1: 415.9
+    y1: 397.8
+  region: middle
+  context: C(3) 4D(2) Continuation of Right to Compensation for Broker Identified The Continuation Period shall be calendar
+    days af
+  ul_bbox:
+    x0: 393.7
+    y0: 384.9
+    x1: 415.9
+    y1: 390.9
+- page: 5
+  field: 'broker(s):'
+  category: entry_blank
+  bbox:
+    x0: 355.6
+    y0: 410.2
+    x1: 561.7
+    y1: 421.1
+  region: middle
+  context: 'C(4) 4F Owner Obligation to Pay Previous Brokers Previous Listing/Other broker(s): Compensation to above broker(s)
+    owed '
+  ul_bbox:
+    x0: 392.6
+    y0: 415.1
+    x1: 561.7
+    y1: 421.1
+- page: 5
+  field: 'to:'
+  category: entry_blank
+  bbox:
+    x0: 495.2
+    y0: 421.3
+    x1: 561.3
+    y1: 432.3
+  region: middle
+  context: 'Brokers Compensation to above broker(s) owed if Property transferred to:'
+  ul_bbox:
+    x0: 507.9
+    y0: 426.3
+    x1: 561.3
+    y1: 432.3
+- page: 5
+  field: representation
+  category: entry_blank
+  bbox:
+    x0: 275.4
+    y0: 433.1
+    x1: 426.0
+    y1: 452.2
+  region: middle
+  ul_bbox:
+    x0: 275.4
+    y0: 435.1
+    x1: 561.3
+    y1: 441.1
+- page: 5
+  field: Excluded
+  category: entry_blank
+  bbox:
+    x0: 131.8
+    y0: 485.3
+    x1: 260.8
+    y1: 503.9
+  region: lower
+  context: ; ; .
+  ul_bbox:
+    x0: 131.8
+    y0: 487.3
+    x1: 260.8
+    y1: 493.3
+- page: 5
+  field: Solar
+  category: entry_blank
+  bbox:
+    x0: 281.6
+    y0: 497.9
+    x1: 410.6
+    y1: 527.7
+  region: lower
+  context: 'D(2) 5A Excluded Items: ; ; ; ; .'
+  ul_bbox:
+    x0: 281.6
+    y0: 499.9
+    x1: 410.6
+    y1: 505.9
+- page: 5
+  field: Leased
+  category: entry_blank
+  bbox:
+    x0: 131.8
+    y0: 509.1
+    x1: 260.8
+    y1: 527.7
+  region: lower
+  context: ; ; .
+  ul_bbox:
+    x0: 131.8
+    y0: 511.1
+    x1: 260.8
+    y1: 517.1
+- page: 5
+  field: Solar
+  category: entry_blank
+  bbox:
+    x0: 281.5
+    y0: 509.1
+    x1: 410.6
+    y1: 527.7
+  region: lower
+  context: ; ; .
+  ul_bbox:
+    x0: 281.5
+    y0: 511.1
+    x1: 410.6
+    y1: 517.1
+- page: 5
+  field: Liened
+  category: entry_blank
+  bbox:
+    x0: 131.8
+    y0: 532.8
+    x1: 260.8
+    y1: 551.4
+  region: lower
+  context: .
+  ul_bbox:
+    x0: 131.8
+    y0: 534.8
+    x1: 260.8
+    y1: 540.8
+- page: 5
+  field: Solar
+  category: entry_blank
+  bbox:
+    x0: 281.5
+    y0: 532.8
+    x1: 410.6
+    y1: 551.4
+  region: lower
+  context: .
+  ul_bbox:
+    x0: 281.5
+    y0: 534.8
+    x1: 410.6
+    y1: 540.8
+- page: 5
+  field: Public
+  category: entry_blank
+  bbox:
+    x0: 131.8
+    y0: 556.6
+    x1: 260.8
+    y1: 575.5
+  region: lower
+  context: ; ; . MLS and Public Marketing
+  ul_bbox:
+    x0: 131.8
+    y0: 558.6
+    x1: 260.8
+    y1: 564.6
+- page: 5
+  field: 'Other(s):'
+  category: entry_blank
+  bbox:
+    x0: 275.4
+    y0: 583.3
+    x1: 416.4
+    y1: 600.6
+  region: lower
+  context: 'E(1) Property will be marketed in the following MLS Primary Other(s): See C.A.R. Form MLSA.'
+  ul_bbox:
+    x0: 305.1
+    y0: 585.3
+    x1: 416.4
+    y1: 591.3
+- page: 5
+  field: 'Other(s):'
+  category: entry_blank
+  bbox:
+    x0: 275.4
+    y0: 591.6
+    x1: 415.9
+    y1: 602.6
+  region: lower
+  context: 'following MLS Other(s):'
+  ul_bbox:
+    x0: 309.0
+    y0: 596.6
+    x1: 415.9
+    y1: 602.6
+- page: 5
+  field: presented
+  category: entry_blank
+  bbox:
+    x0: 341.2
+    y0: 695.2
+    x1: 440.7
+    y1: 706.0
+  region: footer
+  context: Offers shall be presented on (date) or days after the Property is listed as active on the MLS.
+  ul_bbox:
+    x0: 387.3
+    y0: 700.0
+    x1: 440.7
+    y1: 706.0
+- page: 5
+  field: days
+  category: entry_days
+  bbox:
+    x0: 484.6
+    y0: 695.2
+    x1: 521.4
+    y1: 706.0
+  region: footer
+  context: Offers shall be presented on (date) or days after the Property is listed as active on the MLS.
+  ul_bbox:
+    x0: 484.6
+    y0: 700.0
+    x1: 506.9
+    y1: 706.0
+- page: 6
+  field: 5 (or
+  category: entry_days
+  bbox:
+    x0: 522.9
+    y0: 42.6
+    x1: 566.8
+    y1: 53.8
+  region: header
+  context: Structural Pest Control, General Property Inspection, reports selected within 5 (or ) days of the Beginning Date
+    of this
+  ul_bbox:
+    x0: 544.5
+    y0: 47.8
+    x1: 566.8
+    y1: 53.8
+- page: 6
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 15.3
+    x1: 308.0
+    y1: 27.4
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 21.4
+    x1: 450.5
+    y1: 27.4
+- page: 6
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.5
+    y0: 15.3
+    x1: 576.0
+    y1: 27.4
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 477.0
+    y0: 21.4
+    x1: 576.0
+    y1: 27.4
+- page: 6
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 282.5
+    y0: 105.0
+    x1: 429.3
+    y1: 115.8
+  region: header
+  context: 'Other:'
+  ul_bbox:
+    x0: 309.1
+    y0: 109.8
+    x1: 429.3
+    y1: 115.8
+- page: 6
+  field: contingency
+  category: entry_blank
+  bbox:
+    x0: 275.4
+    y0: 126.0
+    x1: 356.0
+    y1: 147.8
+  region: upper
+  context: G 21 Exceptions to Ownership/Title
+  ul_bbox:
+    x0: 275.4
+    y0: 128.0
+    x1: 573.6
+    y1: 134.0
+- page: 7
+  field: Escrow
+  category: entry_blank
+  bbox:
+    x0: 83.0
+    y0: 20.4
+    x1: 312.2
+    y1: 38.4
+  region: header
+  context: 'Property Address: Date: (2) Escrow Instructions: Owner hereby irrevocably assigns to Broker the above compensation
+    from '
+  ul_bbox:
+    x0: 110.5
+    y0: 22.4
+    x1: 450.5
+    y1: 28.4
+- page: 7
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: (2) Escrow Instructions: Owner hereby irrevocably assigns to Broker the above compensation
+    from '
+  ul_bbox:
+    x0: 477.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 8
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 16.3
+    x1: 308.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: F. UNDISCLOSED CONDITIONS; INCOMPLETE OR INCORRECT INFORMATION: Owner further agrees to
+    indemnif'
+  ul_bbox:
+    x0: 110.5
+    y0: 22.4
+    x1: 450.5
+    y1: 28.4
+- page: 8
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: F. UNDISCLOSED CONDITIONS; INCOMPLETE OR INCORRECT INFORMATION: Owner further agrees to
+    indemnif'
+  ul_bbox:
+    x0: 477.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 9
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 16.3
+    x1: 308.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: 12. PHOTOGRAPHS AND INTERNET ADVERTISING: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 22.4
+    x1: 450.5
+    y1: 28.4
+- page: 9
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: 12. PHOTOGRAPHS AND INTERNET ADVERTISING: , ,'
+  ul_bbox:
+    x0: 477.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 10
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 449.4
+    x1: 294.5
+    y1: 461.4
+  region: middle
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 97.0
+    y0: 455.4
+    x1: 302.0
+    y1: 461.4
+- page: 10
+  field: City
+  category: entry_address
+  bbox:
+    x0: 302.0
+    y0: 449.4
+    x1: 447.5
+    y1: 461.4
+  region: middle
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 322.5
+    y0: 455.4
+    x1: 447.5
+    y1: 461.4
+- page: 10
+  field: State
+  category: entry_address
+  bbox:
+    x0: 447.5
+    y0: 442.4
+    x1: 576.0
+    y1: 459.4
+  region: middle
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 486.5
+    y0: 444.4
+    x1: 576.0
+    y1: 450.4
+- page: 10
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 503.5
+    y0: 449.4
+    x1: 576.0
+    y1: 461.4
+  region: middle
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 521.0
+    y0: 455.4
+    x1: 576.0
+    y1: 461.4
+- page: 10
+  field: Email
+  category: entry_contact
+  bbox:
+    x0: 54.0
+    y0: 460.4
+    x1: 284.0
+    y1: 472.4
+  region: middle
+  context: 'Email Phone #'
+  ul_bbox:
+    x0: 86.5
+    y0: 466.4
+    x1: 426.5
+    y1: 472.4
+- page: 10
+  field: 'Phone #'
+  category: entry_contact
+  bbox:
+    x0: 426.5
+    y0: 460.4
+    x1: 576.0
+    y1: 472.4
+  region: middle
+  context: 'Email Phone #'
+  ul_bbox:
+    x0: 465.0
+    y0: 466.4
+    x1: 576.0
+    y1: 472.4
+- page: 10
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 54.0
+    y0: 507.4
+    x1: 294.5
+    y1: 519.4
+  region: lower
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 97.0
+    y0: 513.4
+    x1: 302.0
+    y1: 519.4
+- page: 10
+  field: City
+  category: entry_address
+  bbox:
+    x0: 302.0
+    y0: 507.4
+    x1: 447.5
+    y1: 519.4
+  region: lower
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 322.5
+    y0: 513.4
+    x1: 447.5
+    y1: 519.4
+- page: 10
+  field: State
+  category: entry_address
+  bbox:
+    x0: 447.5
+    y0: 500.4
+    x1: 576.0
+    y1: 517.4
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 486.5
+    y0: 502.4
+    x1: 576.0
+    y1: 508.4
+- page: 10
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 503.5
+    y0: 507.4
+    x1: 576.0
+    y1: 519.4
+  region: lower
+  context: 'Address City State Zip Email Phone #'
+  ul_bbox:
+    x0: 521.0
+    y0: 513.4
+    x1: 576.0
+    y1: 519.4
+- page: 10
+  field: Email
+  category: entry_contact
+  bbox:
+    x0: 54.0
+    y0: 518.3
+    x1: 284.0
+    y1: 530.4
+  region: lower
+  context: 'Email Phone # Additional Signature Addendum attached (C.A.R. Form ASA)'
+  ul_bbox:
+    x0: 86.5
+    y0: 524.4
+    x1: 426.5
+    y1: 530.4
+- page: 10
+  field: 'Phone #'
+  category: entry_contact
+  bbox:
+    x0: 426.5
+    y0: 518.3
+    x1: 576.0
+    y1: 530.4
+  region: lower
+  context: 'Email Phone # Additional Signature Addendum attached (C.A.R. Form ASA)'
+  ul_bbox:
+    x0: 465.0
+    y0: 524.4
+    x1: 576.0
+    y1: 530.4
+- page: 10
+  field: Real Estate Broker (Firm)
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 559.4
+    x1: 286.0
+    y1: 571.4
+  region: lower
+  context: 'Real Estate Broker (Firm) DRE Lic # Address City State Zip Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 140.5
+    y0: 565.4
+    x1: 425.5
+    y1: 571.4
+- page: 10
+  field: Address
+  category: entry_address
+  bbox:
+    x0: 36.0
+    y0: 570.4
+    x1: 269.0
+    y1: 582.4
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 71.5
+    y0: 576.4
+    x1: 296.5
+    y1: 582.4
+- page: 10
+  field: City
+  category: entry_address
+  bbox:
+    x0: 296.5
+    y0: 570.4
+    x1: 452.0
+    y1: 582.4
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 317.0
+    y0: 576.4
+    x1: 452.0
+    y1: 582.4
+- page: 10
+  field: State
+  category: entry_address
+  bbox:
+    x0: 452.0
+    y0: 570.4
+    x1: 508.0
+    y1: 582.4
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 478.0
+    y0: 576.4
+    x1: 508.0
+    y1: 582.4
+- page: 10
+  field: Zip
+  category: entry_address
+  bbox:
+    x0: 508.0
+    y0: 570.4
+    x1: 576.0
+    y1: 582.4
+  region: lower
+  context: Address City State Zip
+  ul_bbox:
+    x0: 525.5
+    y0: 576.4
+    x1: 576.0
+    y1: 582.4
+- page: 10
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 588.4
+    x1: 224.1
+    y1: 600.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 49.0
+    y0: 594.4
+    x1: 224.1
+    y1: 600.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 269.0
+    y0: 588.4
+    x1: 490.5
+    y1: 600.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 224.0
+    y0: 594.4
+    x1: 469.0
+    y1: 600.4
+- page: 10
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 163.5
+    y0: 599.3
+    x1: 391.5
+    y1: 611.4
+  region: lower
+  context: 'Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 194.0
+    y0: 605.4
+    x1: 429.0
+    y1: 611.4
+- page: 10
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 617.3
+    x1: 224.1
+    y1: 629.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 49.0
+    y0: 623.4
+    x1: 224.1
+    y1: 629.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 269.0
+    y0: 617.3
+    x1: 490.5
+    y1: 629.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 224.0
+    y0: 623.4
+    x1: 469.0
+    y1: 629.4
+- page: 10
+  field: E-mail
+  category: entry_contact
+  bbox:
+    x0: 163.5
+    y0: 628.3
+    x1: 391.5
+    y1: 640.4
+  region: lower
+  context: 'Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 194.0
+    y0: 634.4
+    x1: 429.0
+    y1: 640.4
+- page: 10
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 16.3
+    x1: 308.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: 20. ENTIRE AGREEMENT: All prior discussions, negotiations and agreements between the parties
+    con'
+  ul_bbox:
+    x0: 110.5
+    y0: 22.4
+    x1: 450.5
+    y1: 28.4
+- page: 10
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 450.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: 20. ENTIRE AGREEMENT: All prior discussions, negotiations and agreements between the parties
+    con'
+  ul_bbox:
+    x0: 477.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 10
+  field: purposes
+  category: entry_blank
+  bbox:
+    x0: 241.0
+    y0: 275.4
+    x1: 335.1
+    y1: 302.1
+  region: upper
+  context: 'full name of the estate, including case #): .'
+  ul_bbox:
+    x0: 241.0
+    y0: 277.4
+    x1: 576.0
+    y1: 283.4
+- page: 10
+  field: 'is/are:'
+  category: entry_blank
+  bbox:
+    x0: 280.4
+    y0: 386.9
+    x1: 441.0
+    y1: 398.9
+  region: middle
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , .'
+  ul_bbox:
+    x0: 311.0
+    y0: 392.9
+    x1: 441.0
+    y1: 398.9
+- page: 10
+  field: name
+  category: entry_blank
+  bbox:
+    x0: 94.2
+    y0: 420.4
+    x1: 314.2
+    y1: 437.4
+  region: middle
+  context: '(Signature) By, Date: Printed name of OWNER:'
+  ul_bbox:
+    x0: 116.5
+    y0: 422.4
+    x1: 471.5
+    y1: 428.4
+- page: 10
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 471.5
+    y0: 416.4
+    x1: 576.0
+    y1: 428.4
+  region: middle
+  context: '(Signature) By, Date: Printed name of OWNER:'
+  ul_bbox:
+    x0: 498.0
+    y0: 422.4
+    x1: 576.0
+    y1: 428.4
+- page: 10
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 222.8
+    y0: 438.3
+    x1: 409.5
+    y1: 450.4
+  region: middle
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 254.5
+    y0: 444.4
+    x1: 409.5
+    y1: 450.4
+- page: 10
+  field: name
+  category: entry_blank
+  bbox:
+    x0: 94.2
+    y0: 478.4
+    x1: 314.2
+    y1: 495.4
+  region: lower
+  context: '(Signature) By, Date: Printed name of OWNER:'
+  ul_bbox:
+    x0: 116.5
+    y0: 480.4
+    x1: 471.5
+    y1: 486.4
+- page: 10
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 471.5
+    y0: 474.3
+    x1: 576.0
+    y1: 486.4
+  region: lower
+  context: '(Signature) By, Date: Printed name of OWNER:'
+  ul_bbox:
+    x0: 498.0
+    y0: 480.4
+    x1: 576.0
+    y1: 486.4
+- page: 10
+  field: 'Signer:'
+  category: entry_blank
+  bbox:
+    x0: 222.8
+    y0: 496.4
+    x1: 409.5
+    y1: 508.4
+  region: lower
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, Address City State Zip'
+  ul_bbox:
+    x0: 254.5
+    y0: 502.4
+    x1: 409.5
+    y1: 508.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 469.0
+    y0: 588.4
+    x1: 576.0
+    y1: 600.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 493.0
+    y0: 594.4
+    x1: 576.0
+    y1: 600.4
+- page: 10
+  field: Tel.
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 599.3
+    x1: 163.5
+    y1: 611.4
+  region: lower
+  context: 'Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 53.5
+    y0: 605.4
+    x1: 163.5
+    y1: 611.4
+- page: 10
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 469.0
+    y0: 617.3
+    x1: 576.0
+    y1: 629.4
+  region: lower
+  context: 'By Date Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 493.0
+    y0: 623.4
+    x1: 576.0
+    y1: 629.4
+- page: 10
+  field: Tel.
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 628.3
+    x1: 163.5
+    y1: 640.4
+  region: lower
+  context: 'Tel. E-mail DRE Lic #'
+  ul_bbox:
+    x0: 53.5
+    y0: 634.4
+    x1: 163.5
+    y1: 640.4
+- page: 11
+  field: Other
+  category: entry_blank
+  bbox:
+    x0: 513.2
+    y0: 70.3
+    x1: 576.0
+    y1: 82.4
+  region: header
+  context: The following terms and conditions are hereby incorporated in and made a part of the Residential Listing Agreement,
+    Othe
+  ul_bbox:
+    x0: 541.0
+    y0: 76.4
+    x1: 576.0
+    y1: 82.4
+- page: 11
+  field: Seller's Initials
+  category: entry_signature
+  bbox:
+    x0: 360.0
+    y0: 724.9
+    x1: 455.3
+    y1: 736.9
+  region: footer
+  context: MLSA REVISED 12/25 (PAGE 1 OF 3) Seller's Initials /
+  ul_bbox:
+    x0: 425.2
+    y0: 730.9
+    x1: 455.3
+    y1: 736.9
+- page: 11
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 92.4
+    x1: 121.2
+    y1: 104.4
+  region: header
+  context: "dated , on property known as in which is referred to as (\u201CSeller\u201D) , ,"
+  ul_bbox:
+    x0: 61.3
+    y0: 98.4
+    x1: 121.2
+    y1: 104.4
+- page: 11
+  field: known
+  category: entry_blank
+  bbox:
+    x0: 178.5
+    y0: 92.4
+    x1: 399.0
+    y1: 104.4
+  region: header
+  context: "dated , on property known as in which is referred to as (\u201CSeller\u201D) , ,"
+  ul_bbox:
+    x0: 216.0
+    y0: 98.4
+    x1: 576.0
+    y1: 104.4
+- page: 12
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 485.5
+    y0: 15.9
+    x1: 576.0
+    y1: 27.9
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 512.0
+    y0: 21.9
+    x1: 576.0
+    y1: 27.9
+- page: 13
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 623.4
+    x1: 207.0
+    y1: 635.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 629.4
+    x1: 207.0
+    y1: 635.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 623.4
+    x1: 505.0
+    y1: 635.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 207.0
+    y0: 629.4
+    x1: 482.0
+    y1: 635.4
+- page: 13
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 637.3
+    x1: 207.0
+    y1: 649.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 643.4
+    x1: 207.0
+    y1: 649.4
+- page: 13
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 637.3
+    x1: 505.0
+    y1: 649.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 207.0
+    y0: 643.4
+    x1: 482.0
+    y1: 649.4
+- page: 13
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 668.4
+    x1: 164.0
+    y1: 680.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 49.0
+    y0: 674.4
+    x1: 164.0
+    y1: 680.4
+- page: 13
+  field: DRE Lic#
+  category: entry_license
+  bbox:
+    x0: 364.0
+    y0: 668.4
+    x1: 482.0
+    y1: 680.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 407.0
+    y0: 674.4
+    x1: 482.0
+    y1: 680.4
+- page: 13
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 682.3
+    x1: 164.0
+    y1: 694.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 49.0
+    y0: 688.4
+    x1: 164.0
+    y1: 694.4
+- page: 13
+  field: DRE Lic#
+  category: entry_license
+  bbox:
+    x0: 364.0
+    y0: 682.3
+    x1: 482.0
+    y1: 694.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 407.0
+    y0: 688.4
+    x1: 482.0
+    y1: 694.4
+- page: 13
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 485.5
+    y0: 15.9
+    x1: 576.0
+    y1: 27.9
+  region: header
+  context: 'Property Address: Date: SELLER INSTRUCTIONS TO BROKER , ,'
+  ul_bbox:
+    x0: 512.0
+    y0: 21.9
+    x1: 576.0
+    y1: 27.9
+- page: 13
+  field: (date),
+  category: entry_date
+  bbox:
+    x0: 200.5
+    y0: 280.4
+    x1: 287.2
+    y1: 292.4
+  region: upper
+  context: 'beginning of the Listing Period or (date), or . A. FULL EXPOSURE: Market the Property with full exposure to the
+    public s'
+  ul_bbox:
+    x0: 200.5
+    y0: 286.4
+    x1: 260.5
+    y1: 292.4
+- page: 13
+  field: exposure
+  category: entry_blank
+  bbox:
+    x0: 265.5
+    y0: 284.4
+    x1: 496.2
+    y1: 300.6
+  region: upper
+  context: 'beginning of the Listing Period or (date), or . A. FULL EXPOSURE: Market the Property with full exposure to the
+    public s'
+  ul_bbox:
+    x0: 313.5
+    y0: 286.4
+    x1: 573.5
+    y1: 292.4
+- page: 13
+  field: MLS)
+  category: entry_blank
+  bbox:
+    x0: 464.0
+    y0: 489.1
+    x1: 545.0
+    y1: 501.4
+  region: lower
+  context: OR (2) Begin marketing the Property to the public under FULL EXPOSURE (including through the MLS) on (date). 3.
+    OTHER IN
+  ul_bbox:
+    x0: 495.0
+    y0: 495.4
+    x1: 545.0
+    y1: 501.4
+- page: 13
+  field: 'INSTRUCTIONS/TERMS:'
+  category: entry_blank
+  bbox:
+    x0: 105.2
+    y0: 562.6
+    x1: 355.2
+    y1: 574.9
+  region: lower
+  context: 'B. OTHER INSTRUCTIONS/TERMS:'
+  ul_bbox:
+    x0: 213.0
+    y0: 568.9
+    x1: 576.0
+    y1: 574.9
+- page: 13
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 164.0
+    y0: 668.4
+    x1: 379.2
+    y1: 680.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 164.0
+    y0: 674.4
+    x1: 364.0
+    y1: 680.4
+- page: 13
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 164.0
+    y0: 682.3
+    x1: 379.2
+    y1: 694.4
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 164.0
+    y0: 688.4
+    x1: 364.0
+    y1: 694.4
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 264.9
+    y0: 623.2
+    x1: 491.2
+    y1: 637.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 233.1
+    y0: 631.4
+    x1: 464.9
+    y1: 637.4
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 264.9
+    y0: 645.2
+    x1: 491.2
+    y1: 659.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 233.1
+    y0: 653.4
+    x1: 464.9
+    y1: 659.4
+- page: 15
+  field: Seller/Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 623.2
+    x1: 233.1
+    y1: 637.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 98.9
+    y0: 631.4
+    x1: 233.1
+    y1: 637.4
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 464.9
+    y0: 623.2
+    x1: 576.0
+    y1: 637.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 494.2
+    y0: 631.4
+    x1: 576.0
+    y1: 637.4
+- page: 15
+  field: Seller/Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 645.2
+    x1: 233.1
+    y1: 659.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 98.9
+    y0: 653.4
+    x1: 233.1
+    y1: 659.4
+- page: 15
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 464.9
+    y0: 645.2
+    x1: 576.0
+    y1: 659.4
+  region: lower
+  context: Seller/Buyer Date
+  ul_bbox:
+    x0: 494.2
+    y0: 653.4
+    x1: 576.0
+    y1: 659.4
+- page: 17
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 77.8
+    x1: 229.2
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 84.9
+    x1: 229.2
+    y1: 90.9
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 290.0
+    y0: 77.8
+    x1: 513.9
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 229.2
+    y0: 84.9
+    x1: 490.0
+    y1: 90.9
+- page: 17
+  field: Buyer
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 93.7
+    x1: 229.2
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 100.9
+    x1: 229.2
+    y1: 106.9
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 290.0
+    y0: 93.7
+    x1: 513.9
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 229.2
+    y0: 100.9
+    x1: 490.0
+    y1: 106.9
+- page: 17
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 114.8
+    x1: 228.6
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 121.9
+    x1: 228.6
+    y1: 127.9
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 289.5
+    y0: 114.8
+    x1: 513.3
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 228.6
+    y0: 121.9
+    x1: 489.5
+    y1: 127.9
+- page: 17
+  field: Seller
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 130.8
+    x1: 228.6
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 137.9
+    x1: 228.6
+    y1: 143.9
+- page: 17
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 289.5
+    y0: 130.8
+    x1: 513.3
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 228.6
+    y0: 137.9
+    x1: 489.5
+    y1: 143.9
+- page: 17
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 152.3
+    x1: 286.0
+    y1: 165.4
+  region: upper
+  context: 'Buyer''s Brokerage Firm DRE Lic # Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 143.5
+    y0: 159.4
+    x1: 465.4
+    y1: 165.4
+- page: 17
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 166.2
+    x1: 247.7
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 173.4
+    x1: 383.5
+    y1: 179.4
+- page: 17
+  field: 'DRE Lic #'
+  category: entry_license
+  bbox:
+    x0: 383.5
+    y0: 166.2
+    x1: 489.5
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 434.0
+    y0: 173.4
+    x1: 489.5
+    y1: 179.4
+- page: 17
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 189.2
+    x1: 286.0
+    y1: 202.4
+  region: upper
+  context: 'Seller''s Brokerage Firm DRE Lic # Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 142.9
+    y0: 196.4
+    x1: 464.8
+    y1: 202.4
+- page: 17
+  field: By
+  category: entry_signature
+  bbox:
+    x0: 36.0
+    y0: 203.3
+    x1: 247.7
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 210.4
+    x1: 383.5
+    y1: 216.4
+- page: 17
+  field: 'DRE Lic #'
+  category: entry_license
+  bbox:
+    x0: 383.5
+    y0: 203.3
+    x1: 489.5
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 434.0
+    y0: 210.4
+    x1: 489.5
+    y1: 216.4
+- page: 18
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 393.3
+    x1: 481.2
+    y1: 406.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 168.8
+    y0: 400.4
+    x1: 457.3
+    y1: 406.4
+- page: 18
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 422.3
+    x1: 481.2
+    y1: 435.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 168.8
+    y0: 429.4
+    x1: 457.3
+    y1: 435.4
+- page: 18
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 393.3
+    x1: 576.0
+    y1: 406.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 400.4
+    x1: 576.0
+    y1: 406.4
+- page: 18
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 422.3
+    x1: 576.0
+    y1: 435.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 429.4
+    x1: 576.0
+    y1: 435.4

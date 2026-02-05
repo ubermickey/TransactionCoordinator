@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Transaction Coordinator</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger" id="hamburger" aria-label="Toggle sidebar">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <line x1="3" y1="5" x2="17" y2="5"/>
+          <line x1="3" y1="10" x2="17" y2="10"/>
+          <line x1="3" y1="15" x2="17" y2="15"/>
+        </svg>
+      </button>
+      <span class="logo">TC</span>
+      <span class="topbar-title">Transaction Coordinator</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-primary" id="btn-new">+ New</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-empty" id="sidebar-empty">No transactions</div>
+      <ul class="txn-list" id="txn-list"></ul>
+    </aside>
+    <main class="main" id="main">
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">&#x1F3E0;</div>
+        <h2>No transactions yet</h2>
+        <p>Create your first transaction to get started.</p>
+        <button class="btn btn-primary btn-lg" id="btn-new-empty">+ Create Transaction</button>
+      </div>
+      <div class="txn-detail" id="txn-detail" style="display:none">
+        <div class="detail-header" id="detail-header"></div>
+        <div class="phase-stepper" id="phase-stepper"></div>
+        <nav class="tab-bar" id="tab-bar">
+          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab" data-tab="docs">Documents</button>
+          <button class="tab" data-tab="signatures">Signatures</button>
+          <button class="tab" data-tab="contingencies">Contingencies</button>
+          <button class="tab" data-tab="parties">Parties</button>
+          <button class="tab" data-tab="disclosures">Disclosures</button>
+          <button class="tab" data-tab="gates">Gates</button>
+          <button class="tab" data-tab="deadlines">Deadlines</button>
+          <button class="tab" data-tab="audit">Audit</button>
+          <button class="tab" data-tab="verify">Verify</button>
+        </nav>
+        <div class="tab-content" id="tab-content"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New Transaction Modal -->
+  <div class="modal-backdrop" id="modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>New Transaction</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <form id="form-new" class="modal-body">
+        <label class="field-label">
+          Property Address
+          <input type="text" id="inp-address" placeholder="123 Main St, Beverly Hills, CA 90210" required autofocus>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Type
+            <select id="inp-type">
+              <option value="sale">Sale</option>
+              <option value="lease">Lease</option>
+            </select>
+          </label>
+          <label class="field-label">
+            Role
+            <select id="inp-role">
+              <option value="listing">Listing Agent</option>
+              <option value="buyer">Buyer Agent</option>
+            </select>
+          </label>
+        </div>
+        <label class="field-label">
+          Brokerage
+          <select id="inp-brokerage">
+            <option value="">None</option>
+          </select>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Signature Field Modal -->
+  <div class="modal-backdrop" id="sig-modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Signature Field</h3>
+        <button class="modal-close" id="sig-modal-close">&times;</button>
+      </div>
+      <form id="form-add-sig" class="modal-body">
+        <label class="field-label">
+          Document
+          <select id="sig-doc-code" required></select>
+        </label>
+        <label class="field-label">
+          Field Name
+          <input type="text" id="sig-field-name" placeholder="e.g. Buyer's Initials" required>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Type
+            <div class="radio-group">
+              <label class="radio-label"><input type="radio" name="sig-type" value="signature" checked> Signature</label>
+              <label class="radio-label"><input type="radio" name="sig-type" value="initials"> Initials</label>
+            </div>
+          </label>
+          <label class="field-label">
+            Page
+            <input type="number" id="sig-page" value="1" min="1" required>
+          </label>
+        </div>
+        <label class="field-label">
+          Note
+          <textarea id="sig-note" rows="2" placeholder="Optional note..."></textarea>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="sig-btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Field</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Contingency Modal -->
+  <div class="modal-backdrop" id="cont-modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Contingency</h3>
+        <button class="modal-close" id="cont-modal-close">&times;</button>
+      </div>
+      <form id="form-add-cont" class="modal-body">
+        <label class="field-label">
+          Type
+          <select id="cont-type" required>
+            <option value="">Select type...</option>
+            <option value="investigation">Investigation</option>
+            <option value="appraisal">Appraisal</option>
+            <option value="loan">Loan</option>
+            <option value="hoa">HOA Review</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Days
+            <input type="number" id="cont-days" value="17" min="1" max="365" required>
+          </label>
+          <label class="field-label">
+            Deadline Date
+            <input type="date" id="cont-deadline">
+          </label>
+        </div>
+        <label class="field-label">
+          Notes
+          <textarea id="cont-notes" rows="2" placeholder="Optional notes..."></textarea>
+        </label>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cont-btn-cancel">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Contingency</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PDF Viewer -->
+  <div class="pdf-viewer-backdrop" id="pdf-viewer" style="display:none">
+    <div class="pdf-viewer">
+      <div class="pdf-viewer-toolbar">
+        <span class="pdf-viewer-title" id="pdf-viewer-title"></span>
+        <div class="pdf-viewer-controls">
+          <button id="pdf-prev" title="Previous page">&lsaquo;</button>
+          <span id="pdf-page-info">1 / 1</span>
+          <button id="pdf-next" title="Next page">&rsaquo;</button>
+          <button id="pdf-zoom-out" title="Zoom out">&minus;</button>
+          <span id="pdf-zoom-level">100%</span>
+          <button id="pdf-zoom-in" title="Zoom in">+</button>
+          <button id="pdf-fit" title="Fit to width">Fit</button>
+          <button id="pdf-save-ann" title="Save annotations" class="btn btn-success btn-sm">Save</button>
+          <button id="pdf-close" class="pdf-viewer-close">&times;</button>
+        </div>
+      </div>
+      <div class="pdf-viewer-body">
+        <div class="pdf-viewer-sidebar" id="pdf-sidebar">
+          <div class="pdf-sidebar-header">Fields</div>
+          <div class="pdf-sidebar-legend">
+            <span class="pdf-legend filled"></span> Filled
+            <span class="pdf-legend empty"></span> Required
+            <span class="pdf-legend optional"></span> Optional
+            <span class="pdf-legend ignored"></span> Ignored
+          </div>
+          <div class="pdf-sidebar-stats" id="pdf-sidebar-stats"></div>
+          <div class="pdf-sidebar-list" id="pdf-sidebar-list"></div>
+        </div>
+        <div class="pdf-viewer-canvas-wrap" id="pdf-canvas-wrap">
+          <canvas id="pdf-canvas"></canvas>
+          <svg id="pdf-overlay" class="pdf-overlay"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bug Report Modal -->
+  <div class="modal-backdrop" id="bug-modal-backdrop" style="display:none">
+    <div class="modal" style="width:520px">
+      <div class="modal-header">
+        <h3>Report a Bug</h3>
+        <button class="modal-close" id="bug-modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="bug-modal-body">
+        <div class="bug-screenshot-preview" id="bug-screenshot-preview"></div>
+        <label class="field-label">
+          Summary
+          <input type="text" id="bug-summary" placeholder="Brief description of the issue" required>
+        </label>
+        <label class="field-label">
+          Details
+          <textarea id="bug-description" rows="3" placeholder="Steps to reproduce, expected vs actual behavior..."></textarea>
+        </label>
+        <div class="bug-action-log" id="bug-action-log-area">
+          <details>
+            <summary style="cursor:pointer;font-size:12px;color:var(--text-secondary)">Action log (<span id="bug-log-count">0</span> events)</summary>
+            <pre id="bug-action-log-pre" style="max-height:120px;overflow:auto;font-size:11px;margin-top:4px;padding:8px;background:var(--bg);border-radius:6px"></pre>
+          </details>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="bug-btn-cancel">Cancel</button>
+          <button type="button" class="btn btn-primary" id="bug-btn-submit">Submit Bug</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Bug Report FAB -->
+  <button class="bug-fab" id="bug-fab" aria-label="Report bug" title="Report a bug">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 2l1.88 1.88M14.12 3.88L16 2M9 7.13v-1a3.003 3.003 0 116 0v1"/>
+      <path d="M12 20c-3.3 0-6-2.7-6-6v-3a6 6 0 0112 0v3c0 3.3-2.7 6-6 6z"/>
+      <path d="M12 20v2M3 13h3M18 13h3M3 17h3M18 17h3"/>
+    </svg>
+  </button>
+
+  <!-- Chat FAB -->
+  <button class="chat-fab" id="chat-fab" aria-label="Open chat">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </button>
+
+  <!-- Chat Panel -->
+  <aside class="chat-panel" id="chat-panel">
+    <div class="chat-header">
+      <span class="chat-header-title">TC Assistant</span>
+      <button class="chat-header-close" id="chat-close">&times;</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-area">
+      <form class="chat-input-row" id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask about this transaction..." autocomplete="off">
+        <button type="submit" id="chat-send">Send</button>
+      </form>
+    </div>
+  </aside>
+
+  <!-- Command Palette -->
+  <div class="cmd-backdrop" id="cmd-backdrop">
+    <div class="cmd-dialog">
+      <input class="cmd-input" id="cmd-input" type="text" placeholder="Search transactions, gates, deadlines, docs..." autocomplete="off">
+      <div class="cmd-results" id="cmd-results"></div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Overlay -->
+  <div class="shortcuts-overlay" id="shortcuts-overlay">
+    <div class="shortcuts-dialog">
+      <h3>Keyboard Shortcuts</h3>
+      <div class="shortcuts-list">
+        <div class="shortcut-row"><span>Command Palette</span><kbd>&#8984;K</kbd></div>
+        <div class="shortcut-row"><span>Toggle Chat</span><kbd>&#8984;J</kbd></div>
+        <div class="shortcut-row"><span>New Transaction</span><kbd>&#8984;N</kbd></div>
+        <div class="shortcut-row"><span>Overview Tab</span><kbd>1</kbd></div>
+        <div class="shortcut-row"><span>Documents Tab</span><kbd>2</kbd></div>
+        <div class="shortcut-row"><span>Signatures Tab</span><kbd>3</kbd></div>
+        <div class="shortcut-row"><span>Contingencies Tab</span><kbd>4</kbd></div>
+        <div class="shortcut-row"><span>Parties Tab</span><kbd>5</kbd></div>
+        <div class="shortcut-row"><span>Disclosures Tab</span><kbd>6</kbd></div>
+        <div class="shortcut-row"><span>Gates Tab</span><kbd>7</kbd></div>
+        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>8</kbd></div>
+        <div class="shortcut-row"><span>Audit Tab</span><kbd>9</kbd></div>
+        <div class="shortcut-row"><span>Close Panel</span><kbd>Esc</kbd></div>
+        <div class="shortcut-row"><span>Show This Help</span><kbd>?</kbd></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
