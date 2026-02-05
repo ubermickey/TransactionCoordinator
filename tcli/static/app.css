@@ -390,6 +390,12 @@ body {
   color: var(--orange);
   font-weight: 500;
 }
+.txn-card-sigs {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.txn-card-sigs .sig-icon { margin-right: 2px; }
 .txn-card-urgency {
   position: absolute;
   top: 12px;
@@ -418,6 +424,19 @@ body {
 }
 .address-validation .addr-suggestion:hover {
   opacity: 0.8;
+}
+.addr-details {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+.addr-county {
+  background: var(--border);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  margin-left: 4px;
 }
 
 @keyframes fadeIn {
@@ -861,6 +880,23 @@ tbody tr:hover { background: var(--table-row-hover); }
 [data-theme="dark"] .days-pill.urgent { background: rgba(255,149,0,0.2); color: #ff9f0a; }
 [data-theme="dark"] .days-pill.soon { background: rgba(255,214,10,0.2); color: #ffd60a; }
 [data-theme="dark"] .days-pill.ok { background: rgba(48,209,88,0.2); color: #30d158; }
+
+.unconfirmed-banner {
+  background: var(--bg-accent, #fff3e0);
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  border-left: 3px solid #ff9800;
+}
+[data-theme="dark"] .unconfirmed-banner { background: rgba(255,152,0,0.12); }
+.unconfirmed-tag {
+  font-size: 10px;
+  color: #ff9800;
+  font-style: italic;
+  font-weight: 500;
+}
 
 /* ── Audit ────────────────────────────────────────────────────────────────── */
 .audit-list {

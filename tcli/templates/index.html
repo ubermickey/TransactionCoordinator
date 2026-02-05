@@ -92,7 +92,6 @@
       </div>
       <div class="txn-detail" id="txn-detail" style="display:none">
         <div class="detail-header" id="detail-header"></div>
-        <div class="phase-stepper" id="phase-stepper"></div>
         <nav class="tab-bar" id="tab-bar">
           <button class="tab active" data-tab="overview">Overview</button>
           <button class="tab" data-tab="docs">Documents</button>
@@ -139,12 +138,18 @@
             </select>
           </label>
         </div>
-        <label class="field-label">
-          Brokerage
-          <select id="inp-brokerage">
-            <option value="">None</option>
-          </select>
-        </label>
+        <div class="field-row">
+          <label class="field-label">
+            Brokerage
+            <select id="inp-brokerage">
+              <option value="">None</option>
+            </select>
+          </label>
+          <label class="field-label">
+            Acceptance Date
+            <input type="date" id="inp-acceptance-date">
+          </label>
+        </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-ghost" id="btn-cancel">Cancel</button>
           <button type="submit" class="btn btn-primary">Create</button>

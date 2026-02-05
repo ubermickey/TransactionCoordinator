@@ -1175,7 +1175,8 @@ function renderHome(txns) {
             <div class="txn-card-bar-track"><div class="txn-card-bar-fill gates" style="width:${gatePct}%"></div></div>
           </div>
         </div>
-        ${nextDl ? `<div class="txn-card-deadline">${esc(nextDl.name)}: ${nextDl.days_left}d</div>` : ''}
+        ${nextDl ? `<div class="txn-card-deadline">${esc(nextDl.name)}: ${_formatCountdown(nextDl.days_left)}</div>` : ''}
+        ${h.sig_total ? `<div class="txn-card-sigs"><span class="sig-icon">${h.sig_signed === h.sig_total ? '\u2705' : '\u270D\uFE0F'}</span> ${h.sig_signed || 0}/${h.sig_total} signed${h.sig_pending ? `, ${h.sig_pending} pending` : ''}</div>` : ''}
       </div>`;
   }).join('');
 
@@ -1216,7 +1217,6 @@ async function selectTxn(id) {
   }
 
   renderHeader(t);
-  renderStepper(t, phasesCache[txnType]);
   switchTab(currentTab);
 
   // Update sidebar timeline + enable tools
@@ -1482,13 +1482,12 @@ async function saveNotes() {
 
 async function advancePhase() {
   const res = await post(`/api/txns/${currentTxn}/advance`);
-  if (res._error) return;
   if (res.ok) {
     Toast.show('Phase advanced successfully', 'success');
     await selectTxn(currentTxn);
     loadTxns();
-  } else {
-    Toast.show('Cannot advance: ' + (res.blocking || []).join(', '), 'warning');
+  } else if (res.blocking && res.blocking.length > 0) {
+    Toast.show('Cannot advance — ' + res.blocking.length + ' blocking gate(s):\n' + res.blocking.slice(0, 3).join(', '), 'warning');
   }
 }
 
@@ -1709,7 +1708,7 @@ function renderDocsTable(docs) {
       const pdf = _findPdf(d.name, d.code);
       const nameCell = pdf
         ? `<a href="#" class="doc-pdf-link" data-folder="${esc(pdf.folder)}" data-file="${esc(pdf.file)}">${esc(d.name)}</a>`
-        : esc(d.name);
+        : `<a href="#" class="doc-pdf-link doc-no-pdf" data-code="${esc(d.code)}">${esc(d.name)}</a>`;
       html += `<tr>
         <td><code>${esc(d.code)}</code></td>
         <td>${nameCell}</td>
@@ -1725,6 +1724,10 @@ function renderDocsTable(docs) {
   area.querySelectorAll('.doc-pdf-link').forEach(el => {
     el.addEventListener('click', e => {
       e.preventDefault();
+      if (el.classList.contains('doc-no-pdf')) {
+        Toast.show('No PDF uploaded yet for this document. Use Upload to add it.', 'info');
+        return;
+      }
       PdfViewer.open(el.dataset.folder, el.dataset.file, currentTxn || '');
     });
   });
@@ -1987,15 +1990,21 @@ function renderDeadlinesView(dls) {
 }
 
 function renderDeadlinesTable(area, dls) {
-  let html = '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Deadline</th><th>Type</th><th>Due</th><th>Days</th></tr></thead><tbody>';
+  const anyUnconfirmed = dls.some(d => d.confirmed === false);
+  let html = '';
+  if (anyUnconfirmed) {
+    html += '<div class="unconfirmed-banner">Dates are estimated from acceptance date. Upload contracts to confirm actual dates.</div>';
+  }
+  html += '<div class="table-wrap"><table><thead><tr><th>ID</th><th>Deadline</th><th>Type</th><th>Due</th><th>Days</th></tr></thead><tbody>';
   dls.forEach(d => {
     const days = d.days_remaining;
     const pillCls = urgencyClass(days);
+    const unconf = d.confirmed === false ? ' <span class="unconfirmed-tag">est.</span>' : '';
     html += `<tr>
       <td><code>${esc(d.did)}</code></td>
       <td>${esc(d.name)}</td>
       <td>${esc(d.type || '')}</td>
-      <td>${d.due || '&mdash;'}</td>
+      <td>${d.due ? d.due + unconf : '&mdash;'}</td>
       <td>${days !== null ? `<span class="days-pill ${pillCls}">${days}d</span>` : '&mdash;'}</td>
     </tr>`;
   });
@@ -2087,11 +2096,11 @@ function hideTimelineTooltip() {
 let _sigData = [];
 let _sigSummary = {};
 let _sigEnvelopes = {};  // keyed by sig_review_id
-let _sandboxMode = true;
+let _emailSandbox = true;
 
 async function fetchSandboxStatus() {
   const res = await get('/api/sandbox-status');
-  if (!res._error) _sandboxMode = res.sandbox;
+  if (!res._error) _emailSandbox = res.email_sandbox;
 }
 
 async function renderSignatures() {
@@ -2104,7 +2113,7 @@ async function renderSignatures() {
     get(`/api/txns/${currentTxn}/envelopes`),
   ]);
 
-  if (!sbRes._error) _sandboxMode = sbRes.sandbox;
+  if (!sbRes._error) _emailSandbox = sbRes.email_sandbox;
   if (sigRes._error) return;
   _sigData = sigRes.items || [];
   _sigSummary = sigRes.summary || {};
@@ -2118,9 +2127,9 @@ async function renderSignatures() {
   const el = $('#tab-content');
   let html = '';
 
-  // Sandbox banner
-  if (_sandboxMode) {
-    html += '<div class="sandbox-banner">Sandbox mode — emails and API calls are simulated. No real messages are sent.</div>';
+  // Email sandbox banner
+  if (_emailSandbox) {
+    html += '<div class="sandbox-banner">Email sandbox — outgoing emails are captured but not sent. Set TC_EMAIL_SANDBOX=0 to send real email.</div>';
   }
 
   if (_sigData.length === 0) {
@@ -2303,9 +2312,7 @@ function renderSigList(items) {
         html += `<div class="sig-followup-actions">`;
         if (env.status !== 'signed' && env.status !== 'declined') {
           html += `<button class="btn btn-warning btn-sm" onclick="sigRemind(${item.id})">Send Reminder</button>`;
-          if (_sandboxMode) {
-            html += `<button class="btn btn-simulate btn-sm" onclick="sigSimulate(${item.id})">Simulate Sign</button>`;
-          }
+          html += `<button class="btn btn-simulate btn-sm" onclick="sigSimulate(${item.id})">Simulate Sign</button>`;
         }
         html += `</div>`;
       } else if (!item.is_filled) {
@@ -2341,7 +2348,7 @@ async function renderOutbox() {
 
   let html = `<div class="outbox-section">
     <div class="outbox-header" onclick="document.getElementById('outbox-list').classList.toggle('collapsed')">
-      <span>Email Outbox${_sandboxMode ? ' (sandbox)' : ''}</span>
+      <span>Email Outbox${_emailSandbox ? ' (sandbox)' : ''}</span>
       <span class="outbox-count">${outbox.length}</span>
     </div>
     <div class="outbox-list" id="outbox-list">`;
@@ -3273,8 +3280,27 @@ function verifyExitWorkflow() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 const SidebarTools = (() => {
+  // Hidden file input for uploads
+  let _fileInput = null;
+
   const actions = {
-    'upload': () => { if (currentTxn) switchTab('docs'); Toast.show('Switch to Documents tab to upload', 'info'); },
+    'upload': () => {
+      if (!currentTxn) return;
+      if (!_fileInput) {
+        _fileInput = document.createElement('input');
+        _fileInput.type = 'file';
+        _fileInput.accept = '.pdf';
+        _fileInput.style.display = 'none';
+        document.body.appendChild(_fileInput);
+        _fileInput.addEventListener('change', async () => {
+          const file = _fileInput.files[0];
+          if (!file) return;
+          await _handleUpload(file);
+          _fileInput.value = '';
+        });
+      }
+      _fileInput.click();
+    },
     'scan': () => { if (currentTxn) switchTab('verify'); },
     'send-sig': () => { if (currentTxn) switchTab('signatures'); },
     'request-docs': () => { if (currentTxn) switchTab('docs'); },
@@ -3284,12 +3310,35 @@ const SidebarTools = (() => {
     'report': () => { if (currentTxn) switchTab('overview'); },
   };
 
+  async function _handleUpload(file) {
+    Toast.show(`Uploading ${file.name}...`, 'info');
+    const form = new FormData();
+    form.append('file', file);
+    try {
+      const resp = await fetch(`/api/txns/${currentTxn}/upload`, { method: 'POST', body: form });
+      const data = await resp.json();
+      if (!resp.ok) {
+        Toast.show(data.error || 'Upload failed', 'error');
+        return;
+      }
+      let msg = `Uploaded ${data.filename}`;
+      if (data.fields_detected) msg += ` — ${data.fields_detected} fields detected`;
+      if (data.matched_doc) msg += ` — matched to ${data.matched_doc}`;
+      Toast.show(msg, 'success');
+      // Refresh current tab
+      const tab = document.querySelector('.tab.active');
+      if (tab) switchTab(tab.dataset.tab);
+    } catch (e) {
+      Toast.show('Upload failed: ' + e.message, 'error');
+    }
+  }
+
   function init() {
     $$('.tool-btn[data-tool]').forEach(btn => {
       btn.addEventListener('click', () => {
         const tool = btn.dataset.tool;
         if (actions[tool]) actions[tool]();
-        Sidebar.close(); // close on mobile
+        if (tool !== 'upload') Sidebar.close(); // close on mobile (not for upload — file picker)
       });
     });
   }
@@ -3352,15 +3401,25 @@ async function validateAddress(address) {
     el.className = 'address-validation valid';
     const matched = res.matched_address;
     const inp = $('#inp-address');
+
+    // Build property detail block
+    let details = '';
+    if (res.city || res.state || res.zip) {
+      details += `<div class="addr-details">`;
+      details += `<span>${esc(res.city)}, ${esc(res.state)} ${esc(res.zip)}</span>`;
+      if (res.county) details += ` <span class="addr-county">${esc(res.county)} County</span>`;
+      details += `</div>`;
+    }
+
     if (inp && inp.value.trim().toLowerCase() !== matched.toLowerCase()) {
-      el.innerHTML = `\u2713 Verified &mdash; <span class="addr-suggestion" title="Use this address">${esc(matched)}</span>`;
+      el.innerHTML = `\u2713 Verified &mdash; <span class="addr-suggestion" title="Click to use">${esc(matched)}</span>${details}`;
       el.querySelector('.addr-suggestion').addEventListener('click', () => {
         inp.value = matched;
-        el.innerHTML = '\u2713 ' + esc(matched);
+        el.innerHTML = `\u2713 ${esc(matched)}${details}`;
         el.className = 'address-validation valid';
       });
     } else {
-      el.innerHTML = '\u2713 ' + esc(matched);
+      el.innerHTML = `\u2713 ${esc(matched)}${details}`;
     }
   } else {
     el.className = 'address-validation invalid';
@@ -3374,6 +3433,10 @@ function openModal() {
   const valEl = $('#address-validation');
   if (valEl) { valEl.innerHTML = ''; valEl.className = 'address-validation'; }
   _addrValidResult = null;
+  // Default acceptance date to today
+  const today = new Date().toISOString().split('T')[0];
+  const dateInp = $('#inp-acceptance-date');
+  if (dateInp) dateInp.value = today;
 }
 
 function closeModal() {
@@ -3393,6 +3456,7 @@ async function handleCreate(e) {
     type: $('#inp-type').value,
     role: $('#inp-role').value,
     brokerage: $('#inp-brokerage').value,
+    acceptance_date: $('#inp-acceptance-date').value || '',
   };
   const res = await post('/api/txns', body);
   if (res._error) return;
@@ -3418,4 +3482,14 @@ function esc(s) {
 function formatPhase(id) {
   if (!id) return '';
   return id.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+}
+
+function _formatCountdown(days) {
+  if (days === null || days === undefined) return '';
+  if (days < 0) return `${Math.abs(days)}d overdue`;
+  if (days <= 3) {
+    const hours = days * 24;
+    return hours <= 0 ? 'TODAY' : `${hours}h`;
+  }
+  return `${days}d`;
 }

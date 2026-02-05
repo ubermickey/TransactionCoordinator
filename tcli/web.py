@@ -75,6 +75,26 @@ def validate_address():
         matched = m.get("matchedAddress", address)
         coords = m.get("coordinates", {})
 
+        # Also get county from the geographies endpoint
+        county = ""
+        try:
+            geo_url = (
+                f"https://geocoding.geo.census.gov/geocoder/geographies/onelineaddress"
+                f"?address={encoded}&benchmark=Public_AR_Current"
+                f"&vintage=Current_Current&format=json"
+            )
+            geo_req = urllib.request.Request(geo_url, headers={"User-Agent": "TC/1.0"})
+            with urllib.request.urlopen(geo_req, timeout=6) as geo_resp:
+                geo_data = json.loads(geo_resp.read())
+            geo_matches = geo_data.get("result", {}).get("addressMatches", [])
+            if geo_matches:
+                geos = geo_matches[0].get("geographies", {})
+                counties = geos.get("Counties", [])
+                if counties:
+                    county = counties[0].get("NAME", "")
+        except Exception:
+            pass
+
         return jsonify({
             "valid": True,
             "matched_address": matched,
@@ -82,6 +102,7 @@ def validate_address():
             "city": parts.get("city", ""),
             "state": parts.get("state", ""),
             "zip": parts.get("zip", ""),
+            "county": county,
             "lat": coords.get("y"),
             "lng": coords.get("x"),
         })
@@ -116,21 +137,44 @@ def create_txn():
     txn_type = body.get("type", "sale")
     party_role = body.get("role", "listing")
     brokerage = body.get("brokerage", "")
+    acceptance_date = body.get("acceptance_date", "")
 
     tid = uuid4().hex[:8]
     city = address.split(",")[1].strip() if "," in address else ""
     juris = rules.resolve(city)
     initial_phase = engine.default_phase(txn_type)
 
+    # Build initial data with dates
+    txn_data = {
+        "dates": {},
+        "contingencies": {"investigation_days": 17, "appraisal_days": 17,
+                          "loan_days": 21, "deposit_days": 3},
+    }
+    if acceptance_date:
+        txn_data["dates"]["acceptance"] = acceptance_date
+        # Default COE 30 days from acceptance for CA transactions
+        coe = (date.fromisoformat(acceptance_date) + timedelta(days=30)).isoformat()
+        txn_data["dates"]["close_of_escrow"] = coe
+        txn_data["dates"]["_confirmed"] = False  # unconfirmed until contracts arrive
+
     with db.conn() as c:
         c.execute(
-            "INSERT INTO txns(id,address,phase,jurisdictions,txn_type,party_role,brokerage,props) "
-            "VALUES(?,?,?,?,?,?,?,?)",
-            (tid, address, initial_phase, json.dumps(juris), txn_type, party_role, brokerage, "{}"),
+            "INSERT INTO txns(id,address,phase,jurisdictions,txn_type,party_role,brokerage,props,data) "
+            "VALUES(?,?,?,?,?,?,?,?,?)",
+            (tid, address, initial_phase, json.dumps(juris), txn_type, party_role,
+             brokerage, "{}", json.dumps(txn_data)),
         )
         db.log(c, tid, "created", f"{address} type={txn_type} role={party_role} brokerage={brokerage}")
 
     engine.init_gates(tid, brokerage=brokerage)
+
+    # Auto-calculate deadlines from acceptance date
+    if acceptance_date:
+        try:
+            anchor = date.fromisoformat(acceptance_date)
+            engine.calc_deadlines(tid, anchor, txn_data)
+        except Exception:
+            pass  # don't block creation on deadline calc failure
 
     # Populate docs if brokerage set
     if brokerage:
@@ -143,9 +187,48 @@ def create_txn():
                 )
             db.log(c, tid, "docs_populated", f"{len(docs)} documents from {brokerage}")
 
+    # Auto-populate default party placeholders
+    _init_default_parties(tid, txn_type, party_role, brokerage)
+
     with db.conn() as c:
         t = _txn_dict(db.txn(c, tid))
     return jsonify(t), 201
+
+
+def _init_default_parties(tid: str, txn_type: str, party_role: str, brokerage: str):
+    """Create placeholder party records for a new transaction."""
+    if txn_type == "lease":
+        roles = [
+            ("seller", "Landlord (TBD)"),
+            ("buyer", "Tenant (TBD)"),
+        ]
+    else:
+        roles = [
+            ("seller", "Seller (TBD)"),
+            ("buyer", "Buyer (TBD)"),
+        ]
+
+    if party_role == "listing":
+        roles.append(("seller_agent", "Listing Agent (You)"))
+        roles.append(("buyer_agent", "Buyer's Agent (TBD)"))
+    else:
+        roles.append(("buyer_agent", "Buyer's Agent (You)"))
+        roles.append(("seller_agent", "Listing Agent (TBD)"))
+
+    roles.extend([
+        ("escrow_officer", "Escrow Officer (TBD)"),
+        ("title_rep", "Title Representative (TBD)"),
+        ("lender", "Lender (TBD)"),
+    ])
+
+    with db.conn() as c:
+        for role, name in roles:
+            company = brokerage.replace("_", " ").title() if role.endswith("_agent") and "(You)" in name else ""
+            c.execute(
+                "INSERT OR IGNORE INTO parties(txn,role,name,company)"
+                " VALUES(?,?,?,?)",
+                (tid, role, name, company),
+            )
 
 
 @app.route("/api/txns/<tid>")
@@ -334,11 +417,19 @@ def set_props(tid):
 def get_deadlines(tid):
     rows = engine.deadline_rows(tid)
     today = date.today()
+
+    # Check if dates are confirmed from contract extraction
+    with db.conn() as c:
+        t = db.txn(c, tid)
+    txn_data = json.loads((t or {}).get("data") or "{}")
+    dates_confirmed = (txn_data.get("dates") or {}).get("_confirmed", False)
+
     for d in rows:
         if d.get("due"):
             d["days_remaining"] = (date.fromisoformat(d["due"]) - today).days
         else:
             d["days_remaining"] = None
+        d["confirmed"] = dates_confirmed
     return jsonify(rows)
 
 
@@ -561,7 +652,13 @@ def delete_signature(tid, sig_id):
 
 @app.route("/api/sandbox-status")
 def sandbox_status():
-    return jsonify({"sandbox": integrations.SANDBOX})
+    return jsonify({"email_sandbox": integrations.EMAIL_SANDBOX})
+
+
+@app.route("/api/docusign-status")
+def docusign_status():
+    """Check DocuSign configuration status and get setup instructions."""
+    return jsonify(integrations.docusign_status())
 
 
 @app.route("/api/txns/<tid>/signatures/<int:sig_id>/send", methods=["POST"])
@@ -598,9 +695,7 @@ def remind_signature(tid, sig_id):
 
 @app.route("/api/txns/<tid>/signatures/<int:sig_id>/simulate", methods=["POST"])
 def simulate_signature(tid, sig_id):
-    """Sandbox only: simulate a signer completing the signature."""
-    if not integrations.SANDBOX:
-        return jsonify({"error": "simulate only available in sandbox mode"}), 403
+    """Testing utility: simulate a signer completing the signature."""
 
     with db.conn() as c:
         # Find the envelope tracking record for this sig
@@ -1075,6 +1170,18 @@ def dashboard():
             if overdue_count > 0:
                 health = "red"
 
+            # Signature tracking
+            sig_total = c.execute(
+                "SELECT COUNT(*) FROM sig_reviews WHERE txn=?", (tid,)
+            ).fetchone()[0]
+            sig_signed = c.execute(
+                "SELECT COUNT(*) FROM sig_reviews WHERE txn=? AND is_filled=1", (tid,)
+            ).fetchone()[0]
+            sig_sent = c.execute(
+                "SELECT COUNT(DISTINCT sig_review_id) FROM envelope_tracking WHERE txn=? AND status='sent'",
+                (tid,),
+            ).fetchone()[0]
+
             items.append({
                 "id": tid,
                 "address": t["address"],
@@ -1089,6 +1196,9 @@ def dashboard():
                 "doc_stats": ds,
                 "urgent_deadlines": [dict(d) for d in urgent_dl],
                 "urgent_contingencies": [dict(d) for d in urgent_cont],
+                "sig_total": sig_total,
+                "sig_signed": sig_signed,
+                "sig_pending": sig_sent,
                 "notes": notes,
             })
 
@@ -1560,6 +1670,100 @@ def contract_annotated_pdf(cid):
 
     return Response(data, mimetype="application/pdf",
                     headers={"Content-Disposition": f"inline; filename=annotated-{ct['filename']}"})
+
+
+# ── Document Upload ───────────────────────────────────────────────────────────
+
+@app.route("/api/txns/<tid>/upload", methods=["POST"])
+def upload_document(tid):
+    """Upload a PDF document to a transaction. Stores in CAR Contract Packages/<tid>/."""
+    if "file" not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    f = request.files["file"]
+    if not f.filename or not f.filename.lower().endswith(".pdf"):
+        return jsonify({"error": "Only PDF files are accepted"}), 400
+
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "transaction not found"}), 404
+
+    # Store in a transaction-specific folder
+    upload_dir = doc_versions.CAR_DIR / f"uploads_{tid}"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    safe_name = re.sub(r'[^\w\-. ()]', '_', f.filename)
+    dest = upload_dir / safe_name
+    f.save(str(dest))
+
+    # Try to auto-scan the document for fields
+    result = {"filename": safe_name, "folder": f"uploads_{tid}", "path": str(dest)}
+    try:
+        scan_result = contract_scanner.scan_pdf(str(dest))
+        if scan_result:
+            # Store in contracts table
+            with db.conn() as c:
+                c.execute(
+                    "INSERT INTO contracts(folder, filename, scenario) VALUES(?,?,?)",
+                    (f"uploads_{tid}", safe_name, tid),
+                )
+                cid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+                fields = scan_result.get("fields", [])
+                for idx, fld in enumerate(fields):
+                    c.execute(
+                        "INSERT INTO contract_fields(contract_id, field_idx, label, category,"
+                        " page, bbox, is_filled, fill_confidence, context, ul_bbox)"
+                        " VALUES(?,?,?,?,?,?,?,?,?,?)",
+                        (cid, idx, fld.get("label", ""), fld.get("category", ""),
+                         fld.get("page", 0), json.dumps(fld.get("bbox", [])),
+                         1 if fld.get("is_filled") else 0,
+                         fld.get("fill_confidence", 0),
+                         fld.get("context", ""),
+                         json.dumps(fld.get("ul_bbox", []))),
+                    )
+                db.log(c, tid, "doc_uploaded", f"{safe_name}: {len(fields)} fields detected")
+            result["contract_id"] = cid
+            result["fields_detected"] = len(fields)
+            result["fields"] = fields
+    except Exception as e:
+        result["scan_error"] = str(e)
+
+    # Try to match to a checklist doc code and auto-receive
+    matched_code = _match_upload_to_doc(tid, safe_name)
+    if matched_code:
+        result["matched_doc"] = matched_code
+
+    return jsonify(result), 201
+
+
+def _match_upload_to_doc(tid: str, filename: str) -> str | None:
+    """Try to match an uploaded filename to a checklist doc code and mark received."""
+    name_lower = filename.lower()
+    # Common CAR form abbreviation matching
+    code_patterns = {
+        "rpa": "RPA", "tds": "TDS", "spq": "SPQ", "nhd": "NHD",
+        "ad": "AD", "bia": "BIA", "wfi": "WFI", "sbsa": "SBSA",
+        "avid": "AVID", "prbs": "PRBS", "cr1": "CR1",
+        "appraisal": "APPR_RPT", "inspection": "INSP_RPT",
+        "pest": "PEST_RPT", "termite": "PEST_RPT",
+        "title": "PTITLE", "closing_disc": "CLOSING_DISC",
+        "grant_deed": "GRANT_DEED", "w9": "W9_SELLER",
+        "loan": "LOAN_COMMIT",
+    }
+    matched = None
+    for pattern, code in code_patterns.items():
+        if pattern in name_lower:
+            matched = code
+            break
+    if matched:
+        with db.conn() as c:
+            row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, matched)).fetchone()
+            if row and row["status"] == "required":
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                c.execute("UPDATE docs SET status='received', received=? WHERE txn=? AND code=?",
+                          (now, tid, matched))
+                db.log(c, tid, "doc_received", f"{matched} auto-matched from upload: {filename}")
+        return matched
+    return None
 
 
 # ── Bug Reports ───────────────────────────────────────────────────────────────
