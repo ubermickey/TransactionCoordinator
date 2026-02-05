@@ -2,6 +2,8 @@
 import json
 import os
 import re
+import urllib.request
+import urllib.parse
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from uuid import uuid4
@@ -42,6 +44,50 @@ def _doc_stats(c, tid: str) -> dict:
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+# ── Address Validation ───────────────────────────────────────────────────
+
+@app.route("/api/validate-address", methods=["POST"])
+def validate_address():
+    """Validate address via US Census Bureau geocoder and return canonical form."""
+    body = request.json or {}
+    address = (body.get("address") or "").strip()
+    if not address:
+        return jsonify({"valid": False, "error": "No address provided"}), 400
+
+    try:
+        encoded = urllib.parse.quote(address)
+        url = (
+            f"https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
+            f"?address={encoded}&benchmark=Public_AR_Current&format=json"
+        )
+        req = urllib.request.Request(url, headers={"User-Agent": "TC/1.0"})
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read())
+
+        matches = data.get("result", {}).get("addressMatches", [])
+        if not matches:
+            return jsonify({"valid": False, "error": "Address not found"})
+
+        m = matches[0]
+        parts = m.get("addressComponents", {})
+        matched = m.get("matchedAddress", address)
+        coords = m.get("coordinates", {})
+
+        return jsonify({
+            "valid": True,
+            "matched_address": matched,
+            "street": f"{parts.get('preQualifier', '')} {parts.get('preDirection', '')} {parts.get('streetName', '')} {parts.get('suffixType', '')} {parts.get('suffixDirection', '')}".strip(),
+            "city": parts.get("city", ""),
+            "state": parts.get("state", ""),
+            "zip": parts.get("zip", ""),
+            "lat": coords.get("y"),
+            "lng": coords.get("x"),
+        })
+    except Exception as e:
+        # Don't block creation on geocoder failure — just warn
+        return jsonify({"valid": None, "error": f"Validation unavailable: {str(e)}"})
 
 
 # ── Transactions ─────────────────────────────────────────────────────────────

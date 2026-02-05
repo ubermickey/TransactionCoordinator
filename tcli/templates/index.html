@@ -21,23 +21,74 @@
       <span class="logo">TC</span>
       <span class="topbar-title">Transaction Coordinator</span>
     </div>
-    <div class="topbar-right">
-      <button class="btn btn-primary" id="btn-new">+ New</button>
-    </div>
+    <div class="topbar-right"></div>
   </header>
 
   <div class="layout">
     <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-empty" id="sidebar-empty">No transactions</div>
-      <ul class="txn-list" id="txn-list"></ul>
+      <div class="sidebar-tools" id="sidebar-tools">
+        <div class="sidebar-section-label">Actions</div>
+        <button class="tool-btn" id="tool-upload" data-tool="upload" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Upload Document</span>
+        </button>
+        <button class="tool-btn" id="tool-scan" data-tool="scan" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>Scan Contract</span>
+        </button>
+        <button class="tool-btn" id="tool-send-sig" data-tool="send-sig" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Send for Signature</span>
+        </button>
+        <button class="tool-btn" id="tool-request-docs" data-tool="request-docs" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>Request Documents</span>
+        </button>
+        <button class="tool-btn" id="tool-add-deadline" data-tool="add-deadline" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Add Deadline</span>
+        </button>
+        <button class="tool-btn" id="tool-add-party" data-tool="add-party" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          <span>Add Party</span>
+        </button>
+        <button class="tool-btn" id="tool-compliance" data-tool="compliance" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Compliance Check</span>
+        </button>
+        <button class="tool-btn" id="tool-report" data-tool="report" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          <span>Status Report</span>
+        </button>
+      </div>
+      <div class="sidebar-timeline" id="sidebar-timeline">
+        <div class="sidebar-section-label">Timeline</div>
+        <div class="sidebar-timeline-steps" id="sidebar-timeline-steps">
+          <div class="sidebar-timeline-empty">Select a transaction</div>
+        </div>
+      </div>
+      <div class="sidebar-bottom">
+        <button class="tool-btn tool-btn-home" id="btn-home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Home</span>
+        </button>
+      </div>
     </aside>
     <main class="main" id="main">
-      <div class="empty-state" id="empty-state">
-        <div class="empty-icon">&#x1F3E0;</div>
-        <h2>No transactions yet</h2>
-        <p>Create your first transaction to get started.</p>
-        <button class="btn btn-primary btn-lg" id="btn-new-empty">+ Create Transaction</button>
+      <div class="home-view" id="home-view">
+        <div class="home-header">
+          <h1 class="home-title">Transactions</h1>
+          <button class="btn btn-primary" id="btn-new">+ New Transaction</button>
+        </div>
+        <div class="home-grid" id="home-grid">
+          <div class="home-empty" id="home-empty">
+            <div class="empty-icon">&#x1F3E0;</div>
+            <h2>No transactions yet</h2>
+            <p>Create your first transaction to get started.</p>
+            <button class="btn btn-primary btn-lg" id="btn-new-empty">+ Create Transaction</button>
+          </div>
+        </div>
       </div>
       <div class="txn-detail" id="txn-detail" style="display:none">
         <div class="detail-header" id="detail-header"></div>
@@ -70,6 +121,7 @@
         <label class="field-label">
           Property Address
           <input type="text" id="inp-address" placeholder="123 Main St, Beverly Hills, CA 90210" required autofocus>
+          <div class="address-validation" id="address-validation"></div>
         </label>
         <div class="field-row">
           <label class="field-label">

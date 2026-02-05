@@ -1021,6 +1021,7 @@ document.addEventListener('DOMContentLoaded', () => {
   CmdPalette.init();
   Shortcuts.init();
   PdfViewer.init();
+  SidebarTools.init();
 
   loadBrokerages();
   loadTxns();
@@ -1033,6 +1034,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target === e.currentTarget) closeModal();
   });
   $('#form-new').addEventListener('submit', handleCreate);
+
+  // Address validation on blur
+  const addrInput = $('#inp-address');
+  if (addrInput) {
+    let addrTimeout;
+    addrInput.addEventListener('input', () => {
+      clearTimeout(addrTimeout);
+      const v = addrInput.value.trim();
+      if (v.length > 10) {
+        addrTimeout = setTimeout(() => validateAddress(v), 600);
+      } else {
+        const valEl = $('#address-validation');
+        if (valEl) valEl.innerHTML = '';
+      }
+    });
+  }
+
+  // Home button
+  const homeBtn = $('#btn-home');
+  if (homeBtn) homeBtn.addEventListener('click', showHome);
 
   // Signature modal
   const sigClose = $('#sig-modal-close');
@@ -1084,24 +1105,12 @@ async function loadBrokerages() {
 
 // ── Transaction List ────────────────────────────────────────────────────────
 
+let allTxns = [];
+
 async function loadTxns() {
   const txns = await get('/api/txns');
   if (txns._error) return;
-  const list = $('#txn-list');
-  const empty = $('#sidebar-empty');
-  const emptyState = $('#empty-state');
-  const detail = $('#txn-detail');
-
-  if (txns.length === 0) {
-    list.innerHTML = '';
-    empty.style.display = '';
-    emptyState.style.display = '';
-    detail.style.display = 'none';
-    return;
-  }
-
-  empty.style.display = 'none';
-  emptyState.style.display = 'none';
+  allTxns = txns;
 
   // Fetch dashboard data for urgency indicators
   const dash = await get('/api/dashboard');
@@ -1110,58 +1119,91 @@ async function loadTxns() {
     dash.forEach(d => { healthMap[d.id] = d; });
   }
 
-  list.innerHTML = txns.map(t => {
+  // Store health data on txns
+  txns.forEach(t => { t._health = healthMap[t.id] || {}; });
+
+  // If we're on the home view, render it
+  const homeView = $('#home-view');
+  if (homeView && homeView.style.display !== 'none') {
+    renderHome(txns);
+  }
+}
+
+function renderHome(txns) {
+  const grid = $('#home-grid');
+  const homeEmpty = $('#home-empty');
+  if (!grid) return;
+
+  if (!txns || txns.length === 0) {
+    grid.innerHTML = '';
+    if (homeEmpty) grid.appendChild(homeEmpty);
+    homeEmpty.style.display = '';
+    return;
+  }
+
+  if (homeEmpty) homeEmpty.style.display = 'none';
+
+  grid.innerHTML = txns.map(t => {
     const ds = t.doc_stats || {};
-    const pct = ds.total ? Math.round((ds.received / ds.total) * 100) : 0;
-    const active = currentTxn === t.id ? ' active' : '';
-    const h = healthMap[t.id] || {};
+    const docPct = ds.total ? Math.round((ds.received / ds.total) * 100) : 0;
+    const gatePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
+    const h = t._health || {};
     const health = h.health || 'green';
     const urgentCount = (h.overdue || 0) + (h.soon || 0);
     const nextDl = (h.urgent_deadlines || [])[0];
-    const gatePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
+
     return `
-      <li class="txn-item${active}" data-id="${t.id}">
-        <div class="txn-item-top">
+      <div class="txn-card" data-id="${t.id}">
+        <div class="txn-card-top">
           <span class="health-dot health-${health}" title="${health === 'red' ? 'Overdue items' : health === 'yellow' ? 'Items due soon' : 'On track'}"></span>
-          <div class="txn-address">${esc(t.address)}</div>
-          ${urgentCount > 0 ? `<span class="urgency-badge urgency-${health}">${urgentCount}</span>` : ''}
+          <div class="txn-card-address">${esc(t.address)}</div>
         </div>
-        <div class="txn-meta">
+        ${urgentCount > 0 ? `<div class="txn-card-urgency"><span class="urgency-badge urgency-${health}">${urgentCount}</span></div>` : ''}
+        <div class="txn-card-meta">
           <span class="type-badge ${t.txn_type}">${t.txn_type}</span>
           <span class="type-badge ${t.party_role}">${t.party_role}</span>
-          <span class="phase-badge">${formatPhase(t.phase)}</span>
+          ${t.brokerage ? `<span class="type-badge" style="background:var(--border);color:var(--text-secondary)">${esc(t.brokerage.replace(/_/g,' '))}</span>` : ''}
         </div>
-        <div class="txn-bars">
-          <div class="mini-bar" title="Docs: ${pct}%"><div class="mini-bar-fill mini-bar-docs" style="width:${pct}%"></div></div>
-          <div class="mini-bar" title="Gates: ${gatePct}%"><div class="mini-bar-fill mini-bar-gates" style="width:${gatePct}%"></div></div>
+        <div class="txn-card-phase">${formatPhase(t.phase)}</div>
+        <div class="txn-card-bars">
+          <div class="txn-card-bar">
+            <div class="txn-card-bar-label"><span>Docs</span><span>${docPct}%</span></div>
+            <div class="txn-card-bar-track"><div class="txn-card-bar-fill docs" style="width:${docPct}%"></div></div>
+          </div>
+          <div class="txn-card-bar">
+            <div class="txn-card-bar-label"><span>Gates</span><span>${gatePct}%</span></div>
+            <div class="txn-card-bar-track"><div class="txn-card-bar-fill gates" style="width:${gatePct}%"></div></div>
+          </div>
         </div>
-        ${nextDl ? `<div class="txn-next-dl">${esc(nextDl.name)}: ${nextDl.days_left}d</div>` : ''}
-      </li>`;
+        ${nextDl ? `<div class="txn-card-deadline">${esc(nextDl.name)}: ${nextDl.days_left}d</div>` : ''}
+      </div>`;
   }).join('');
 
-  $$('.txn-item').forEach(el => {
-    el.addEventListener('click', () => {
-      selectTxn(el.dataset.id);
-      Sidebar.close();  // close mobile sidebar on selection
-    });
+  // Click to select transaction
+  $$('.txn-card').forEach(el => {
+    el.addEventListener('click', () => selectTxn(el.dataset.id));
   });
+}
 
-  // Auto-select
-  if (!currentTxn && txns.length > 0) {
-    selectTxn(txns[0].id);
-  } else if (currentTxn) {
-    selectTxn(currentTxn);
-  }
+function showHome() {
+  currentTxn = null;
+  const homeView = $('#home-view');
+  const detail = $('#txn-detail');
+  if (homeView) homeView.style.display = '';
+  if (detail) detail.style.display = 'none';
+  renderHome(allTxns);
+  updateSidebarTimeline(null);
+  SidebarTools.updateState(false);
 }
 
 async function selectTxn(id) {
   currentTxn = id;
-  $$('.txn-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.id === id);
-  });
 
-  $('#empty-state').style.display = 'none';
-  $('#txn-detail').style.display = '';
+  // Switch from home to detail view
+  const homeView = $('#home-view');
+  const detail = $('#txn-detail');
+  if (homeView) homeView.style.display = 'none';
+  if (detail) detail.style.display = '';
 
   const t = await get(`/api/txns/${id}`);
   if (t._error) return;
@@ -1176,6 +1218,10 @@ async function selectTxn(id) {
   renderHeader(t);
   renderStepper(t, phasesCache[txnType]);
   switchTab(currentTab);
+
+  // Update sidebar timeline + enable tools
+  updateSidebarTimeline(t, phasesCache[txnType]);
+  SidebarTools.updateState(true);
 
   // Pre-cache gates, deadlines, docs for command palette
   prefetchForPalette(id);
@@ -3222,9 +3268,112 @@ function verifyExitWorkflow() {
 
 // ── Modal ───────────────────────────────────────────────────────────────────
 
+// ══════════════════════════════════════════════════════════════════════════════
+//  SIDEBAR TOOLS
+// ══════════════════════════════════════════════════════════════════════════════
+
+const SidebarTools = (() => {
+  const actions = {
+    'upload': () => { if (currentTxn) switchTab('docs'); Toast.show('Switch to Documents tab to upload', 'info'); },
+    'scan': () => { if (currentTxn) switchTab('verify'); },
+    'send-sig': () => { if (currentTxn) switchTab('signatures'); },
+    'request-docs': () => { if (currentTxn) switchTab('docs'); },
+    'add-deadline': () => { if (currentTxn) switchTab('deadlines'); },
+    'add-party': () => { if (currentTxn) switchTab('parties'); },
+    'compliance': () => { if (currentTxn) switchTab('gates'); },
+    'report': () => { if (currentTxn) switchTab('overview'); },
+  };
+
+  function init() {
+    $$('.tool-btn[data-tool]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tool = btn.dataset.tool;
+        if (actions[tool]) actions[tool]();
+        Sidebar.close(); // close on mobile
+      });
+    });
+  }
+
+  function updateState(hasTxn) {
+    $$('.tool-btn[data-tool]').forEach(btn => {
+      btn.disabled = !hasTxn;
+    });
+  }
+
+  return { init, updateState };
+})();
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SIDEBAR TIMELINE
+// ══════════════════════════════════════════════════════════════════════════════
+
+function updateSidebarTimeline(txn, phases) {
+  const el = $('#sidebar-timeline-steps');
+  if (!el) return;
+
+  if (!txn || !phases || phases._error) {
+    el.innerHTML = '<div class="sidebar-timeline-empty">Select a transaction</div>';
+    return;
+  }
+
+  const currentIdx = phases.findIndex(p => p.id === txn.phase);
+  el.innerHTML = phases.map((p, i) => {
+    let cls = 'future';
+    if (i < currentIdx) cls = 'completed';
+    else if (i === currentIdx) cls = 'current';
+    return `<div class="stl-step ${cls}">${esc(p.name || p.id)}</div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  ADDRESS VALIDATION
+// ══════════════════════════════════════════════════════════════════════════════
+
+let _addrValidResult = null;
+
+async function validateAddress(address) {
+  const el = $('#address-validation');
+  if (!el) return;
+
+  el.className = 'address-validation validating';
+  el.textContent = 'Validating address...';
+  _addrValidResult = null;
+
+  const res = await post('/api/validate-address', { address });
+
+  if (res._error || res.valid === null) {
+    el.className = 'address-validation';
+    el.innerHTML = '<span style="color:var(--text-secondary)">Could not verify (will still create)</span>';
+    return;
+  }
+
+  if (res.valid) {
+    _addrValidResult = res;
+    el.className = 'address-validation valid';
+    const matched = res.matched_address;
+    const inp = $('#inp-address');
+    if (inp && inp.value.trim().toLowerCase() !== matched.toLowerCase()) {
+      el.innerHTML = `\u2713 Verified &mdash; <span class="addr-suggestion" title="Use this address">${esc(matched)}</span>`;
+      el.querySelector('.addr-suggestion').addEventListener('click', () => {
+        inp.value = matched;
+        el.innerHTML = '\u2713 ' + esc(matched);
+        el.className = 'address-validation valid';
+      });
+    } else {
+      el.innerHTML = '\u2713 ' + esc(matched);
+    }
+  } else {
+    el.className = 'address-validation invalid';
+    el.textContent = '\u2717 Address not found \u2014 check street, city, and zip';
+  }
+}
+
 function openModal() {
   $('#modal-backdrop').style.display = '';
   $('#inp-address').focus();
+  const valEl = $('#address-validation');
+  if (valEl) { valEl.innerHTML = ''; valEl.className = 'address-validation'; }
+  _addrValidResult = null;
 }
 
 function closeModal() {
@@ -3234,8 +3383,13 @@ function closeModal() {
 
 async function handleCreate(e) {
   e.preventDefault();
+  // Use validated address if available, otherwise use raw input
+  let address = $('#inp-address').value;
+  if (_addrValidResult && _addrValidResult.matched_address) {
+    address = _addrValidResult.matched_address;
+  }
   const body = {
-    address: $('#inp-address').value,
+    address,
     type: $('#inp-type').value,
     role: $('#inp-role').value,
     brokerage: $('#inp-brokerage').value,
@@ -3243,10 +3397,10 @@ async function handleCreate(e) {
   const res = await post('/api/txns', body);
   if (res._error) return;
   if (res.id) {
-    currentTxn = res.id;
     closeModal();
     Toast.show('Transaction created', 'success');
-    loadTxns();
+    await loadTxns();
+    selectTxn(res.id);
   } else {
     Toast.show(res.error || 'Failed to create', 'error');
   }
