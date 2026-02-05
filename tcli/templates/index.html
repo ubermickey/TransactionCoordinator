@@ -62,12 +62,6 @@
           <span>Status Report</span>
         </button>
       </div>
-      <div class="sidebar-timeline" id="sidebar-timeline">
-        <div class="sidebar-section-label">Timeline</div>
-        <div class="sidebar-timeline-steps" id="sidebar-timeline-steps">
-          <div class="sidebar-timeline-empty">Select a transaction</div>
-        </div>
-      </div>
       <div class="sidebar-bottom">
         <button class="tool-btn tool-btn-home" id="btn-home">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -93,7 +87,7 @@
       <div class="txn-detail" id="txn-detail" style="display:none">
         <div class="detail-header" id="detail-header"></div>
         <nav class="tab-bar" id="tab-bar">
-          <button class="tab active" data-tab="overview">Overview</button>
+          <button class="tab active" data-tab="overview">Dashboard</button>
           <button class="tab" data-tab="docs">Documents</button>
           <button class="tab" data-tab="signatures">Signatures</button>
           <button class="tab" data-tab="contingencies">Contingencies</button>
@@ -320,6 +314,52 @@
     </svg>
   </button>
 
+  <!-- Review FAB -->
+  <button class="review-fab" id="review-fab" aria-label="Review mode" title="Review Mode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <line x1="10" y1="9" x2="8" y2="9"/>
+    </svg>
+  </button>
+
+  <!-- Review Panel -->
+  <aside class="review-panel" id="review-panel">
+    <div class="review-header">
+      <span class="review-header-title">Review Mode</span>
+      <button class="review-header-close" id="review-close">&times;</button>
+    </div>
+    <div class="review-progress" id="review-progress">Page 1 of 11</div>
+    <div class="review-page-name" id="review-page-name">Home</div>
+    <div class="review-notes-list" id="review-notes-list"></div>
+    <div class="review-add-area">
+      <textarea id="review-note-input" rows="3" placeholder="Add a change request for this page..."></textarea>
+      <button class="btn btn-primary btn-sm" id="review-add-btn">Add Note</button>
+    </div>
+    <div class="review-footer">
+      <button class="btn btn-ghost btn-sm" id="review-prev" disabled>&lsaquo; Prev</button>
+      <button class="btn btn-accent btn-sm" id="review-summary-btn">View Summary</button>
+      <button class="btn btn-ghost btn-sm" id="review-next">Next &rsaquo;</button>
+    </div>
+  </aside>
+
+  <!-- Review Summary Modal -->
+  <div class="modal-backdrop" id="review-summary-backdrop" style="display:none">
+    <div class="modal" style="width:560px;max-height:80vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h3>Review Summary</h3>
+        <button class="modal-close" id="review-summary-close">&times;</button>
+      </div>
+      <div class="modal-body" id="review-summary-body" style="overflow-y:auto;flex:1"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="review-summary-close2">Close</button>
+        <button class="btn btn-primary" id="review-export-btn">Export .txt</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Chat FAB -->
   <button class="chat-fab" id="chat-fab" aria-label="Open chat">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -357,8 +397,9 @@
       <div class="shortcuts-list">
         <div class="shortcut-row"><span>Command Palette</span><kbd>&#8984;K</kbd></div>
         <div class="shortcut-row"><span>Toggle Chat</span><kbd>&#8984;J</kbd></div>
+        <div class="shortcut-row"><span>Review Mode</span><kbd>&#8984;R</kbd></div>
         <div class="shortcut-row"><span>New Transaction</span><kbd>&#8984;N</kbd></div>
-        <div class="shortcut-row"><span>Overview Tab</span><kbd>1</kbd></div>
+        <div class="shortcut-row"><span>Dashboard Tab</span><kbd>1</kbd></div>
         <div class="shortcut-row"><span>Documents Tab</span><kbd>2</kbd></div>
         <div class="shortcut-row"><span>Signatures Tab</span><kbd>3</kbd></div>
         <div class="shortcut-row"><span>Contingencies Tab</span><kbd>4</kbd></div>

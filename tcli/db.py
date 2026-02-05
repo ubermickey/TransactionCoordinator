@@ -174,6 +174,14 @@ CREATE TABLE IF NOT EXISTS bug_reports(
   url TEXT DEFAULT '',
   status TEXT DEFAULT 'open',
   created_at TEXT DEFAULT(datetime('now','localtime'))
+);
+CREATE TABLE IF NOT EXISTS review_notes(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  page TEXT NOT NULL,
+  note TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TEXT DEFAULT(datetime('now','localtime')),
+  resolved_at TEXT
 );"""
 
 # Columns added after initial schema — migrated on connect
@@ -182,6 +190,9 @@ _MIGRATIONS = [
     ("txns", "party_role", "TEXT DEFAULT 'listing'"),
     ("txns", "brokerage", "TEXT DEFAULT ''"),
     ("txns", "props", "TEXT DEFAULT '{}'"),
+    ("docs", "file_path", "TEXT DEFAULT ''"),
+    ("docs", "folder", "TEXT DEFAULT ''"),
+    ("docs", "filename", "TEXT DEFAULT ''"),
     ("sig_reviews", "signer_email", "TEXT DEFAULT ''"),
     ("sig_reviews", "signer_name", "TEXT DEFAULT ''"),
     ("sig_reviews", "last_reminder_at", "TEXT"),

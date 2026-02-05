@@ -70,9 +70,13 @@ def calc_deadlines(txn_id: str, anchor: date, data: dict):
 
             if due:
                 resolved[did] = due
+                # Anchor dates and past milestones auto-verify — they're reference
+                # points, not action items (e.g. acceptance date already happened)
+                is_milestone = dl.get("is_anchor") or dl.get("type") == "FIXED"
+                status = "verified" if (is_milestone and due <= date.today()) else "pending"
                 c.execute(
                     "INSERT OR REPLACE INTO deadlines VALUES(?,?,?,?,?,?)",
-                    (txn_id, did, dl["name"], dl["type"], due.isoformat(), "pending"),
+                    (txn_id, did, dl["name"], dl["type"], due.isoformat(), status),
                 )
 
         # Auto-populate contingencies from resolved deadlines

@@ -86,6 +86,8 @@ function showSkeleton(type) {
 // ══════════════════════════════════════════════════════════════════════════════
 
 async function api(path, opts = {}) {
+  const suppress = opts._suppressToast;
+  delete opts._suppressToast;
   try {
     const res = await fetch(API + path, {
       headers: { 'Content-Type': 'application/json' },
@@ -94,8 +96,10 @@ async function api(path, opts = {}) {
     });
     const data = await res.json();
     if (!res.ok) {
-      const msg = data.error || data.message || `Request failed (${res.status})`;
-      Toast.show(msg, 'error');
+      if (!suppress) {
+        const msg = data.error || data.message || `Request failed (${res.status})`;
+        Toast.show(msg, 'error');
+      }
       return { _error: true, ...data };
     }
     return data;
@@ -108,6 +112,24 @@ async function api(path, opts = {}) {
 const get  = (p) => api(p);
 const post = (p, b) => api(p, { method: 'POST', body: b });
 const del  = (p) => api(p, { method: 'DELETE' });
+
+// ── Response Cache (TTL-based) for fast tab switches ──
+const _apiCache = new Map();
+const CACHE_TTL = 8000; // 8 seconds
+function getCached(path, ttl = CACHE_TTL) {
+  const key = path;
+  const cached = _apiCache.get(key);
+  if (cached && Date.now() - cached.ts < ttl) return Promise.resolve(cached.data);
+  return get(path).then(data => {
+    if (!data._error) _apiCache.set(key, { data, ts: Date.now() });
+    return data;
+  });
+}
+function invalidateCache(prefix) {
+  for (const key of _apiCache.keys()) {
+    if (key.startsWith(prefix)) _apiCache.delete(key);
+  }
+}
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  DARK MODE (auto-detect, no toggle)
@@ -450,6 +472,8 @@ const Shortcuts = (() => {
     if (pdfViewer && pdfViewer.style.display !== 'none') { PdfViewer.close(); return; }
     if (helpOpen) { closeHelp(); return; }
     if (CmdPalette.isOpen()) { CmdPalette.close(); return; }
+    const reviewPanel = document.getElementById('review-panel');
+    if (reviewPanel && reviewPanel.classList.contains('open')) { ReviewMode.close(); return; }
     const chatPanel = document.getElementById('chat-panel');
     if (chatPanel && chatPanel.classList.contains('open')) { ChatPanel.close(); return; }
     const modal = document.getElementById('modal-backdrop');
@@ -470,6 +494,13 @@ const Shortcuts = (() => {
     if (mod && e.key === 'j') {
       e.preventDefault();
       ChatPanel.toggle();
+      return;
+    }
+
+    // Cmd+R - review mode
+    if (mod && e.key === 'r') {
+      e.preventDefault();
+      ReviewMode.toggle();
       return;
     }
 
@@ -1010,6 +1041,222 @@ const PdfViewer = (() => {
 })();
 
 // ══════════════════════════════════════════════════════════════════════════════
+//  REVIEW MODE — guided page-by-page feedback
+// ══════════════════════════════════════════════════════════════════════════════
+
+const ReviewMode = (() => {
+  let isOpen = false;
+  let pageIdx = 0;
+  let notes = [];
+
+  const PAGES = [
+    { id: 'home',          name: 'Home',          isTxn: false },
+    { id: 'overview',      name: 'Dashboard',     isTxn: true },
+    { id: 'docs',          name: 'Documents',     isTxn: true },
+    { id: 'signatures',    name: 'Signatures',    isTxn: true },
+    { id: 'contingencies', name: 'Contingencies', isTxn: true },
+    { id: 'parties',       name: 'Parties',       isTxn: true },
+    { id: 'disclosures',   name: 'Disclosures',   isTxn: true },
+    { id: 'gates',         name: 'Gates',         isTxn: true },
+    { id: 'deadlines',     name: 'Deadlines',     isTxn: true },
+    { id: 'audit',         name: 'Audit',         isTxn: true },
+    { id: 'verify',        name: 'Verify',        isTxn: true },
+  ];
+
+  function currentPage() { return PAGES[pageIdx]; }
+
+  function detectPage() {
+    if (!currentTxn) return 0;
+    const tab = currentTab || 'overview';
+    const idx = PAGES.findIndex(p => p.id === tab);
+    return idx >= 0 ? idx : 1;
+  }
+
+  async function open() {
+    isOpen = true;
+    pageIdx = detectPage();
+    document.getElementById('review-panel').classList.add('open');
+    document.getElementById('review-fab').style.display = 'none';
+    await loadNotes();
+    render();
+    document.getElementById('review-note-input').focus();
+  }
+
+  function close() {
+    isOpen = false;
+    document.getElementById('review-panel').classList.remove('open');
+    document.getElementById('review-fab').style.display = '';
+  }
+
+  function toggle() { isOpen ? close() : open(); }
+
+  async function loadNotes() {
+    const res = await get('/api/review-notes');
+    notes = res._error ? [] : res;
+  }
+
+  function pageNotes() {
+    const pg = currentPage();
+    return notes.filter(n => n.page === pg.id);
+  }
+
+  function render() {
+    const pg = currentPage();
+    document.getElementById('review-progress').textContent = `Page ${pageIdx + 1} of ${PAGES.length}`;
+    document.getElementById('review-page-name').textContent = pg.name;
+
+    const list = document.getElementById('review-notes-list');
+    const pn = pageNotes();
+    if (pn.length === 0) {
+      list.innerHTML = '';
+    } else {
+      list.innerHTML = pn.map(n => `
+        <div class="review-note-item ${n.status === 'done' ? 'done' : ''}">
+          <div class="review-note-text">${esc(n.note)}</div>
+          <div class="review-note-meta">
+            <span class="review-note-time">${n.created_at || ''}</span>
+            <span class="review-note-actions">
+              ${n.status !== 'done' ? `<button class="btn-done" onclick="ReviewMode.resolveNote(${n.id})">Done</button>` : ''}
+              <button class="btn-del" onclick="ReviewMode.deleteNote(${n.id})">Delete</button>
+            </span>
+          </div>
+        </div>`).join('');
+    }
+
+    document.getElementById('review-prev').disabled = pageIdx === 0;
+    document.getElementById('review-next').disabled = pageIdx === PAGES.length - 1;
+  }
+
+  function navigateTo(idx) {
+    if (idx < 0 || idx >= PAGES.length) return;
+    pageIdx = idx;
+    const pg = currentPage();
+
+    if (pg.id === 'home') {
+      showHome();
+    } else if (currentTxn) {
+      switchTab(pg.id);
+    }
+
+    render();
+  }
+
+  function prev() { navigateTo(pageIdx - 1); }
+  function next() { navigateTo(pageIdx + 1); }
+
+  async function addNote() {
+    const input = document.getElementById('review-note-input');
+    const text = (input.value || '').trim();
+    if (!text) return;
+    const pg = currentPage();
+    const res = await post('/api/review-notes', { page: pg.id, note: text });
+    if (!res._error) {
+      input.value = '';
+      notes.unshift(res);
+      render();
+      Toast.show('Note added', 'success');
+    }
+  }
+
+  async function resolveNote(id) {
+    const res = await post(`/api/review-notes/${id}/resolve`);
+    if (!res._error) {
+      const idx = notes.findIndex(n => n.id === id);
+      if (idx >= 0) notes[idx] = res;
+      render();
+    }
+  }
+
+  async function deleteNote(id) {
+    const res = await del(`/api/review-notes/${id}`);
+    if (!res._error) {
+      notes = notes.filter(n => n.id !== id);
+      render();
+    }
+  }
+
+  function showSummary() {
+    const backdrop = document.getElementById('review-summary-backdrop');
+    const body = document.getElementById('review-summary-body');
+    const pending = notes.filter(n => n.status !== 'done');
+    const done = notes.filter(n => n.status === 'done');
+
+    if (notes.length === 0) {
+      body.innerHTML = '<div class="review-summary-empty">No review notes yet.</div>';
+    } else {
+      let html = '';
+      PAGES.forEach(pg => {
+        const pgNotes = notes.filter(n => n.page === pg.id);
+        if (pgNotes.length === 0) return;
+        html += `<div class="review-summary-group"><h4>${esc(pg.name)}</h4>`;
+        pgNotes.forEach(n => {
+          html += `<div class="review-summary-note ${n.status === 'done' ? 'done' : ''}">${esc(n.note)}</div>`;
+        });
+        html += '</div>';
+      });
+      const counts = `${pending.length} pending, ${done.length} done`;
+      html = `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">${counts}</div>` + html;
+      body.innerHTML = html;
+    }
+    backdrop.style.display = '';
+  }
+
+  function closeSummary() {
+    document.getElementById('review-summary-backdrop').style.display = 'none';
+  }
+
+  function exportSummary() {
+    let text = 'REVIEW NOTES\n' + '='.repeat(40) + '\n\n';
+    PAGES.forEach(pg => {
+      const pgNotes = notes.filter(n => n.page === pg.id);
+      if (pgNotes.length === 0) return;
+      text += `## ${pg.name}\n`;
+      pgNotes.forEach(n => {
+        const status = n.status === 'done' ? '[DONE]' : '[PENDING]';
+        text += `  ${status} ${n.note}\n`;
+      });
+      text += '\n';
+    });
+    const pending = notes.filter(n => n.status !== 'done').length;
+    text += `---\nTotal: ${notes.length} notes (${pending} pending)\n`;
+
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'review-notes.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    Toast.show('Exported review notes', 'success');
+  }
+
+  function init() {
+    document.getElementById('review-fab').addEventListener('click', open);
+    document.getElementById('review-close').addEventListener('click', close);
+    document.getElementById('review-add-btn').addEventListener('click', addNote);
+    document.getElementById('review-prev').addEventListener('click', prev);
+    document.getElementById('review-next').addEventListener('click', next);
+    document.getElementById('review-summary-btn').addEventListener('click', showSummary);
+    document.getElementById('review-summary-close').addEventListener('click', closeSummary);
+    document.getElementById('review-summary-close2').addEventListener('click', closeSummary);
+    document.getElementById('review-export-btn').addEventListener('click', exportSummary);
+    document.getElementById('review-summary-backdrop').addEventListener('click', e => {
+      if (e.target === e.currentTarget) closeSummary();
+    });
+
+    // Enter key in textarea adds note
+    document.getElementById('review-note-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        addNote();
+      }
+    });
+  }
+
+  return { init, open, close, toggle, resolveNote, deleteNote, isOpen: () => isOpen };
+})();
+
+// ══════════════════════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -1022,6 +1269,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Shortcuts.init();
   PdfViewer.init();
   SidebarTools.init();
+  ReviewMode.init();
 
   loadBrokerages();
   loadTxns();
@@ -1296,24 +1544,50 @@ function switchTab(tab) {
   (render[tab] || render.overview)();
 }
 
-// ── Overview Tab ────────────────────────────────────────────────────────────
+// ── Dashboard Tab ───────────────────────────────────────────────────────────
 
 async function renderOverview() {
   const t = txnCache[currentTxn];
   if (!t) return;
   const el = $('#tab-content');
 
-  // Fetch urgency + audit + notes in parallel
-  const [dashAll, audit, notesRes, contData] = await Promise.all([
-    get('/api/dashboard'),
-    get(`/api/txns/${currentTxn}/audit`),
-    get(`/api/txns/${currentTxn}/notes`),
-    get(`/api/txns/${currentTxn}/contingencies`),
+  // Fetch data — use cache for fast tab switches, fast sig-counts for dashboard
+  const [docsAll, dashAll, audit, notesRes, contData, sigCounts] = await Promise.all([
+    getCached(`/api/txns/${currentTxn}/docs`),
+    getCached('/api/dashboard'),
+    getCached(`/api/txns/${currentTxn}/audit`),
+    getCached(`/api/txns/${currentTxn}/notes`),
+    getCached(`/api/txns/${currentTxn}/contingencies`),
+    getCached(`/api/txns/${currentTxn}/sig-counts`),
   ]);
+  const docs = (!docsAll._error && Array.isArray(docsAll)) ? docsAll : [];
   const dash = (!dashAll._error ? dashAll : []).find(d => d.id === currentTxn) || {};
   const auditRows = (!audit._error ? audit : []).slice(0, 8);
   const notes = (!notesRes._error ? notesRes.notes : '') || '';
   const contItems = (!contData._error && contData.items) ? contData.items : [];
+  const sc = (!sigCounts._error ? sigCounts : {});
+
+  const ds = t.doc_stats || {};
+  const docsReceived = (ds.received || 0);
+  const docsTotal = (ds.total || 0);
+
+  // Critical docs needed to unlock dashboard mode
+  const CRITICAL_DOCS = [
+    { code: 'RPA', name: 'Residential Purchase Agreement', why: 'Dates, price, contingencies' },
+    { code: 'AD',  name: 'Agency Disclosure', why: 'Required for all parties' },
+    { code: 'TDS', name: 'Transfer Disclosure Statement', why: 'Seller disclosures' },
+    { code: 'SPQ', name: 'Seller Property Questionnaire', why: 'Property condition details' },
+    { code: 'AVID', name: 'Agent Visual Inspection', why: 'Agent disclosure obligation' },
+    { code: 'NHD', name: 'Natural Hazard Disclosure', why: 'Hazard zone status' },
+  ];
+  // Build doc status lookup
+  const docByCode = {};
+  docs.forEach(d => { docByCode[d.code] = d; });
+
+  // RPA is the gatekeeper — without it, dates/deadlines/contingencies can't be set
+  const rpaDoc = docByCode['RPA'];
+  const rpaReceived = rpaDoc && (rpaDoc.status === 'received' || rpaDoc.status === 'verified');
+  const dashboardMode = rpaReceived;
 
   // Advance bar
   const phases = phasesCache[t.txn_type || 'sale'] || [];
@@ -1330,77 +1604,290 @@ async function renderOverview() {
       ${!isLast ? '<button class="btn btn-primary btn-sm" onclick="advancePhase()">Advance Phase</button>' : '<span class="badge badge-verified">Final Phase</span>'}
     </div>`;
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  SETUP MODE — Before RPA is received
+  // ══════════════════════════════════════════════════════════════════════════
+  if (!dashboardMode) {
+    // Count critical docs received
+    const critReceived = CRITICAL_DOCS.filter(cd => {
+      const d = docByCode[cd.code];
+      return d && (d.status === 'received' || d.status === 'verified');
+    }).length;
+
+    html += `<div class="setup-mode">
+      <div class="setup-hero" id="overview-drop-zone">
+        <div class="setup-hero-icon">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg>
+        </div>
+        <h2>Upload Your RPA to Get Started</h2>
+        <p class="setup-hero-sub">The purchase agreement contains the dates, price, and contingency periods needed to build your transaction timeline.</p>
+        <button class="btn btn-primary btn-lg" onclick="triggerUpload()">Upload Contract PDF</button>
+        <p class="setup-hero-hint">Supports combined PDF packets — we'll auto-split and categorize multiple forms</p>
+      </div>
+
+      <div class="card setup-checklist-card">
+        <div class="card-title">Documents Needed to Start</div>
+        <p class="setup-checklist-sub">Upload these to unlock deadline tracking, contingency management, and compliance gates.</p>
+        <div class="setup-checklist">
+          ${CRITICAL_DOCS.map(cd => {
+            const d = docByCode[cd.code];
+            const received = d && (d.status === 'received' || d.status === 'verified');
+            const isRPA = cd.code === 'RPA';
+            return `<div class="setup-check-item ${received ? 'check-done' : ''} ${isRPA ? 'check-rpa' : ''}">
+              <span class="setup-check-icon">${received ? '\u2705' : (isRPA ? '\u26A0\uFE0F' : '\u25CB')}</span>
+              <div class="setup-check-info">
+                <span class="setup-check-code">${esc(cd.code)}</span>
+                <span class="setup-check-name">${esc(cd.name)}</span>
+                <span class="setup-check-why">${esc(cd.why)}</span>
+              </div>
+              <div class="setup-check-action">
+                ${received
+                  ? '<span class="badge badge-verified">Received</span>'
+                  : `<button class="btn btn-ghost btn-sm" onclick="triggerUploadFor('${esc(cd.code)}')">Upload</button>`}
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div class="setup-progress">
+          <div class="setup-progress-bar">
+            <div class="setup-progress-fill" style="width:${Math.round((critReceived / CRITICAL_DOCS.length) * 100)}%"></div>
+          </div>
+          <span class="setup-progress-text">${critReceived} of ${CRITICAL_DOCS.length} critical documents received</span>
+        </div>
+      </div>`;
+
+    // Still show notes and property flags in setup mode
+    html += `<div class="card">
+      <div class="card-title">Transaction Notes</div>
+      <textarea class="notes-area" id="txn-notes" placeholder="Add notes about this transaction...">${esc(notes)}</textarea>
+      <button class="btn btn-primary btn-sm" onclick="saveNotes()" style="margin-top:6px">Save Notes</button>
+    </div>`;
+
+    const allFlags = [
+      'is_condo', 'is_pre_1978', 'has_solar', 'has_hoa', 'is_trust_sale',
+      'price_above_5m', 'has_pool', 'has_septic', 'is_manufactured',
+      'is_new_construction', 'is_short_sale', 'is_probate', 'has_tenant'
+    ];
+    const props = t.props || {};
+    html += `<div class="card">
+      <div class="card-title">Property Flags</div>
+      ${allFlags.map(f => `
+        <div class="toggle-row">
+          <span class="toggle-label">${esc(f.replace(/^(is_|has_)/, '').replace(/_/g, ' '))}</span>
+          <label class="toggle">
+            <input type="checkbox" ${props[f] ? 'checked' : ''} onchange="toggleFlag('${f}', this.checked)">
+            <div class="toggle-track"></div>
+            <div class="toggle-thumb"></div>
+          </label>
+        </div>`).join('')}
+    </div>`;
+
+    html += `<div class="delete-section">
+      <button class="btn btn-danger btn-sm" onclick="deleteTxn()">Delete Transaction</button>
+    </div>`;
+
+    html += `</div>`; // close .setup-mode
+
+    el.innerHTML = html;
+
+    // Attach drag & drop to setup hero
+    const dropZone = document.getElementById('overview-drop-zone');
+    if (dropZone) {
+      dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+      dropZone.addEventListener('drop', async e => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') {
+          await _uploadFile(file);
+          renderOverview();
+        } else {
+          Toast.show('Please drop a PDF file', 'warning');
+        }
+      });
+    }
+    return;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  DASHBOARD MODE — RPA is in, show the full command center
+  // ══════════════════════════════════════════════════════════════════════════
+
+  // Fetch gates for compliance section
+  const gatesData = await getCached(`/api/txns/${currentTxn}/gates`);
+  const allGates = (!gatesData._error && Array.isArray(gatesData)) ? gatesData : [];
+  const currentPhaseGates = allGates.filter(g => g.phase === t.phase);
+  const blockingGates = currentPhaseGates.filter(g => g.status !== 'verified' && g.type === 'HARD_GATE');
+
   // ── Attention Required ──
   const urgentDl = dash.urgent_deadlines || [];
   const urgentCont = dash.urgent_contingencies || [];
-  const pendingGates = dash.pending_hard_gates || 0;
-  const hasUrgent = urgentDl.length > 0 || urgentCont.length > 0 || pendingGates > 0;
+  const hasUrgent = urgentDl.length > 0 || urgentCont.length > 0 || blockingGates.length > 0;
 
   if (hasUrgent) {
     html += `<div class="attention-card">
       <div class="card-title">Attention Required</div>
       <div class="attention-items">`;
     urgentDl.forEach(d => {
-      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 2 ? 'urgent' : 'soon';
-      html += `<div class="attention-item attention-${cls}">
+      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 3 ? 'urgent' : 'soon';
+      html += `<div class="attention-item attention-${cls} ${d.days_left >= 0 && d.days_left <= 3 ? 'pulse-warn' : ''}">
         <span class="attention-icon">${d.days_left < 0 ? '\u26A0' : '\u23F3'}</span>
         <span>${esc(d.name)}</span>
-        <span class="attention-days">${d.days_left < 0 ? Math.abs(d.days_left) + 'd overdue' : d.days_left + 'd left'}</span>
+        <span class="attention-days">${_formatCountdown(d.days_left)}</span>
       </div>`;
     });
     urgentCont.forEach(d => {
-      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 2 ? 'urgent' : 'soon';
-      html += `<div class="attention-item attention-${cls}">
+      const cls = d.days_left < 0 ? 'overdue' : d.days_left <= 3 ? 'urgent' : 'soon';
+      html += `<div class="attention-item attention-${cls} ${d.days_left >= 0 && d.days_left <= 3 ? 'pulse-warn' : ''}">
         <span class="attention-icon">\u25CB</span>
-        <span>${esc(d.name)}</span>
-        <span class="attention-days">${d.days_left < 0 ? Math.abs(d.days_left) + 'd overdue' : d.days_left + 'd left'}</span>
+        <span>${esc(d.name)} contingency</span>
+        <span class="attention-days">${_formatCountdown(d.days_left)}</span>
       </div>`;
     });
-    if (pendingGates > 0) {
-      html += `<div class="attention-item attention-soon">
+    if (blockingGates.length > 0) {
+      html += `<div class="attention-item attention-soon" onclick="switchTab('gates')" style="cursor:pointer">
         <span class="attention-icon">\u2610</span>
-        <span>${pendingGates} hard gate${pendingGates > 1 ? 's' : ''} blocking phase advance</span>
+        <span>${blockingGates.length} compliance item${blockingGates.length > 1 ? 's' : ''} blocking phase advance</span>
       </div>`;
     }
     html += `</div></div>`;
   }
 
-  // ── Stats ──
-  const ds = t.doc_stats || {};
-  const gatePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
-  const docPct = ds.total ? Math.round(((ds.received || 0) / ds.total) * 100) : 0;
-  const activeCont = contItems.filter(c => c.status === 'active').length;
-  const removedCont = contItems.filter(c => c.status !== 'active').length;
+  // ── Next Contingency Countdown ──
+  const activeCont = contItems.filter(c => c.status === 'active');
+  const removedCont = contItems.filter(c => c.status !== 'active');
+  const nextCont = activeCont
+    .filter(c => c.deadline_date)
+    .sort((a, b) => a.deadline_date.localeCompare(b.deadline_date))[0];
 
-  html += `
-    <div class="card-grid card-grid-4">
-      <div class="stat-card">
-        <div class="stat-ring" style="--pct:${gatePct}; --ring-color:var(--blue)">
-          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" class="ring-bg"/>
-          <circle cx="18" cy="18" r="15.9" class="ring-fg" style="stroke-dasharray:${gatePct} 100"/></svg>
-          <span class="ring-label">${gatePct}%</span>
+  if (nextCont) {
+    const daysLeft = Math.ceil((new Date(nextCont.deadline_date) - new Date()) / 86400000);
+    const isUrgent = daysLeft <= 3;
+    const countdownText = daysLeft <= 0 ? 'EXPIRED' : daysLeft * 24 <= 72 ? `${daysLeft * 24}h` : `${daysLeft}d`;
+    html += `<div class="card contingency-countdown ${isUrgent ? 'countdown-urgent' : ''} ${isUrgent && daysLeft > 0 ? 'pulse-warn' : ''}">
+      <div class="countdown-row">
+        <div>
+          <div class="card-title" style="margin-bottom:2px">Next Contingency</div>
+          <div class="countdown-name">${esc(nextCont.name)}</div>
+          <div class="countdown-date">${esc(nextCont.deadline_date)}</div>
         </div>
-        <div class="stat-value">${t.gates_verified}/${t.gate_count}</div>
-        <div class="stat-label">Gates</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-ring" style="--pct:${docPct}; --ring-color:var(--green)">
-          <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" class="ring-bg"/>
-          <circle cx="18" cy="18" r="15.9" class="ring-fg" style="stroke-dasharray:${docPct} 100"/></svg>
-          <span class="ring-label">${docPct}%</span>
-        </div>
-        <div class="stat-value">${ds.received || 0}/${ds.total || 0}</div>
-        <div class="stat-label">Docs</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${(t.deadlines || []).length}</div>
-        <div class="stat-label">Deadlines</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">${activeCont}<span class="stat-sub">/${activeCont + removedCont}</span></div>
-        <div class="stat-label">Contingencies</div>
+        <div class="countdown-value ${daysLeft <= 0 ? 'expired' : daysLeft <= 3 ? 'urgent' : ''}">${countdownText}</div>
       </div>
     </div>`;
+  }
+
+  // ── Stats ──
+  const compliancePct = t.gate_count ? Math.round((t.gates_verified / t.gate_count) * 100) : 0;
+  const docPct = docsTotal ? Math.round((docsReceived / docsTotal) * 100) : 0;
+  const sigTotal = sc.total || 0;
+  const sigSigned = sc.filled || 0;
+  const sigPending = sc.pending || 0;
+  const sigPct = sigTotal ? Math.round((sigSigned / sigTotal) * 100) : 0;
+  const contTotal = activeCont.length + removedCont.length;
+  const contPct = contTotal ? Math.round((removedCont.length / contTotal) * 100) : 0;
+
+  const _ring = (pct, color, val, label, tab) => `
+    <div class="stat-card clickable" onclick="switchTab('${tab}')">
+      <div class="stat-ring" style="--pct:${pct}; --ring-color:${color}">
+        <svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15.9" class="ring-bg"/>
+        <circle cx="18" cy="18" r="15.9" class="ring-fg" style="stroke-dasharray:${pct} 100"/></svg>
+        <span class="ring-label">${pct}%</span>
+      </div>
+      <div class="stat-value">${val}</div>
+      <div class="stat-label">${label}</div>
+    </div>`;
+
+  html += `<div class="card-grid card-grid-4">
+    ${_ring(compliancePct, 'var(--accent)', `${t.gates_verified}/${t.gate_count}`, 'Compliance', 'gates')}
+    ${_ring(docPct, 'var(--green)', `${docsReceived}/${docsTotal}`, 'Documents', 'docs')}
+    ${_ring(sigPct, sigPending > 0 ? 'var(--orange)' : 'var(--green)', `${sigSigned}/${sigTotal}`, 'Signatures', 'signatures')}
+    ${_ring(contPct, contTotal ? 'var(--accent)' : 'var(--green)', `${removedCont.length}/${contTotal}`, 'Contingencies', 'contingencies')}
+  </div>`;
+
+  // ── Quick Actions ──
+  html += `<div class="card quick-actions">
+    <div class="card-title">Quick Actions</div>
+    <div class="quick-actions-grid">
+      <button class="quick-action-btn" onclick="triggerUpload()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Upload PDF
+      </button>
+      <button class="quick-action-btn" onclick="switchTab('signatures')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+        Signatures
+      </button>
+      <button class="quick-action-btn" onclick="switchTab('contingencies')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Contingencies
+      </button>
+      <button class="quick-action-btn" onclick="switchTab('parties')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Parties
+      </button>
+    </div>
+  </div>`;
+
+  // ── Blocking Compliance Items ──
+  if (blockingGates.length > 0) {
+    html += `<div class="card">
+      <div class="card-title">Blocking Compliance Items <span class="badge badge-required" style="margin-left:6px">${blockingGates.length}</span></div>
+      <p style="font-size:12px;color:var(--text-secondary);margin:0 0 10px">These must be verified before advancing to the next phase.</p>
+      <div class="blocking-gates-list">
+        ${blockingGates.slice(0, 8).map(g => `<div class="blocking-gate-item">
+          <span class="blocking-gate-icon">\u2610</span>
+          <span class="blocking-gate-name">${esc(g.name || g.gid)}</span>
+          <button class="btn btn-primary btn-sm" onclick="switchTab('gates')">Review</button>
+        </div>`).join('')}
+        ${blockingGates.length > 8 ? `<div style="font-size:12px;color:var(--text-secondary);padding:4px 0">+ ${blockingGates.length - 8} more</div>` : ''}
+      </div>
+    </div>`;
+  }
+
+  // ── Signature Tracker ──
+  if (sigTotal > 0) {
+    const sentEnv = dash.sig_pending || 0;
+    html += `<div class="card">
+      <div class="card-title">Signature Tracking</div>
+      <div class="sig-tracker">
+        <div class="sig-tracker-row">
+          <span class="sig-tracker-dot" style="background:var(--green)"></span>
+          <span><strong>${sigSigned}</strong> signed</span>
+          <span class="sig-tracker-bar"><span class="sig-tracker-bar-fill" style="width:${sigPct}%;background:var(--green)"></span></span>
+        </div>
+        <div class="sig-tracker-row">
+          <span class="sig-tracker-dot" style="background:var(--orange)"></span>
+          <span><strong>${sigPending}</strong> awaiting signature</span>
+          <span class="sig-tracker-bar"><span class="sig-tracker-bar-fill" style="width:${sigTotal ? Math.round((sigPending/sigTotal)*100) : 0}%;background:var(--orange)"></span></span>
+        </div>
+        ${sentEnv > 0 ? `<div class="sig-tracker-row">
+          <span class="sig-tracker-dot" style="background:var(--accent)"></span>
+          <span><strong>${sentEnv}</strong> sent via DocuSign</span>
+        </div>` : ''}
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="switchTab('signatures')" style="margin-top:6px">View All Signatures</button>
+    </div>`;
+  }
+
+  // ── Critical Docs Status (inline in dashboard) ──
+  const CRITICAL_CODES = ['RPA', 'AD', 'TDS', 'SPQ', 'AVID', 'NHD', 'SBSA', 'EMD_REC'];
+  const critMissing = CRITICAL_CODES.filter(c => { const d = docByCode[c]; return !d || d.status === 'required'; });
+  if (critMissing.length > 0) {
+    html += `<div class="card dash-missing-docs">
+      <div class="card-title">Missing Critical Documents</div>
+      <div class="dash-missing-list">
+        ${critMissing.map(code => {
+          const d = docByCode[code];
+          return `<div class="dash-missing-item">
+            <span class="dash-missing-icon">\u26D4</span>
+            <span class="dash-missing-code">${esc(code)}</span>
+            <span class="dash-missing-name">${d ? esc(d.name) : esc(code)}</span>
+            <button class="btn btn-ghost btn-sm" onclick="triggerUploadFor('${esc(code)}')">Upload</button>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
 
   // ── Notes ──
   html += `<div class="card">
@@ -1481,13 +1968,15 @@ async function saveNotes() {
 }
 
 async function advancePhase() {
-  const res = await post(`/api/txns/${currentTxn}/advance`);
+  const res = await api(`/api/txns/${currentTxn}/advance`, { method: 'POST', body: {}, _suppressToast: true });
   if (res.ok) {
     Toast.show('Phase advanced successfully', 'success');
     await selectTxn(currentTxn);
     loadTxns();
   } else if (res.blocking && res.blocking.length > 0) {
-    Toast.show('Cannot advance — ' + res.blocking.length + ' blocking gate(s):\n' + res.blocking.slice(0, 3).join(', '), 'warning');
+    Toast.show('Cannot advance — ' + res.blocking.length + ' blocking gate(s): ' + res.blocking.slice(0, 3).join(', '), 'warning');
+  } else {
+    Toast.show('Cannot advance phase', 'warning');
   }
 }
 
@@ -1508,6 +1997,61 @@ async function deleteTxn() {
   Toast.show('Transaction deleted', 'info');
   currentTxn = null;
   loadTxns();
+}
+
+// Trigger file upload from anywhere (overview CTA, docs tab, etc.)
+function triggerUpload() {
+  if (!currentTxn) { Toast.show('Select a transaction first', 'warning'); return; }
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.pdf';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', async () => {
+    if (inp.files[0]) await _uploadFile(inp.files[0]);
+    inp.remove();
+  });
+  inp.click();
+}
+
+async function _uploadFile(file) {
+  Toast.show(`Uploading ${file.name}...`, 'info');
+  const form = new FormData();
+  form.append('file', file);
+  try {
+    const resp = await fetch(`/api/txns/${currentTxn}/upload`, { method: 'POST', body: form });
+    const data = await resp.json();
+    if (!resp.ok) {
+      Toast.show(data.error || 'Upload failed', 'error');
+      return;
+    }
+    let msg = `Uploaded ${data.filename}`;
+    if (data.split_docs && data.split_docs.length > 0) {
+      const codes = data.split_docs.map(d => d.code).join(', ');
+      msg = `Split into ${data.split_docs.length} documents: ${codes}`;
+      const matched = data.split_docs.filter(d => d.matched).length;
+      if (matched > 0) msg += ` (${matched} auto-filed)`;
+    } else if (data.fields_detected) {
+      msg += ` \u2014 ${data.fields_detected} fields detected`;
+    }
+    if (data.matched_doc && !data.split_docs?.length) msg += ` \u2014 matched to ${data.matched_doc}`;
+    Toast.show(msg, 'success');
+    // Show RPA extraction results
+    if (data.rpa_extraction && data.rpa_extraction.deadlines_populated) {
+      const ext = data.rpa_extraction;
+      const prov = ext.acceptance_provisional ? ' (provisional)' : '';
+      Toast.show(`RPA analyzed: acceptance ${ext.acceptance_date}${prov}, COE ${ext.coe_date}. Deadlines & contingencies populated.`, 'success');
+    }
+    // Invalidate cache + refresh
+    invalidateCache(`/api/txns/${currentTxn}`);
+    invalidateCache('/api/dashboard');
+    const t = await get(`/api/txns/${currentTxn}`);
+    if (!t._error) { txnCache[currentTxn] = t; loadTxns(); }
+    const tab = document.querySelector('.tab.active');
+    if (tab) switchTab(tab.dataset.tab);
+  } catch (e) {
+    Toast.show('Upload failed: ' + e.message, 'error');
+  }
 }
 
 async function bulkReceive() {
@@ -1548,7 +2092,10 @@ async function renderDocs() {
   const el = $('#tab-content');
 
   if (docs.length === 0) {
-    el.innerHTML = '<div class="card"><p style="color:var(--text-secondary)">No documents tracked. Create a transaction with a brokerage to auto-populate.</p></div>';
+    el.innerHTML = `<div class="card" style="text-align:center;padding:32px">
+      <p style="color:var(--text-secondary);margin-bottom:12px">No documents tracked yet. Select a brokerage on the transaction to auto-populate, or upload documents directly.</p>
+      <button class="btn btn-primary" onclick="triggerUpload()">Upload PDF</button>
+    </div>`;
     return;
   }
 
@@ -1566,6 +2113,7 @@ async function renderDocs() {
       <option value="">All Statuses</option>
       ${statuses.map(s => `<option value="${s}">${s}</option>`).join('')}
     </select>
+    <button class="btn btn-primary btn-sm" onclick="triggerUpload()">Upload PDF</button>
   </div>`;
 
   // Stats
@@ -1580,7 +2128,6 @@ async function renderDocs() {
     <span><span class="count">${stats.required || 0}</span> required</span>
     <span><span class="count">${stats.na || 0}</span> N/A</span>
     <span class="bulk-actions">
-      ${stats.required ? `<button class="btn btn-warning btn-sm" onclick="bulkReceive()">Receive All (${stats.required})</button>` : ''}
       ${stats.received ? `<button class="btn btn-success btn-sm" onclick="bulkVerify()">Verify All (${stats.received})</button>` : ''}
     </span>
   </div>`;
@@ -1705,7 +2252,9 @@ function renderDocsTable(docs) {
   Object.entries(groups).forEach(([phase, items]) => {
     html += `<tr class="phase-group-header"><td colspan="4">${esc(formatPhase(phase))}</td></tr>`;
     items.forEach(d => {
-      const pdf = _findPdf(d.name, d.code);
+      // Prefer the uploaded file stored on the doc record, fall back to package map
+      const uploaded = (d.folder && d.filename) ? { folder: d.folder, file: d.filename } : null;
+      const pdf = uploaded || _findPdf(d.name, d.code);
       const nameCell = pdf
         ? `<a href="#" class="doc-pdf-link" data-folder="${esc(pdf.folder)}" data-file="${esc(pdf.file)}">${esc(d.name)}</a>`
         : `<a href="#" class="doc-pdf-link doc-no-pdf" data-code="${esc(d.code)}">${esc(d.name)}</a>`;
@@ -1735,14 +2284,16 @@ function renderDocsTable(docs) {
 
 function docActions(d) {
   if (d.status === 'verified') {
-    return `<span style="color:var(--green)">\u2713</span> <button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','unverify')">Unverify</button>`;
+    return `<span class="doc-status-icon verified" title="Verified">\u2705</span> <button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','unverify')">Unverify</button>`;
   }
-  if (d.status === 'na') return '<span style="color:var(--text-secondary)">&mdash;</span>';
+  if (d.status === 'na') return '<span class="doc-status-icon na" title="N/A">&mdash;</span>';
   let btns = '';
   if (d.status === 'required') {
-    btns += `<button class="btn btn-warning btn-sm" onclick="docAction('${currentTxn}','${d.code}','receive')">Receive</button>`;
+    btns += `<span class="doc-status-icon missing" title="Not received">\u26D4</span>`;
+    btns += `<button class="btn btn-primary btn-sm" onclick="triggerUploadFor('${esc(d.code)}')">Upload</button>`;
   }
-  if (d.status === 'received' || d.status === 'required') {
+  if (d.status === 'received') {
+    btns += `<span class="doc-status-icon received" title="Received">\uD83D\uDC4D</span>`;
     btns += `<button class="btn btn-success btn-sm" onclick="docAction('${currentTxn}','${d.code}','verify')">Verify</button>`;
   }
   if (d.status !== 'na') {
@@ -1751,10 +2302,27 @@ function docActions(d) {
   return btns;
 }
 
+// Upload targeting a specific doc code
+function triggerUploadFor(code) {
+  if (!currentTxn) return;
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = '.pdf';
+  inp.style.display = 'none';
+  document.body.appendChild(inp);
+  inp.addEventListener('change', async () => {
+    if (inp.files[0]) await _uploadFile(inp.files[0]);
+    inp.remove();
+  });
+  inp.click();
+}
+
 async function docAction(tid, code, action) {
-  const res = await post(`/api/txns/${tid}/docs/${code}/${action}`);
+  const res = await post(`/api/txns/${tid}/docs/${code}/${action}`, {});
   if (res._error) return;
   Toast.show(`Document ${code} ${action === 'receive' ? 'received' : action === 'verify' ? 'verified' : action === 'unverify' ? 'unverified' : 'marked N/A'}`, 'success');
+  invalidateCache(`/api/txns/${tid}`);
+  invalidateCache('/api/dashboard');
   renderDocs();
   const t = await get(`/api/txns/${tid}`);
   if (!t._error) {
@@ -3356,22 +3924,8 @@ const SidebarTools = (() => {
 //  SIDEBAR TIMELINE
 // ══════════════════════════════════════════════════════════════════════════════
 
-function updateSidebarTimeline(txn, phases) {
-  const el = $('#sidebar-timeline-steps');
-  if (!el) return;
-
-  if (!txn || !phases || phases._error) {
-    el.innerHTML = '<div class="sidebar-timeline-empty">Select a transaction</div>';
-    return;
-  }
-
-  const currentIdx = phases.findIndex(p => p.id === txn.phase);
-  el.innerHTML = phases.map((p, i) => {
-    let cls = 'future';
-    if (i < currentIdx) cls = 'completed';
-    else if (i === currentIdx) cls = 'current';
-    return `<div class="stl-step ${cls}">${esc(p.name || p.id)}</div>`;
-  }).join('');
+function updateSidebarTimeline() {
+  // Timeline removed per user feedback (#29)
 }
 
 // ══════════════════════════════════════════════════════════════════════════════

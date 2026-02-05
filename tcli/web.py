@@ -421,6 +421,15 @@ def get_deadlines(tid):
     # Check if dates are confirmed from contract extraction
     with db.conn() as c:
         t = db.txn(c, tid)
+        # Auto-verify anchor/milestone deadlines that are in the past
+        anchor_ids = {dl["id"] for dl in rules.deadlines() if dl.get("is_anchor")}
+        for d in rows:
+            if (d.get("did") in anchor_ids and d.get("status") == "pending"
+                    and d.get("due") and date.fromisoformat(d["due"]) <= today):
+                c.execute("UPDATE deadlines SET status='verified' WHERE txn=? AND did=?",
+                          (tid, d["did"]))
+                d["status"] = "verified"
+
     txn_data = json.loads((t or {}).get("data") or "{}")
     dates_confirmed = (txn_data.get("dates") or {}).get("_confirmed", False)
 
@@ -459,15 +468,66 @@ def get_audit(tid):
 
 # ── Signatures ───────────────────────────────────────────────────────────
 
+_sig_populated_txns: set[str] = set()  # in-memory cache of already-scanned txns
+_manifest_cache: dict | None = None    # cached manifest sig fields
+
+
+def _get_manifest_sigs() -> dict:
+    """Load and cache all manifest signature fields. Returns {lower_name: [{fields...}]}."""
+    global _manifest_cache
+    if _manifest_cache is not None:
+        return _manifest_cache
+
+    _manifest_cache = {}
+    manifest_dir = doc_versions.MANIFEST_DIR
+    if not manifest_dir.exists():
+        return _manifest_cache
+
+    for folder in manifest_dir.iterdir():
+        if not folder.is_dir() or folder.name.startswith("_"):
+            continue
+        for mfile in folder.glob("*.yaml"):
+            if mfile.name.startswith("_"):
+                continue
+            try:
+                with open(mfile) as f:
+                    m = yaml.safe_load(f) or {}
+            except Exception:
+                continue
+            fields = m.get("field_map", [])
+            sig_fields = [
+                f for f in fields
+                if f.get("category") in ("signature", "signature_area")
+            ]
+            if not sig_fields:
+                continue
+            manifest_name = m.get("document_name", mfile.stem)
+            _manifest_cache[manifest_name.lower()] = {
+                "folder": folder.name,
+                "filename": mfile.stem,
+                "manifest_name": manifest_name,
+                "sig_fields": sig_fields,
+            }
+    return _manifest_cache
+
+
 def _populate_sig_reviews(c, tid):
     """Lazy-load signature fields from manifests into sig_reviews for a txn."""
+    # Skip if already scanned this session
+    if tid in _sig_populated_txns:
+        return
+    _sig_populated_txns.add(tid)
+
     docs = c.execute("SELECT code, name FROM docs WHERE txn=?", (tid,)).fetchall()
     if not docs:
         return
 
+    manifests = _get_manifest_sigs()
+    if not manifests:
+        return
+
     for doc in docs:
         code = doc["code"]
-        # Check if already populated for this doc
         existing = c.execute(
             "SELECT 1 FROM sig_reviews WHERE txn=? AND doc_code=? LIMIT 1",
             (tid, code),
@@ -475,60 +535,51 @@ def _populate_sig_reviews(c, tid):
         if existing:
             continue
 
-        # Try to find a matching manifest
-        # doc code format varies — scan all manifest folders
-        manifest_dir = doc_versions.MANIFEST_DIR
-        if not manifest_dir.exists():
-            continue
-
-        for folder in manifest_dir.iterdir():
-            if not folder.is_dir() or folder.name.startswith("_"):
+        # Match against cached manifests
+        for mname_lower, mdata in manifests.items():
+            mname = mdata["manifest_name"]
+            if not (code.lower() in mname_lower
+                    or mname_lower in doc["name"].lower()
+                    or doc["name"].lower() in mname_lower):
                 continue
-            for mfile in folder.glob("*.yaml"):
-                if mfile.name.startswith("_"):
-                    continue
+
+            for sf in mdata["sig_fields"]:
+                field_name = sf.get("field", "")
+                is_initials = bool(re.search(r"initial", field_name, re.IGNORECASE))
+                field_type = "initials" if is_initials else "signature"
+                bbox = sf.get("bbox", {})
+                filled = 1 if sf.get("filled") else 0
                 try:
-                    with open(mfile) as f:
-                        m = yaml.safe_load(f) or {}
+                    c.execute(
+                        "INSERT OR IGNORE INTO sig_reviews"
+                        "(txn, doc_code, folder, filename, field_name, field_type,"
+                        " page, bbox, is_filled, review_status, source)"
+                        " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                        (
+                            tid, code, mdata["folder"], mdata["filename"],
+                            field_name, field_type,
+                            sf.get("page", 0), json.dumps(bbox),
+                            filled, "pending", "auto",
+                        ),
+                    )
                 except Exception:
-                    continue
-                fields = m.get("field_map", [])
-                sig_fields = [
-                    f for f in fields
-                    if f.get("category") in ("signature", "signature_area")
-                ]
-                if not sig_fields:
-                    continue
+                    pass
+            break  # matched this doc, move to next
 
-                # Match manifest to doc by code or name similarity
-                manifest_name = m.get("document_name", mfile.stem)
-                if not (code.lower() in manifest_name.lower()
-                        or manifest_name.lower() in doc["name"].lower()
-                        or doc["name"].lower() in manifest_name.lower()):
-                    continue
 
-                for sf in sig_fields:
-                    field_name = sf.get("field", "")
-                    is_initials = bool(re.search(r"initial", field_name, re.IGNORECASE))
-                    field_type = "initials" if is_initials else "signature"
-                    bbox = sf.get("bbox", {})
-                    filled = 1 if sf.get("filled") else 0
-                    try:
-                        c.execute(
-                            "INSERT OR IGNORE INTO sig_reviews"
-                            "(txn, doc_code, folder, filename, field_name, field_type,"
-                            " page, bbox, is_filled, review_status, source)"
-                            " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
-                            (
-                                tid, code, folder.name, mfile.stem,
-                                field_name, field_type,
-                                sf.get("page", 0), json.dumps(bbox),
-                                filled, "pending", "auto",
-                            ),
-                        )
-                    except Exception:
-                        pass
-                break  # matched this doc, move to next
+@app.route("/api/txns/<tid>/sig-counts")
+def get_sig_counts(tid):
+    """Fast signature counts for dashboard — no manifest scan."""
+    with db.conn() as c:
+        row = c.execute(
+            "SELECT COUNT(*) as total,"
+            " SUM(is_filled) as filled"
+            " FROM sig_reviews WHERE txn=?",
+            (tid,),
+        ).fetchone()
+    total = row["total"] or 0
+    filled = row["filled"] or 0
+    return jsonify({"total": total, "filled": filled, "pending": total - filled})
 
 
 @app.route("/api/txns/<tid>/signatures")
@@ -1728,14 +1779,58 @@ def upload_document(tid):
         result["scan_error"] = str(e)
 
     # Try to match to a checklist doc code and auto-receive
-    matched_code = _match_upload_to_doc(tid, safe_name)
+    matched_code = _match_upload_to_doc(tid, safe_name, folder=f"uploads_{tid}")
     if matched_code:
         result["matched_doc"] = matched_code
+
+    # Auto-split: detect multiple forms in the PDF
+    split_results = _split_multi_doc_pdf(tid, str(dest), safe_name)
+    if split_results:
+        result["split_docs"] = split_results
+
+    # If an RPA was detected (directly or via split), extract dates and auto-populate
+    rpa_detected = matched_code == "RPA" or (split_results and any(s.get("code") == "RPA" for s in split_results))
+    if rpa_detected:
+        rpa_result = _extract_rpa_and_populate(tid, str(dest), split_results)
+        if rpa_result:
+            result["rpa_extraction"] = rpa_result
 
     return jsonify(result), 201
 
 
-def _match_upload_to_doc(tid: str, filename: str) -> str | None:
+@app.route("/api/txns/<tid>/reanalyze-rpa", methods=["POST"])
+def reanalyze_rpa(tid):
+    """Re-extract dates and contingencies from an already-uploaded RPA."""
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "transaction not found"}), 404
+        rpa_doc = c.execute("SELECT * FROM docs WHERE txn=? AND code='RPA'", (tid,)).fetchone()
+        if not rpa_doc or rpa_doc["status"] == "required":
+            return jsonify({"error": "No RPA uploaded for this transaction"}), 404
+
+    # Find the RPA file path
+    folder = rpa_doc["folder"] or f"uploads_{tid}"
+    filename = rpa_doc["filename"] or ""
+    rpa_path = None
+    if filename:
+        rpa_path = str(doc_versions.CAR_DIR / folder / filename)
+    if not rpa_path or not Path(rpa_path).exists():
+        # Try to find any RPA PDF in the uploads directory
+        upload_dir = doc_versions.CAR_DIR / f"uploads_{tid}"
+        if upload_dir.exists():
+            for f in upload_dir.iterdir():
+                if f.suffix.lower() == ".pdf" and "rpa" in f.name.lower():
+                    rpa_path = str(f)
+                    break
+    if not rpa_path or not Path(rpa_path).exists():
+        return jsonify({"error": "RPA file not found on disk"}), 404
+
+    result = _extract_rpa_and_populate(tid, rpa_path)
+    return jsonify(result)
+
+
+def _match_upload_to_doc(tid: str, filename: str, folder: str = "") -> str | None:
     """Try to match an uploaded filename to a checklist doc code and mark received."""
     name_lower = filename.lower()
     # Common CAR form abbreviation matching
@@ -1759,11 +1854,390 @@ def _match_upload_to_doc(tid: str, filename: str) -> str | None:
             row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, matched)).fetchone()
             if row and row["status"] == "required":
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                c.execute("UPDATE docs SET status='received', received=? WHERE txn=? AND code=?",
-                          (now, tid, matched))
+                c.execute(
+                    "UPDATE docs SET status='received', received=?, folder=?, filename=?"
+                    " WHERE txn=? AND code=?",
+                    (now, folder, filename, tid, matched),
+                )
                 db.log(c, tid, "doc_received", f"{matched} auto-matched from upload: {filename}")
         return matched
     return None
+
+
+def _match_text_to_code(page_text: str) -> str | None:
+    """Match page text content to a CAR form code by detecting form headers."""
+    text = page_text.upper()
+    # CAR form header patterns — ordered by specificity
+    header_patterns = [
+        # Must check specific forms before generic patterns
+        ("RESIDENTIAL PURCHASE AGREEMENT", "RPA"),
+        ("TRANSFER DISCLOSURE STATEMENT", "TDS"),
+        ("SELLER PROPERTY QUESTIONNAIRE", "SPQ"),
+        ("NATURAL HAZARD DISCLOSURE", "NHD"),
+        ("AGENT VISUAL INSPECTION DISCLOSURE", "AVID"),
+        ("STATEWIDE BUYER AND SELLER ADVISORY", "SBSA"),
+        ("BUYER'S INVESTIGATION ADVISORY", "BIA"),
+        ("BUYER INSPECTION ADVISORY", "BIA"),
+        ("WIRE FRAUD AND ELECTRONIC FUNDS TRANSFER", "WFI"),
+        ("WIRE FRAUD ADVISORY", "WFI"),
+        ("DISCLOSURE REGARDING REAL ESTATE AGENCY RELATIONSHIP", "AD"),
+        ("(C.A.R. FORM AD,", "AD"),
+        ("POSSIBLE REPRESENTATION OF MORE THAN ONE", "PRBS"),
+        ("CONTINGENCY REMOVAL", "CR1"),
+        ("LEAD-BASED PAINT", "LBP"),
+        ("EARTHQUAKE HAZARDS REPORT", "EQFZ"),
+        ("FIRE HAZARD SEVERITY", "FIRZ"),
+        ("FIRE HARDENING AND DEFENSIBLE SPACE", "FIRZ"),
+        ("FLOOD HAZARD", "FLD"),
+        ("SMOKE DETECTOR", "SMOKE_CO"),
+        ("WATER HEATER AND SMOKE DETECTOR", "WHSD"),
+        ("WATER-CONSERVING PLUM", "WHSD"),
+        ("MEGAN'S LAW", "MEG"),
+        ("SUPPLEMENTAL STATUTORY", "SSD"),
+        ("SUPPLEMENTAL DISCLOSURES", "DE_SUPP"),
+        ("REQUEST FOR REPAIR", "RR"),
+        ("FAIR HOUSING AND DISCRIMINATION ADVISORY", "FHDA"),
+        ("BUYER HOMEOWNERS' INSURANCE ADVISORY", "BHIA"),
+        ("BUYER HOMEOWNERS ASSOCIATION ADVISORY", "HOA_DOCS"),
+        ("BUYER REPRESENTATION AGREEMENT", "BUYER_REP_AGR"),
+        ("BUYER REPRESENTATION AND BROKER COMPENSATION", "BUYER_REP_AGR"),
+        ("RESIDENTIAL LISTING AGREEMENT", "DE_LISTING_AGR"),
+        ("LEASE LISTING AGREEMENT", "DE_LEASE_LIST"),
+        ("MARKET CONDITIONS ADVISORY", "MCA"),
+        ("DISCLOSURE INFORMATION ADVISORY", "AD"),
+        ("AFFILIATED BUSINESS ARRANGEMENT", "ABDA"),
+        ("APPRAISAL REPORT", "APPR_RPT"),
+        ("HOME INSPECTION REPORT", "INSP_RPT"),
+        ("PEST INSPECTION", "PEST_RPT"),
+        ("TERMITE INSPECTION", "PEST_RPT"),
+        ("PRELIMINARY TITLE", "PTITLE"),
+        ("CLOSING DISCLOSURE", "CLOSING_DISC"),
+        ("HOA DOCUMENTS", "HOA_DOCS"),
+        ("CALIFORNIA CONSUMER PRIVACY ACT", "CCPA"),
+        ("FEDERAL REPORTING REQUIREMENT", "FRR"),
+        ("SQUARE FOOT AND LOT SIZE", "SQFT"),
+    ]
+    for pattern, code in header_patterns:
+        if pattern in text:
+            return code
+    return None
+
+
+def _split_multi_doc_pdf(tid: str, pdf_path: str, original_name: str) -> list[dict]:
+    """Scan a multi-page PDF for different CAR forms. Split and auto-file each."""
+    try:
+        import fitz  # PyMuPDF
+    except ImportError:
+        return []
+
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception:
+        return []
+
+    if doc.page_count < 2:
+        doc.close()
+        return []
+
+    # Scan each page for form headers
+    page_codes = []
+    for i in range(doc.page_count):
+        text = doc[i].get_text()
+        code = _match_text_to_code(text)
+        page_codes.append(code)
+
+    # Group consecutive pages by form code
+    segments = []  # [(code, start_page, end_page)]
+    current_code = None
+    start = 0
+    for i, code in enumerate(page_codes):
+        if code and code != current_code:
+            if current_code:
+                segments.append((current_code, start, i - 1))
+            current_code = code
+            start = i
+        elif not code and current_code:
+            # Continuation page (no header) — belongs to current form
+            pass
+    if current_code:
+        segments.append((current_code, start, doc.page_count - 1))
+
+    # Only split if we found multiple distinct forms
+    if len(segments) < 2:
+        doc.close()
+        return []
+
+    upload_dir = doc_versions.CAR_DIR / f"uploads_{tid}"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    results = []
+
+    for code, start_pg, end_pg in segments:
+        # Extract pages into a new PDF
+        split_doc = fitz.open()
+        split_doc.insert_pdf(doc, from_page=start_pg, to_page=end_pg)
+        split_name = f"{code}_{original_name}"
+        split_path = upload_dir / split_name
+        split_doc.save(str(split_path))
+        split_doc.close()
+
+        # Auto-match to checklist — use the detected code directly
+        matched = None
+        with db.conn() as c:
+            row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+            if row and row["status"] == "required":
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                c.execute(
+                    "UPDATE docs SET status='received', received=?, folder=?, filename=?"
+                    " WHERE txn=? AND code=?",
+                    (now, f"uploads_{tid}", split_name, tid, code),
+                )
+                db.log(c, tid, "doc_received", f"{code} extracted from {original_name} (pages {start_pg+1}-{end_pg+1})")
+                matched = code
+
+        results.append({
+            "code": code,
+            "filename": split_name,
+            "pages": f"{start_pg + 1}-{end_pg + 1}",
+            "matched": matched,
+        })
+
+    doc.close()
+
+    # Log the split
+    with db.conn() as c:
+        for r in results:
+            db.log(c, tid, "doc_split", f"Extracted {r['code']} (pages {r['pages']}) from {original_name}")
+        db.log(c, tid, "pdf_split", f"Split {original_name} into {len(segments)} documents: {', '.join(s[0] for s in segments)}")
+
+    return results
+
+
+def _extract_rpa_data(pdf_path: str) -> dict:
+    """Extract dates, contingency periods, and key terms from an RPA PDF.
+
+    Scans the text of the RPA looking for:
+    - Purchase price
+    - Close of escrow days/date
+    - Contingency day counts (investigation, appraisal, loan)
+    - Acceptance date / date prepared
+    Returns a dict of extracted values.
+    """
+    try:
+        import fitz
+    except ImportError:
+        return {}
+
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception:
+        return {}
+
+    # Combine text from all pages
+    full_text = ""
+    for i in range(doc.page_count):
+        page_text = doc[i].get_text()
+        # Only process RPA pages (skip other forms in a combined packet)
+        if i == 0 or "RESIDENTIAL PURCHASE AGREEMENT" in page_text.upper() or full_text:
+            if full_text or "RESIDENTIAL PURCHASE AGREEMENT" in page_text.upper():
+                full_text += page_text + "\n"
+                # Stop if we hit a new form header that isn't RPA
+                if i > 0 and full_text:
+                    code = _match_text_to_code(page_text)
+                    if code and code != "RPA":
+                        break
+    doc.close()
+
+    if not full_text:
+        return {}
+
+    extracted = {}
+    lines = full_text.split("\n")
+
+    # ── Purchase Price ──
+    for i, line in enumerate(lines):
+        if "Purchase Price" in line and "$" in line:
+            m = re.search(r'\$\s*([\d,]+(?:\.\d{2})?)', line)
+            if m:
+                extracted["purchase_price"] = m.group(1).replace(",", "")
+                break
+        # Also check next line for the dollar amount
+        if "Purchase Price" in line and i + 1 < len(lines):
+            m = re.search(r'\$\s*([\d,]+(?:\.\d{2})?)', lines[i + 1])
+            if m:
+                extracted["purchase_price"] = m.group(1).replace(",", "")
+                break
+
+    # ── Close of Escrow ──
+    for i, line in enumerate(lines):
+        if "Close Of" in line and "Escrow" in line:
+            # Look for "X Days after Acceptance"
+            context = " ".join(lines[i:i+3])
+            m = re.search(r'(\d+)\s*(?:\(or\s*(\d+)?\s*\))?\s*Days?\s*after\s*Acceptance', context, re.IGNORECASE)
+            if m:
+                coe_days = int(m.group(2)) if m.group(2) else int(m.group(1))
+                extracted["coe_days"] = coe_days
+            # Look for explicit date "OR on (date)"
+            dm = re.search(r'OR\s*on\s+(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', context, re.IGNORECASE)
+            if dm:
+                extracted["coe_date_raw"] = dm.group(1)
+            break
+
+    # ── Contingency Day Counts ──
+    # Pattern: "17 (or X) Days after Acceptance" near contingency labels
+    contingency_patterns = [
+        (r'Loan\(?s?\)?', "loan_days"),
+        (r'Appraisal', "appraisal_days"),
+        (r'Investigation\s*(?:of\s*Property)?', "investigation_days"),
+    ]
+    for i, line in enumerate(lines):
+        for pattern, key in contingency_patterns:
+            if key not in extracted and re.search(pattern, line, re.IGNORECASE):
+                # Search this line and next few for day count
+                context = " ".join(lines[max(0,i-2):i+4])
+                m = re.search(r'(\d+)\s*\(or\s*(\d+)?\s*\)\s*Days?\s*after\s*Acceptance', context, re.IGNORECASE)
+                if m:
+                    days = int(m.group(2)) if m.group(2) else int(m.group(1))
+                    extracted[key] = days
+
+    # ── "No contingency" flags ──
+    for i, line in enumerate(lines):
+        lu = line.upper()
+        if "NO LOAN CONTINGENCY" in lu:
+            extracted["no_loan_contingency"] = True
+        if "NO APPRAISAL CONTINGENCY" in lu:
+            extracted["no_appraisal_contingency"] = True
+
+    # ── Date Prepared ──
+    for line in lines:
+        if "Date Prepared" in line:
+            m = re.search(r'Date Prepared[:\s]*(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', line)
+            if m:
+                extracted["date_prepared"] = m.group(1)
+            break
+
+    # ── Acceptance Date (typically on last page) ──
+    for line in lines:
+        if "Date" in line and "Acceptance" in line:
+            m = re.search(r'(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})', line)
+            if m:
+                extracted["acceptance_date"] = m.group(1)
+
+    # Set defaults for anything not found
+    extracted.setdefault("investigation_days", 17)
+    extracted.setdefault("appraisal_days", 17)
+    extracted.setdefault("loan_days", 21)
+    extracted.setdefault("coe_days", 30)
+
+    return extracted
+
+
+def _parse_date_flexible(date_str: str) -> date | None:
+    """Parse dates in various formats: MM/DD/YYYY, MM-DD-YYYY, M/D/YY, etc."""
+    for fmt in ("%m/%d/%Y", "%m-%d-%Y", "%m/%d/%y", "%m-%d-%y", "%Y-%m-%d"):
+        try:
+            return datetime.strptime(date_str.strip(), fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
+def _extract_rpa_and_populate(tid: str, pdf_path: str, split_results: list | None = None) -> dict:
+    """Extract RPA data from PDF and auto-populate deadlines + contingencies.
+
+    If the PDF is a combined packet with split results, find the RPA portion.
+    """
+    # Determine the actual RPA PDF path
+    rpa_path = pdf_path
+    if split_results:
+        for sr in split_results:
+            if sr.get("code") == "RPA" and sr.get("filename"):
+                candidate = doc_versions.CAR_DIR / f"uploads_{tid}" / sr["filename"]
+                if candidate.exists():
+                    rpa_path = str(candidate)
+                    break
+
+    extracted = _extract_rpa_data(rpa_path)
+    if not extracted:
+        return {}
+
+    result = {"extracted": extracted}
+
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return result
+
+        txn_data = json.loads(t.get("data") or "{}")
+
+        # Try to determine acceptance date
+        acceptance = None
+        if "acceptance_date" in extracted:
+            acceptance = _parse_date_flexible(extracted["acceptance_date"])
+        if not acceptance and txn_data.get("dates", {}).get("acceptance"):
+            acceptance = date.fromisoformat(txn_data["dates"]["acceptance"])
+        if not acceptance and "date_prepared" in extracted:
+            acceptance = _parse_date_flexible(extracted["date_prepared"])
+        # Fallback: use transaction creation date as acceptance date
+        if not acceptance:
+            created_str = t.get("created", "")
+            if created_str:
+                try:
+                    acceptance = date.fromisoformat(created_str[:10])
+                except (ValueError, TypeError):
+                    acceptance = date.today()
+            else:
+                acceptance = date.today()
+            result["acceptance_provisional"] = True
+
+        # Update transaction data with extracted values
+        if "dates" not in txn_data:
+            txn_data["dates"] = {}
+        if "contingencies" not in txn_data:
+            txn_data["contingencies"] = {}
+
+        txn_data["dates"]["acceptance"] = acceptance.isoformat()
+
+        coe_days = extracted.get("coe_days", 30)
+        coe_date = acceptance + timedelta(days=coe_days)
+        if "coe_date_raw" in extracted:
+            parsed_coe = _parse_date_flexible(extracted["coe_date_raw"])
+            if parsed_coe:
+                coe_date = parsed_coe
+        txn_data["dates"]["close_of_escrow"] = coe_date.isoformat()
+
+        # Contingency day counts
+        txn_data["contingencies"]["investigation_days"] = extracted.get("investigation_days", 17)
+        txn_data["contingencies"]["appraisal_days"] = extracted.get("appraisal_days", 17)
+        txn_data["contingencies"]["loan_days"] = extracted.get("loan_days", 21)
+        txn_data["contingencies"]["deposit_days"] = 3
+
+        # Purchase price
+        if "purchase_price" in extracted:
+            if "financial" not in txn_data:
+                txn_data["financial"] = {}
+            try:
+                txn_data["financial"]["purchase_price"] = int(float(extracted["purchase_price"]))
+            except (ValueError, TypeError):
+                pass
+
+        # Save updated txn data
+        c.execute("UPDATE txns SET data=?, updated=datetime('now','localtime') WHERE id=?",
+                  (json.dumps(txn_data), tid))
+        db.log(c, tid, "rpa_extracted",
+               f"acceptance={acceptance.isoformat()} COE={coe_date.isoformat()} "
+               f"inv={extracted.get('investigation_days')}d apr={extracted.get('appraisal_days')}d "
+               f"loan={extracted.get('loan_days')}d")
+
+    # Calculate deadlines and contingencies using the engine
+    try:
+        engine.calc_deadlines(tid, acceptance, txn_data)
+        result["deadlines_populated"] = True
+        result["acceptance_date"] = acceptance.isoformat()
+        result["coe_date"] = coe_date.isoformat()
+    except Exception as e:
+        result["deadline_error"] = str(e)
+
+    return result
 
 
 # ── Bug Reports ───────────────────────────────────────────────────────────────
@@ -1811,6 +2285,71 @@ def resolve_bug_report(bid):
         c.execute("UPDATE bug_reports SET status='resolved' WHERE id=?", (bid,))
         updated = c.execute("SELECT * FROM bug_reports WHERE id=?", (bid,)).fetchone()
     return jsonify(dict(updated))
+
+
+# ── Review Notes ─────────────────────────────────────────────────────────────
+
+@app.route("/api/review-notes", methods=["GET"])
+def list_review_notes():
+    """List review notes, optionally filtered by page and/or status."""
+    page = request.args.get("page")
+    status = request.args.get("status")
+    with db.conn() as c:
+        q = "SELECT * FROM review_notes WHERE 1=1"
+        params = []
+        if page:
+            q += " AND page=?"
+            params.append(page)
+        if status:
+            q += " AND status=?"
+            params.append(status)
+        q += " ORDER BY created_at DESC"
+        rows = c.execute(q, params).fetchall()
+    return jsonify([dict(r) for r in rows])
+
+
+@app.route("/api/review-notes", methods=["POST"])
+def create_review_note():
+    """Create a new review note."""
+    body = request.json or {}
+    page = (body.get("page") or "").strip()
+    note = (body.get("note") or "").strip()
+    if not page or not note:
+        return jsonify({"error": "page and note required"}), 400
+    with db.conn() as c:
+        c.execute(
+            "INSERT INTO review_notes(page, note) VALUES(?,?)",
+            (page, note),
+        )
+        nid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+        row = c.execute("SELECT * FROM review_notes WHERE id=?", (nid,)).fetchone()
+    return jsonify(dict(row)), 201
+
+
+@app.route("/api/review-notes/<int:nid>/resolve", methods=["POST"])
+def resolve_review_note(nid):
+    """Mark a review note as done."""
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM review_notes WHERE id=?", (nid,)).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        c.execute(
+            "UPDATE review_notes SET status='done', resolved_at=datetime('now','localtime') WHERE id=?",
+            (nid,),
+        )
+        updated = c.execute("SELECT * FROM review_notes WHERE id=?", (nid,)).fetchone()
+    return jsonify(dict(updated))
+
+
+@app.route("/api/review-notes/<int:nid>", methods=["DELETE"])
+def delete_review_note(nid):
+    """Delete a review note."""
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM review_notes WHERE id=?", (nid,)).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        c.execute("DELETE FROM review_notes WHERE id=?", (nid,))
+    return jsonify({"ok": True})
 
 
 # ── Chat (Claude-powered) ────────────────────────────────────────────────────
