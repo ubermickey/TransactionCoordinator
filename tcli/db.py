@@ -205,6 +205,31 @@ CREATE TABLE IF NOT EXISTS features(
   depends_on TEXT DEFAULT '[]',
   created_at TEXT DEFAULT(datetime('now','localtime'))
 );
+CREATE TABLE IF NOT EXISTS cloud_approvals(
+  txn TEXT PRIMARY KEY,
+  granted_at TEXT,
+  expires_at TEXT,
+  granted_by TEXT DEFAULT 'ui',
+  note TEXT DEFAULT '',
+  revoked_at TEXT
+);
+CREATE TABLE IF NOT EXISTS cloud_events(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT,
+  service TEXT NOT NULL,
+  operation TEXT NOT NULL,
+  endpoint TEXT DEFAULT '',
+  model TEXT DEFAULT '',
+  approved INTEGER DEFAULT 0,
+  outcome TEXT DEFAULT 'blocked',
+  status_code INTEGER,
+  latency_ms INTEGER,
+  request_bytes INTEGER DEFAULT 0,
+  response_bytes INTEGER DEFAULT 0,
+  error TEXT DEFAULT '',
+  meta TEXT DEFAULT '{}',
+  created_at TEXT DEFAULT(datetime('now','localtime'))
+);
 CREATE TABLE IF NOT EXISTS contract_reviews(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   txn TEXT NOT NULL,

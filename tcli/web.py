@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 import urllib.request
 import urllib.parse
 from datetime import date, datetime, timedelta
@@ -12,7 +13,7 @@ import yaml
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 
-from . import checklist, contract_scanner, db, doc_versions, engine, integrations, rules
+from . import cloud_guard, checklist, contract_scanner, db, doc_versions, engine, integrations, rules
 from .engine import CONT_GATE
 
 app = Flask(__name__)
@@ -83,6 +84,15 @@ def _validate_pdf_upload(file_storage):
     except Exception:
         return False
     return head == b"%PDF-"
+
+
+def _cloud_blocked_response(tid: str, message: str = "cloud approval required"):
+    return jsonify({
+        "error": message,
+        "code": "cloud_approval_required",
+        "requires_approval": True,
+        "txn": tid,
+    }), 403
 
 
 @app.errorhandler(RequestEntityTooLarge)
@@ -932,13 +942,89 @@ def delete_signature(tid, sig_id):
 
 @app.route("/api/sandbox-status")
 def sandbox_status():
-    return jsonify({"email_sandbox": integrations.EMAIL_SANDBOX})
+    return jsonify({"email_sandbox": integrations.EMAIL_SANDBOX,
+                     "sandbox": integrations.EMAIL_SANDBOX})
 
 
 @app.route("/api/docusign-status")
 def docusign_status():
     """Check DocuSign configuration status and get setup instructions."""
     return jsonify(integrations.docusign_status())
+
+
+@app.route("/api/txns/<tid>/cloud-approval")
+def get_cloud_approval(tid):
+    """Get cloud approval status for a transaction."""
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.get_approval(c, tid)
+    return jsonify(approval)
+
+
+@app.route("/api/txns/<tid>/cloud-approval", methods=["POST"])
+def grant_cloud_approval(tid):
+    """Grant time-limited approval for cloud calls on this transaction."""
+    body = request.get_json(silent=True) or {}
+    minutes = body.get("minutes", cloud_guard.DEFAULT_APPROVAL_TTL_MIN)
+    note = (body.get("note") or "").strip()
+    granted_by = (body.get("granted_by") or "ui").strip() or "ui"
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.grant_approval(
+            c, tid, ttl_min=minutes, granted_by=granted_by, note=note
+        )
+        db.log(c, tid, "cloud_approval_granted",
+               f"{approval['remaining_seconds']}s by {granted_by}")
+    return jsonify(approval), 201
+
+
+@app.route("/api/txns/<tid>/cloud-approval", methods=["DELETE"])
+def revoke_cloud_approval(tid):
+    """Revoke cloud-call approval for a transaction."""
+    body = request.get_json(silent=True) or {}
+    note = (body.get("note") or "").strip()
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.revoke_approval(c, tid, note=note)
+        db.log(c, tid, "cloud_approval_revoked", note[:80] if note else "revoked")
+    return jsonify(approval)
+
+
+@app.route("/api/txns/<tid>/cloud-events")
+def get_cloud_events(tid):
+    """List cloud usage events for a transaction."""
+    service = (request.args.get("service") or "").strip()
+    operation = (request.args.get("operation") or "").strip()
+    outcome = (request.args.get("outcome") or "").strip()
+    limit = request.args.get("limit", type=int) or 100
+    limit = max(1, min(limit, 500))
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        q = "SELECT * FROM cloud_events WHERE txn=?"
+        params = [tid]
+        if service:
+            q += " AND service=?"
+            params.append(service)
+        if operation:
+            q += " AND operation=?"
+            params.append(operation)
+        if outcome:
+            q += " AND outcome=?"
+            params.append(outcome)
+        q += " ORDER BY created_at DESC, id DESC LIMIT ?"
+        params.append(limit)
+        rows = c.execute(q, params).fetchall()
+    return jsonify([dict(r) for r in rows])
 
 
 @app.route("/api/txns/<tid>/signatures/<int:sig_id>/send", methods=["POST"])
@@ -2232,15 +2318,48 @@ def review_contract(tid):
       - A multipart file upload with key "file"
       - {"contract_id": 5} to review a scanned contract by ID
     """
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not api_key:
-        return jsonify({"error": "ANTHROPIC_API_KEY not set"}), 500
-
+    service = "anthropic"
+    operation = "review_contract"
+    endpoint = "anthropic://messages.create"
+    model = "claude-sonnet-4-20250514"
     with db.conn() as c:
         row = db.txn(c, tid)
         if not row:
             return jsonify({"error": "transaction not found"}), 404
+        try:
+            cloud_guard.require_approval(c, tid, service, operation)
+        except cloud_guard.CloudApprovalRequired as exc:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error=str(exc),
+            )
+            return _cloud_blocked_response(tid, str(exc))
         t = _txn_dict(row)
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                error="ANTHROPIC_API_KEY not set",
+            )
+        return jsonify({"error": "ANTHROPIC_API_KEY not set"}), 500
 
     playbook_name = (request.form or request.json or {}).get("playbook", "california_rpa")
 
@@ -2290,10 +2409,52 @@ def review_contract(tid):
     if not pdf_path or not Path(pdf_path).exists():
         return jsonify({"error": "No PDF file found to review"}), 400
 
+    request_bytes = 0
+    try:
+        request_bytes = Path(pdf_path).stat().st_size
+    except Exception:
+        request_bytes = 0
+
     # Run the review
+    started = time.perf_counter()
     try:
         result = engine.review_contract(pdf_path, txn_context, playbook_name)
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        response_bytes = len(json.dumps(result).encode("utf-8"))
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="success",
+                status_code=200,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=response_bytes,
+                meta={"playbook": playbook_name, "doc_code": doc_code or ""},
+            )
     except Exception as e:
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                error=str(e),
+                meta={"playbook": playbook_name, "doc_code": doc_code or ""},
+            )
         return jsonify({"error": f"Review failed: {str(e)}"}), 500
     finally:
         # Clean up temp file if we created one
@@ -3165,68 +3326,118 @@ def delete_review_note(nid):
 @app.route("/api/chat", methods=["POST"])
 def chat():
     """Send a message to Claude with full transaction context."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not api_key:
-        return jsonify({"error": "ANTHROPIC_API_KEY not set. Add it to your .env file."}), 500
-
     body = request.json or {}
     message = body.get("message", "").strip()
     if not message:
         return jsonify({"error": "message required"}), 400
 
-    tid = body.get("txn_id")
+    tid = (body.get("txn_id") or "").strip()
     history = body.get("history", [])
+    service = "anthropic"
+    operation = "chat"
+    endpoint = "https://api.anthropic.com/v1/messages"
+    model = "claude-sonnet-4-20250514"
+
+    if not tid:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn="",
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error="txn_id is required for cloud chat",
+            )
+        return _cloud_blocked_response("", "txn_id is required for cloud chat")
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "transaction not found"}), 404
+        try:
+            cloud_guard.require_approval(c, tid, service, operation)
+        except cloud_guard.CloudApprovalRequired as exc:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error=str(exc),
+            )
+            return _cloud_blocked_response(tid, str(exc))
+        t = _txn_dict(row)
+        t["doc_stats"] = _doc_stats(c, tid)
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                error="ANTHROPIC_API_KEY not set",
+            )
+        return jsonify({"error": "ANTHROPIC_API_KEY not set. Add it to your .env file."}), 500
 
     # Build transaction context
     context_parts = []
-    if tid:
-        with db.conn() as c:
-            row = db.txn(c, tid)
-            if row:
-                t = _txn_dict(row)
-                t["doc_stats"] = _doc_stats(c, tid)
-                context_parts.append(f"Transaction: {t['address']} (ID: {tid})")
-                context_parts.append(f"Type: {t['txn_type']}, Role: {t['party_role']}, Phase: {t['phase']}")
-                if t.get("brokerage"):
-                    context_parts.append(f"Brokerage: {t['brokerage']}")
-                ds = t["doc_stats"]
-                context_parts.append(f"Docs: {ds['received']}/{ds['total']} received")
+    context_parts.append(f"Transaction: {t['address']} (ID: {tid})")
+    context_parts.append(f"Type: {t['txn_type']}, Role: {t['party_role']}, Phase: {t['phase']}")
+    if t.get("brokerage"):
+        context_parts.append(f"Brokerage: {t['brokerage']}")
+    ds = t["doc_stats"]
+    context_parts.append(f"Docs: {ds['received']}/{ds['total']} received")
 
-        # Gates
-        gates = engine.gate_rows(tid)
-        gate_info = rules.gate
-        verified = sum(1 for g in gates if g["status"] == "verified")
-        context_parts.append(f"Gates: {verified}/{len(gates)} verified")
-        pending_gates = [g for g in gates if g["status"] != "verified"]
-        if pending_gates:
-            names = []
-            for g in pending_gates[:5]:
-                info = gate_info(g["gid"]) or {}
-                names.append(info.get("name", g["gid"]))
-            context_parts.append(f"Pending gates: {', '.join(names)}")
+    # Gates
+    gates = engine.gate_rows(tid)
+    gate_info = rules.gate
+    verified = sum(1 for g in gates if g["status"] == "verified")
+    context_parts.append(f"Gates: {verified}/{len(gates)} verified")
+    pending_gates = [g for g in gates if g["status"] != "verified"]
+    if pending_gates:
+        names = []
+        for g in pending_gates[:5]:
+            info = gate_info(g["gid"]) or {}
+            names.append(info.get("name", g["gid"]))
+        context_parts.append(f"Pending gates: {', '.join(names)}")
 
-        # Deadlines
-        dl_rows = engine.deadline_rows(tid)
-        today = date.today()
-        if dl_rows:
-            urgent = []
-            for d in dl_rows:
-                if d.get("due"):
-                    days = (date.fromisoformat(d["due"]) - today).days
-                    if days <= 5:
-                        urgent.append(f"{d['name']} ({days}d)")
-            if urgent:
-                context_parts.append(f"Urgent deadlines: {', '.join(urgent[:5])}")
+    # Deadlines
+    dl_rows = engine.deadline_rows(tid)
+    today = date.today()
+    if dl_rows:
+        urgent = []
+        for d in dl_rows:
+            if d.get("due"):
+                days = (date.fromisoformat(d["due"]) - today).days
+                if days <= 5:
+                    urgent.append(f"{d['name']} ({days}d)")
+        if urgent:
+            context_parts.append(f"Urgent deadlines: {', '.join(urgent[:5])}")
 
-        # Recent audit
-        with db.conn() as c:
-            audit_rows = c.execute(
-                "SELECT action, detail, ts FROM audit WHERE txn=? ORDER BY ts DESC LIMIT 5",
-                (tid,),
-            ).fetchall()
-        if audit_rows:
-            audit_lines = [f"  {r['ts']}: {r['action']} - {r['detail']}" for r in audit_rows]
-            context_parts.append("Recent activity:\n" + "\n".join(audit_lines))
+    # Recent audit
+    with db.conn() as c:
+        audit_rows = c.execute(
+            "SELECT action, detail, ts FROM audit WHERE txn=? ORDER BY ts DESC LIMIT 5",
+            (tid,),
+        ).fetchall()
+    if audit_rows:
+        audit_lines = [f"  {r['ts']}: {r['action']} - {r['detail']}" for r in audit_rows]
+        context_parts.append("Recent activity:\n" + "\n".join(audit_lines))
 
     context = "\n".join(context_parts) if context_parts else "No transaction selected."
 
@@ -3247,18 +3458,16 @@ def chat():
     api_messages.append({"role": "user", "content": message})
 
     # Call Anthropic API
-    import urllib.request
-    import urllib.error
-
     api_body = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": model,
         "max_tokens": 1024,
         "system": system_prompt,
         "messages": api_messages,
     })
+    request_bytes = len(api_body.encode("utf-8"))
 
     req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
+        endpoint,
         data=api_body.encode("utf-8"),
         headers={
             "Content-Type": "application/json",
@@ -3267,18 +3476,70 @@ def chat():
         },
     )
 
+    start = time.perf_counter()
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
+            raw = resp.read()
+            code = resp.status
+            result = json.loads(raw.decode("utf-8"))
         reply = ""
         for block in result.get("content", []):
             if block.get("type") == "text":
                 reply += block.get("text", "")
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="success",
+                status_code=code,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=len(raw),
+            )
         return jsonify({"reply": reply or "No response generated."})
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8", errors="replace")
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=e.code,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=len(error_body.encode("utf-8")),
+                error=error_body[:200],
+            )
         return jsonify({"error": f"Claude API error ({e.code}): {error_body[:200]}"}), 502
     except Exception as e:
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                error=str(e),
+            )
         return jsonify({"error": f"Chat error: {str(e)}"}), 500
 
 
@@ -3550,6 +3811,9 @@ def init_features():
         {"name": "Contract Annotation", "category": "pdf", "files": ["contract_scanner.py"], "depends_on": ["Document Checklist"]},
         {"name": "Bulk Verification", "category": "docs", "files": ["app.js"], "depends_on": ["Document Checklist"]},
         {"name": "Dashboard", "category": "ui", "files": ["app.js"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Contract Review", "category": "pdf", "files": ["web.py", "app.js", "engine.py"], "depends_on": ["Document Checklist", "Contract Annotation"]},
+        {"name": "Cloud Usage Tracker", "category": "integrations", "files": ["db.py", "web.py", "app.js", "cloud_guard.py"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Cloud Approval Gate", "category": "security", "files": ["web.py", "cloud_guard.py", "app.js"], "depends_on": ["Cloud Usage Tracker"]},
     ]
     count = 0
     with db.conn() as c:

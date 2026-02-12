@@ -113,6 +113,45 @@ const get  = (p) => api(p);
 const post = (p, b) => api(p, { method: 'POST', body: b });
 const del  = (p) => api(p, { method: 'DELETE' });
 
+async function postForm(path, formData) {
+  try {
+    const res = await fetch(API + path, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (!res.ok) return { _error: true, ...data };
+    return data;
+  } catch (err) {
+    return { _error: true, error: err.message };
+  }
+}
+
+function isCloudApprovalError(res) {
+  return !!(res && (res.code === 'cloud_approval_required' || res.requires_approval));
+}
+
+async function ensureCloudApproval(tid, attemptFn) {
+  let res = await attemptFn();
+  if (!isCloudApprovalError(res)) return res;
+  if (!tid) {
+    Toast.show('Select a transaction before using cloud features.', 'warning');
+    return res;
+  }
+
+  const ok = window.confirm(
+    'This action uses cloud services. Approve cloud use for this transaction for 30 minutes?'
+  );
+  if (!ok) return res;
+
+  const grant = await post(`/api/txns/${tid}/cloud-approval`, {
+    minutes: 30,
+    note: 'Approved from UI',
+  });
+  if (grant._error) return res;
+  Toast.show('Cloud approved for 30 minutes for this transaction.', 'info');
+
+  res = await attemptFn();
+  return res;
+}
+
 // ── Response Cache (TTL-based) for fast tab switches ──
 const _apiCache = new Map();
 const CACHE_TTL = 8000; // 8 seconds
@@ -224,8 +263,12 @@ const ChatPanel = (() => {
     const input = document.getElementById('chat-input');
     const text = (input.value || '').trim();
     if (!text) return;
+    if (!currentTxn) {
+      Toast.show('Select a transaction before using cloud chat.', 'warning');
+      return;
+    }
 
-    const tid = currentTxn || '_global';
+    const tid = currentTxn;
     if (!messages[tid]) messages[tid] = [];
     messages[tid].push({ role: 'user', content: text });
     input.value = '';
@@ -244,11 +287,11 @@ const ChatPanel = (() => {
     if (sendBtn) sendBtn.disabled = true;
 
     try {
-      const res = await post('/api/chat', {
+      const res = await ensureCloudApproval(currentTxn, () => post('/api/chat', {
         message: text,
         txn_id: currentTxn,
         history: (messages[tid] || []).slice(-10),
-      });
+      }));
       typing.remove();
       if (res._error) {
         messages[tid].push({ role: 'assistant', content: 'Sorry, I encountered an error. ' + (res.error || '') });
@@ -4527,24 +4570,53 @@ function closeAdvanceBlockersModal() {
 
 async function renderAudit() {
   showSkeleton('table');
-  const logs = await get(`/api/txns/${currentTxn}/audit`);
-  if (logs._error) return;
+  const [logs, cloudEvents] = await Promise.all([
+    get(`/api/txns/${currentTxn}/audit`),
+    get(`/api/txns/${currentTxn}/cloud-events?limit=100`),
+  ]);
+  if (logs._error && cloudEvents._error) return;
   const el = $('#tab-content');
+  let html = '';
 
-  if (logs.length === 0) {
-    el.innerHTML = '<div class="card"><p style="color:var(--text-secondary)">No audit entries.</p></div>';
-    return;
+  if (!cloudEvents._error) {
+    const items = Array.isArray(cloudEvents) ? cloudEvents : [];
+    if (items.length) {
+      html += '<div class="card"><div class="card-title">Cloud Activity</div><ul class="audit-list">';
+      items.forEach(e => {
+        const outcome = (e.outcome || 'blocked').toLowerCase();
+        const bg = outcome === 'success' ? '#34c759' : (outcome === 'error' ? '#ff3b30' : '#ff9500');
+        html += `<li class="audit-item">
+          <span class="audit-ts">${esc(e.created_at || '')}</span>
+          <span class="audit-action">${esc(e.service || 'cloud')}/${esc(e.operation || '')}</span>
+          <span class="audit-detail">
+            <span style="display:inline-block;padding:1px 8px;border-radius:999px;background:${bg};color:white;font-size:11px;font-weight:600;margin-right:8px">${esc(outcome)}</span>
+            ${esc(e.error || e.endpoint || '')}
+          </span>
+        </li>`;
+      });
+      html += '</ul></div>';
+    } else {
+      html += '<div class="card"><div class="card-title">Cloud Activity</div><p style="color:var(--text-secondary)">No cloud usage events yet.</p></div>';
+    }
   }
 
-  let html = '<div class="card"><ul class="audit-list">';
-  logs.forEach(e => {
-    html += `<li class="audit-item">
-      <span class="audit-ts">${esc(e.ts || '')}</span>
-      <span class="audit-action">${esc(e.action)}</span>
-      <span class="audit-detail">${esc(e.detail || '')}</span>
-    </li>`;
-  });
-  html += '</ul></div>';
+  if (!logs._error && Array.isArray(logs) && logs.length) {
+    html += '<div class="card"><div class="card-title">Audit Trail</div><ul class="audit-list">';
+    logs.forEach(e => {
+      html += `<li class="audit-item">
+        <span class="audit-ts">${esc(e.ts || '')}</span>
+        <span class="audit-action">${esc(e.action)}</span>
+        <span class="audit-detail">${esc(e.detail || '')}</span>
+      </li>`;
+    });
+    html += '</ul></div>';
+  } else if (!logs._error) {
+    html += '<div class="card"><div class="card-title">Audit Trail</div><p style="color:var(--text-secondary)">No audit entries.</p></div>';
+  }
+
+  if (!html) {
+    html = '<div class="card"><p style="color:var(--text-secondary)">No activity available.</p></div>';
+  }
   el.innerHTML = html;
 }
 
@@ -4697,11 +4769,11 @@ async function runContractReview() {
       try {
         const formData = new FormData();
         formData.append('file', input.files[0]);
-        const resp = await fetch('/api/txns/' + currentTxn + '/review-contract', {
-          method: 'POST', body: formData
-        });
-        const result = await resp.json();
-        if (result.error) {
+        const result = await ensureCloudApproval(
+          currentTxn,
+          () => postForm('/api/txns/' + currentTxn + '/review-contract', formData),
+        );
+        if (result._error || result.error) {
           el.textContent = '';
           const errDiv = document.createElement('div');
           errDiv.className = 'alert alert-error';
@@ -4725,7 +4797,10 @@ async function runContractReview() {
 
   btn.disabled = true;
   try {
-    const result = await post('/api/txns/' + currentTxn + '/review-contract', body);
+    const result = await ensureCloudApproval(
+      currentTxn,
+      () => post('/api/txns/' + currentTxn + '/review-contract', body),
+    );
     if (result._error || result.error) {
       el.textContent = '';
       const errDiv = document.createElement('div');
