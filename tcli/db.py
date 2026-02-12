@@ -95,6 +95,18 @@ CREATE TABLE IF NOT EXISTS contingencies(
   notes TEXT DEFAULT '',
   UNIQUE(txn, type)
 );
+CREATE TABLE IF NOT EXISTS contingency_items(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  contingency_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  status TEXT DEFAULT 'pending',
+  inspector TEXT DEFAULT '',
+  scheduled_date TEXT,
+  completed_date TEXT,
+  notes TEXT DEFAULT '',
+  sort_order INTEGER DEFAULT 0,
+  FOREIGN KEY(contingency_id) REFERENCES contingencies(id)
+);
 CREATE TABLE IF NOT EXISTS parties(
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   txn TEXT,
@@ -182,6 +194,30 @@ CREATE TABLE IF NOT EXISTS review_notes(
   status TEXT DEFAULT 'pending',
   created_at TEXT DEFAULT(datetime('now','localtime')),
   resolved_at TEXT
+);
+CREATE TABLE IF NOT EXISTS features(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT UNIQUE NOT NULL,
+  category TEXT DEFAULT '',
+  description TEXT DEFAULT '',
+  status TEXT DEFAULT 'active',
+  files TEXT DEFAULT '[]',
+  depends_on TEXT DEFAULT '[]',
+  created_at TEXT DEFAULT(datetime('now','localtime'))
+);
+CREATE TABLE IF NOT EXISTS contract_reviews(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  txn TEXT NOT NULL,
+  doc_code TEXT DEFAULT '',
+  playbook TEXT DEFAULT 'california_rpa',
+  overall_risk TEXT DEFAULT 'GREEN',
+  executive_summary TEXT DEFAULT '',
+  clauses TEXT DEFAULT '[]',
+  interactions TEXT DEFAULT '[]',
+  missing_items TEXT DEFAULT '[]',
+  raw_response TEXT DEFAULT '',
+  created_at TEXT DEFAULT(datetime('now','localtime')),
+  FOREIGN KEY(txn) REFERENCES txns(id)
 );"""
 
 # Columns added after initial schema — migrated on connect
