@@ -891,5 +891,81 @@ def report(txn_id: str = typer.Option(None, "--txn"), out: Path = typer.Option(N
         con.print(text)
 
 
+# ── Verify ──────────────────────────────────────────────────────────────────
+
+@app.command()
+def verify():
+    """Run all verification checks: imports, JS syntax, sandbox suite."""
+    import subprocess
+    steps = []
+
+    # 1. Python imports
+    con.print("[bold]1. Python imports[/]")
+    try:
+        import tcli.web, tcli.engine, tcli.db  # noqa: F401
+        con.print(f"  [green]PASS[/] tcli.web, tcli.engine, tcli.db")
+        steps.append(("Python imports", True))
+    except Exception as e:
+        con.print(f"  [red]FAIL[/] {e}")
+        steps.append(("Python imports", False))
+
+    # 2. JS syntax — uses node --check on a wrapper that requires the file
+    con.print("[bold]2. JS syntax[/]")
+    js_path = Path(__file__).parent / "static" / "app.js"
+    if js_path.exists():
+        # vm.compileFunction parses JS without executing it
+        check_script = "require('vm').compileFunction(require('fs').readFileSync(process.argv[1],'utf8'))"
+        result = subprocess.run(
+            ["node", "-e", check_script, str(js_path)],
+            capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0:
+            con.print(f"  [green]PASS[/] app.js parses OK")
+            steps.append(("JS syntax", True))
+        else:
+            con.print(f"  [red]FAIL[/] {result.stderr.strip()[:200]}")
+            steps.append(("JS syntax", False))
+    else:
+        con.print(f"  [yellow]SKIP[/] {js_path} not found")
+        steps.append(("JS syntax", True))
+
+    # 3. Sandbox suite
+    con.print("[bold]3. Sandbox suite[/]")
+    try:
+        import urllib.request
+        urllib.request.urlopen("http://localhost:5001/api/sandbox-status", timeout=3)
+    except Exception:
+        con.print("  [red]FAIL[/] Flask server not running on port 5001")
+        con.print("  [dim]Start it: python3 -m flask --app tcli.web run --port 5001 --debug[/]")
+        steps.append(("Sandbox suite", False))
+        _verify_summary(steps)
+        return
+
+    from tcli.sandbox.runner import SandboxRunner
+    runner = SandboxRunner()
+    modules = ["core", "gates", "signatures", "contingencies", "parties",
+               "disclosures", "calendar", "security", "pdf_viewer", "features"]
+    runner.run(modules)
+    runner.report()
+    steps.append(("Sandbox suite", runner.all_passed))
+
+    _verify_summary(steps)
+
+
+def _verify_summary(steps: list[tuple[str, bool]]):
+    """Print pass/fail summary for verify command."""
+    con.print(f"\n[bold]{'='*40}[/]")
+    all_ok = all(ok for _, ok in steps)
+    for name, ok in steps:
+        mark = f"[green]PASS[/]" if ok else f"[red]FAIL[/]"
+        con.print(f"  {mark}  {name}")
+    con.print(f"[bold]{'='*40}[/]")
+    if all_ok:
+        con.print("[green bold]All checks passed.[/]")
+    else:
+        con.print("[red bold]Some checks failed.[/]")
+        raise typer.Exit(1)
+
+
 if __name__ == "__main__":
     app()

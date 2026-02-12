@@ -2589,24 +2589,80 @@ tbody tr:hover { background: var(--table-row-hover); }
   background: var(--bg); border-radius: 4px; padding: 1px 5px;
 }
 
-/* Canvas area */
+/* Canvas area — continuous scroll container */
 .pdf-viewer-canvas-wrap {
-  flex: 1; overflow: auto; position: relative;
-  display: flex; align-items: flex-start; justify-content: center;
+  flex: 1; overflow-y: auto; position: relative;
   padding: 16px;
   background: var(--bg);
 }
-#pdf-canvas {
+
+/* Per-page container */
+.pdf-page-container {
+  position: relative;
+  margin: 0 auto 16px;
+  width: fit-content;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-height: 200px;
+}
+.pdf-page-container canvas {
+  display: block;
   box-shadow: 0 2px 12px rgba(0,0,0,0.15);
   background: white;
 }
-.pdf-overlay {
-  position: absolute; top: 16px; left: 50%;
+.pdf-page-overlay {
+  position: absolute; top: 0; left: 0;
   pointer-events: none;
 }
-.pdf-overlay circle { pointer-events: all; }
+.pdf-page-overlay rect { pointer-events: all; }
+.pdf-page-label {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 11px;
+  background: rgba(0,0,0,0.5); color: white;
+  padding: 2px 8px; border-radius: 4px;
+  pointer-events: none; z-index: 1;
+}
 
-/* Field markers (SVG circles) */
+/* Needs Review section */
+.pdf-needs-review {
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.pdf-needs-review:empty { display: none; }
+.pdf-needs-review-header {
+  padding: 8px 16px 4px; font-size: 11px; font-weight: 700;
+  color: #ff3b30; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px;
+}
+.pdf-needs-review-count {
+  background: #ff3b30; color: white;
+  border-radius: 10px; padding: 1px 7px;
+  font-size: 10px; font-weight: 600;
+}
+.pdf-review-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; cursor: pointer; font-size: 12px;
+  transition: background 0.15s;
+}
+.pdf-review-item:hover { background: var(--hover); }
+.pdf-review-check {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid #ff3b30; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px;
+}
+.pdf-review-check.done {
+  border-color: #34c759; background: #34c759; color: white;
+}
+.pdf-needs-review-done {
+  padding: 12px 16px; font-size: 12px; color: #34c759;
+  text-align: center;
+}
+
+/* Field markers (SVG rects) */
 .pdf-marker { cursor: pointer; transition: opacity 0.2s; }
 .pdf-marker:hover { opacity: 0.8; filter: url(#brightness); }
 .pdf-marker-filled { stroke: #34c759; stroke-width: 2.5; fill: rgba(52,199,89,0.12); }

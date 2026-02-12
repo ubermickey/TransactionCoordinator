@@ -115,11 +115,27 @@ def needs_reanalysis() -> list[str]:
 
 def load_manifest(folder: str, filename: str) -> dict:
     """Load a document manifest."""
+    folder_name = Path(folder).name
+    if folder_name != folder or folder_name in {"", ".", ".."}:
+        return {}
+
     stem = Path(filename).stem
     # Normalize to match manifest naming
     import re
     safe_name = re.sub(r"[^\w\-.]", "_", stem) + ".yaml"
-    manifest_path = MANIFEST_DIR / folder / safe_name
+    base = MANIFEST_DIR.resolve()
+    folder_path = (MANIFEST_DIR / folder_name).resolve()
+    try:
+        folder_path.relative_to(base)
+    except ValueError:
+        return {}
+
+    manifest_path = (folder_path / safe_name).resolve()
+    try:
+        manifest_path.relative_to(folder_path)
+    except ValueError:
+        return {}
+
     if manifest_path.exists():
         with open(manifest_path) as f:
             return yaml.safe_load(f) or {}

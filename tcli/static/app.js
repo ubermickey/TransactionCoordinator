@@ -759,7 +759,6 @@ const PdfViewer = (() => {
   let pdfDoc = null;
   let pdfjsApi = null;
   let pdfjsLoadPromise = null;
-  let currentPage = 1;
   let totalPages = 1;
   let scale = 1.5;
   let fields = [];
@@ -769,12 +768,12 @@ const PdfViewer = (() => {
   let filename = '';
   let txnId = '';
   let activeFieldIdx = -1;
-  let pageWidth = 0;
-  let pageHeight = 0;
+  let visiblePage = 1;
+  let pageContainers = new Map();
+  let observer = null;
 
   async function ensurePdfJs() {
     if (pdfjsApi) return pdfjsApi;
-
     if (typeof window.pdfjsLib !== 'undefined') {
       pdfjsApi = window.pdfjsLib;
     } else {
@@ -782,23 +781,17 @@ const PdfViewer = (() => {
         pdfjsLoadPromise = import('/static/vendor/pdf.min.mjs')
           .then((mod) => {
             const lib = (mod && mod.default && mod.default.getDocument) ? mod.default : mod;
-            if (!lib || typeof lib.getDocument !== 'function') {
+            if (!lib || typeof lib.getDocument !== 'function')
               throw new Error('pdf.js did not load correctly');
-            }
             window.pdfjsLib = lib;
             return lib;
           })
-          .catch((err) => {
-            pdfjsLoadPromise = null;
-            throw err;
-          });
+          .catch((err) => { pdfjsLoadPromise = null; throw err; });
       }
       pdfjsApi = await pdfjsLoadPromise;
     }
-
-    if (pdfjsApi.GlobalWorkerOptions) {
+    if (pdfjsApi.GlobalWorkerOptions)
       pdfjsApi.GlobalWorkerOptions.workerSrc = '/static/vendor/pdf.worker.min.mjs';
-    }
     return pdfjsApi;
   }
 
@@ -806,142 +799,160 @@ const PdfViewer = (() => {
     if (f.filled || f.value) return 'filled';
     const cat = (f.category || '').toLowerCase();
     if (cat === 'entry_days') return 'days';
-    // Mandatory categories
     if (cat === 'entry_signature' || cat === 'entry_license' || cat === 'entry_dollar') return 'empty';
-    // Dates: optional unless context has escrow/acceptance keywords
     if (cat === 'entry_date') return 'optional';
-    // Other blanks: check context for mandatory keywords
     const ctx = (f.context || '').toLowerCase();
     if (cat === 'entry_blank' && /purchase\s*price|deposit|escrow|acceptance|apn|parcel|city|county|zip|agent|broker|firm|buyer|seller|tenant|signature|initial/.test(ctx)) return 'empty';
     return 'optional';
   }
 
   async function open(f, fn, tid) {
-    folder = f;
-    filename = fn;
-    txnId = tid || '';
-    dirty = false;
-    activeFieldIdx = -1;
+    folder = f; filename = fn; txnId = tid || '';
+    dirty = false; activeFieldIdx = -1; visiblePage = 1;
 
     const backdrop = document.getElementById('pdf-viewer');
     backdrop.style.display = '';
     document.getElementById('pdf-viewer-title').textContent = filename.replace('.pdf', '');
 
     let pdfjs;
-    try {
-      pdfjs = await ensurePdfJs();
-    } catch (e) {
-      Toast.show('PDF viewer unavailable: ' + e.message, 'error');
-      return;
-    }
+    try { pdfjs = await ensurePdfJs(); }
+    catch (e) { Toast.show('PDF viewer unavailable: ' + e.message, 'error'); return; }
 
-    // Load fields + annotations + PDF in parallel
     const [fieldsData, annData] = await Promise.all([
-      get(`/api/doc-packages/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/fields`),
-      get(`/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}?txn=${encodeURIComponent(txnId)}`),
+      get('/api/doc-packages/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/fields'),
+      get('/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '?txn=' + encodeURIComponent(txnId)),
     ]);
 
     fields = fieldsData._error ? [] : fieldsData;
     const saved = (!annData._error && annData.annotations) ? annData.annotations : {};
-
-    // Build annotations: start with defaults, overlay saved
     annotations = {};
-    fields.forEach((f, i) => {
-      annotations[i] = saved[String(i)] || defaultStatus(f);
-    });
+    fields.forEach((fld, i) => { annotations[i] = saved[String(i)] || defaultStatus(fld); });
 
-    // Load PDF
     try {
-      const url = `/api/doc-packages/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/pdf`;
+      const url = '/api/doc-packages/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/pdf';
       pdfDoc = await pdfjs.getDocument(url).promise;
       totalPages = pdfDoc.numPages;
-      currentPage = 1;
-      await renderPage(currentPage);
+      await buildPages(totalPages);
     } catch (e) {
       Toast.show('Failed to load PDF: ' + e.message, 'error');
+      return;
     }
 
     renderSidebar();
+    renderNeedsReview();
     updatePageInfo();
   }
 
-  function close() {
-    if (dirty) {
-      saveAnnotations();
-    }
-    document.getElementById('pdf-viewer').style.display = 'none';
-    pdfDoc = null;
-    fields = [];
-    annotations = {};
-  }
-
-  async function renderPage(num) {
-    if (!pdfDoc) return;
-    const page = await pdfDoc.getPage(num);
-    const viewport = page.getViewport({ scale });
-    pageWidth = viewport.width;
-    pageHeight = viewport.height;
-
-    const canvas = document.getElementById('pdf-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    await page.render({ canvasContext: ctx, viewport }).promise;
-    renderOverlay();
-    updatePageInfo();
-  }
-
-  function renderOverlay() {
-    const svg = document.getElementById('pdf-overlay');
-    const canvas = document.getElementById('pdf-canvas');
+  async function buildPages(n) {
     const wrap = document.getElementById('pdf-canvas-wrap');
+    wrap.textContent = '';
+    pageContainers.clear();
+    if (observer) observer.disconnect();
 
-    // Position SVG to overlay the canvas
-    const canvasRect = canvas.getBoundingClientRect();
-    const wrapRect = wrap.getBoundingClientRect();
-    const offsetLeft = canvasRect.left - wrapRect.left + wrap.scrollLeft;
-    const offsetTop = canvasRect.top - wrapRect.top + wrap.scrollTop;
+    const p1 = await pdfDoc.getPage(1);
+    const vp1 = p1.getViewport({ scale });
+    const phW = vp1.width, phH = vp1.height;
 
-    svg.setAttribute('width', canvas.width);
-    svg.setAttribute('height', canvas.height);
-    svg.style.left = offsetLeft + 'px';
-    svg.style.top = offsetTop + 'px';
-    svg.style.transform = 'translateX(0)'; // override the 50% centering
+    for (let i = 1; i <= n; i++) {
+      const div = document.createElement('div');
+      div.className = 'pdf-page-container';
+      div.dataset.page = i;
+      div.style.width = phW + 'px';
+      div.style.height = phH + 'px';
 
-    // Get page dimensions for coordinate mapping
-    // PDF coords: (0,0) at bottom-left. Viewport flips y.
-    // field bbox: { x0, y0, x1, y1 } in PDF points
-    // We need to scale based on rendered size vs page points
-    let svgHTML = '';
+      const canvas = document.createElement('canvas');
+      canvas.width = phW; canvas.height = phH;
+      div.appendChild(canvas);
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'pdf-page-overlay');
+      svg.setAttribute('width', phW);
+      svg.setAttribute('height', phH);
+      div.appendChild(svg);
+
+      const label = document.createElement('span');
+      label.className = 'pdf-page-label';
+      label.textContent = 'Page ' + i;
+      div.appendChild(label);
+
+      wrap.appendChild(div);
+      pageContainers.set(i, { div: div, canvas: canvas, svg: svg, rendered: false });
+    }
+
+    observer = new IntersectionObserver(function(entries) {
+      let maxRatio = 0, maxPage = visiblePage;
+      entries.forEach(function(entry) {
+        const pg = parseInt(entry.target.dataset.page);
+        if (entry.isIntersecting) lazyRenderPage(pg);
+        if (entry.intersectionRatio > maxRatio) {
+          maxRatio = entry.intersectionRatio;
+          maxPage = pg;
+        }
+      });
+      if (maxRatio > 0 && maxPage !== visiblePage) {
+        visiblePage = maxPage;
+        updatePageInfo();
+      }
+    }, { root: wrap, rootMargin: '200px 0px', threshold: [0, 0.1, 0.5, 1] });
+
+    pageContainers.forEach(function(pc) { observer.observe(pc.div); });
+
+    for (let i = 1; i <= Math.min(3, n); i++) await lazyRenderPage(i);
+  }
+
+  async function lazyRenderPage(pageNum) {
+    const pc = pageContainers.get(pageNum);
+    if (!pc || pc.rendered || !pdfDoc) return;
+
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: scale });
+
+    pc.canvas.width = viewport.width;
+    pc.canvas.height = viewport.height;
+    pc.div.style.width = viewport.width + 'px';
+    pc.div.style.height = viewport.height + 'px';
+
+    await page.render({ canvasContext: pc.canvas.getContext('2d'), viewport: viewport }).promise;
+    pc.rendered = true;
+    renderPageOverlay(pageNum);
+  }
+
+  function renderPageOverlay(pageNum) {
+    const pc = pageContainers.get(pageNum);
+    if (!pc) return;
+
+    pc.svg.setAttribute('width', pc.canvas.width);
+    pc.svg.setAttribute('height', pc.canvas.height);
 
     const PAD = 2;
-    fields.forEach((f, idx) => {
-      if (f.page !== currentPage) return;
+    const parts = [];
+    fields.forEach(function(f, idx) {
+      if (f.page !== pageNum) return;
       const bbox = f.bbox || {};
       if (!bbox.x0 && bbox.x0 !== 0) return;
-
       const x = (bbox.x0 - PAD) * scale;
       const y = (bbox.y0 - PAD) * scale;
       const w = (bbox.x1 - bbox.x0 + PAD * 2) * scale;
       const h = (bbox.y1 - bbox.y0 + PAD * 2) * scale;
-      const rx = 3; // rounded corners
-
       const status = annotations[idx] || 'optional';
       const isActive = idx === activeFieldIdx;
-      svgHTML += `<rect class="pdf-marker pdf-marker-${status}${isActive ? ' active' : ''}"
-        x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" ry="${rx}" data-idx="${idx}"/>`;
+      parts.push('<rect class="pdf-marker pdf-marker-' + status + (isActive ? ' active' : '') +
+        '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+        '" rx="3" ry="3" data-idx="' + idx + '"/>');
     });
+    pc.svg.innerHTML = parts.join('');
 
-    svg.innerHTML = svgHTML;
-
-    // Click handlers
-    svg.querySelectorAll('.pdf-marker').forEach(el => {
-      el.addEventListener('click', (e) => {
+    pc.svg.querySelectorAll('.pdf-marker').forEach(function(el) {
+      el.addEventListener('click', function(e) {
         e.stopPropagation();
-        const idx = parseInt(el.getAttribute('data-idx'));
-        cycleStatus(idx);
+        cycleStatus(parseInt(el.getAttribute('data-idx')));
       });
+    });
+  }
+
+  function renderAllVisibleOverlays() {
+    pageContainers.forEach(function(pc, pgNum) {
+      if (pc.rendered) renderPageOverlay(pgNum);
     });
   }
 
@@ -949,7 +960,6 @@ const PdfViewer = (() => {
     const current = annotations[idx] || 'optional';
     const def = defaultStatus(fields[idx] || {});
     let next;
-
     if (current === 'ignored') {
       next = def;
     } else if (def === 'optional') {
@@ -959,21 +969,17 @@ const PdfViewer = (() => {
       next = 'ignored';
     }
 
-    // Apply to this field
     annotations[idx] = next;
-
-    // Also toggle identical fields (same field name + category)
     const f = fields[idx];
     if (f) {
       const fname = (f.field || '').toLowerCase();
       const fcat = (f.category || '').toLowerCase();
       if (fname) {
-        fields.forEach((other, otherIdx) => {
+        fields.forEach(function(other, otherIdx) {
           if (otherIdx === idx) return;
           if ((other.field || '').toLowerCase() === fname &&
-              (other.category || '').toLowerCase() === fcat) {
+              (other.category || '').toLowerCase() === fcat)
             annotations[otherIdx] = next;
-          }
         });
       }
     }
@@ -981,120 +987,220 @@ const PdfViewer = (() => {
     dirty = true;
     activeFieldIdx = idx;
 
-    // Persist immediately for audit trail
     if (txnId && f) {
-      post(`/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`, {
+      post('/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename), {
         txn: txnId, field_idx: idx, status: next,
-        field_name: f.field || `Field ${idx}`,
+        field_name: f.field || ('Field ' + idx),
       });
     }
 
-    renderOverlay();
+    renderAllVisibleOverlays();
     renderSidebar();
+    renderNeedsReview();
+  }
+
+  function renderNeedsReview() {
+    const el = document.getElementById('pdf-needs-review');
+    if (!el) return;
+
+    const items = [];
+    fields.forEach(function(f, idx) {
+      const cat = (f.category || '').toLowerCase();
+      if (cat !== 'entry_signature') return;
+      const status = annotations[idx] || defaultStatus(f);
+      if (status === 'filled' || status === 'ignored') return;
+      items.push({ field: f, idx: idx });
+    });
+
+    if (items.length === 0) {
+      const hasSigs = fields.some(function(f) {
+        return (f.category || '').toLowerCase() === 'entry_signature';
+      });
+      el.textContent = '';
+      if (hasSigs) {
+        const done = document.createElement('div');
+        done.className = 'pdf-needs-review-done';
+        done.textContent = 'All signatures verified';
+        el.appendChild(done);
+      }
+      return;
+    }
+
+    // Build header
+    el.textContent = '';
+    const hdr = document.createElement('div');
+    hdr.className = 'pdf-needs-review-header';
+    hdr.textContent = 'Needs Review ';
+    const badge = document.createElement('span');
+    badge.className = 'pdf-needs-review-count';
+    badge.textContent = items.length;
+    hdr.appendChild(badge);
+    el.appendChild(hdr);
+
+    items.forEach(function(item) {
+      const row = document.createElement('div');
+      row.className = 'pdf-review-item';
+      row.dataset.idx = item.idx;
+
+      const check = document.createElement('span');
+      check.className = 'pdf-review-check';
+      row.appendChild(check);
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'pdf-field-name';
+      nameSpan.textContent = item.field.field || item.field.label || ('Field ' + item.idx);
+      nameSpan.title = nameSpan.textContent;
+      row.appendChild(nameSpan);
+
+      const pgSpan = document.createElement('span');
+      pgSpan.className = 'pdf-field-cat';
+      pgSpan.textContent = 'p' + (item.field.page || 1);
+      row.appendChild(pgSpan);
+
+      row.addEventListener('click', function() { scrollToField(item.idx); });
+      el.appendChild(row);
+    });
   }
 
   function renderSidebar() {
-    // Stats
     const statsEl = document.getElementById('pdf-sidebar-stats');
     const counts = { filled: 0, empty: 0, optional: 0, days: 0, ignored: 0 };
-    Object.values(annotations).forEach(s => { counts[s] = (counts[s] || 0) + 1; });
-    statsEl.innerHTML = `
-      <span class="stat-item"><span class="stat-dot" style="background:#34c759"></span>${counts.filled}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ff3b30"></span>${counts.empty}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ffcc00"></span>${counts.optional}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ff8c00"></span>${counts.days}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#8e8e93;opacity:0.5"></span>${counts.ignored}</span>
-    `;
+    Object.values(annotations).forEach(function(s) { counts[s] = (counts[s] || 0) + 1; });
 
-    // Group fields by page
+    statsEl.textContent = '';
+    [['#34c759', counts.filled], ['#ff3b30', counts.empty], ['#ffcc00', counts.optional],
+     ['#ff8c00', counts.days], ['#8e8e93', counts.ignored]].forEach(function(pair) {
+      const item = document.createElement('span');
+      item.className = 'stat-item';
+      const dot = document.createElement('span');
+      dot.className = 'stat-dot';
+      dot.style.background = pair[0];
+      if (pair[0] === '#8e8e93') dot.style.opacity = '0.5';
+      item.appendChild(dot);
+      item.appendChild(document.createTextNode(pair[1]));
+      statsEl.appendChild(item);
+    });
+
     const listEl = document.getElementById('pdf-sidebar-list');
     const byPage = {};
-    fields.forEach((f, idx) => {
+    fields.forEach(function(f, idx) {
       const p = f.page || 1;
       if (!byPage[p]) byPage[p] = [];
-      byPage[p].push({ field: f, idx });
+      byPage[p].push({ field: f, idx: idx });
     });
 
-    let html = '';
-    Object.keys(byPage).sort((a, b) => a - b).forEach(p => {
-      html += `<div class="pdf-sidebar-page-header">Page ${p}</div>`;
-      byPage[p].forEach(({ field, idx }) => {
-        const status = annotations[idx] || 'optional';
-        const name = field.field || field.label || `Field ${idx}`;
-        const cat = field.category || '';
-        const isActive = idx === activeFieldIdx;
-        html += `<div class="pdf-field-item${isActive ? ' active' : ''}" data-idx="${idx}" data-page="${p}">
-          <span class="pdf-field-dot ${status}"></span>
-          <span class="pdf-field-name" title="${esc(name)}">${esc(name)}</span>
-          ${cat ? `<span class="pdf-field-cat">${esc(cat)}</span>` : ''}
-        </div>`;
-      });
-    });
-    listEl.innerHTML = html;
+    listEl.textContent = '';
+    Object.keys(byPage).sort(function(a, b) { return a - b; }).forEach(function(p) {
+      const pgHdr = document.createElement('div');
+      pgHdr.className = 'pdf-sidebar-page-header';
+      if (parseInt(p) === visiblePage) pgHdr.className += ' active';
+      pgHdr.textContent = 'Page ' + p;
+      listEl.appendChild(pgHdr);
 
-    // Click to navigate
-    listEl.querySelectorAll('.pdf-field-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const idx = parseInt(el.dataset.idx);
-        const page = parseInt(el.dataset.page);
-        activeFieldIdx = idx;
-        if (page !== currentPage) {
-          currentPage = page;
-          renderPage(currentPage).then(() => renderSidebar());
-        } else {
-          renderOverlay();
-          renderSidebar();
+      byPage[p].forEach(function(entry) {
+        const status = annotations[entry.idx] || 'optional';
+        const name = entry.field.field || entry.field.label || ('Field ' + entry.idx);
+        const cat = entry.field.category || '';
+        const isActive = entry.idx === activeFieldIdx;
+
+        const row = document.createElement('div');
+        row.className = 'pdf-field-item' + (isActive ? ' active' : '');
+        row.dataset.idx = entry.idx;
+        row.dataset.page = p;
+
+        const dot = document.createElement('span');
+        dot.className = 'pdf-field-dot ' + status;
+        row.appendChild(dot);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'pdf-field-name';
+        nameSpan.title = name;
+        nameSpan.textContent = name;
+        row.appendChild(nameSpan);
+
+        if (cat) {
+          const catSpan = document.createElement('span');
+          catSpan.className = 'pdf-field-cat';
+          catSpan.textContent = cat;
+          row.appendChild(catSpan);
         }
+
+        row.addEventListener('click', function() { scrollToField(entry.idx); });
+        listEl.appendChild(row);
       });
     });
+  }
+
+  function scrollToField(idx) {
+    const f = fields[idx];
+    if (!f) return;
+    const pg = f.page || 1;
+    const pc = pageContainers.get(pg);
+    if (!pc) return;
+    activeFieldIdx = idx;
+    lazyRenderPage(pg).then(function() {
+      pc.div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      renderAllVisibleOverlays();
+      renderSidebar();
+      renderNeedsReview();
+    });
+  }
+
+  function scrollToPage(num) {
+    if (num < 1 || num > totalPages) return;
+    const pc = pageContainers.get(num);
+    if (pc) pc.div.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   async function saveAnnotations() {
     if (Object.keys(annotations).length === 0) return;
     const res = await post(
-      `/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/bulk`,
+      '/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/bulk',
       { txn: txnId, annotations: Object.fromEntries(
-        Object.entries(annotations).map(([k, v]) => [String(k), v])
+        Object.entries(annotations).map(function(e) { return [String(e[0]), e[1]]; })
       )}
     );
-    if (!res._error) {
-      dirty = false;
-      Toast.show('Annotations saved', 'success');
-    }
+    if (!res._error) { dirty = false; Toast.show('Annotations saved', 'success'); }
   }
 
   function updatePageInfo() {
-    document.getElementById('pdf-page-info').textContent = `${currentPage} / ${totalPages}`;
-    document.getElementById('pdf-zoom-level').textContent = `${Math.round(scale * 100)}%`;
+    document.getElementById('pdf-page-info').textContent = visiblePage + ' / ' + totalPages;
+    document.getElementById('pdf-zoom-level').textContent = Math.round(scale * 100) + '%';
   }
 
-  function prevPage() {
-    if (currentPage > 1) { currentPage--; renderPage(currentPage); }
-  }
+  function prevPage() { scrollToPage(visiblePage - 1); }
+  function nextPage() { scrollToPage(visiblePage + 1); }
+  function zoomIn() { setScale(Math.min(scale + 0.25, 4)); }
+  function zoomOut() { setScale(Math.max(scale - 0.25, 0.5)); }
 
-  function nextPage() {
-    if (currentPage < totalPages) { currentPage++; renderPage(currentPage); }
-  }
-
-  function zoomIn() {
-    scale = Math.min(scale + 0.25, 4);
-    renderPage(currentPage);
-  }
-
-  function zoomOut() {
-    scale = Math.max(scale - 0.25, 0.5);
-    renderPage(currentPage);
+  function setScale(newScale) {
+    const wrap = document.getElementById('pdf-canvas-wrap');
+    const scrollRatio = wrap.scrollHeight > 0 ? wrap.scrollTop / wrap.scrollHeight : 0;
+    scale = newScale;
+    pageContainers.forEach(function(pc) { pc.rendered = false; });
+    buildPages(totalPages).then(function() {
+      wrap.scrollTop = scrollRatio * wrap.scrollHeight;
+      updatePageInfo();
+    });
   }
 
   function fitWidth() {
     const wrap = document.getElementById('pdf-canvas-wrap');
     if (!pdfDoc || !wrap) return;
-    pdfDoc.getPage(currentPage).then(page => {
+    pdfDoc.getPage(1).then(function(page) {
       const vp = page.getViewport({ scale: 1 });
-      const available = wrap.clientWidth - 32;
-      scale = available / vp.width;
-      renderPage(currentPage);
+      setScale((wrap.clientWidth - 32) / vp.width);
     });
+  }
+
+  function close() {
+    if (dirty) saveAnnotations();
+    document.getElementById('pdf-viewer').style.display = 'none';
+    var wrap = document.getElementById('pdf-canvas-wrap');
+    if (wrap) wrap.textContent = '';
+    if (observer) { observer.disconnect(); observer = null; }
+    pageContainers.clear();
+    pdfDoc = null; fields = []; annotations = {};
   }
 
   function init() {
@@ -1105,16 +1211,9 @@ const PdfViewer = (() => {
     document.getElementById('pdf-zoom-out').addEventListener('click', zoomOut);
     document.getElementById('pdf-fit').addEventListener('click', fitWidth);
     document.getElementById('pdf-save-ann').addEventListener('click', saveAnnotations);
-
-    // Reposition overlay on scroll
-    document.getElementById('pdf-canvas-wrap').addEventListener('scroll', () => {
-      if (document.getElementById('pdf-viewer').style.display !== 'none') {
-        renderOverlay();
-      }
-    });
   }
 
-  return { open, close, init };
+  return { open: open, close: close, init: init };
 })();
 
 // ══════════════════════════════════════════════════════════════════════════════
