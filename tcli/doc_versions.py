@@ -19,6 +19,13 @@ CAR_DIR = ROOT / "CAR Contract Packages"
 MANIFEST_DIR = ROOT / "doc_manifests"
 VERSION_DB = MANIFEST_DIR / "_versions.yaml"
 
+SIGNATURE_CATEGORIES = {
+    "signature_area",
+    "signature",
+    "entry_signature",
+    "entry_initial",
+}
+
 
 def file_hash(path: Path) -> str:
     """SHA-256 hash of a file."""
@@ -115,11 +122,27 @@ def needs_reanalysis() -> list[str]:
 
 def load_manifest(folder: str, filename: str) -> dict:
     """Load a document manifest."""
+    folder_name = Path(folder).name
+    if folder_name != folder or folder_name in {"", ".", ".."}:
+        return {}
+
     stem = Path(filename).stem
     # Normalize to match manifest naming
     import re
     safe_name = re.sub(r"[^\w\-.]", "_", stem) + ".yaml"
-    manifest_path = MANIFEST_DIR / folder / safe_name
+    base = MANIFEST_DIR.resolve()
+    folder_path = (MANIFEST_DIR / folder_name).resolve()
+    try:
+        folder_path.relative_to(base)
+    except ValueError:
+        return {}
+
+    manifest_path = (folder_path / safe_name).resolve()
+    try:
+        manifest_path.relative_to(folder_path)
+    except ValueError:
+        return {}
+
     if manifest_path.exists():
         with open(manifest_path) as f:
             return yaml.safe_load(f) or {}
@@ -135,7 +158,13 @@ def field_locations(folder: str, filename: str, category: str = None, page: int 
     fields = m.get("field_map", [])
 
     if category:
-        fields = [f for f in fields if f.get("category") == category]
+        cat = (category or "").lower()
+        if cat in ("signature_area", "signature", "entry_signature"):
+            fields = [f for f in fields if (f.get("category") or "").lower() in SIGNATURE_CATEGORIES]
+        elif cat == "entry_initial":
+            fields = [f for f in fields if (f.get("category") or "").lower() == "entry_initial"]
+        else:
+            fields = [f for f in fields if (f.get("category") or "").lower() == cat]
     if page:
         fields = [f for f in fields if f.get("page") == page]
 
@@ -144,13 +173,20 @@ def field_locations(folder: str, filename: str, category: str = None, page: int 
 
 def signature_locations(folder: str, filename: str) -> list:
     """Get all signature locations for quick zoom-in."""
-    return field_locations(folder, filename, category="signature_area")
+    m = load_manifest(folder, filename)
+    return [
+        f for f in m.get("field_map", [])
+        if (f.get("category") or "").lower() in SIGNATURE_CATEGORIES
+    ]
 
 
 def date_locations(folder: str, filename: str) -> list:
     """Get all date/time-length fields for review."""
     m = load_manifest(folder, filename)
-    fields = [f for f in m.get("field_map", []) if f.get("category") in ("date", "date_area")]
+    fields = [
+        f for f in m.get("field_map", [])
+        if (f.get("category") or "").lower() in ("date", "date_area", "entry_date")
+    ]
     time_lengths = m.get("time_length_review", [])
     return {"date_fields": fields, "time_length_options": time_lengths}
 

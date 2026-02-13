@@ -1,0 +1,289 @@
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:24'
+file: AD_California_Residential_Purchase_Agreement_-_1225_ts69656.pdf
+folder: uploads_7ffcbb23
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 19
+  entry_categories:
+    entry_date: 5
+    entry_license: 3
+    entry_blank: 7
+    entry_brokerage: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 336.6
+    y0: 638.4
+    x1: 498.1
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 336.6
+    y0: 644.4
+    x1: 476.6
+    y1: 650.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 336.6
+    y0: 654.3
+    x1: 498.1
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 336.6
+    y0: 660.4
+    x1: 476.6
+    y1: 666.4
+- page: 1
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 437.0
+    y0: 671.3
+    x1: 576.0
+    y1: 683.4
+  region: footer
+  context: 'Agent DRE Lic. # Real Estate Broker (Firm) Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 485.0
+    y0: 677.4
+    x1: 576.0
+    y1: 683.4
+- page: 1
+  field: 'DRE Lic. #'
+  category: entry_license
+  bbox:
+    x0: 354.0
+    y0: 692.4
+    x1: 477.0
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 402.0
+    y0: 698.4
+    x1: 477.0
+    y1: 704.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 477.0
+    y0: 692.4
+    x1: 576.0
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 501.0
+    y0: 698.4
+    x1: 576.0
+    y1: 704.4
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 164.3
+    y0: 638.4
+    x1: 336.6
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 644.4
+    x1: 336.6
+    y1: 650.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 576.0
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.6
+    y0: 644.4
+    x1: 576.0
+    y1: 650.4
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 164.3
+    y0: 654.3
+    x1: 336.6
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 660.4
+    x1: 336.6
+    y1: 666.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 576.0
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.6
+    y0: 660.4
+    x1: 576.0
+    y1: 666.4
+- page: 1
+  field: (Salesperson
+  category: entry_blank
+  bbox:
+    x0: 49.0
+    y0: 696.4
+    x1: 204.0
+    y1: 712.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 49.0
+    y0: 698.4
+    x1: 204.0
+    y1: 704.4
+- page: 1
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 204.0
+    y0: 692.4
+    x1: 367.6
+    y1: 704.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 204.0
+    y0: 698.4
+    x1: 354.0
+    y1: 704.4
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 437.8
+    x1: 572.7
+    y1: 446.7
+  region: middle
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 458.8
+    x1: 572.7
+    y1: 467.7
+  region: middle
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 479.8
+    x1: 572.7
+    y1: 488.7
+  region: lower
+  context: License Number ______________
+- page: 2
+  field: License Number ______________
+  category: entry_blank
+  bbox:
+    x0: 450.0
+    y0: 500.8
+    x1: 572.7
+    y1: 509.7
+  region: lower
+  context: License Number ______________
+- page: 2
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 437.8
+    x1: 304.0
+    y1: 448.8
+  region: middle
+  context: 'Seller''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the sel'
+  ul_bbox:
+    x0: 139.0
+    y0: 442.8
+    x1: 448.6
+    y1: 448.8
+- page: 2
+  field: Seller's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 458.8
+    x1: 303.1
+    y1: 469.9
+  region: middle
+  context: 'Seller''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Seller''s Agent.
+    (salespers'
+  ul_bbox:
+    x0: 104.3
+    y0: 463.9
+    x1: 447.8
+    y1: 469.9
+- page: 2
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 479.8
+    x1: 304.0
+    y1: 491.0
+  region: lower
+  context: 'Buyer''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the buye'
+  ul_bbox:
+    x0: 139.0
+    y0: 485.0
+    x1: 448.6
+    y1: 491.0
+- page: 2
+  field: Buyer's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 500.8
+    x1: 303.5
+    y1: 511.5
+  region: lower
+  context: 'Buyer''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Buyer''s Agent.
+    (salesperson'
+  ul_bbox:
+    x0: 105.0
+    y0: 505.5
+    x1: 448.6
+    y1: 511.5

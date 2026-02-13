@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import time
 import urllib.request
 import urllib.parse
 from datetime import date, datetime, timedelta
@@ -10,11 +11,30 @@ from uuid import uuid4
 
 import yaml
 from flask import Flask, Response, jsonify, render_template, request, send_from_directory
+from werkzeug.exceptions import RequestEntityTooLarge
 
-from . import checklist, contract_scanner, db, doc_versions, engine, integrations, rules
+from . import cloud_guard, checklist, contract_scanner, db, doc_versions, engine, integrations, rules
 from .engine import CONT_GATE
 
 app = Flask(__name__)
+_MAX_UPLOAD_MB = 25
+try:
+    _MAX_UPLOAD_MB = max(1, int(os.environ.get("TC_MAX_UPLOAD_MB", "25")))
+except (TypeError, ValueError):
+    _MAX_UPLOAD_MB = 25
+app.config["MAX_CONTENT_LENGTH"] = _MAX_UPLOAD_MB * 1024 * 1024
+_CSP_POLICY = (
+    "default-src 'self'; "
+    "script-src 'self' 'unsafe-inline'; "
+    "style-src 'self' 'unsafe-inline'; "
+    "img-src 'self' data: blob:; "
+    "font-src 'self' data:; "
+    "connect-src 'self'; "
+    "object-src 'none'; "
+    "base-uri 'self'; "
+    "form-action 'self'; "
+    "frame-ancestors 'none'"
+)
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -37,6 +57,56 @@ def _doc_stats(c, tid: str) -> dict:
     total = sum(stats.values())
     recv = stats.get("received", 0) + stats.get("verified", 0)
     return {"total": total, "received": recv, "stats": stats}
+
+
+def _is_safe_component(value: str) -> bool:
+    """Return True only for single path components (no traversal/separators)."""
+    if not value or "\x00" in value:
+        return False
+    p = Path(value)
+    return value == p.name and ".." not in p.parts and "/" not in value and "\\" not in value
+
+
+def _validate_doc_path_inputs(folder: str, filename: str, require_pdf: bool = False):
+    """Validate folder/filename values used by document package endpoints."""
+    if not _is_safe_component(folder) or not _is_safe_component(filename):
+        return jsonify({"error": "invalid folder or filename"}), 400
+    if require_pdf and Path(filename).suffix.lower() != ".pdf":
+        return jsonify({"error": "only PDF files are allowed"}), 400
+    return None
+
+
+def _validate_pdf_upload(file_storage):
+    """Quick content sniffing to reject obvious non-PDF uploads."""
+    try:
+        head = file_storage.stream.read(5)
+        file_storage.stream.seek(0)
+    except Exception:
+        return False
+    return head == b"%PDF-"
+
+
+def _cloud_blocked_response(tid: str, message: str = "cloud approval required"):
+    return jsonify({
+        "error": message,
+        "code": "cloud_approval_required",
+        "requires_approval": True,
+        "txn": tid,
+    }), 403
+
+
+@app.errorhandler(RequestEntityTooLarge)
+def upload_too_large(_err):
+    return jsonify({"error": f"File too large. Max upload size is {_MAX_UPLOAD_MB} MB."}), 413
+
+
+@app.after_request
+def set_security_headers(resp):
+    resp.headers.setdefault("Content-Security-Policy", _CSP_POLICY)
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    resp.headers.setdefault("X-Frame-Options", "DENY")
+    return resp
 
 
 # ── Pages ────────────────────────────────────────────────────────────────────
@@ -138,6 +208,13 @@ def create_txn():
     party_role = body.get("role", "listing")
     brokerage = body.get("brokerage", "")
     acceptance_date = body.get("acceptance_date", "")
+    acceptance_dt = None
+    if acceptance_date:
+        try:
+            acceptance_dt = date.fromisoformat(acceptance_date)
+            acceptance_date = acceptance_dt.isoformat()
+        except ValueError:
+            return jsonify({"error": "acceptance_date must be YYYY-MM-DD"}), 400
 
     tid = uuid4().hex[:8]
     city = address.split(",")[1].strip() if "," in address else ""
@@ -150,10 +227,10 @@ def create_txn():
         "contingencies": {"investigation_days": 17, "appraisal_days": 17,
                           "loan_days": 21, "deposit_days": 3},
     }
-    if acceptance_date:
+    if acceptance_dt:
         txn_data["dates"]["acceptance"] = acceptance_date
         # Default COE 30 days from acceptance for CA transactions
-        coe = (date.fromisoformat(acceptance_date) + timedelta(days=30)).isoformat()
+        coe = (acceptance_dt + timedelta(days=30)).isoformat()
         txn_data["dates"]["close_of_escrow"] = coe
         txn_data["dates"]["_confirmed"] = False  # unconfirmed until contracts arrive
 
@@ -169,10 +246,9 @@ def create_txn():
     engine.init_gates(tid, brokerage=brokerage)
 
     # Auto-calculate deadlines from acceptance date
-    if acceptance_date:
+    if acceptance_dt:
         try:
-            anchor = date.fromisoformat(acceptance_date)
-            engine.calc_deadlines(tid, anchor, txn_data)
+            engine.calc_deadlines(tid, acceptance_dt, txn_data)
         except Exception:
             pass  # don't block creation on deadline calc failure
 
@@ -256,6 +332,11 @@ def delete_txn(tid):
         c.execute("DELETE FROM field_annotations WHERE txn=?", (tid,))
         c.execute("DELETE FROM disclosures WHERE txn=?", (tid,))
         c.execute("DELETE FROM parties WHERE txn=?", (tid,))
+        c.execute(
+            "DELETE FROM contingency_items"
+            " WHERE contingency_id IN (SELECT id FROM contingencies WHERE txn=?)",
+            (tid,),
+        )
         c.execute("DELETE FROM contingencies WHERE txn=?", (tid,))
         c.execute("DELETE FROM outbox WHERE txn=?", (tid,))
         c.execute("DELETE FROM envelope_tracking WHERE txn=?", (tid,))
@@ -329,6 +410,22 @@ def doc_unverify(tid, code):
     return jsonify(dict(updated))
 
 
+@app.route("/api/txns/<tid>/docs/<code>/reset", methods=["POST"])
+def doc_reset(tid, code):
+    """Reset any document back to required status."""
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+        if not row:
+            return jsonify({"error": "doc not found"}), 404
+        c.execute(
+            "UPDATE docs SET status='required', received=NULL, verified=NULL, notes='' WHERE txn=? AND code=?",
+            (tid, code),
+        )
+        db.log(c, tid, "doc_reset", code)
+        updated = c.execute("SELECT * FROM docs WHERE txn=? AND code=?", (tid, code)).fetchone()
+    return jsonify(dict(updated))
+
+
 # ── Gates ────────────────────────────────────────────────────────────────────
 
 @app.route("/api/txns/<tid>/gates")
@@ -356,6 +453,21 @@ def verify_gate(tid, gid):
         notes = request.json.get("notes", "")
     engine.verify(tid, gid, notes)
     return jsonify({"ok": True, "gid": gid, "status": "verified"})
+
+
+@app.route("/api/txns/<tid>/gates/<gid>/reset", methods=["POST"])
+def reset_gate(tid, gid):
+    """Reset a gate back to pending status."""
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM gates WHERE txn=? AND gid=?", (tid, gid)).fetchone()
+        if not row:
+            return jsonify({"error": "gate not found"}), 404
+        c.execute(
+            "UPDATE gates SET status='pending', verified=NULL, notes='' WHERE txn=? AND gid=?",
+            (tid, gid),
+        )
+        db.log(c, tid, "gate_reset", gid)
+    return jsonify({"ok": True, "gid": gid, "status": "pending"})
 
 
 # ── Properties ───────────────────────────────────────────────────────────────
@@ -446,9 +558,64 @@ def get_deadlines(tid):
 
 @app.route("/api/txns/<tid>/advance", methods=["POST"])
 def advance_phase(tid):
+    with db.conn() as c:
+        txn = db.txn(c, tid)
+    if not txn:
+        return jsonify({"error": "not found"}), 404
+
     ok, blocking = engine.can_advance(tid)
     if not ok:
-        return jsonify({"ok": False, "blocking": blocking}), 409
+        # Build rich blocker response
+        blockers = {"gates": [], "missing_docs": [], "open_contingencies": [], "unsigned_fields": [], "parties": []}
+        with db.conn() as c:
+            phase = txn["phase"]
+            brokerage = txn.get("brokerage", "")
+
+            # Blocking gates with details
+            all_gates_defs = {g["id"]: g for g in rules.gates()}
+            if brokerage:
+                for g in rules.de_gates(brokerage):
+                    all_gates_defs[g["id"]] = g
+            for g in engine.gate_rows(tid):
+                info = all_gates_defs.get(g["gid"])
+                if info and info["phase"] == phase and g["status"] != "verified" and info["type"] == "HARD_GATE":
+                    blockers["gates"].append({
+                        "gid": g["gid"],
+                        "name": info["name"],
+                        "what_to_verify": info.get("what_agent_verifies", []),
+                    })
+
+            # Missing required docs for current phase
+            missing = c.execute(
+                "SELECT code, name FROM docs WHERE txn=? AND phase=? AND status='required'",
+                (tid, phase),
+            ).fetchall()
+            blockers["missing_docs"] = [{"code": d["code"], "name": d["name"]} for d in missing]
+
+            # Active contingencies
+            active = c.execute(
+                "SELECT id, name, type, deadline_date FROM contingencies"
+                " WHERE txn=? AND status='active'",
+                (tid,),
+            ).fetchall()
+            blockers["open_contingencies"] = [dict(a) for a in active]
+
+            # Unsigned signature fields
+            unsigned = c.execute(
+                "SELECT id, field_name, doc_code FROM sig_reviews"
+                " WHERE txn=? AND is_filled=0 AND review_status='pending' LIMIT 10",
+                (tid,),
+            ).fetchall()
+            blockers["unsigned_fields"] = [dict(u) for u in unsigned]
+
+            # Key parties for contact
+            parties = c.execute(
+                "SELECT role, name, email, phone FROM parties WHERE txn=? AND name != '' AND name NOT LIKE '%%(TBD)%%'",
+                (tid,),
+            ).fetchall()
+            blockers["parties"] = [dict(p) for p in parties]
+
+        return jsonify({"ok": False, "blocking": blocking, "blockers": blockers}), 409
     new = engine.advance_phase(tid)
     if new:
         return jsonify({"ok": True, "phase": new})
@@ -472,8 +639,42 @@ _sig_populated_txns: set[str] = set()  # in-memory cache of already-scanned txns
 _manifest_cache: dict | None = None    # cached manifest sig fields
 
 
+def _norm(s: str) -> str:
+    """Normalize a name for fuzzy matching: lowercase, strip non-alpha, collapse spaces."""
+    return re.sub(r"[^a-z ]+", " ", s.lower()).strip()
+
+
+def _norm_words(s: str) -> set[str]:
+    """Extract meaningful words (3+ chars) from a name."""
+    return {w for w in _norm(s).split() if len(w) >= 3}
+
+
+# Map common checklist codes to canonical form names
+_CODE_ALIASES = {
+    "rpa": "residential purchase agreement",
+    "ad": "agency disclosure",
+    "tds": "transfer disclosure statement",
+    "spq": "seller property questionnaire",
+    "avid": "agent visual inspection disclosure",
+    "nhd": "natural hazard disclosure",
+    "bia": "buyer inspection advisory",
+    "sbsa": "statewide buyer and seller advisory",
+    "wfi": "wire fraud",
+    "prbs": "possible representation of both",
+    "cr1": "contingency removal",
+    "mca": "market conditions advisory",
+    "dia": "disclosure information advisory",
+    "fha": "fire hardening",
+    "sq": "square foot",
+    "lbp": "lead based paint",
+    "hoa": "homeowners association",
+    "wcpf": "water conserving",
+    "wd": "wildfire disaster",
+}
+
+
 def _get_manifest_sigs() -> dict:
-    """Load and cache all manifest signature fields. Returns {lower_name: [{fields...}]}."""
+    """Load and cache all manifest signature fields."""
     global _manifest_cache
     if _manifest_cache is not None:
         return _manifest_cache
@@ -497,7 +698,9 @@ def _get_manifest_sigs() -> dict:
             fields = m.get("field_map", [])
             sig_fields = [
                 f for f in fields
-                if f.get("category") in ("signature", "signature_area")
+                if f.get("category") in (
+                    "signature", "signature_area", "entry_signature", "entry_initial"
+                )
             ]
             if not sig_fields:
                 continue
@@ -506,19 +709,51 @@ def _get_manifest_sigs() -> dict:
                 "folder": folder.name,
                 "filename": mfile.stem,
                 "manifest_name": manifest_name,
+                "norm_words": _norm_words(manifest_name),
                 "sig_fields": sig_fields,
             }
     return _manifest_cache
 
 
+def _match_manifest(code: str, doc_name: str, manifests: dict) -> dict | None:
+    """Find the best manifest match for a doc code + name. Returns manifest data or None."""
+    # Try alias-based match first (most reliable)
+    alias = _CODE_ALIASES.get(code.lower(), "")
+    if alias:
+        alias_words = _norm_words(alias)
+        for _key, mdata in manifests.items():
+            if alias_words <= mdata["norm_words"]:  # subset match
+                return mdata
+
+    # Word overlap: require 60%+ of doc name words present in manifest name
+    doc_words = _norm_words(doc_name)
+    if len(doc_words) >= 2:
+        best, best_score = None, 0
+        for _key, mdata in manifests.items():
+            overlap = len(doc_words & mdata["norm_words"])
+            score = overlap / len(doc_words)
+            if score > best_score and score >= 0.6:
+                best, best_score = mdata, score
+        if best:
+            return best
+
+    # Normalized substring match (handles underscores vs spaces)
+    norm_name = _norm(doc_name)
+    for _key, mdata in manifests.items():
+        norm_mname = _norm(mdata["manifest_name"])
+        if len(norm_name) >= 8 and (norm_name in norm_mname or norm_mname in norm_name):
+            return mdata
+
+    return None
+
+
 def _populate_sig_reviews(c, tid):
     """Lazy-load signature fields from manifests into sig_reviews for a txn."""
-    # Skip if already scanned this session
     if tid in _sig_populated_txns:
         return
     _sig_populated_txns.add(tid)
 
-    docs = c.execute("SELECT code, name FROM docs WHERE txn=?", (tid,)).fetchall()
+    docs = c.execute("SELECT code, name, folder, filename FROM docs WHERE txn=?", (tid,)).fetchall()
     if not docs:
         return
 
@@ -535,36 +770,45 @@ def _populate_sig_reviews(c, tid):
         if existing:
             continue
 
-        # Match against cached manifests
-        for mname_lower, mdata in manifests.items():
-            mname = mdata["manifest_name"]
-            if not (code.lower() in mname_lower
-                    or mname_lower in doc["name"].lower()
-                    or doc["name"].lower() in mname_lower):
-                continue
+        # Try uploaded file's manifest first (exact folder/filename match)
+        mdata = None
+        if doc["folder"] and doc["filename"]:
+            for _key, m in manifests.items():
+                if m["folder"] == doc["folder"] and m["filename"] == doc["filename"]:
+                    mdata = m
+                    break
 
-            for sf in mdata["sig_fields"]:
-                field_name = sf.get("field", "")
-                is_initials = bool(re.search(r"initial", field_name, re.IGNORECASE))
-                field_type = "initials" if is_initials else "signature"
-                bbox = sf.get("bbox", {})
-                filled = 1 if sf.get("filled") else 0
-                try:
-                    c.execute(
-                        "INSERT OR IGNORE INTO sig_reviews"
-                        "(txn, doc_code, folder, filename, field_name, field_type,"
-                        " page, bbox, is_filled, review_status, source)"
-                        " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
-                        (
-                            tid, code, mdata["folder"], mdata["filename"],
-                            field_name, field_type,
-                            sf.get("page", 0), json.dumps(bbox),
-                            filled, "pending", "auto",
-                        ),
-                    )
-                except Exception:
-                    pass
-            break  # matched this doc, move to next
+        # Fall back to fuzzy name matching
+        if not mdata:
+            mdata = _match_manifest(code, doc["name"], manifests)
+
+        if not mdata:
+            continue
+
+        for sf in mdata["sig_fields"]:
+            field_name = sf.get("field", "")
+            cat = (sf.get("category") or "").lower()
+            is_initials = cat == "entry_initial" or bool(
+                re.search(r"initial", field_name, re.IGNORECASE)
+            )
+            field_type = "initials" if is_initials else "signature"
+            bbox = sf.get("bbox", {})
+            filled = 1 if sf.get("filled") else 0
+            try:
+                c.execute(
+                    "INSERT OR IGNORE INTO sig_reviews"
+                    "(txn, doc_code, folder, filename, field_name, field_type,"
+                    " page, bbox, is_filled, review_status, source)"
+                    " VALUES(?,?,?,?,?,?,?,?,?,?,?)",
+                    (
+                        tid, code, mdata["folder"], mdata["filename"],
+                        field_name, field_type,
+                        sf.get("page", 0), json.dumps(bbox),
+                        filled, "pending", "auto",
+                    ),
+                )
+            except Exception:
+                pass
 
 
 @app.route("/api/txns/<tid>/sig-counts")
@@ -703,13 +947,89 @@ def delete_signature(tid, sig_id):
 
 @app.route("/api/sandbox-status")
 def sandbox_status():
-    return jsonify({"email_sandbox": integrations.EMAIL_SANDBOX})
+    return jsonify({"email_sandbox": integrations.EMAIL_SANDBOX,
+                     "sandbox": integrations.EMAIL_SANDBOX})
 
 
 @app.route("/api/docusign-status")
 def docusign_status():
     """Check DocuSign configuration status and get setup instructions."""
     return jsonify(integrations.docusign_status())
+
+
+@app.route("/api/txns/<tid>/cloud-approval")
+def get_cloud_approval(tid):
+    """Get cloud approval status for a transaction."""
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.get_approval(c, tid)
+    return jsonify(approval)
+
+
+@app.route("/api/txns/<tid>/cloud-approval", methods=["POST"])
+def grant_cloud_approval(tid):
+    """Grant time-limited approval for cloud calls on this transaction."""
+    body = request.get_json(silent=True) or {}
+    minutes = body.get("minutes", cloud_guard.DEFAULT_APPROVAL_TTL_MIN)
+    note = (body.get("note") or "").strip()
+    granted_by = (body.get("granted_by") or "ui").strip() or "ui"
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.grant_approval(
+            c, tid, ttl_min=minutes, granted_by=granted_by, note=note
+        )
+        db.log(c, tid, "cloud_approval_granted",
+               f"{approval['remaining_seconds']}s by {granted_by}")
+    return jsonify(approval), 201
+
+
+@app.route("/api/txns/<tid>/cloud-approval", methods=["DELETE"])
+def revoke_cloud_approval(tid):
+    """Revoke cloud-call approval for a transaction."""
+    body = request.get_json(silent=True) or {}
+    note = (body.get("note") or "").strip()
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        approval = cloud_guard.revoke_approval(c, tid, note=note)
+        db.log(c, tid, "cloud_approval_revoked", note[:80] if note else "revoked")
+    return jsonify(approval)
+
+
+@app.route("/api/txns/<tid>/cloud-events")
+def get_cloud_events(tid):
+    """List cloud usage events for a transaction."""
+    service = (request.args.get("service") or "").strip()
+    operation = (request.args.get("operation") or "").strip()
+    outcome = (request.args.get("outcome") or "").strip()
+    limit = request.args.get("limit", type=int) or 100
+    limit = max(1, min(limit, 500))
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        q = "SELECT * FROM cloud_events WHERE txn=?"
+        params = [tid]
+        if service:
+            q += " AND service=?"
+            params.append(service)
+        if operation:
+            q += " AND operation=?"
+            params.append(operation)
+        if outcome:
+            q += " AND outcome=?"
+            params.append(outcome)
+        q += " ORDER BY created_at DESC, id DESC LIMIT ?"
+        params.append(limit)
+        rows = c.execute(q, params).fetchall()
+    return jsonify([dict(r) for r in rows])
 
 
 @app.route("/api/txns/<tid>/signatures/<int:sig_id>/send", methods=["POST"])
@@ -721,16 +1041,23 @@ def send_signature(tid, sig_id):
     provider = body.get("provider", "docusign")
     if not email_addr or not name:
         return jsonify({"error": "email and name required"}), 400
+    if provider != "docusign":
+        return jsonify({"error": f"unsupported provider: {provider}"}), 400
 
-    with db.conn() as c:
-        row = c.execute(
-            "SELECT * FROM sig_reviews WHERE id=? AND txn=?", (sig_id, tid)
-        ).fetchone()
-        if not row:
-            return jsonify({"error": "signature field not found"}), 404
-        result = integrations.send_for_signature(
-            c, tid, sig_id, email_addr, name, provider
-        )
+    try:
+        with db.conn() as c:
+            row = c.execute(
+                "SELECT * FROM sig_reviews WHERE id=? AND txn=?", (sig_id, tid)
+            ).fetchone()
+            if not row:
+                return jsonify({"error": "signature field not found"}), 404
+            result = integrations.send_for_signature(
+                c, tid, sig_id, email_addr, name, provider
+            )
+    except NotImplementedError as exc:
+        return jsonify({"error": str(exc)}), 503
+    except Exception:
+        return jsonify({"error": "failed to send signature request"}), 502
     return jsonify(result), 201
 
 
@@ -796,6 +1123,14 @@ CONT_NAMES = {
 }
 
 
+def _contingency_for_txn(c, tid: str, cid: int):
+    """Return contingency row only when it belongs to the transaction."""
+    return c.execute(
+        "SELECT * FROM contingencies WHERE id=? AND txn=?",
+        (cid, tid),
+    ).fetchone()
+
+
 @app.route("/api/txns/<tid>/contingencies")
 def get_contingencies(tid):
     """List contingencies with days_remaining and urgency computed in SQL."""
@@ -820,6 +1155,15 @@ def get_contingencies(tid):
         for item in items:
             item["related_gate"] = CONT_GATE.get(item["type"], "")
             item["related_deadline"] = CONT_DL.get(item["type"], "")
+            # Add inspection items progress counts
+            ci = c.execute(
+                "SELECT COUNT(*) AS total,"
+                " SUM(status='complete') AS done"
+                " FROM contingency_items WHERE contingency_id=?",
+                (item["id"],),
+            ).fetchone()
+            item["items_total"] = ci["total"] if ci else 0
+            item["items_done"] = ci["done"] if ci else 0
         summary = c.execute(
             "SELECT COUNT(*) AS total,"
             " SUM(status='active') AS active,"
@@ -842,31 +1186,45 @@ def add_contingency(tid):
     notes = body.get("notes", "")
     if not ctype:
         return jsonify({"error": "type required"}), 400
+    try:
+        days_int = int(days)
+    except (TypeError, ValueError):
+        return jsonify({"error": "days must be a positive integer"}), 400
+    if days_int < 1:
+        return jsonify({"error": "days must be a positive integer"}), 400
+    if deadline:
+        try:
+            deadline = date.fromisoformat(deadline).isoformat()
+        except ValueError:
+            return jsonify({"error": "deadline_date must be YYYY-MM-DD"}), 400
+
+    with db.conn() as c:
+        t = db.txn(c, tid)
+        if not t:
+            return jsonify({"error": "txn not found"}), 404
     name = CONT_NAMES.get(ctype, body.get("name", ctype.replace("_", " ").title() + " Contingency"))
 
     # If no deadline given, compute from acceptance date
     if not deadline:
-        with db.conn() as c:
-            t = db.txn(c, tid)
-            if not t:
-                return jsonify({"error": "txn not found"}), 404
-            data = json.loads(t.get("data") or "{}")
-            acceptance = (data.get("dates") or {}).get("acceptance")
-            if acceptance:
-                from datetime import timedelta
-                deadline = (date.fromisoformat(acceptance) + timedelta(days=int(days))).isoformat()
+        data = json.loads(t.get("data") or "{}")
+        acceptance = (data.get("dates") or {}).get("acceptance")
+        if acceptance:
+            deadline = (date.fromisoformat(acceptance) + timedelta(days=days_int)).isoformat()
 
     with db.conn() as c:
         try:
             c.execute(
                 "INSERT INTO contingencies(txn,type,name,default_days,deadline_date,notes)"
                 " VALUES(?,?,?,?,?,?)",
-                (tid, ctype, name, days, deadline, notes),
+                (tid, ctype, name, days_int, deadline, notes),
             )
         except Exception:
             return jsonify({"error": f"contingency '{ctype}' already exists for this transaction"}), 409
         cid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
-        db.log(c, tid, "cont_added", f"{name} ({days}d, due {deadline})")
+        # Auto-populate inspection items for investigation contingencies
+        if ctype == "investigation":
+            engine._auto_populate_inspection_items(c, tid, cid)
+        db.log(c, tid, "cont_added", f"{name} ({days_int}d, due {deadline})")
         row = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
     return jsonify(dict(row)), 201
 
@@ -934,6 +1292,101 @@ def waive_contingency(tid, cid):
         db.log(c, tid, "cont_waived", f"{row['name']} waived")
         updated = c.execute("SELECT * FROM contingencies WHERE id=?", (cid,)).fetchone()
     return jsonify(dict(updated))
+
+
+# ── Contingency Items (Inspection Checklist) ────────────────────────────────
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/items")
+def get_cont_items(tid, cid):
+    """List inspection checklist items for a contingency."""
+    with db.conn() as c:
+        if not _contingency_for_txn(c, tid, cid):
+            return jsonify({"error": "not found"}), 404
+        items = c.execute(
+            "SELECT * FROM contingency_items WHERE contingency_id=? ORDER BY sort_order, id",
+            (cid,),
+        ).fetchall()
+    return jsonify([dict(r) for r in items])
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/items", methods=["POST"])
+def add_cont_item(tid, cid):
+    """Add a custom inspection item."""
+    body = request.json or {}
+    name = (body.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "name required"}), 400
+    with db.conn() as c:
+        if not _contingency_for_txn(c, tid, cid):
+            return jsonify({"error": "not found"}), 404
+        # Get max sort_order
+        mx = c.execute(
+            "SELECT COALESCE(MAX(sort_order),0) FROM contingency_items WHERE contingency_id=?",
+            (cid,),
+        ).fetchone()[0]
+        c.execute(
+            "INSERT INTO contingency_items(contingency_id,name,inspector,scheduled_date,notes,sort_order)"
+            " VALUES(?,?,?,?,?,?)",
+            (cid, name, body.get("inspector", ""), body.get("scheduled_date", ""),
+             body.get("notes", ""), mx + 1),
+        )
+        iid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+        db.log(c, tid, "cont_item_added", f"{name} to contingency {cid}")
+        row = c.execute("SELECT * FROM contingency_items WHERE id=?", (iid,)).fetchone()
+    return jsonify(dict(row)), 201
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/items/<int:iid>", methods=["PUT"])
+def update_cont_item(tid, cid, iid):
+    """Update an inspection item (status, inspector, dates, notes)."""
+    body = request.json or {}
+    with db.conn() as c:
+        if not _contingency_for_txn(c, tid, cid):
+            return jsonify({"error": "not found"}), 404
+        row = c.execute(
+            "SELECT * FROM contingency_items WHERE id=? AND contingency_id=?", (iid, cid)
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+
+        updates = []
+        params = []
+        for field in ("name", "status", "inspector", "scheduled_date", "notes"):
+            if field in body:
+                updates.append(f"{field}=?")
+                params.append(body[field])
+
+        # Auto-set completed_date when status becomes complete
+        new_status = body.get("status")
+        if new_status == "complete" and row["status"] != "complete":
+            updates.append("completed_date=datetime('now','localtime')")
+        elif new_status and new_status != "complete":
+            updates.append("completed_date=NULL")
+
+        if updates:
+            params.append(iid)
+            c.execute(f"UPDATE contingency_items SET {','.join(updates)} WHERE id=?", params)
+            db.log(c, tid, "cont_item_updated", f"item {iid} in contingency {cid}")
+
+        updated = c.execute("SELECT * FROM contingency_items WHERE id=?", (iid,)).fetchone()
+    return jsonify(dict(updated))
+
+
+@app.route("/api/txns/<tid>/contingencies/<int:cid>/items/<int:iid>", methods=["DELETE"])
+def delete_cont_item(tid, cid, iid):
+    """Delete an inspection item."""
+    with db.conn() as c:
+        if not _contingency_for_txn(c, tid, cid):
+            return jsonify({"error": "not found"}), 404
+        row = c.execute(
+            "SELECT id FROM contingency_items WHERE id=? AND contingency_id=?",
+            (iid, cid),
+        ).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        c.execute("DELETE FROM contingency_items WHERE id=? AND contingency_id=?", (iid, cid))
+        db.log(c, tid, "cont_item_deleted", f"item {iid} in contingency {cid}")
+    return jsonify({"ok": True})
 
 
 # ── Parties ──────────────────────────────────────────────────────────────────
@@ -1358,6 +1811,8 @@ def doc_packages():
 @app.route("/api/doc-packages/<path:folder>/<filename>/fields")
 def doc_fields(folder, filename):
     """Get field locations for a document, with optional category/page filters."""
+    if err := _validate_doc_path_inputs(folder, filename):
+        return err
     category = request.args.get("category")
     page = request.args.get("page", type=int)
     fields = doc_versions.field_locations(folder, filename, category, page)
@@ -1367,6 +1822,8 @@ def doc_fields(folder, filename):
 @app.route("/api/doc-packages/<path:folder>/<filename>/manifest")
 def doc_manifest(folder, filename):
     """Get the full manifest for a document."""
+    if err := _validate_doc_path_inputs(folder, filename):
+        return err
     m = doc_versions.load_manifest(folder, filename)
     if not m:
         return jsonify({"error": "manifest not found"}), 404
@@ -1400,11 +1857,22 @@ def doc_version_history():
 @app.route("/api/doc-packages/<path:folder>/<filename>/pdf")
 def serve_pdf(folder, filename):
     """Serve a CAR contract PDF file."""
-    car_dir = doc_versions.CAR_DIR / folder
-    if not car_dir.exists():
+    if err := _validate_doc_path_inputs(folder, filename, require_pdf=True):
+        return err
+    car_root = doc_versions.CAR_DIR.resolve()
+    car_dir = (car_root / folder).resolve()
+    try:
+        car_dir.relative_to(car_root)
+    except ValueError:
+        return jsonify({"error": "invalid folder"}), 400
+    if not car_dir.is_dir():
         return jsonify({"error": "folder not found"}), 404
-    pdf_path = car_dir / filename
-    if not pdf_path.exists():
+    pdf_path = (car_dir / filename).resolve()
+    try:
+        pdf_path.relative_to(car_dir)
+    except ValueError:
+        return jsonify({"error": "invalid filename"}), 400
+    if not pdf_path.is_file():
         return jsonify({"error": "file not found"}), 404
     return send_from_directory(str(car_dir), filename, mimetype="application/pdf")
 
@@ -1412,6 +1880,8 @@ def serve_pdf(folder, filename):
 @app.route("/api/field-annotations/<path:folder>/<filename>")
 def get_field_annotations(folder, filename):
     """Get all field annotations for a document."""
+    if err := _validate_doc_path_inputs(folder, filename):
+        return err
     txn_id = request.args.get("txn", "")
     with db.conn() as c:
         rows = c.execute(
@@ -1426,6 +1896,8 @@ def get_field_annotations(folder, filename):
 @app.route("/api/field-annotations/<path:folder>/<filename>", methods=["POST"])
 def save_field_annotation(folder, filename):
     """Upsert a single field annotation and log to audit."""
+    if err := _validate_doc_path_inputs(folder, filename):
+        return err
     body = request.json or {}
     txn_id = body.get("txn", "")
     field_idx = body.get("field_idx")
@@ -1450,6 +1922,8 @@ def save_field_annotation(folder, filename):
 @app.route("/api/field-annotations/<path:folder>/<filename>/bulk", methods=["POST"])
 def bulk_field_annotations(folder, filename):
     """Upsert multiple field annotations at once."""
+    if err := _validate_doc_path_inputs(folder, filename):
+        return err
     body = request.json or {}
     txn_id = body.get("txn", "")
     annotations = body.get("annotations", {})
@@ -1588,9 +2062,83 @@ def get_unfilled_fields(cid):
     })
 
 
+@app.route("/api/contracts/<int:cid>/fields/verify-queue")
+def get_verify_queue(cid):
+    """Get ALL fields in priority order for guided verification.
+
+    Mode query param:
+      quick  — mandatory unfilled only (fastest)
+      review — all unfilled (standard)
+      full   — every field including filled (thorough)
+    """
+    mode = request.args.get("mode", "review")
+    with db.conn() as c:
+        ct = c.execute("SELECT * FROM contracts WHERE id=?", (cid,)).fetchone()
+        if not ct:
+            return jsonify({"error": "not found"}), 404
+        if mode == "quick":
+            fields = c.execute(
+                "SELECT * FROM contract_fields WHERE contract_id=?"
+                " AND is_filled=0 AND mandatory=1 AND status NOT IN ('verified','ignored')"
+                " ORDER BY page, field_idx",
+                (cid,),
+            ).fetchall()
+        elif mode == "full":
+            # Everything: unfilled mandatory first, then unfilled optional, then filled
+            fields = c.execute(
+                "SELECT * FROM contract_fields WHERE contract_id=?"
+                " ORDER BY"
+                "  CASE WHEN status IN ('verified','ignored') THEN 2 ELSE 0 END,"
+                "  CASE WHEN is_filled=0 AND mandatory=1 THEN 0"
+                "       WHEN is_filled=0 AND mandatory=0 THEN 1"
+                "       ELSE 2 END,"
+                "  page, field_idx",
+                (cid,),
+            ).fetchall()
+        else:  # review
+            fields = c.execute(
+                "SELECT * FROM contract_fields WHERE contract_id=?"
+                " AND status NOT IN ('verified','ignored')"
+                " ORDER BY"
+                "  CASE WHEN is_filled=0 AND mandatory=1 THEN 0"
+                "       WHEN is_filled=0 AND mandatory=0 THEN 1"
+                "       ELSE 2 END,"
+                "  page, field_idx",
+                (cid,),
+            ).fetchall()
+
+        # Stats for progress display
+        all_fields = c.execute(
+            "SELECT is_filled, mandatory, status FROM contract_fields WHERE contract_id=?",
+            (cid,),
+        ).fetchall()
+    total = len(all_fields)
+    verified = sum(1 for f in all_fields if f["status"] in ("verified", "ignored"))
+    flagged = sum(1 for f in all_fields if f["status"] == "flagged")
+    unfilled_mand = sum(1 for f in all_fields if not f["is_filled"] and f["mandatory"])
+    unfilled_opt = sum(1 for f in all_fields if not f["is_filled"] and not f["mandatory"])
+    filled = sum(1 for f in all_fields if f["is_filled"])
+    return jsonify({
+        "contract": dict(ct),
+        "fields": [dict(f) for f in fields],
+        "stats": {
+            "total": total, "verified": verified, "flagged": flagged,
+            "unfilled_mandatory": unfilled_mand, "unfilled_optional": unfilled_opt,
+            "filled": filled, "queue_size": len(fields),
+        },
+        "mode": mode,
+    })
+
+
 @app.route("/api/contracts/<int:cid>/fields/<int:fid>/crop")
 def field_crop_image(cid, fid):
-    """Serve a cropped PNG screenshot of a field from the actual PDF."""
+    """Serve a cropped PNG screenshot of a field from the actual PDF.
+
+    Query params:
+      zoom — render zoom factor (default 2.0, max 4.0)
+      padding — padding around field in points (default 20, max 80)
+      highlight — if 1, draw a highlight box around the field (default 1)
+    """
     with db.conn() as c:
         ct = c.execute("SELECT * FROM contracts WHERE id=?", (cid,)).fetchone()
         if not ct:
@@ -1607,9 +2155,50 @@ def field_crop_image(cid, fid):
         return jsonify({"error": "PDF file not found"}), 404
 
     bbox = json.loads(field["bbox"]) if isinstance(field["bbox"], str) else field["bbox"]
-    png = contract_scanner.render_field_crop(source, field["page"], bbox)
+    zoom = min(float(request.args.get("zoom", 3.0)), 4.0)
+    padding = min(int(request.args.get("padding", 40)), 80)
+    highlight = request.args.get("highlight", "1") == "1"
+
+    png = contract_scanner.render_field_crop(
+        source, field["page"], bbox, padding=padding, zoom=zoom,
+    )
     if not png:
         return jsonify({"error": "crop failed"}), 500
+
+    # Optionally draw highlight rectangle on the crop
+    if highlight and png:
+        import io
+        from PIL import Image, ImageDraw
+        try:
+            img = Image.open(io.BytesIO(png))
+            draw = ImageDraw.Draw(img)
+            # The field is centered in the crop with padding*zoom on each side
+            fx0 = padding * zoom
+            fy0 = padding * zoom
+            fw = (bbox.get("x1", 0) - bbox.get("x0", 0)) * zoom
+            fh = (bbox.get("y1", 0) - bbox.get("y0", 0)) * zoom
+            # Determine color based on field status
+            is_filled = field["is_filled"]
+            mandatory = field["mandatory"]
+            if is_filled:
+                color = (52, 199, 89, 80)  # green
+            elif mandatory:
+                color = (255, 59, 48, 100)  # red
+            else:
+                color = (255, 204, 0, 80)  # yellow
+            # Draw semi-transparent highlight
+            overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+            od = ImageDraw.Draw(overlay)
+            od.rectangle([fx0 - 2, fy0 - 2, fx0 + fw + 2, fy0 + fh + 2],
+                         outline=color[:3], width=3)
+            od.rectangle([fx0, fy0, fx0 + fw, fy0 + fh],
+                         fill=(*color[:3], 30))
+            img = Image.alpha_composite(img.convert("RGBA"), overlay)
+            buf = io.BytesIO()
+            img.save(buf, format="PNG")
+            png = buf.getvalue()
+        except Exception:
+            pass  # Fall back to unhighlighted crop
 
     return Response(png, mimetype="image/png")
 
@@ -1723,6 +2312,225 @@ def contract_annotated_pdf(cid):
                     headers={"Content-Disposition": f"inline; filename=annotated-{ct['filename']}"})
 
 
+# ── Contract Review (Clause-Level Analysis) ──────────────────────────────────
+
+@app.route("/api/txns/<tid>/review-contract", methods=["POST"])
+def review_contract(tid):
+    """Run clause-level contract review against a playbook.
+
+    Accepts either:
+      - {"doc_code": "rpa"} to review a previously uploaded doc
+      - A multipart file upload with key "file"
+      - {"contract_id": 5} to review a scanned contract by ID
+    """
+    service = "anthropic"
+    operation = "review_contract"
+    endpoint = "anthropic://messages.create"
+    model = "claude-sonnet-4-20250514"
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "transaction not found"}), 404
+        try:
+            cloud_guard.require_approval(c, tid, service, operation)
+        except cloud_guard.CloudApprovalRequired as exc:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error=str(exc),
+            )
+            return _cloud_blocked_response(tid, str(exc))
+        t = _txn_dict(row)
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                error="ANTHROPIC_API_KEY not set",
+            )
+        return jsonify({"error": "ANTHROPIC_API_KEY not set"}), 500
+
+    playbook_name = (request.form or request.json or {}).get("playbook", "california_rpa")
+
+    # Build transaction context for the review prompt
+    txn_data = t.get("data", {})
+    txn_context = {
+        "address": t.get("address", ""),
+        "transaction_type": t.get("txn_type", "sale"),
+        "phase": t.get("phase", ""),
+        "brokerage": t.get("brokerage", ""),
+        "purchase_price": (txn_data.get("financial") or {}).get("purchase_price"),
+        "close_of_escrow": (txn_data.get("dates") or {}).get("close_of_escrow"),
+        "property_flags": t.get("props", {}),
+    }
+
+    # Resolve PDF path
+    pdf_path = None
+    doc_code = None
+
+    if "file" in request.files:
+        # Direct file upload
+        f = request.files["file"]
+        import tempfile
+        tmp = Path(tempfile.mktemp(suffix=".pdf"))
+        f.save(str(tmp))
+        pdf_path = str(tmp)
+    else:
+        body = request.json or {}
+        if body.get("contract_id"):
+            # Review a scanned contract
+            with db.conn() as c:
+                ct = c.execute("SELECT * FROM contracts WHERE id=?",
+                               (body["contract_id"],)).fetchone()
+            if not ct:
+                return jsonify({"error": "contract not found"}), 404
+            pdf_path = ct["source_path"]
+        elif body.get("doc_code"):
+            # Review an uploaded transaction doc
+            doc_code = body["doc_code"]
+            with db.conn() as c:
+                doc = c.execute("SELECT * FROM docs WHERE txn=? AND code=?",
+                                (tid, doc_code)).fetchone()
+            if not doc or not doc.get("file_path"):
+                return jsonify({"error": f"No uploaded file for doc '{doc_code}'"}), 404
+            pdf_path = doc["file_path"]
+
+    if not pdf_path or not Path(pdf_path).exists():
+        return jsonify({"error": "No PDF file found to review"}), 400
+
+    request_bytes = 0
+    try:
+        request_bytes = Path(pdf_path).stat().st_size
+    except Exception:
+        request_bytes = 0
+
+    # Run the review
+    started = time.perf_counter()
+    try:
+        result = engine.review_contract(pdf_path, txn_context, playbook_name)
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        response_bytes = len(json.dumps(result).encode("utf-8"))
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="success",
+                status_code=200,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=response_bytes,
+                meta={"playbook": playbook_name, "doc_code": doc_code or ""},
+            )
+    except Exception as e:
+        latency_ms = int((time.perf_counter() - started) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                error=str(e),
+                meta={"playbook": playbook_name, "doc_code": doc_code or ""},
+            )
+        return jsonify({"error": f"Review failed: {str(e)}"}), 500
+    finally:
+        # Clean up temp file if we created one
+        if "file" in request.files:
+            Path(pdf_path).unlink(missing_ok=True)
+
+    # Store the review
+    with db.conn() as c:
+        c.execute(
+            "INSERT INTO contract_reviews(txn, doc_code, playbook, overall_risk,"
+            " executive_summary, clauses, interactions, missing_items, raw_response)"
+            " VALUES(?,?,?,?,?,?,?,?,?)",
+            (tid, doc_code or "", playbook_name,
+             result.get("overall_risk", "GREEN"),
+             result.get("executive_summary", ""),
+             json.dumps(result.get("clauses", [])),
+             json.dumps(result.get("interactions", [])),
+             json.dumps(result.get("missing_items", [])),
+             result.get("_raw", "")),
+        )
+        review_id = c.execute("SELECT last_insert_rowid()").fetchone()[0]
+        db.log(c, tid, "contract_reviewed",
+               f"Playbook: {playbook_name}, Risk: {result.get('overall_risk', '?')}")
+
+    return jsonify({
+        "id": review_id,
+        "overall_risk": result.get("overall_risk", "GREEN"),
+        "executive_summary": result.get("executive_summary", ""),
+        "clauses": result.get("clauses", []),
+        "interactions": result.get("interactions", []),
+        "missing_items": result.get("missing_items", []),
+    })
+
+
+@app.route("/api/txns/<tid>/contract-reviews")
+def list_contract_reviews(tid):
+    """List all contract reviews for a transaction."""
+    with db.conn() as c:
+        rows = c.execute(
+            "SELECT * FROM contract_reviews WHERE txn=? ORDER BY created_at DESC",
+            (tid,),
+        ).fetchall()
+    items = []
+    for r in rows:
+        item = dict(r)
+        item["clauses"] = json.loads(item.get("clauses") or "[]")
+        item["interactions"] = json.loads(item.get("interactions") or "[]")
+        item["missing_items"] = json.loads(item.get("missing_items") or "[]")
+        del item["raw_response"]  # don't send raw to client
+        items.append(item)
+    return jsonify(items)
+
+
+@app.route("/api/txns/<tid>/contract-reviews/<int:rid>")
+def get_contract_review(tid, rid):
+    """Get a single contract review."""
+    with db.conn() as c:
+        row = c.execute(
+            "SELECT * FROM contract_reviews WHERE id=? AND txn=?",
+            (rid, tid),
+        ).fetchone()
+    if not row:
+        return jsonify({"error": "not found"}), 404
+    item = dict(row)
+    item["clauses"] = json.loads(item.get("clauses") or "[]")
+    item["interactions"] = json.loads(item.get("interactions") or "[]")
+    item["missing_items"] = json.loads(item.get("missing_items") or "[]")
+    del item["raw_response"]
+    return jsonify(item)
+
+
 # ── Document Upload ───────────────────────────────────────────────────────────
 
 @app.route("/api/txns/<tid>/upload", methods=["POST"])
@@ -1733,6 +2541,8 @@ def upload_document(tid):
     f = request.files["file"]
     if not f.filename or not f.filename.lower().endswith(".pdf"):
         return jsonify({"error": "Only PDF files are accepted"}), 400
+    if not _validate_pdf_upload(f):
+        return jsonify({"error": "Uploaded file does not look like a valid PDF"}), 400
 
     with db.conn() as c:
         t = db.txn(c, tid)
@@ -1742,44 +2552,43 @@ def upload_document(tid):
     # Store in a transaction-specific folder
     upload_dir = doc_versions.CAR_DIR / f"uploads_{tid}"
     upload_dir.mkdir(parents=True, exist_ok=True)
-    safe_name = re.sub(r'[^\w\-. ()]', '_', f.filename)
+    original_name = Path(f.filename).name
+    safe_stem = re.sub(r"[^\w\-. ()]", "_", Path(original_name).stem).strip(" ._")
+    if not safe_stem:
+        safe_stem = "upload"
+    safe_name = f"{safe_stem[:80]}_{uuid4().hex[:8]}.pdf"
     dest = upload_dir / safe_name
     f.save(str(dest))
 
     # Try to auto-scan the document for fields
-    result = {"filename": safe_name, "folder": f"uploads_{tid}", "path": str(dest)}
+    result = {
+        "filename": safe_name,
+        "original_filename": original_name,
+        "folder": f"uploads_{tid}",
+        "path": str(dest),
+    }
     try:
-        scan_result = contract_scanner.scan_pdf(str(dest))
+        scan_result = contract_scanner.scan_pdf(dest, f"uploads_{tid}", scenario=tid)
         if scan_result:
-            # Store in contracts table
+            contract_scanner.populate_db([scan_result])
+            fields = scan_result.get("fields", [])
             with db.conn() as c:
-                c.execute(
-                    "INSERT INTO contracts(folder, filename, scenario) VALUES(?,?,?)",
+                row = c.execute(
+                    "SELECT id FROM contracts WHERE folder=? AND filename=? AND scenario=?",
                     (f"uploads_{tid}", safe_name, tid),
-                )
-                cid = c.execute("SELECT last_insert_rowid()").fetchone()[0]
-                fields = scan_result.get("fields", [])
-                for idx, fld in enumerate(fields):
-                    c.execute(
-                        "INSERT INTO contract_fields(contract_id, field_idx, label, category,"
-                        " page, bbox, is_filled, fill_confidence, context, ul_bbox)"
-                        " VALUES(?,?,?,?,?,?,?,?,?,?)",
-                        (cid, idx, fld.get("label", ""), fld.get("category", ""),
-                         fld.get("page", 0), json.dumps(fld.get("bbox", [])),
-                         1 if fld.get("is_filled") else 0,
-                         fld.get("fill_confidence", 0),
-                         fld.get("context", ""),
-                         json.dumps(fld.get("ul_bbox", []))),
-                    )
+                ).fetchone()
+                if row:
+                    result["contract_id"] = row["id"]
                 db.log(c, tid, "doc_uploaded", f"{safe_name}: {len(fields)} fields detected")
-            result["contract_id"] = cid
             result["fields_detected"] = len(fields)
             result["fields"] = fields
     except Exception as e:
         result["scan_error"] = str(e)
 
     # Try to match to a checklist doc code and auto-receive
-    matched_code = _match_upload_to_doc(tid, safe_name, folder=f"uploads_{tid}")
+    matched_code = _match_upload_to_doc(
+        tid, safe_name, folder=f"uploads_{tid}", match_name=original_name
+    )
     if matched_code:
         result["matched_doc"] = matched_code
 
@@ -1830,9 +2639,11 @@ def reanalyze_rpa(tid):
     return jsonify(result)
 
 
-def _match_upload_to_doc(tid: str, filename: str, folder: str = "") -> str | None:
+def _match_upload_to_doc(
+    tid: str, filename: str, folder: str = "", match_name: str = ""
+) -> str | None:
     """Try to match an uploaded filename to a checklist doc code and mark received."""
-    name_lower = filename.lower()
+    needle = (match_name or filename).lower()
     # Common CAR form abbreviation matching
     code_patterns = {
         "rpa": "RPA", "tds": "TDS", "spq": "SPQ", "nhd": "NHD",
@@ -1846,7 +2657,7 @@ def _match_upload_to_doc(tid: str, filename: str, folder: str = "") -> str | Non
     }
     matched = None
     for pattern, code in code_patterns.items():
-        if pattern in name_lower:
+        if pattern in needle:
             matched = code
             break
     if matched:
@@ -1859,7 +2670,12 @@ def _match_upload_to_doc(tid: str, filename: str, folder: str = "") -> str | Non
                     " WHERE txn=? AND code=?",
                     (now, folder, filename, tid, matched),
                 )
-                db.log(c, tid, "doc_received", f"{matched} auto-matched from upload: {filename}")
+                db.log(
+                    c,
+                    tid,
+                    "doc_received",
+                    f"{matched} auto-matched from upload: {match_name or filename}",
+                )
         return matched
     return None
 
@@ -2099,13 +2915,63 @@ def _extract_rpa_data(pdf_path: str) -> dict:
                     days = int(m.group(2)) if m.group(2) else int(m.group(1))
                     extracted[key] = days
 
-    # ── "No contingency" flags ──
+    # ── "No contingency" flags and waivers ──
+    waived = {}
+    full_text_upper = full_text.upper()
+
+    # Loan contingency waivers
+    if any(p in full_text_upper for p in [
+        "NO LOAN CONTINGENCY", "WAIVE LOAN CONTINGENCY", "WAIVES LOAN CONTINGENCY",
+        "WITHOUT LOAN CONTINGENCY", "LOAN CONTINGENCY IS REMOVED",
+        "LOAN CONTINGENCY: NONE", "LOAN CONTINGENCY WAIVED"
+    ]):
+        waived["loan"] = "waived"
+        extracted["no_loan_contingency"] = True
+
+    # Cash purchase = no loan contingency needed
+    if any(p in full_text_upper for p in [
+        "ALL CASH", "CASH OFFER", "CASH PURCHASE", "NO FINANCING",
+        "BUYER WILL PAY ALL CASH", "ALL-CASH"
+    ]):
+        waived["loan"] = "not_required"
+        extracted["cash_purchase"] = True
+        extracted["no_loan_contingency"] = True
+
+    # Appraisal contingency waivers
+    if any(p in full_text_upper for p in [
+        "NO APPRAISAL CONTINGENCY", "WAIVE APPRAISAL CONTINGENCY", "WAIVES APPRAISAL",
+        "WITHOUT APPRAISAL CONTINGENCY", "APPRAISAL CONTINGENCY IS REMOVED",
+        "APPRAISAL CONTINGENCY: NONE", "APPRAISAL CONTINGENCY WAIVED",
+        "APPRAISAL WAIVER"
+    ]):
+        waived["appraisal"] = "waived"
+        extracted["no_appraisal_contingency"] = True
+
+    # Investigation/inspection contingency waivers
+    if any(p in full_text_upper for p in [
+        "NO INVESTIGATION CONTINGENCY", "WAIVE INVESTIGATION", "AS-IS", "AS IS",
+        "SOLD AS-IS", "PROPERTY SOLD AS IS", "WITHOUT INVESTIGATION CONTINGENCY",
+        "INVESTIGATION CONTINGENCY WAIVED", "NO INSPECTION CONTINGENCY"
+    ]):
+        waived["investigation"] = "waived"
+        extracted["no_investigation_contingency"] = True
+
+    # Check for 0-day contingency periods (effectively waived)
     for i, line in enumerate(lines):
-        lu = line.upper()
-        if "NO LOAN CONTINGENCY" in lu:
-            extracted["no_loan_contingency"] = True
-        if "NO APPRAISAL CONTINGENCY" in lu:
-            extracted["no_appraisal_contingency"] = True
+        context = " ".join(lines[max(0,i-1):i+3])
+        # Look for "0 Days" or "(0)" days patterns near contingency labels
+        if re.search(r'(?:loan|financing).*?(?:0|zero)\s*(?:\(0\))?\s*days?', context, re.IGNORECASE):
+            if "loan" not in waived:
+                waived["loan"] = "waived"
+        if re.search(r'appraisal.*?(?:0|zero)\s*(?:\(0\))?\s*days?', context, re.IGNORECASE):
+            if "appraisal" not in waived:
+                waived["appraisal"] = "waived"
+        if re.search(r'investigation.*?(?:0|zero)\s*(?:\(0\))?\s*days?', context, re.IGNORECASE):
+            if "investigation" not in waived:
+                waived["investigation"] = "waived"
+
+    if waived:
+        extracted["contingency_waivers"] = waived
 
     # ── Date Prepared ──
     for line in lines:
@@ -2122,6 +2988,43 @@ def _extract_rpa_data(pdf_path: str) -> dict:
             if m:
                 extracted["acceptance_date"] = m.group(1)
 
+    # ── Party Names ──
+    # Look for Buyer and Seller names near the top of the document
+    parties = {}
+    for i, line in enumerate(lines[:50]):  # Party info is usually in first ~50 lines
+        # Buyer patterns: "Buyer:" or "Buyer(s):" followed by name
+        if re.search(r'Buyer\(?s?\)?[:\s]', line, re.IGNORECASE):
+            # Check same line and next line for name
+            for check_line in [line, lines[i+1] if i+1 < len(lines) else ""]:
+                # Skip if it looks like a field label
+                if "address" in check_line.lower() or "signature" in check_line.lower():
+                    continue
+                # Extract text after "Buyer:" or similar
+                m = re.search(r'Buyer\(?s?\)?[:\s]+([A-Z][a-zA-Z\s,\.]+?)(?:\s*$|,\s*(?:and|&))', check_line, re.IGNORECASE)
+                if m and len(m.group(1).strip()) > 3:
+                    parties["buyer_name"] = m.group(1).strip()
+                    break
+                # Also try just getting a capitalized name after Buyer
+                m2 = re.search(r'Buyer\(?s?\)?[:\s]+([A-Z][a-z]+\s+[A-Z][a-z]+)', check_line)
+                if m2:
+                    parties["buyer_name"] = m2.group(1).strip()
+                    break
+        # Seller patterns
+        if re.search(r'Seller\(?s?\)?[:\s]', line, re.IGNORECASE):
+            for check_line in [line, lines[i+1] if i+1 < len(lines) else ""]:
+                if "address" in check_line.lower() or "signature" in check_line.lower():
+                    continue
+                m = re.search(r'Seller\(?s?\)?[:\s]+([A-Z][a-zA-Z\s,\.]+?)(?:\s*$|,\s*(?:and|&))', check_line, re.IGNORECASE)
+                if m and len(m.group(1).strip()) > 3:
+                    parties["seller_name"] = m.group(1).strip()
+                    break
+                m2 = re.search(r'Seller\(?s?\)?[:\s]+([A-Z][a-z]+\s+[A-Z][a-z]+)', check_line)
+                if m2:
+                    parties["seller_name"] = m2.group(1).strip()
+                    break
+    if parties:
+        extracted["parties"] = parties
+
     # Set defaults for anything not found
     extracted.setdefault("investigation_days", 17)
     extracted.setdefault("appraisal_days", 17)
@@ -2129,6 +3032,28 @@ def _extract_rpa_data(pdf_path: str) -> dict:
     extracted.setdefault("coe_days", 30)
 
     return extracted
+
+
+def _auto_update_parties_from_extraction(c, tid: str, extracted_parties: dict):
+    """Auto-update placeholder party records with extracted names from RPA."""
+    role_map = {
+        "buyer_name": "buyer",
+        "seller_name": "seller",
+        "listing_agent": "seller_agent",
+        "buyer_agent": "buyer_agent",
+    }
+    for extract_key, role in role_map.items():
+        name = extracted_parties.get(extract_key)
+        if not name:
+            continue
+        # Find placeholder party with this role
+        row = c.execute(
+            "SELECT * FROM parties WHERE txn=? AND role=? AND name LIKE '%(TBD)%'",
+            (tid, role),
+        ).fetchone()
+        if row:
+            c.execute("UPDATE parties SET name=? WHERE id=?", (name, row["id"]))
+            db.log(c, tid, "party_auto_filled", f"Updated {role} to '{name}' from RPA")
 
 
 def _parse_date_flexible(date_str: str) -> date | None:
@@ -2219,6 +3144,55 @@ def _extract_rpa_and_populate(tid: str, pdf_path: str, split_results: list | Non
                 txn_data["financial"]["purchase_price"] = int(float(extracted["purchase_price"]))
             except (ValueError, TypeError):
                 pass
+
+        # Party names from RPA
+        if extracted.get("parties"):
+            if "parties" not in txn_data:
+                txn_data["parties"] = {}
+            for key, val in extracted["parties"].items():
+                if val and not txn_data["parties"].get(key):
+                    txn_data["parties"][key] = val
+            # Also auto-update party records if we found names
+            _auto_update_parties_from_extraction(c, tid, extracted["parties"])
+
+        # Contingency waivers - auto-mark contingencies as waived/not_required
+        waivers = extracted.get("contingency_waivers", {})
+        if waivers:
+            txn_data["contingencies"]["waivers"] = waivers
+            waiver_msgs = []
+            for cont_type, status in waivers.items():
+                # Update contingency record if it exists
+                row = c.execute(
+                    "SELECT * FROM contingencies WHERE txn=? AND type=?",
+                    (tid, cont_type),
+                ).fetchone()
+                if row:
+                    # Mark as waived or not_required
+                    new_status = "waived" if status == "waived" else "not_required"
+                    c.execute(
+                        "UPDATE contingencies SET status=?, waived_at=datetime('now','localtime'), "
+                        "notes=COALESCE(notes,'') || ? WHERE txn=? AND type=?",
+                        (new_status, f" [Auto-detected from RPA: {status}]", tid, cont_type),
+                    )
+                    waiver_msgs.append(f"{cont_type}={status}")
+                else:
+                    # Create contingency record marked as waived/not_required
+                    cont_names = {
+                        "loan": "Loan Contingency",
+                        "appraisal": "Appraisal Contingency",
+                        "investigation": "Investigation Contingency",
+                    }
+                    c.execute(
+                        "INSERT OR IGNORE INTO contingencies(txn, type, name, status, default_days, notes) "
+                        "VALUES(?, ?, ?, ?, 0, ?)",
+                        (tid, cont_type, cont_names.get(cont_type, cont_type),
+                         "waived" if status == "waived" else "not_required",
+                         f"Auto-detected from RPA: {status}"),
+                    )
+                    waiver_msgs.append(f"{cont_type}={status}")
+            if waiver_msgs:
+                db.log(c, tid, "contingencies_auto_waived", ", ".join(waiver_msgs))
+                result["contingencies_waived"] = waivers
 
         # Save updated txn data
         c.execute("UPDATE txns SET data=?, updated=datetime('now','localtime') WHERE id=?",
@@ -2357,68 +3331,118 @@ def delete_review_note(nid):
 @app.route("/api/chat", methods=["POST"])
 def chat():
     """Send a message to Claude with full transaction context."""
-    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-    if not api_key:
-        return jsonify({"error": "ANTHROPIC_API_KEY not set. Add it to your .env file."}), 500
-
     body = request.json or {}
     message = body.get("message", "").strip()
     if not message:
         return jsonify({"error": "message required"}), 400
 
-    tid = body.get("txn_id")
+    tid = (body.get("txn_id") or "").strip()
     history = body.get("history", [])
+    service = "anthropic"
+    operation = "chat"
+    endpoint = "https://api.anthropic.com/v1/messages"
+    model = "claude-sonnet-4-20250514"
+
+    if not tid:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn="",
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error="txn_id is required for cloud chat",
+            )
+        return _cloud_blocked_response("", "txn_id is required for cloud chat")
+
+    with db.conn() as c:
+        row = db.txn(c, tid)
+        if not row:
+            return jsonify({"error": "transaction not found"}), 404
+        try:
+            cloud_guard.require_approval(c, tid, service, operation)
+        except cloud_guard.CloudApprovalRequired as exc:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=0,
+                outcome="blocked",
+                status_code=403,
+                error=str(exc),
+            )
+            return _cloud_blocked_response(tid, str(exc))
+        t = _txn_dict(row)
+        t["doc_stats"] = _doc_stats(c, tid)
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+    if not api_key:
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                error="ANTHROPIC_API_KEY not set",
+            )
+        return jsonify({"error": "ANTHROPIC_API_KEY not set. Add it to your .env file."}), 500
 
     # Build transaction context
     context_parts = []
-    if tid:
-        with db.conn() as c:
-            row = db.txn(c, tid)
-            if row:
-                t = _txn_dict(row)
-                t["doc_stats"] = _doc_stats(c, tid)
-                context_parts.append(f"Transaction: {t['address']} (ID: {tid})")
-                context_parts.append(f"Type: {t['txn_type']}, Role: {t['party_role']}, Phase: {t['phase']}")
-                if t.get("brokerage"):
-                    context_parts.append(f"Brokerage: {t['brokerage']}")
-                ds = t["doc_stats"]
-                context_parts.append(f"Docs: {ds['received']}/{ds['total']} received")
+    context_parts.append(f"Transaction: {t['address']} (ID: {tid})")
+    context_parts.append(f"Type: {t['txn_type']}, Role: {t['party_role']}, Phase: {t['phase']}")
+    if t.get("brokerage"):
+        context_parts.append(f"Brokerage: {t['brokerage']}")
+    ds = t["doc_stats"]
+    context_parts.append(f"Docs: {ds['received']}/{ds['total']} received")
 
-        # Gates
-        gates = engine.gate_rows(tid)
-        gate_info = rules.gate
-        verified = sum(1 for g in gates if g["status"] == "verified")
-        context_parts.append(f"Gates: {verified}/{len(gates)} verified")
-        pending_gates = [g for g in gates if g["status"] != "verified"]
-        if pending_gates:
-            names = []
-            for g in pending_gates[:5]:
-                info = gate_info(g["gid"]) or {}
-                names.append(info.get("name", g["gid"]))
-            context_parts.append(f"Pending gates: {', '.join(names)}")
+    # Gates
+    gates = engine.gate_rows(tid)
+    gate_info = rules.gate
+    verified = sum(1 for g in gates if g["status"] == "verified")
+    context_parts.append(f"Gates: {verified}/{len(gates)} verified")
+    pending_gates = [g for g in gates if g["status"] != "verified"]
+    if pending_gates:
+        names = []
+        for g in pending_gates[:5]:
+            info = gate_info(g["gid"]) or {}
+            names.append(info.get("name", g["gid"]))
+        context_parts.append(f"Pending gates: {', '.join(names)}")
 
-        # Deadlines
-        dl_rows = engine.deadline_rows(tid)
-        today = date.today()
-        if dl_rows:
-            urgent = []
-            for d in dl_rows:
-                if d.get("due"):
-                    days = (date.fromisoformat(d["due"]) - today).days
-                    if days <= 5:
-                        urgent.append(f"{d['name']} ({days}d)")
-            if urgent:
-                context_parts.append(f"Urgent deadlines: {', '.join(urgent[:5])}")
+    # Deadlines
+    dl_rows = engine.deadline_rows(tid)
+    today = date.today()
+    if dl_rows:
+        urgent = []
+        for d in dl_rows:
+            if d.get("due"):
+                days = (date.fromisoformat(d["due"]) - today).days
+                if days <= 5:
+                    urgent.append(f"{d['name']} ({days}d)")
+        if urgent:
+            context_parts.append(f"Urgent deadlines: {', '.join(urgent[:5])}")
 
-        # Recent audit
-        with db.conn() as c:
-            audit_rows = c.execute(
-                "SELECT action, detail, ts FROM audit WHERE txn=? ORDER BY ts DESC LIMIT 5",
-                (tid,),
-            ).fetchall()
-        if audit_rows:
-            audit_lines = [f"  {r['ts']}: {r['action']} - {r['detail']}" for r in audit_rows]
-            context_parts.append("Recent activity:\n" + "\n".join(audit_lines))
+    # Recent audit
+    with db.conn() as c:
+        audit_rows = c.execute(
+            "SELECT action, detail, ts FROM audit WHERE txn=? ORDER BY ts DESC LIMIT 5",
+            (tid,),
+        ).fetchall()
+    if audit_rows:
+        audit_lines = [f"  {r['ts']}: {r['action']} - {r['detail']}" for r in audit_rows]
+        context_parts.append("Recent activity:\n" + "\n".join(audit_lines))
 
     context = "\n".join(context_parts) if context_parts else "No transaction selected."
 
@@ -2439,18 +3463,16 @@ def chat():
     api_messages.append({"role": "user", "content": message})
 
     # Call Anthropic API
-    import urllib.request
-    import urllib.error
-
     api_body = json.dumps({
-        "model": "claude-sonnet-4-20250514",
+        "model": model,
         "max_tokens": 1024,
         "system": system_prompt,
         "messages": api_messages,
     })
+    request_bytes = len(api_body.encode("utf-8"))
 
     req = urllib.request.Request(
-        "https://api.anthropic.com/v1/messages",
+        endpoint,
         data=api_body.encode("utf-8"),
         headers={
             "Content-Type": "application/json",
@@ -2459,18 +3481,70 @@ def chat():
         },
     )
 
+    start = time.perf_counter()
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
-            result = json.loads(resp.read().decode("utf-8"))
+            raw = resp.read()
+            code = resp.status
+            result = json.loads(raw.decode("utf-8"))
         reply = ""
         for block in result.get("content", []):
             if block.get("type") == "text":
                 reply += block.get("text", "")
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="success",
+                status_code=code,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=len(raw),
+            )
         return jsonify({"reply": reply or "No response generated."})
     except urllib.error.HTTPError as e:
         error_body = e.read().decode("utf-8", errors="replace")
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=e.code,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                response_bytes=len(error_body.encode("utf-8")),
+                error=error_body[:200],
+            )
         return jsonify({"error": f"Claude API error ({e.code}): {error_body[:200]}"}), 502
     except Exception as e:
+        latency_ms = int((time.perf_counter() - start) * 1000)
+        with db.conn() as c:
+            cloud_guard.log_cloud_event(
+                c,
+                txn=tid,
+                service=service,
+                operation=operation,
+                endpoint=endpoint,
+                model=model,
+                approved=1,
+                outcome="error",
+                status_code=500,
+                latency_ms=latency_ms,
+                request_bytes=request_bytes,
+                error=str(e),
+            )
         return jsonify({"error": f"Chat error: {str(e)}"}), 500
 
 
@@ -2668,7 +3742,295 @@ def calendar_txn(tid):
                     headers={"Content-Disposition": f"inline; filename=tc-{tid[:8]}.ics"})
 
 
+# ── Features Tracker ─────────────────────────────────────────────────────────
+
+@app.route("/api/features")
+def list_features():
+    """List all features with their dependencies."""
+    with db.conn() as c:
+        rows = c.execute("SELECT * FROM features ORDER BY category, name").fetchall()
+    items = []
+    for r in rows:
+        item = dict(r)
+        item["files"] = json.loads(item.get("files") or "[]")
+        item["depends_on"] = json.loads(item.get("depends_on") or "[]")
+        items.append(item)
+    return jsonify(items)
+
+
+@app.route("/api/features", methods=["POST"])
+def create_feature():
+    """Create or update a feature."""
+    body = request.json or {}
+    name = (body.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "name required"}), 400
+    category = body.get("category", "")
+    description = body.get("description", "")
+    status = body.get("status", "active")
+    files = json.dumps(body.get("files", []))
+    depends_on = json.dumps(body.get("depends_on", []))
+
+    with db.conn() as c:
+        c.execute("""
+            INSERT INTO features(name, category, description, status, files, depends_on)
+            VALUES(?, ?, ?, ?, ?, ?)
+            ON CONFLICT(name) DO UPDATE SET
+                category=excluded.category,
+                description=excluded.description,
+                status=excluded.status,
+                files=excluded.files,
+                depends_on=excluded.depends_on
+        """, (name, category, description, status, files, depends_on))
+        row = c.execute("SELECT * FROM features WHERE name=?", (name,)).fetchone()
+    item = dict(row)
+    item["files"] = json.loads(item.get("files") or "[]")
+    item["depends_on"] = json.loads(item.get("depends_on") or "[]")
+    return jsonify(item), 201
+
+
+@app.route("/api/features/<int:fid>", methods=["DELETE"])
+def delete_feature(fid):
+    """Remove a feature from tracking."""
+    with db.conn() as c:
+        row = c.execute("SELECT * FROM features WHERE id=?", (fid,)).fetchone()
+        if not row:
+            return jsonify({"error": "not found"}), 404
+        c.execute("DELETE FROM features WHERE id=?", (fid,))
+    return jsonify({"ok": True})
+
+
+@app.route("/api/features/init", methods=["POST"])
+def init_features():
+    """Pre-populate features table with known app features."""
+    features = [
+        {"name": "Transaction CRUD", "category": "core", "files": ["db.py", "web.py", "app.js"], "depends_on": []},
+        {"name": "Document Checklist", "category": "docs", "files": ["checklist.py", "web.py"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Compliance Gates", "category": "compliance", "files": ["rules/*.yaml", "engine.py"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Deadline Tracking", "category": "dates", "files": ["engine.py", "rules/deadlines.yaml"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Signature Review", "category": "signatures", "files": ["web.py", "app.js"], "depends_on": ["Document Checklist"]},
+        {"name": "Follow-up Pipeline", "category": "integrations", "files": ["integrations.py", "web.py"], "depends_on": ["Signature Review"]},
+        {"name": "Outbox", "category": "comms", "files": ["db.py", "web.py"], "depends_on": ["Follow-up Pipeline"]},
+        {"name": "Chat Panel", "category": "ai", "files": ["web.py", "app.js"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Review Mode", "category": "feedback", "files": ["db.py", "web.py", "app.js"], "depends_on": []},
+        {"name": "Contract Annotation", "category": "pdf", "files": ["contract_scanner.py"], "depends_on": ["Document Checklist"]},
+        {"name": "Bulk Verification", "category": "docs", "files": ["app.js"], "depends_on": ["Document Checklist"]},
+        {"name": "Dashboard", "category": "ui", "files": ["app.js"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Contract Review", "category": "pdf", "files": ["web.py", "app.js", "engine.py"], "depends_on": ["Document Checklist", "Contract Annotation"]},
+        {"name": "Cloud Usage Tracker", "category": "integrations", "files": ["db.py", "web.py", "app.js", "cloud_guard.py"], "depends_on": ["Transaction CRUD"]},
+        {"name": "Cloud Approval Gate", "category": "security", "files": ["web.py", "cloud_guard.py", "app.js"], "depends_on": ["Cloud Usage Tracker"]},
+        {"name": "Signature+Initial Detector v3.1", "category": "pdf", "files": ["doc_analyzer.py", "doc_versions.py", "web.py"], "depends_on": ["Contract Annotation"]},
+        {"name": "Signature Fill Detection v2", "category": "signatures", "files": ["contract_scanner.py", "app.js"], "depends_on": ["Signature+Initial Detector v3.1"]},
+        {"name": "Detector QA Harness", "category": "pdf", "files": ["tcli/sandbox/test_signature_detector.py", "tcli/sandbox/test_contract_scanner.py", "scripts/benchmark_signature_detector.py"], "depends_on": ["Signature+Initial Detector v3.1"]},
+    ]
+    count = 0
+    with db.conn() as c:
+        for f in features:
+            c.execute("""
+                INSERT OR IGNORE INTO features(name, category, files, depends_on)
+                VALUES(?, ?, ?, ?)
+            """, (f["name"], f["category"], json.dumps(f["files"]), json.dumps(f["depends_on"])))
+            count += 1
+    return jsonify({"ok": True, "initialized": count})
+
+
+# ── Parties Import from Signatures ───────────────────────────────────────────
+
+@app.route("/api/txns/<tid>/signatures/detected-parties")
+def detect_parties_from_sigs(tid):
+    """Detect party information from signature field names and RPA data."""
+    with db.conn() as c:
+        # Get signature fields
+        sig_rows = c.execute(
+            "SELECT DISTINCT field_name, field_type, signer_name, signer_email FROM sig_reviews WHERE txn=?",
+            (tid,),
+        ).fetchall()
+
+        # Get transaction data (may have RPA-extracted party info)
+        txn = db.txn(c, tid)
+        txn_data = json.loads((txn or {}).get("data") or "{}")
+        rpa_parties = txn_data.get("parties") or {}
+
+    # Role detection patterns
+    role_patterns = [
+        (r"buyer", "buyer"),
+        (r"purchaser", "buyer"),
+        (r"tenant", "buyer"),  # lease context
+        (r"seller", "seller"),
+        (r"vendor", "seller"),
+        (r"landlord", "seller"),  # lease context
+        (r"listing.?agent", "seller_agent"),
+        (r"seller.?agent", "seller_agent"),
+        (r"buyer.?agent", "buyer_agent"),
+        (r"selling.?agent", "buyer_agent"),
+        (r"escrow", "escrow_officer"),
+        (r"title", "title_rep"),
+    ]
+
+    detected = {}  # role -> {fields: [], names: [], emails: []}
+    for row in sig_rows:
+        fname = (row["field_name"] or "").lower()
+        for pattern, role in role_patterns:
+            if re.search(pattern, fname, re.IGNORECASE):
+                if role not in detected:
+                    detected[role] = {"fields": [], "names": [], "emails": []}
+                detected[role]["fields"].append(row["field_name"])
+                if row["signer_name"]:
+                    detected[role]["names"].append(row["signer_name"])
+                if row["signer_email"]:
+                    detected[role]["emails"].append(row["signer_email"])
+                break
+
+    # Also check RPA-extracted party names
+    rpa_role_map = {
+        "buyer_name": "buyer",
+        "seller_name": "seller",
+        "listing_agent": "seller_agent",
+        "buyer_agent": "buyer_agent",
+        "escrow_officer": "escrow_officer",
+    }
+    for rpa_key, role in rpa_role_map.items():
+        if rpa_parties.get(rpa_key):
+            if role not in detected:
+                detected[role] = {"fields": [], "names": [], "emails": []}
+            detected[role]["names"].append(rpa_parties[rpa_key])
+
+    # Build party suggestions
+    suggestions = []
+    role_labels = {
+        "buyer": "Buyer",
+        "seller": "Seller",
+        "buyer_agent": "Buyer's Agent",
+        "seller_agent": "Listing Agent",
+        "escrow_officer": "Escrow Officer",
+        "title_rep": "Title Representative",
+    }
+    for role, data in detected.items():
+        # Use actual name if found, otherwise use role label
+        names = list(set(data.get("names", [])))
+        suggested = names[0] if names else role_labels.get(role, role)
+        suggestions.append({
+            "role": role,
+            "role_label": role_labels.get(role, role),
+            "source_fields": list(set(data.get("fields", [])))[:5],
+            "suggested_name": suggested,
+            "detected_names": names[:3],
+            "detected_emails": list(set(data.get("emails", [])))[:3],
+        })
+
+    return jsonify({"detected": suggestions})
+
+
+@app.route("/api/txns/<tid>/parties/import", methods=["POST"])
+def import_parties(tid):
+    """Import parties from detected signature roles."""
+    body = request.json or {}
+    parties = body.get("parties", [])
+    if not parties:
+        return jsonify({"error": "parties list required"}), 400
+
+    imported = []
+    with db.conn() as c:
+        for p in parties:
+            role = p.get("role", "")
+            name = p.get("name", "").strip()
+            if not role or not name:
+                continue
+            # Check if party with this role already exists and has real data
+            existing = c.execute(
+                "SELECT * FROM parties WHERE txn=? AND role=?", (tid, role)
+            ).fetchone()
+            if existing and "(TBD)" not in existing["name"]:
+                continue  # Don't overwrite real party data
+            if existing:
+                # Update placeholder
+                c.execute(
+                    "UPDATE parties SET name=? WHERE id=?",
+                    (name, existing["id"]),
+                )
+                imported.append({"role": role, "name": name, "action": "updated"})
+            else:
+                # Insert new
+                c.execute(
+                    "INSERT INTO parties(txn, role, name) VALUES(?, ?, ?)",
+                    (tid, role, name),
+                )
+                imported.append({"role": role, "name": name, "action": "created"})
+        if imported:
+            db.log(c, tid, "parties_imported", f"Imported {len(imported)} parties from signatures")
+
+    return jsonify({"imported": imported})
+
+
+# ── Closing Plan / Schedule Data ─────────────────────────────────────────────
+
+@app.route("/api/txns/<tid>/closing-plan")
+def get_closing_plan(tid):
+    """Get all data needed for closing plan modal."""
+    with db.conn() as c:
+        txn = db.txn(c, tid)
+        if not txn:
+            return jsonify({"error": "not found"}), 404
+
+        # Deadlines
+        deadlines = c.execute(
+            "SELECT * FROM deadlines WHERE txn=? ORDER BY due",
+            (tid,),
+        ).fetchall()
+
+        # Docs
+        docs = c.execute(
+            "SELECT * FROM docs WHERE txn=? AND status != 'verified' AND status != 'na'"
+            " ORDER BY phase, code",
+            (tid,),
+        ).fetchall()
+
+        # Signatures
+        sigs = c.execute(
+            "SELECT * FROM sig_reviews WHERE txn=? AND is_filled=0"
+            " ORDER BY doc_code, page",
+            (tid,),
+        ).fetchall()
+
+        # Contingencies
+        conts = c.execute(
+            "SELECT * FROM contingencies WHERE txn=? AND status='active'"
+            " ORDER BY deadline_date",
+            (tid,),
+        ).fetchall()
+
+        # Gates
+        gates_rows = engine.gate_rows(tid)
+        blocking = [g for g in gates_rows if g["status"] != "verified"]
+
+    # Calculate days to close
+    txn_data = json.loads(txn.get("data") or "{}")
+    coe_date = (txn_data.get("dates") or {}).get("close_of_escrow")
+    days_to_close = None
+    if coe_date:
+        try:
+            coe = date.fromisoformat(coe_date)
+            days_to_close = (coe - date.today()).days
+        except Exception:
+            pass
+
+    return jsonify({
+        "days_to_close": days_to_close,
+        "coe_date": coe_date,
+        "pending_docs": [dict(d) for d in docs],
+        "pending_signatures": [dict(s) for s in sigs],
+        "active_contingencies": [dict(c) for c in conts],
+        "blocking_gates": blocking,
+        "all_deadlines": [dict(d) for d in deadlines],
+    })
+
+
 # ── Entry point ──────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5001, debug=True)
+    try:
+        port = int(os.environ.get("PORT", "5001"))
+    except (TypeError, ValueError):
+        port = 5001
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(host="127.0.0.1", port=port, debug=debug_mode)

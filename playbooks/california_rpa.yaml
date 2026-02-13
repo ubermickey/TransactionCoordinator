@@ -1,0 +1,166 @@
+# California Residential Purchase Agreement — Review Playbook
+# Used by /api/txns/<tid>/review-contract to evaluate clauses against standards.
+# Risk levels: RED (high risk, needs negotiation), YELLOW (deviation, review), GREEN (standard)
+
+name: California RPA Standard Positions
+jurisdiction: California
+form_types: [rpa, rpa-ca]
+
+# Standard positions — Claude compares contract clauses against these
+standard_positions:
+
+  purchase_price:
+    acceptable: "Clearly stated, matches listing/offer amount"
+    red_flags:
+      - "No purchase price specified"
+      - "Price contingent on unspecified future appraisal"
+    notes: "Verify price matches MLS and any counter-offer amendments"
+
+  deposit:
+    acceptable: "1-3% of purchase price, deposited within 3 business days"
+    yellow_if:
+      - "Deposit exceeds 3% without justification"
+      - "Deposit timeline exceeds 5 business days"
+    red_flags:
+      - "No earnest money deposit specified"
+      - "Deposit held by buyer's agent rather than escrow"
+    notes: "CAR RPA default is 3 business days. Larger deposits common in competitive markets."
+
+  financing:
+    acceptable: "Conventional/FHA/VA with pre-approval letter, 17-day loan contingency"
+    yellow_if:
+      - "Loan contingency period less than 17 days"
+      - "Non-standard financing terms (seller carryback, bridge loan)"
+      - "Pre-approval not from institutional lender"
+    red_flags:
+      - "No financing contingency on financed purchase"
+      - "Financing from unlicensed lender"
+      - "Loan contingency waived without proof of funds"
+
+  close_of_escrow:
+    acceptable: "30-45 day escrow for standard sale, 14-21 for cash"
+    yellow_if:
+      - "Escrow exceeds 60 days without explanation"
+      - "Escrow under 21 days for financed purchase"
+    red_flags:
+      - "No close of escrow date specified"
+      - "Close date already passed"
+
+  investigation_contingency:
+    acceptable: "17 calendar days from acceptance"
+    yellow_if:
+      - "Less than 10 days for investigation"
+      - "More than 21 days for investigation"
+    red_flags:
+      - "Investigation contingency waived on property built before 1978"
+      - "Investigation contingency waived without explicit buyer acknowledgment"
+    notes: "CAR RPA default is 17 days. Shorter periods common in competitive markets."
+
+  appraisal_contingency:
+    acceptable: "17 calendar days from acceptance"
+    yellow_if:
+      - "Appraisal contingency waived on financed purchase without gap coverage"
+      - "Less than 10 days for appraisal"
+    red_flags:
+      - "No appraisal contingency on financed purchase"
+
+  loan_contingency:
+    acceptable: "17-21 calendar days from acceptance"
+    yellow_if:
+      - "Loan contingency less than 17 days"
+      - "Loan contingency greater than 30 days"
+    red_flags:
+      - "No loan contingency on financed purchase"
+      - "Loan contingency removed without lender confirmation"
+
+  title_and_escrow:
+    acceptable: "Title insurance by CLTA/ALTA, escrow by neutral third party"
+    yellow_if:
+      - "Buyer selecting both title and escrow (potential conflict)"
+    red_flags:
+      - "No title insurance"
+      - "Escrow held by party to the transaction"
+
+  disclosures:
+    acceptable: "TDS, SPQ, NHD, lead-based paint (pre-1978) delivered within 7 days"
+    yellow_if:
+      - "Disclosure delivery timeline exceeds 10 days"
+    red_flags:
+      - "Seller disclaiming disclosure obligations"
+      - "No TDS on non-exempt property"
+      - "Missing lead-based paint disclosure on pre-1978 property"
+    notes: "California Civil Code §1102 requires TDS. Federal law requires lead disclosure pre-1978."
+
+  repairs_and_credits:
+    acceptable: "Seller repair obligations capped, or credits specified as fixed amounts"
+    yellow_if:
+      - "Uncapped repair obligations"
+      - "Vague language ('reasonable repairs' without dollar limit)"
+    red_flags:
+      - "Buyer waiving all repair requests"
+      - "Seller credits exceeding lender limits without documentation"
+
+  possession:
+    acceptable: "Possession at close of escrow"
+    yellow_if:
+      - "Seller rent-back exceeding 29 days (insurance implications)"
+      - "Buyer early possession before close"
+    red_flags:
+      - "No possession date specified"
+      - "Rent-back without rental agreement"
+      - "Rent-back exceeding 60 days (may trigger tenant protections)"
+
+  arbitration_mediation:
+    acceptable: "Mediation required, arbitration optional (initialed)"
+    yellow_if:
+      - "Arbitration initialed without client understanding consequences"
+    red_flags:
+      - "Mediation clause removed or modified"
+    notes: "CAR RPA separates mediation (para 25) and arbitration (para 26). Arbitration requires initials."
+
+  agency_confirmation:
+    acceptable: "Dual agency disclosed if applicable, agency relationships confirmed"
+    red_flags:
+      - "Missing agency confirmation"
+      - "Undisclosed dual agency"
+      - "Agency relationships inconsistent between documents"
+
+# Clause interaction rules — things that only matter in combination
+interaction_rules:
+  - condition: "Appraisal contingency waived AND financed purchase"
+    risk: RED
+    explanation: "Buyer responsible for appraisal gap with no protection"
+    suggestion: "Add appraisal gap coverage clause or reinstate contingency"
+
+  - condition: "Investigation contingency < 10 days AND property is pre-1978"
+    risk: RED
+    explanation: "Insufficient time for lead-based paint testing"
+    suggestion: "Extend investigation period to minimum 14 days for pre-1978 properties"
+
+  - condition: "Loan contingency waived AND no proof of funds"
+    risk: RED
+    explanation: "Buyer has no financing protection and no evidence of cash"
+    suggestion: "Require proof of funds or reinstate loan contingency"
+
+  - condition: "Seller rent-back > 29 days AND no rental agreement"
+    risk: YELLOW
+    explanation: "Extended possession without rental agreement creates liability"
+    suggestion: "Execute CAR SIP (Seller In Possession) addendum"
+
+  - condition: "Deposit > 5% AND no liquidated damages clause"
+    risk: YELLOW
+    explanation: "Large deposit at risk without clear liquidated damages terms"
+    suggestion: "Ensure liquidated damages clause is initialed by both parties"
+
+# Output format instructions for Claude
+output_format:
+  executive_summary: "2-3 sentence overview of contract risk profile"
+  clauses:
+    - area: "string (e.g., 'Purchase Price', 'Financing')"
+      risk: "RED | YELLOW | GREEN"
+      finding: "What was found in the contract"
+      standard: "What the playbook expects"
+      suggestion: "Specific recommended change (for RED/YELLOW only)"
+  interactions: "List of triggered interaction rules"
+  overall_risk: "RED | YELLOW | GREEN"
+  missing_items: "List of expected items not found in contract"

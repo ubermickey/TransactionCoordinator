@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:48'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:13'
 file: Commercial_and_Residential_Income_Listing_Agreement_-_1225_ts51552.pdf
 folder: Commercial and Residential Income listing agreement package
 page_count: 17
@@ -9,36 +9,22 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 145
+  total_entry_spaces: 157
   entry_categories:
-    entry_signature: 16
     entry_date: 31
-    entry_license: 12
-    entry_blank: 53
+    entry_license: 14
+    entry_blank: 63
     entry_brokerage: 7
     entry_dollar: 4
+    entry_initial: 14
     entry_percent: 1
     entry_days: 3
     entry_address: 12
     entry_contact: 6
+    entry_signature: 2
   test_address_references: 0
 time_length_review: []
 field_map:
-- page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 166.7
-    y0: 638.4
-    x1: 336.5
-    y1: 650.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 196.6
-    y0: 644.4
-    x1: 336.5
-    y1: 650.4
 - page: 1
   field: Date
   category: entry_date
@@ -54,21 +40,6 @@ field_map:
     y0: 644.4
     x1: 476.6
     y1: 650.4
-- page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 166.7
-    y0: 654.3
-    x1: 336.5
-    y1: 666.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 196.6
-    y0: 660.4
-    x1: 336.5
-    y1: 666.4
 - page: 1
   field: Date
   category: entry_date
@@ -100,21 +71,6 @@ field_map:
     x1: 576.0
     y1: 683.4
 - page: 1
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 692.4
-    x1: 204.0
-    y1: 704.4
-  region: footer
-  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
-  ul_bbox:
-    x0: 49.0
-    y0: 698.4
-    x1: 204.0
-    y1: 704.4
-- page: 1
   field: 'DRE Lic. #'
   category: entry_license
   bbox:
@@ -145,6 +101,21 @@ field_map:
     x1: 576.0
     y1: 704.4
 - page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 166.7
+    y0: 638.4
+    x1: 336.5
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 644.4
+    x1: 336.5
+    y1: 650.4
+- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -160,6 +131,21 @@ field_map:
     x1: 576.0
     y1: 650.4
 - page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 166.7
+    y0: 654.3
+    x1: 336.5
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 660.4
+    x1: 336.5
+    y1: 666.4
+- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -174,6 +160,21 @@ field_map:
     y0: 660.4
     x1: 576.0
     y1: 666.4
+- page: 1
+  field: (Salesperson
+  category: entry_blank
+  bbox:
+    x0: 49.0
+    y0: 696.4
+    x1: 204.0
+    y1: 712.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 49.0
+    y0: 698.4
+    x1: 204.0
+    y1: 704.4
 - page: 1
   field: DRE
   category: entry_license
@@ -356,6 +357,36 @@ field_map:
     y0: 401.2
     x1: 566.6
     y1: 407.2
+- page: 3
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 388.0
+    y0: 732.6
+    x1: 491.3
+    y1: 744.0
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 1 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 451.2
+    y0: 738.0
+    x1: 491.3
+    y1: 744.0
+- page: 3
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 388.0
+    y0: 732.6
+    x1: 542.9
+    y1: 744.0
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 1 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 502.8
+    y0: 738.0
+    x1: 542.9
+    y1: 744.0
 - page: 3
   field: 'Prepared:'
   category: entry_date
@@ -787,6 +818,36 @@ field_map:
     x1: 566.8
     y1: 200.4
 - page: 4
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 739.8
+    x1: 481.2
+    y1: 750.6
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 2 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 441.2
+    y0: 744.6
+    x1: 481.2
+    y1: 750.6
+- page: 4
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 739.8
+    x1: 532.9
+    y1: 750.6
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 2 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 492.8
+    y0: 744.6
+    x1: 532.9
+    y1: 750.6
+- page: 4
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -877,6 +938,36 @@ field_map:
     x1: 573.6
     y1: 282.8
 - page: 5
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 738.5
+    x1: 481.2
+    y1: 749.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 3 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 441.2
+    y0: 743.4
+    x1: 481.2
+    y1: 749.4
+- page: 5
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 738.5
+    x1: 532.9
+    y1: 749.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 3 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 492.8
+    y0: 743.4
+    x1: 532.9
+    y1: 749.4
+- page: 5
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -909,6 +1000,36 @@ field_map:
     x1: 576.0
     y1: 28.4
 - page: 6
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 738.5
+    x1: 481.2
+    y1: 749.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 4 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 441.2
+    y0: 743.4
+    x1: 481.2
+    y1: 749.4
+- page: 6
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 738.5
+    x1: 532.9
+    y1: 749.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 4 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 492.8
+    y0: 743.4
+    x1: 532.9
+    y1: 749.4
+- page: 6
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -938,6 +1059,36 @@ field_map:
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 7
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 741.5
+    x1: 481.2
+    y1: 752.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 5 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 441.2
+    y0: 746.4
+    x1: 481.2
+    y1: 752.4
+- page: 7
+  field: Owner's Initials
+  category: entry_initial
+  bbox:
+    x0: 378.0
+    y0: 741.5
+    x1: 532.9
+    y1: 752.4
+  region: footer
+  context: CLA REVISED 12/25 (PAGE 5 OF 7) Owner's Initials /
+  ul_bbox:
+    x0: 492.8
+    y0: 746.4
+    x1: 532.9
+    y1: 752.4
 - page: 7
   field: 'Address:'
   category: entry_blank
@@ -1558,7 +1709,7 @@ field_map:
     y1: 82.4
 - page: 10
   field: Seller's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 360.0
     y0: 724.9
@@ -1570,6 +1721,21 @@ field_map:
     x0: 425.2
     y0: 730.9
     x1: 455.3
+    y1: 736.9
+- page: 10
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 360.0
+    y0: 724.9
+    x1: 495.7
+    y1: 736.9
+  region: footer
+  context: MLSA REVISED 12/25 (PAGE 1 OF 3) Seller's Initials /
+  ul_bbox:
+    x0: 465.7
+    y0: 730.9
+    x1: 495.7
     y1: 736.9
 - page: 10
   field: dated
@@ -1602,6 +1768,36 @@ field_map:
     x1: 576.0
     y1: 104.4
 - page: 11
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 360.0
+    y0: 734.9
+    x1: 455.3
+    y1: 746.9
+  region: footer
+  context: MLSA REVISED 12/25 (PAGE 2 OF 3) Seller's Initials /
+  ul_bbox:
+    x0: 425.2
+    y0: 740.9
+    x1: 455.3
+    y1: 746.9
+- page: 11
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 360.0
+    y0: 734.9
+    x1: 495.7
+    y1: 746.9
+  region: footer
+  context: MLSA REVISED 12/25 (PAGE 2 OF 3) Seller's Initials /
+  ul_bbox:
+    x0: 465.7
+    y0: 740.9
+    x1: 495.7
+    y1: 746.9
+- page: 11
   field: 'Date:'
   category: entry_date
   bbox:
@@ -1617,21 +1813,6 @@ field_map:
     x1: 576.0
     y1: 27.9
 - page: 12
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 621.4
-    x1: 207.0
-    y1: 633.4
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 67.0
-    y0: 627.4
-    x1: 207.0
-    y1: 633.4
-- page: 12
   field: Date
   category: entry_date
   bbox:
@@ -1647,21 +1828,6 @@ field_map:
     x1: 482.0
     y1: 633.4
 - page: 12
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 635.3
-    x1: 207.0
-    y1: 647.4
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 67.0
-    y0: 641.4
-    x1: 207.0
-    y1: 647.4
-- page: 12
   field: Date
   category: entry_date
   bbox:
@@ -1676,21 +1842,6 @@ field_map:
     y0: 641.4
     x1: 482.0
     y1: 647.4
-- page: 12
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 666.4
-    x1: 164.0
-    y1: 678.4
-  region: lower
-  context: By DRE Lic# Date
-  ul_bbox:
-    x0: 49.0
-    y0: 672.4
-    x1: 164.0
-    y1: 678.4
 - page: 12
   field: DRE Lic#
   category: entry_license
@@ -1706,21 +1857,6 @@ field_map:
     y0: 672.4
     x1: 482.0
     y1: 678.4
-- page: 12
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 680.3
-    x1: 164.0
-    y1: 692.4
-  region: footer
-  context: By DRE Lic# Date
-  ul_bbox:
-    x0: 49.0
-    y0: 686.4
-    x1: 164.0
-    y1: 692.4
 - page: 12
   field: DRE Lic#
   category: entry_license
@@ -1815,6 +1951,36 @@ field_map:
     x1: 576.0
     y1: 572.9
 - page: 12
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 621.4
+    x1: 207.0
+    y1: 633.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 627.4
+    x1: 207.0
+    y1: 633.4
+- page: 12
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 635.3
+    x1: 207.0
+    y1: 647.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 67.0
+    y0: 641.4
+    x1: 207.0
+    y1: 647.4
+- page: 12
   field: DRE
   category: entry_license
   bbox:
@@ -1829,6 +1995,21 @@ field_map:
     y0: 672.4
     x1: 364.0
     y1: 678.4
+- page: 12
+  field: 2025,
+  category: entry_blank
+  bbox:
+    x0: 49.0
+    y0: 684.4
+    x1: 164.0
+    y1: 702.7
+  region: footer
+  context: By DRE Lic# Date
+  ul_bbox:
+    x0: 49.0
+    y0: 686.4
+    x1: 164.0
+    y1: 692.4
 - page: 12
   field: DRE
   category: entry_license
@@ -1935,21 +2116,6 @@ field_map:
     x1: 576.0
     y1: 659.4
 - page: 16
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 77.8
-    x1: 229.2
-    y1: 90.9
-  region: header
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 84.9
-    x1: 229.2
-    y1: 90.9
-- page: 16
   field: Date
   category: entry_date
   bbox:
@@ -1965,21 +2131,6 @@ field_map:
     x1: 490.0
     y1: 90.9
 - page: 16
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 93.7
-    x1: 229.2
-    y1: 106.9
-  region: header
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 100.9
-    x1: 229.2
-    y1: 106.9
-- page: 16
   field: Date
   category: entry_date
   bbox:
@@ -1994,21 +2145,6 @@ field_map:
     y0: 100.9
     x1: 490.0
     y1: 106.9
-- page: 16
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 114.8
-    x1: 228.6
-    y1: 127.9
-  region: upper
-  context: Seller Date
-  ul_bbox:
-    x0: 73.2
-    y0: 121.9
-    x1: 228.6
-    y1: 127.9
 - page: 16
   field: Date
   category: entry_date
@@ -2024,21 +2160,6 @@ field_map:
     y0: 121.9
     x1: 489.5
     y1: 127.9
-- page: 16
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 130.8
-    x1: 228.6
-    y1: 143.9
-  region: upper
-  context: Seller Date
-  ul_bbox:
-    x0: 73.2
-    y0: 137.9
-    x1: 228.6
-    y1: 143.9
 - page: 16
   field: Date
   category: entry_date
@@ -2070,21 +2191,6 @@ field_map:
     x1: 465.4
     y1: 165.4
 - page: 16
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 166.2
-    x1: 247.7
-    y1: 179.4
-  region: upper
-  context: 'By DRE Lic # Date'
-  ul_bbox:
-    x0: 50.5
-    y0: 173.4
-    x1: 383.5
-    y1: 179.4
-- page: 16
   field: 'DRE Lic #'
   category: entry_license
   bbox:
@@ -2115,21 +2221,6 @@ field_map:
     x1: 464.8
     y1: 202.4
 - page: 16
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 203.3
-    x1: 247.7
-    y1: 216.4
-  region: upper
-  context: 'By DRE Lic # Date'
-  ul_bbox:
-    x0: 50.5
-    y0: 210.4
-    x1: 383.5
-    y1: 216.4
-- page: 16
   field: 'DRE Lic #'
   category: entry_license
   bbox:
@@ -2143,6 +2234,96 @@ field_map:
     x0: 434.0
     y0: 210.4
     x1: 489.5
+    y1: 216.4
+- page: 16
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 77.8
+    x1: 229.2
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 84.9
+    x1: 229.2
+    y1: 90.9
+- page: 16
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 93.7
+    x1: 229.2
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 100.9
+    x1: 229.2
+    y1: 106.9
+- page: 16
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 114.8
+    x1: 228.6
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 121.9
+    x1: 228.6
+    y1: 127.9
+- page: 16
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 130.8
+    x1: 228.6
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 137.9
+    x1: 228.6
+    y1: 143.9
+- page: 16
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 166.2
+    x1: 399.4
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 173.4
+    x1: 383.5
+    y1: 179.4
+- page: 16
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 203.3
+    x1: 399.4
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 210.4
+    x1: 383.5
     y1: 216.4
 - page: 17
   field: Date

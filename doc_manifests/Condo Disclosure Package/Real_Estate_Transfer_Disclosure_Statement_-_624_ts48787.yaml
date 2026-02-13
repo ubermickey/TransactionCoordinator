@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:56'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:14'
 file: Real_Estate_Transfer_Disclosure_Statement_-_624_ts48787.pdf
 folder: Condo Disclosure Package
 page_count: 3
@@ -9,10 +9,10 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 36
+  total_entry_spaces: 39
   entry_categories:
     entry_blank: 28
-    entry_signature: 3
+    entry_initial: 6
     entry_date: 5
   test_address_references: 0
 time_length_review: []
@@ -34,7 +34,7 @@ field_map:
     y1: 530.1
 - page: 1
   field: Buyer's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 216.0
     y0: 715.7
@@ -48,8 +48,23 @@ field_map:
     x1: 307.9
     y1: 726.6
 - page: 1
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 216.0
+    y0: 715.7
+    x1: 352.8
+    y1: 726.6
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 321.6
+    y0: 720.6
+    x1: 352.8
+    y1: 726.6
+- page: 1
   field: Seller's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 396.0
     y0: 715.7
@@ -61,6 +76,21 @@ field_map:
     x0: 456.3
     y0: 720.6
     x1: 487.5
+    y1: 726.6
+- page: 1
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 715.7
+    x1: 532.4
+    y1: 726.6
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.2
+    y0: 720.6
+    x1: 532.4
     y1: 726.6
 - page: 1
   field: unit(s)
@@ -276,7 +306,7 @@ field_map:
     y1: 714.6
 - page: 2
   field: Buyer's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 396.0
     y0: 730.2
@@ -288,6 +318,21 @@ field_map:
     x0: 456.7
     y0: 735.1
     x1: 487.9
+    y1: 741.1
+- page: 2
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 730.2
+    x1: 532.8
+    y1: 741.1
+  region: footer
+  context: TDS REVISED 6/24 (PAGE 2 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 501.6
+    y0: 735.1
+    x1: 532.8
     y1: 741.1
 - page: 2
   field: 'Address:'

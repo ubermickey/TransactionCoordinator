@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:03'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:16'
 file: Rental_Property_Owner_Disclosure_-_623_ts12249.pdf
 folder: RLMM Agreement Package
 page_count: 2
@@ -11,8 +11,7 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 17
   entry_categories:
-    entry_blank: 5
-    entry_signature: 4
+    entry_blank: 9
     entry_date: 8
   test_address_references: 0
 time_length_review: []
@@ -82,21 +81,6 @@ field_map:
     x1: 476.5
     y1: 111.1
 - page: 2
-  field: Rental Property Owner
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 483.0
-    x1: 260.5
-    y1: 495.1
-  region: lower
-  context: Rental Property Owner Date
-  ul_bbox:
-    x0: 135.5
-    y0: 489.1
-    x1: 260.5
-    y1: 495.1
-- page: 2
   field: Date
   category: entry_date
   bbox:
@@ -112,21 +96,6 @@ field_map:
     x1: 470.5
     y1: 495.1
 - page: 2
-  field: Rental Property Owner
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 499.0
-    x1: 260.5
-    y1: 511.1
-  region: lower
-  context: Rental Property Owner Date
-  ul_bbox:
-    x0: 135.5
-    y0: 505.1
-    x1: 260.5
-    y1: 511.1
-- page: 2
   field: Date
   category: entry_date
   bbox:
@@ -141,21 +110,6 @@ field_map:
     y0: 505.1
     x1: 470.5
     y1: 511.1
-- page: 2
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 554.0
-    x1: 262.0
-    y1: 566.1
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 72.0
-    y0: 560.1
-    x1: 262.0
-    y1: 566.1
 - page: 2
   field: Date
   category: entry_date
@@ -171,21 +125,6 @@ field_map:
     y0: 560.1
     x1: 472.0
     y1: 566.1
-- page: 2
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 570.0
-    x1: 262.0
-    y1: 582.1
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 72.0
-    y0: 576.1
-    x1: 262.0
-    y1: 582.1
 - page: 2
   field: Date
   category: entry_date
@@ -247,6 +186,66 @@ field_map:
     y0: 155.1
     x1: 522.0
     y1: 161.1
+- page: 2
+  field: Owner
+  category: entry_blank
+  bbox:
+    x0: 105.7
+    y0: 483.0
+    x1: 260.5
+    y1: 495.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 489.1
+    x1: 260.5
+    y1: 495.1
+- page: 2
+  field: Owner
+  category: entry_blank
+  bbox:
+    x0: 105.7
+    y0: 499.0
+    x1: 260.5
+    y1: 511.1
+  region: lower
+  context: Rental Property Owner Date
+  ul_bbox:
+    x0: 135.5
+    y0: 505.1
+    x1: 260.5
+    y1: 511.1
+- page: 2
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 554.0
+    x1: 262.0
+    y1: 566.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 560.1
+    x1: 262.0
+    y1: 566.1
+- page: 2
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 570.0
+    x1: 262.0
+    y1: 582.1
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 72.0
+    y0: 576.1
+    x1: 262.0
+    y1: 582.1
 - page: 2
   field: Broker
   category: entry_blank

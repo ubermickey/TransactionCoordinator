@@ -1,0 +1,77 @@
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:26'
+file: CCPA_FE RPA.pdf
+folder: uploads_979540f6
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 4
+  entry_categories:
+    entry_date: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 399.2
+    x1: 481.2
+    y1: 412.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date SAJIR FF LLC And/Or Assignee
+  ul_bbox:
+    x0: 168.8
+    y0: 406.4
+    x1: 457.3
+    y1: 412.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 257.3
+    y0: 428.3
+    x1: 481.2
+    y1: 441.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 168.8
+    y0: 435.4
+    x1: 457.3
+    y1: 441.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 399.2
+    x1: 576.0
+    y1: 412.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date SAJIR FF LLC And/Or Assignee
+  ul_bbox:
+    x0: 484.1
+    y0: 406.4
+    x1: 576.0
+    y1: 412.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 428.3
+    x1: 576.0
+    y1: 441.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 435.4
+    x1: 576.0
+    y1: 441.4

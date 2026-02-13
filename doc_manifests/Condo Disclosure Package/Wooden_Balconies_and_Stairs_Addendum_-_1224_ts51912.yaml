@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:59'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:15'
 file: Wooden_Balconies_and_Stairs_Addendum_-_1224_ts51912.pdf
 folder: Condo Disclosure Package
 page_count: 1
@@ -11,8 +11,7 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 12
   entry_categories:
-    entry_blank: 4
-    entry_signature: 4
+    entry_blank: 8
     entry_date: 4
   test_address_references: 0
 time_length_review: []
@@ -32,66 +31,6 @@ field_map:
     y0: 115.0
     x1: 576.0
     y1: 121.0
-- page: 1
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 566.4
-    x1: 226.4
-    y1: 579.5
-  region: lower
-  context: 'Buyer Date:'
-  ul_bbox:
-    x0: 71.0
-    y0: 573.5
-    x1: 226.4
-    y1: 579.5
-- page: 1
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 580.3
-    x1: 226.4
-    y1: 593.5
-  region: lower
-  context: 'Buyer Date:'
-  ul_bbox:
-    x0: 71.0
-    y0: 587.5
-    x1: 226.4
-    y1: 593.5
-- page: 1
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 600.3
-    x1: 237.0
-    y1: 613.5
-  region: lower
-  context: 'Seller Date:'
-  ul_bbox:
-    x0: 70.4
-    y0: 607.5
-    x1: 237.0
-    y1: 613.5
-- page: 1
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 614.4
-    x1: 237.0
-    y1: 627.5
-  region: lower
-  context: 'Seller Date:'
-  ul_bbox:
-    x0: 70.4
-    y0: 621.5
-    x1: 237.0
-    y1: 627.5
 - page: 1
   field: No.
   category: entry_blank
@@ -138,6 +77,21 @@ field_map:
     x1: 517.9
     y1: 145.0
 - page: 1
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 566.4
+    x1: 226.4
+    y1: 579.5
+  region: lower
+  context: 'Buyer Date:'
+  ul_bbox:
+    x0: 71.0
+    y0: 573.5
+    x1: 226.4
+    y1: 579.5
+- page: 1
   field: 'Date:'
   category: entry_date
   bbox:
@@ -152,6 +106,21 @@ field_map:
     y0: 573.5
     x1: 459.5
     y1: 579.5
+- page: 1
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 580.3
+    x1: 226.4
+    y1: 593.5
+  region: lower
+  context: 'Buyer Date:'
+  ul_bbox:
+    x0: 71.0
+    y0: 587.5
+    x1: 226.4
+    y1: 593.5
 - page: 1
   field: 'Date:'
   category: entry_date
@@ -168,6 +137,21 @@ field_map:
     x1: 459.5
     y1: 593.5
 - page: 1
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 600.3
+    x1: 237.0
+    y1: 613.5
+  region: lower
+  context: 'Seller Date:'
+  ul_bbox:
+    x0: 70.4
+    y0: 607.5
+    x1: 237.0
+    y1: 613.5
+- page: 1
   field: 'Date:'
   category: entry_date
   bbox:
@@ -182,6 +166,21 @@ field_map:
     y0: 607.5
     x1: 458.9
     y1: 613.5
+- page: 1
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 614.4
+    x1: 237.0
+    y1: 627.5
+  region: lower
+  context: 'Seller Date:'
+  ul_bbox:
+    x0: 70.4
+    y0: 621.5
+    x1: 237.0
+    y1: 627.5
 - page: 1
   field: 'Date:'
   category: entry_date

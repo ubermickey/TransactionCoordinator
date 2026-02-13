@@ -1,5 +1,5 @@
-version: 1.0.0
-last_analyzed: '2026-02-01T16:15:14'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:20'
 file: Representative_Capacity_Signature_Disclosure_For_Seller_Representatives_1_-_623_ts47412.pdf
 folder: Vacant Land Listing Agreement Package
 page_count: 1
@@ -7,82 +7,288 @@ status: complete
 issues: []
 summary:
   total_form_widgets: 0
-  filled: 0
-  empty: 0
-  signature_widgets: 0
-  date_widgets: 0
-  address_widgets: 0
-  other_fillable_widgets: 0
-  signature_areas_from_text: 3
-  date_areas_from_text: 4
-  fillable_blanks_from_text: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 18
+  entry_categories:
+    entry_blank: 16
+    entry_date: 2
   test_address_references: 0
 time_length_review: []
 field_map:
 - page: 1
-  field: REPRESENTATIVE CAPACITY SIGNATURE DISCLOSURE
-  category: signature_area
+  field: Other
+  category: entry_blank
   bbox:
-    x0: 177.5
-    y0: 35.8
-    x1: 506.5
-    y1: 49.2
-  region: header
+    x0: 368.4
+    y0: 151.3
+    x1: 583.2
+    y1: 164.5
+  region: upper
+  context: "This is a disclosure to the Purchase Agreement, OR Listing Agreement, Other (\u201CAgreement\u201D),"
+  ul_bbox:
+    x0: 399.1
+    y0: 158.5
+    x1: 583.2
+    y1: 164.5
 - page: 1
-  field: Signature Disclosure made in the Agreement specified below o
-  category: signature_area
+  field: dated
+  category: entry_blank
   bbox:
     x0: 28.8
-    y0: 139.3
-    x1: 391.5
-    y1: 150.5
+    y0: 175.3
+    x1: 112.7
+    y1: 188.5
   region: upper
+  context: "dated , for the property known as (\u201CProperty\u201D), between (\u201CBuyer\u201D, Listing Broker, Other).\
+    \ , ,"
+  ul_bbox:
+    x0: 57.2
+    y0: 182.5
+    x1: 112.7
+    y1: 188.5
 - page: 1
-  field: 'REPRESENTATIVE CAPACITY SIGNATURE DISCLOSURE (RCSD-S PAGE 1 '
-  category: signature_area
+  field: known
+  category: entry_blank
   bbox:
-    x0: 112.8
-    y0: 724.6
-    x1: 499.1
-    y1: 735.8
-  region: footer
+    x0: 196.4
+    y0: 175.3
+    x1: 418.4
+    y1: 188.5
+  region: upper
+  context: "dated , for the property known as (\u201CProperty\u201D), between (\u201CBuyer\u201D, Listing Broker, Other).\
+    \ , ,"
+  ul_bbox:
+    x0: 237.2
+    y0: 182.5
+    x1: 525.8
+    y1: 188.5
 - page: 1
-  field: 'Date:'
-  category: date_area
+  field: between
+  category: entry_blank
   bbox:
-    x0: 460.8
-    y0: 476.9
-    x1: 484.7
-    y1: 488.0
+    x0: 28.8
+    y0: 187.3
+    x1: 266.6
+    y1: 200.5
+  region: upper
+  context: "between (\u201CBuyer\u201D, Listing Broker, Other). and (\u201CSeller\u201D)."
+  ul_bbox:
+    x0: 70.0
+    y0: 194.5
+    x1: 414.1
+    y1: 200.5
+- page: 1
+  field: 'trust):'
+  category: entry_blank
+  bbox:
+    x0: 463.5
+    y0: 251.6
+    x1: 583.2
+    y1: 265.0
+  region: upper
+  context: '1. A. TRUST: (1) The Property is held in trust pursuant to a trust document, titled (Full name of trust):'
+  ul_bbox:
+    x0: 495.4
+    y0: 259.0
+    x1: 583.2
+    y1: 265.0
+- page: 1
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 492.1
+    y0: 286.3
+    x1: 583.2
+    y1: 299.5
+  region: upper
+  context: dated (2) The person(s) signing below is/are Sole/Co/Successor Trustee(s) of the Trust.
+  ul_bbox:
+    x0: 522.7
+    y0: 293.5
+    x1: 583.2
+    y1: 299.5
+- page: 1
+  field: 'Other:'
+  category: entry_blank
+  bbox:
+    x0: 437.0
+    y0: 309.4
+    x1: 583.2
+    y1: 322.5
+  region: upper
+  context: 'B. ENTITY: Seller is a Corporation, Limited Liability Company, Partnership Other: which has authorized the officer(s),
+    m'
+  ul_bbox:
+    x0: 472.2
+    y0: 316.5
+    x1: 583.2
+    y1: 322.5
+- page: 1
+  field: dated
+  category: entry_blank
+  bbox:
+    x0: 208.6
+    y0: 366.8
+    x1: 317.7
+    y1: 380.0
+  region: middle
+  context: 'of Attorney for the Property), dated . This form is not a Power of Attorney. A Power of Attorney must have already
+    been '
+  ul_bbox:
+    x0: 240.0
+    y0: 374.0
+    x1: 317.7
+    y1: 380.0
+- page: 1
+  field: Case
+  category: entry_blank
+  bbox:
+    x0: 268.5
+    y0: 401.3
+    x1: 488.5
+    y1: 414.5
+  region: middle
+  context: 'name as , Case # . (2) The person(s) signing below is/are court approved representatives (whether designated as
+    Sole or '
+  ul_bbox:
+    x0: 108.8
+    y0: 408.5
+    x1: 458.4
+    y1: 414.5
+- page: 1
+  field: Case
+  category: entry_blank
+  bbox:
+    x0: 468.5
+    y0: 401.3
+    x1: 576.2
+    y1: 414.5
+  region: middle
+  context: 'name as , Case # . (2) The person(s) signing below is/are court approved representatives (whether designated as
+    Sole or '
+  ul_bbox:
+    x0: 498.5
+    y0: 408.5
+    x1: 576.2
+    y1: 414.5
+- page: 1
+  field: Name)
+  category: entry_blank
+  bbox:
+    x0: 150.0
+    y0: 500.8
+    x1: 373.4
+    y1: 514.0
   region: lower
-  time_length_days: null
+  context: '(Print Representative Name) Title:'
+  ul_bbox:
+    x0: 176.3
+    y0: 508.0
+    x1: 403.8
+    y1: 514.0
 - page: 1
-  field: 'Date:'
-  category: date_area
+  field: 'Title:'
+  category: entry_blank
   bbox:
-    x0: 460.8
-    y0: 520.8
-    x1: 484.7
-    y1: 532.0
+    x0: 406.8
+    y0: 500.8
+    x1: 583.2
+    y1: 514.0
   region: lower
-  time_length_days: null
+  context: '(Print Representative Name) Title:'
+  ul_bbox:
+    x0: 431.3
+    y0: 508.0
+    x1: 583.2
+    y1: 514.0
+- page: 1
+  field: Name)
+  category: entry_blank
+  bbox:
+    x0: 150.0
+    y0: 544.8
+    x1: 373.4
+    y1: 558.0
+  region: lower
+  context: '(Print Representative Name) Title:'
+  ul_bbox:
+    x0: 176.3
+    y0: 552.0
+    x1: 403.8
+    y1: 558.0
+- page: 1
+  field: 'Title:'
+  category: entry_blank
+  bbox:
+    x0: 406.8
+    y0: 544.8
+    x1: 583.2
+    y1: 558.0
+  region: lower
+  context: '(Print Representative Name) Title:'
+  ul_bbox:
+    x0: 431.3
+    y0: 552.0
+    x1: 583.2
+    y1: 558.0
+- page: 1
+  field: Buyer/Broker/Other
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 581.8
+    x1: 239.9
+    y1: 595.0
+  region: lower
+  context: 'Buyer/Broker/Other Date:'
+  ul_bbox:
+    x0: 117.8
+    y0: 589.0
+    x1: 239.9
+    y1: 595.0
 - page: 1
   field: 'Date:'
-  category: date_area
+  category: entry_date
   bbox:
-    x0: 460.8
+    x0: 260.8
     y0: 581.8
     x1: 484.7
-    y1: 593.0
+    y1: 595.0
   region: lower
-  time_length_days: null
+  context: 'Buyer/Broker/Other Date:'
+  ul_bbox:
+    x0: 239.9
+    y0: 589.0
+    x1: 456.3
+    y1: 595.0
+- page: 1
+  field: Buyer/Broker/Other
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 599.8
+    x1: 239.9
+    y1: 613.0
+  region: lower
+  context: 'Buyer/Broker/Other Date:'
+  ul_bbox:
+    x0: 117.8
+    y0: 607.0
+    x1: 239.9
+    y1: 613.0
 - page: 1
   field: 'Date:'
-  category: date_area
+  category: entry_date
   bbox:
-    x0: 460.8
+    x0: 260.8
     y0: 599.8
     x1: 484.7
-    y1: 611.0
+    y1: 613.0
   region: lower
-  time_length_days: null
+  context: 'Buyer/Broker/Other Date:'
+  ul_bbox:
+    x0: 239.9
+    y0: 607.0
+    x1: 456.3
+    y1: 613.0

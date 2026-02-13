@@ -1,6 +1,7 @@
-"""Deadline calculation, gate management, Claude contract extraction."""
+"""Deadline calculation, gate management, Claude contract extraction & review."""
 import json, base64
 from datetime import date, timedelta
+from pathlib import Path
 from . import db, rules
 
 # ── Dates ────────────────────────────────────────────────────────────────────
@@ -92,6 +93,63 @@ def _populate_contingencies(c, txn_id: str, cont_data: dict, resolved: dict):
             "INSERT OR IGNORE INTO contingencies(txn,type,name,default_days,deadline_date)"
             " VALUES(?,?,?,?,?)",
             (txn_id, ctype, cname, days, resolved[did].isoformat()),
+        )
+        # Auto-populate inspection items for investigation contingencies
+        if ctype == "investigation":
+            row = c.execute(
+                "SELECT id FROM contingencies WHERE txn=? AND type='investigation'",
+                (txn_id,),
+            ).fetchone()
+            if row:
+                _auto_populate_inspection_items(c, txn_id, row[0])
+
+
+# ── Inspection Items ────────────────────────────────────────────────────────
+
+INSPECTION_ITEMS = [
+    "General Home Inspection",
+    "Termite/Pest (WDO) Inspection",
+    "Roof Inspection",
+    "Chimney/Fireplace Inspection",
+    "Sewer/Lateral Line Inspection",
+    "Foundation/Structural Inspection",
+    "Mold/Environmental Testing",
+    "Electrical System",
+    "Plumbing",
+    "HVAC",
+    "Geological/Soil Report",
+]
+
+CONDITIONAL_ITEMS = {
+    "has_pool": "Pool/Spa Inspection",
+    "is_pre_1978": "Lead-Based Paint Testing",
+    "has_septic": "Septic Inspection",
+}
+
+
+def _auto_populate_inspection_items(c, txn_id: str, cid: int):
+    """Insert default inspection checklist items for an investigation contingency."""
+    existing = c.execute(
+        "SELECT COUNT(*) FROM contingency_items WHERE contingency_id=?", (cid,)
+    ).fetchone()[0]
+    if existing > 0:
+        return  # already populated
+
+    items = list(INSPECTION_ITEMS)
+
+    # Add conditional items based on property flags
+    t = db.txn(c, txn_id)
+    if t:
+        import json
+        props = json.loads(t.get("props") or "{}")
+        for flag, item_name in CONDITIONAL_ITEMS.items():
+            if props.get(flag):
+                items.append(item_name)
+
+    for idx, name in enumerate(items):
+        c.execute(
+            "INSERT INTO contingency_items(contingency_id,name,sort_order) VALUES(?,?,?)",
+            (cid, name, idx),
         )
 
 
@@ -240,6 +298,124 @@ def _parse_json(text: str) -> dict:
             text = text[start:end]
     return json.loads(text)
 
+
+# ── Contract Review (Clause-Level Analysis) ──────────────────────────────────
+
+PLAYBOOK_DIR = Path(__file__).resolve().parent.parent / "playbooks"
+
+
+def load_playbook(name: str = "california_rpa") -> dict:
+    path = PLAYBOOK_DIR / f"{name}.yaml"
+    if not path.exists():
+        return {}
+    import yaml
+    return yaml.safe_load(path.read_text())
+
+
+def _build_review_prompt(playbook: dict, txn_context: dict) -> str:
+    """Build the clause-level contract review prompt."""
+    positions = playbook.get("standard_positions", {})
+    interactions = playbook.get("interaction_rules", [])
+
+    prompt = (
+        "You are a California real estate transaction coordinator reviewing a contract.\n"
+        "Analyze this document CLAUSE BY CLAUSE against the playbook standards below.\n"
+        "Understand how clauses INTERACT — e.g., a waived appraisal contingency on a financed "
+        "purchase is dangerous even if each clause alone looks acceptable.\n\n"
+    )
+
+    # Transaction context
+    if txn_context:
+        prompt += "TRANSACTION CONTEXT:\n"
+        for k, v in txn_context.items():
+            if v:
+                prompt += f"  {k}: {v}\n"
+        prompt += "\n"
+
+    # Playbook standards
+    prompt += "PLAYBOOK STANDARDS:\n"
+    for area, rules_data in positions.items():
+        prompt += f"\n  {area.upper().replace('_', ' ')}:\n"
+        prompt += f"    Acceptable: {rules_data.get('acceptable', 'N/A')}\n"
+        if rules_data.get("yellow_if"):
+            prompt += f"    Yellow if: {', '.join(rules_data['yellow_if'])}\n"
+        if rules_data.get("red_flags"):
+            prompt += f"    Red flags: {', '.join(rules_data['red_flags'])}\n"
+
+    # Interaction rules
+    if interactions:
+        prompt += "\nINTERACTION RULES (check these combinations):\n"
+        for rule in interactions:
+            prompt += f"  - IF {rule['condition']} THEN {rule['risk']}: {rule['explanation']}\n"
+
+    # Output format
+    prompt += """
+Return ONLY valid JSON (no markdown fences):
+{
+  "executive_summary": "2-3 sentence risk overview",
+  "overall_risk": "RED or YELLOW or GREEN",
+  "clauses": [
+    {
+      "area": "area name",
+      "risk": "RED or YELLOW or GREEN",
+      "finding": "what the contract says",
+      "standard": "what the playbook expects",
+      "suggestion": "recommended change (null for GREEN)"
+    }
+  ],
+  "interactions": [
+    {
+      "condition": "what was triggered",
+      "risk": "RED or YELLOW",
+      "explanation": "why this combination is risky",
+      "suggestion": "what to do about it"
+    }
+  ],
+  "missing_items": ["items expected but not found in the contract"]
+}
+"""
+    return prompt
+
+
+def review_contract(pdf_path: str, txn_context: dict | None = None,
+                    playbook_name: str = "california_rpa") -> dict:
+    """Clause-level contract review using Claude + playbook standards."""
+    import anthropic, time
+
+    playbook = load_playbook(playbook_name)
+    if not playbook:
+        raise ValueError(f"Playbook '{playbook_name}' not found")
+
+    prompt = _build_review_prompt(playbook, txn_context or {})
+    data = base64.b64encode(open(pdf_path, "rb").read()).decode()
+    client = anthropic.Anthropic()
+    msg = [{"role": "user", "content": [
+        {"type": "document", "source": {"type": "base64", "media_type": "application/pdf", "data": data}},
+        {"type": "text", "text": prompt},
+    ]}]
+
+    last_err = None
+    for attempt in range(3):
+        try:
+            resp = client.messages.create(model="claude-sonnet-4-20250514", max_tokens=8192, messages=msg)
+            raw = resp.content[0].text
+            result = _parse_json(raw)
+            result["_raw"] = raw
+            return result
+        except anthropic.RateLimitError:
+            wait = 30 * (attempt + 1)
+            print(f"  Rate limited — waiting {wait}s (attempt {attempt + 1}/3)")
+            time.sleep(wait)
+        except json.JSONDecodeError as e:
+            last_err = e
+            if attempt < 2:
+                time.sleep(5)
+            else:
+                raise ValueError(f"Could not parse review response as JSON after 3 attempts: {e}")
+    raise RuntimeError(f"Contract review failed after 3 retries: {last_err}")
+
+
+# ── Extraction ───────────────────────────────────────────────────────────────
 
 def extract(pdf_path: str, form_type: str | None = None) -> dict:
     import anthropic, time

@@ -21,7 +21,7 @@ SCAN_DIRS = {
 
 # Mandatory categories — unfilled = red
 MANDATORY_CATEGORIES = {
-    "entry_signature", "entry_date", "entry_license", "entry_dollar",
+    "entry_signature", "entry_initial", "entry_date", "entry_license", "entry_dollar",
     # Legacy categories (for older manifests)
     "signature_area", "signature", "date_area", "date",
 }
@@ -62,31 +62,61 @@ def _is_mandatory(category: str, field_name: str = "") -> bool:
     return False
 
 
-def _detect_filled(page, bbox: dict) -> bool:
-    """Check if a field bbox has content (text inserted) on the page."""
+def _detect_filled(page, bbox: dict, field_name: str = "", category: str = "",
+                   ul_bbox: dict | None = None) -> bool:
+    """Check if a field bbox has user-entered content (not static labels)."""
     x0, y0, x1, y1 = bbox.get("x0", 0), bbox.get("y0", 0), bbox.get("x1", 0), bbox.get("y1", 0)
     if x0 >= x1 or y0 >= y1:
         return False
-    # Expand rect slightly for detection
-    rect = fitz.Rect(x0 - 1, y0 - 1, x1 + 1, y1 + 1)
-    # Check for drawn content (annotations, drawings)
+
+    width = x1 - x0
+    if width > 150 and ul_bbox and "x0" in ul_bbox:
+        ux0 = ul_bbox.get("x0", x0)
+        uy0 = ul_bbox.get("y0", y0)
+        ux1 = ul_bbox.get("x1", x1)
+        uy1 = ul_bbox.get("y1", y1)
+        rect = fitz.Rect(ux0 - 1, uy0 - 1, ux1 + 1, uy1 + 1)
+    else:
+        rect = fitz.Rect(x0 - 1, y0 - 1, x1 + 1, y1 + 1)
+
     text = page.get_text("text", clip=rect).strip()
-    if text:
-        # Filter out the form label text — if text matches the field name it's just the label
-        return True
-    # Check for drawing commands (ink from our fill script)
-    drawings = page.get_drawings()
-    for d in drawings:
-        for item in d.get("items", []):
-            if len(item) >= 2:
-                # Check if any drawing point falls within our rect
-                try:
-                    pt = item[1]
-                    if isinstance(pt, fitz.Point) and rect.contains(pt):
-                        return True
-                except (TypeError, IndexError):
-                    pass
-    return False
+    if not text:
+        return False
+
+    cat = (category or "").lower()
+    if cat == "entry_dollar":
+        return bool(re.search(r"\d", text))
+
+    remaining = text
+    for token in re.findall(r"[A-Za-z0-9$%#]+", field_name or ""):
+        if len(token) >= 2 or token in ("$", "%", "#"):
+            remaining = re.sub(re.escape(token), "", remaining, flags=re.IGNORECASE)
+
+    for token in (
+        "buyer", "seller", "tenant", "landlord", "date", "signature", "initial", "initials",
+        "by", "printed", "name", "dre", "lic", "license", "housing", "provider", "owner",
+        "agent", "broker", "firm", "email", "phone", "fax", "address", "city", "state", "zip",
+    ):
+        remaining = re.sub(rf"\b{re.escape(token)}\b", "", remaining, flags=re.IGNORECASE)
+
+    cleaned = re.sub(r"[\s()\[\]:;,./|#\-]+", "", remaining)
+    parts = re.findall(r"[A-Za-z0-9]+", remaining)
+
+    if cat in ("entry_signature", "entry_initial", "signature_area", "signature"):
+        if not parts:
+            return False
+        # Suppress glyph-fragment artifacts like "S l B k" on blank forms.
+        if max(len(p) for p in parts) <= 1:
+            return False
+        return len(cleaned) >= 2
+    if cat in ("entry_date", "date_area", "date"):
+        return bool(re.search(r"\d", cleaned))
+    if cat == "entry_percent":
+        return bool(re.search(r"\d", cleaned))
+    if cat == "entry_days":
+        return bool(re.search(r"\d", cleaned))
+
+    return len(cleaned) >= 2
 
 
 def _load_manifest(folder_name: str, pdf_stem: str) -> dict:
@@ -122,7 +152,12 @@ def scan_pdf(pdf_path: Path, folder_name: str, scenario: str = "") -> dict | Non
 
         is_filled = False
         if 0 <= page_num < len(doc) and bbox and "x0" in bbox:
-            is_filled = _detect_filled(doc[page_num], bbox)
+            is_filled = _detect_filled(
+                doc[page_num], bbox,
+                field_name=field_name,
+                category=category,
+                ul_bbox=entry.get("ul_bbox"),
+            )
 
         if is_filled:
             filled_count += 1

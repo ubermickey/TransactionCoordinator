@@ -1,0 +1,138 @@
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:22'
+file: WFI_California_Residential_Purchase_Agreement_-_1225_ts69656.pdf
+folder: uploads_2954c333
+page_count: 1
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 8
+  entry_categories:
+    entry_date: 4
+    entry_blank: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 578.2
+    x1: 507.1
+    y1: 591.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 277.0
+    y0: 585.4
+    x1: 482.3
+    y1: 591.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 286.0
+    y0: 595.2
+    x1: 507.1
+    y1: 608.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 277.0
+    y0: 602.4
+    x1: 482.3
+    y1: 608.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 288.6
+    y0: 612.2
+    x1: 507.1
+    y1: 625.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 288.6
+    y0: 619.4
+    x1: 482.8
+    y1: 625.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 288.6
+    y0: 629.3
+    x1: 507.1
+    y1: 642.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 288.6
+    y0: 636.4
+    x1: 482.8
+    y1: 642.4
+- page: 1
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 578.2
+    x1: 277.0
+    y1: 591.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 104.9
+    y0: 585.4
+    x1: 277.0
+    y1: 591.4
+- page: 1
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 595.2
+    x1: 277.0
+    y1: 608.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 104.9
+    y0: 602.4
+    x1: 277.0
+    y1: 608.4
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 104.5
+    y0: 612.2
+    x1: 288.6
+    y1: 625.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 149.8
+    y0: 619.4
+    x1: 288.6
+    y1: 625.4
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 104.5
+    y0: 629.3
+    x1: 288.6
+    y1: 642.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 149.8
+    y0: 636.4
+    x1: 288.6
+    y1: 642.4
