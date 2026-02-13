@@ -73,8 +73,10 @@ def register(runner):
             expect=200,
         )
         assert isinstance(data, list)
+        assert data, "expected at least one signature-like field"
+        allowed = {"signature_area", "signature", "entry_signature", "entry_initial"}
         for f in data:
-            assert f.get("category") == "signature_area"
+            assert f.get("category") in allowed
 
     def test_annotations_empty():
         """GET annotations returns empty dict initially."""

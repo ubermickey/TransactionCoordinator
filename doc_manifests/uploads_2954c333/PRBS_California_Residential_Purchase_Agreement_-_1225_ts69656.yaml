@@ -1,0 +1,230 @@
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:22'
+file: PRBS_California_Residential_Purchase_Agreement_-_1225_ts69656.pdf
+folder: uploads_2954c333
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 14
+  entry_categories:
+    entry_date: 4
+    entry_brokerage: 2
+    entry_license: 4
+    entry_blank: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 290.0
+    y0: 77.8
+    x1: 513.9
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 229.2
+    y0: 84.9
+    x1: 490.0
+    y1: 90.9
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 290.0
+    y0: 93.7
+    x1: 513.9
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 229.2
+    y0: 100.9
+    x1: 490.0
+    y1: 106.9
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 289.5
+    y0: 114.8
+    x1: 513.3
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 228.6
+    y0: 121.9
+    x1: 489.5
+    y1: 127.9
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 289.5
+    y0: 130.8
+    x1: 513.3
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 228.6
+    y0: 137.9
+    x1: 489.5
+    y1: 143.9
+- page: 2
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 152.3
+    x1: 286.0
+    y1: 165.4
+  region: upper
+  context: 'Buyer''s Brokerage Firm DRE Lic # Douglas Elliman of California, Inc. 01947727'
+  ul_bbox:
+    x0: 143.5
+    y0: 159.4
+    x1: 465.4
+    y1: 165.4
+- page: 2
+  field: 'DRE Lic #'
+  category: entry_license
+  bbox:
+    x0: 383.5
+    y0: 166.2
+    x1: 489.5
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 434.0
+    y0: 173.4
+    x1: 489.5
+    y1: 179.4
+- page: 2
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 36.0
+    y0: 189.2
+    x1: 286.0
+    y1: 202.4
+  region: upper
+  context: 'Seller''s Brokerage Firm DRE Lic #'
+  ul_bbox:
+    x0: 142.9
+    y0: 196.4
+    x1: 464.8
+    y1: 202.4
+- page: 2
+  field: 'DRE Lic #'
+  category: entry_license
+  bbox:
+    x0: 383.5
+    y0: 203.3
+    x1: 489.5
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 434.0
+    y0: 210.4
+    x1: 489.5
+    y1: 216.4
+- page: 2
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 77.8
+    x1: 229.2
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 84.9
+    x1: 229.2
+    y1: 90.9
+- page: 2
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 93.7
+    x1: 229.2
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 100.9
+    x1: 229.2
+    y1: 106.9
+- page: 2
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 114.8
+    x1: 228.6
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 121.9
+    x1: 228.6
+    y1: 127.9
+- page: 2
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 130.8
+    x1: 228.6
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 137.9
+    x1: 228.6
+    y1: 143.9
+- page: 2
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 166.2
+    x1: 399.4
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 173.4
+    x1: 383.5
+    y1: 179.4
+- page: 2
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 203.3
+    x1: 399.4
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 210.4
+    x1: 383.5
+    y1: 216.4

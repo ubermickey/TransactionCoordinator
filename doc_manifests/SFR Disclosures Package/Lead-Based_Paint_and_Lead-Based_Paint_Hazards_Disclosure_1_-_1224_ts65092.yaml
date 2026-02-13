@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:17'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:19'
 file: Lead-Based_Paint_and_Lead-Based_Paint_Hazards_Disclosure_1_-_1224_ts65092.pdf
 folder: SFR Disclosures Package
 page_count: 2
@@ -9,17 +9,18 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 20
+  total_entry_spaces: 21
   entry_categories:
-    entry_signature: 6
+    entry_initial: 2
     entry_blank: 9
-    entry_date: 5
+    entry_date: 6
+    entry_signature: 4
   test_address_references: 0
 time_length_review: []
 field_map:
 - page: 1
   field: Buyer's/Tenant's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 360.0
     y0: 709.6
@@ -31,6 +32,21 @@ field_map:
     x0: 453.4
     y0: 714.5
     x1: 493.4
+    y1: 720.5
+- page: 1
+  field: Buyer's/Tenant's Initials
+  category: entry_initial
+  bbox:
+    x0: 360.0
+    y0: 709.6
+    x1: 542.8
+    y1: 720.5
+  region: footer
+  context: LPD REVISED 12/24 (PAGE 1 OF 2) Buyer's/Tenant's Initials /
+  ul_bbox:
+    x0: 502.8
+    y0: 714.5
+    x1: 542.8
     y1: 720.5
 - page: 1
   field: 'Other:'
@@ -154,22 +170,6 @@ field_map:
     x1: 449.3
     y1: 47.5
 - page: 2
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 313.5
-    y0: 142.1
-    x1: 516.7
-    y1: 155.5
-  region: upper
-  context: By Agent (Broker representing Seller or Housing Provider) Associate-Licensee or Broker Signature Date Douglas Elliman
-    of
-  ul_bbox:
-    x0: 328.0
-    y0: 149.5
-    x1: 516.7
-    y1: 155.5
-- page: 2
   field: Date
   category: entry_date
   bbox:
@@ -185,13 +185,13 @@ field_map:
     x1: 517.2
     y1: 427.5
 - page: 2
-  field: By
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
-    x0: 307.9
-    y0: 571.1
-    x1: 516.7
-    y1: 584.5
+    x0: 322.4
+    y0: 576.5
+    x1: 572.4
+    y1: 594.0
   region: lower
   context: By Agent (Broker obtaining the Offer) Associate-Licensee or Broker Signature Date Douglas Elliman of California,
     Inc.
@@ -230,6 +230,22 @@ field_map:
     x0: 36.0
     y0: 149.5
     x1: 307.9
+    y1: 155.5
+- page: 2
+  field: Associate-Licensee
+  category: entry_signature
+  bbox:
+    x0: 328.0
+    y0: 147.5
+    x1: 516.7
+    y1: 165.0
+  region: upper
+  context: By Agent (Broker representing Seller or Housing Provider) Associate-Licensee or Broker Signature Date Douglas Elliman
+    of
+  ul_bbox:
+    x0: 328.0
+    y0: 149.5
+    x1: 516.7
     y1: 155.5
 - page: 2
   field: Signature

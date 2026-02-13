@@ -799,7 +799,7 @@ const PdfViewer = (() => {
     if (f.filled || f.value) return 'filled';
     const cat = (f.category || '').toLowerCase();
     if (cat === 'entry_days') return 'days';
-    if (cat === 'entry_signature' || cat === 'entry_license' || cat === 'entry_dollar') return 'empty';
+    if (cat === 'entry_signature' || cat === 'entry_initial' || cat === 'entry_license' || cat === 'entry_dollar') return 'empty';
     if (cat === 'entry_date') return 'optional';
     const ctx = (f.context || '').toLowerCase();
     if (cat === 'entry_blank' && /purchase\s*price|deposit|escrow|acceptance|apn|parcel|city|county|zip|agent|broker|firm|buyer|seller|tenant|signature|initial/.test(ctx)) return 'empty';
@@ -1006,7 +1006,7 @@ const PdfViewer = (() => {
     const items = [];
     fields.forEach(function(f, idx) {
       const cat = (f.category || '').toLowerCase();
-      if (cat !== 'entry_signature') return;
+      if (cat !== 'entry_signature' && cat !== 'entry_initial') return;
       const status = annotations[idx] || defaultStatus(f);
       if (status === 'filled' || status === 'ignored') return;
       items.push({ field: f, idx: idx });
@@ -1014,7 +1014,8 @@ const PdfViewer = (() => {
 
     if (items.length === 0) {
       const hasSigs = fields.some(function(f) {
-        return (f.category || '').toLowerCase() === 'entry_signature';
+        const cat = (f.category || '').toLowerCase();
+        return cat === 'entry_signature' || cat === 'entry_initial';
       });
       el.textContent = '';
       if (hasSigs) {

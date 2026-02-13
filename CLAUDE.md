@@ -128,9 +128,9 @@ When modifying PDF annotation, field detection, or bounding box logic:
 1. **Always OCR-verify** — render affected pages to PNG and visually inspect before presenting
 2. Bounding boxes should tightly frame entry space + label word, not span entire lines
 3. Fill detection: pre-filled fields (DRE license, default day counts) = GREEN, empty = RED/YELLOW/ORANGE
-4. Classification: `$` entries = `entry_dollar`, `Days` = `entry_days`, signatures = `entry_signature`
+4. Classification: `$` entries = `entry_dollar`, `Days` = `entry_days`, signatures = `entry_signature`, initials = `entry_initial`
 5. Test with both blank originals AND filled test docs
-6. `ul_bbox` (underline bbox) is separate from display `bbox` — use `ul_bbox` for fill detection on wide entries to avoid capturing static contract text
+6. `ul_bbox` (underline bbox) is separate from display `bbox` — use `ul_bbox` for fill detection on wide signature/initial fields to avoid capturing static contract text
 
 ## Critical Sync Points
 

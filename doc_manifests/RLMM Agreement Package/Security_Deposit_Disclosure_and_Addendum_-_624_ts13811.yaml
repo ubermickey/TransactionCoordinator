@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:04'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:16'
 file: Security_Deposit_Disclosure_and_Addendum_-_624_ts13811.pdf
 folder: RLMM Agreement Package
 page_count: 1
@@ -11,9 +11,8 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 12
   entry_categories:
-    entry_blank: 6
+    entry_blank: 8
     entry_date: 4
-    entry_signature: 2
   test_address_references: 0
 time_length_review: []
 field_map:
@@ -64,21 +63,6 @@ field_map:
     x1: 464.5
     y1: 482.0
 - page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 54.0
-    y0: 564.0
-    x1: 230.0
-    y1: 576.0
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 90.0
-    y0: 570.0
-    x1: 230.0
-    y1: 576.0
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -93,21 +77,6 @@ field_map:
     y0: 570.0
     x1: 465.0
     y1: 576.0
-- page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 54.0
-    y0: 577.9
-    x1: 230.0
-    y1: 590.0
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 90.0
-    y0: 584.0
-    x1: 230.0
-    y1: 590.0
 - page: 1
   field: Date
   category: entry_date
@@ -198,3 +167,33 @@ field_map:
     y0: 476.0
     x1: 314.4
     y1: 482.0
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 564.0
+    x1: 230.0
+    y1: 576.0
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 90.0
+    y0: 570.0
+    x1: 230.0
+    y1: 576.0
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 577.9
+    x1: 230.0
+    y1: 590.0
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 90.0
+    y0: 584.0
+    x1: 230.0
+    y1: 590.0

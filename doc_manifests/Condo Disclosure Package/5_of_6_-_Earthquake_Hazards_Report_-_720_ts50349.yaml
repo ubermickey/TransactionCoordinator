@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:53'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:13'
 file: 5_of_6_-_Earthquake_Hazards_Report_-_720_ts50349.pdf
 folder: Condo Disclosure Package
 page_count: 1
@@ -11,9 +11,9 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 11
   entry_categories:
-    entry_blank: 3
+    entry_blank: 5
     entry_address: 4
-    entry_signature: 4
+    entry_date: 2
   test_address_references: 0
 time_length_review: []
 field_map:
@@ -108,60 +108,30 @@ field_map:
     x1: 558.0
     y1: 154.0
 - page: 1
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 54.0
-    y0: 610.6
-    x1: 239.5
-    y1: 628.6
-  region: lower
-  context: Seller Seller Date Seller
-  ul_bbox:
-    x0: 54.0
-    y0: 612.6
-    x1: 239.5
-    y1: 618.6
-- page: 1
-  field: Seller
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 252.0
     y0: 610.6
-    x1: 437.5
+    x1: 472.7
     y1: 628.6
   region: lower
-  context: Seller Seller Date Seller
+  context: Seller Seller Date
   ul_bbox:
     x0: 252.0
     y0: 612.6
     x1: 437.5
     y1: 618.6
 - page: 1
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 54.0
-    y0: 682.6
-    x1: 239.5
-    y1: 700.6
-  region: footer
-  context: Buyer Buyer Date Buyer
-  ul_bbox:
-    x0: 54.0
-    y0: 684.6
-    x1: 239.5
-    y1: 690.6
-- page: 1
-  field: Buyer
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 252.0
     y0: 682.6
-    x1: 437.5
+    x1: 472.7
     y1: 700.6
   region: footer
-  context: Buyer Buyer Date Buyer
+  context: Buyer Buyer Date
   ul_bbox:
     x0: 252.0
     y0: 684.6
@@ -182,3 +152,33 @@ field_map:
     y0: 108.0
     x1: 558.0
     y1: 114.0
+- page: 1
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 610.6
+    x1: 276.3
+    y1: 628.6
+  region: lower
+  context: Seller Seller Date
+  ul_bbox:
+    x0: 54.0
+    y0: 612.6
+    x1: 239.5
+    y1: 618.6
+- page: 1
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 54.0
+    y0: 682.6
+    x1: 276.8
+    y1: 700.6
+  region: footer
+  context: Buyer Buyer Date
+  ul_bbox:
+    x0: 54.0
+    y0: 684.6
+    x1: 239.5
+    y1: 690.6

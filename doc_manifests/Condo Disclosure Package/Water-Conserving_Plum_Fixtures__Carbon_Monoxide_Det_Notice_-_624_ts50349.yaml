@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:58'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:15'
 file: Water-Conserving_Plum_Fixtures__Carbon_Monoxide_Det_Notice_-_624_ts50349.pdf
 folder: Condo Disclosure Package
 page_count: 1
@@ -11,27 +11,12 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 8
   entry_categories:
-    entry_signature: 4
     entry_date: 4
+    entry_blank: 4
   test_address_references: 0
 time_length_review: []
 field_map:
 - page: 1
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 28.8
-    y0: 598.8
-    x1: 199.8
-    y1: 610.8
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 59.8
-    y0: 604.8
-    x1: 199.8
-    y1: 610.8
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -46,21 +31,6 @@ field_map:
     y0: 604.8
     x1: 474.8
     y1: 610.8
-- page: 1
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 28.8
-    y0: 612.7
-    x1: 199.8
-    y1: 624.8
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 59.8
-    y0: 618.8
-    x1: 199.8
-    y1: 624.8
 - page: 1
   field: Date
   category: entry_date
@@ -77,21 +47,6 @@ field_map:
     x1: 474.8
     y1: 624.8
 - page: 1
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 28.8
-    y0: 630.7
-    x1: 200.3
-    y1: 642.8
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 60.3
-    y0: 636.8
-    x1: 200.3
-    y1: 642.8
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -107,21 +62,6 @@ field_map:
     x1: 475.3
     y1: 642.8
 - page: 1
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 28.8
-    y0: 644.8
-    x1: 200.3
-    y1: 656.8
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 60.3
-    y0: 650.8
-    x1: 200.3
-    y1: 656.8
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -135,4 +75,64 @@ field_map:
     x0: 200.3
     y0: 650.8
     x1: 475.3
+    y1: 656.8
+- page: 1
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 598.8
+    x1: 199.8
+    y1: 610.8
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 59.8
+    y0: 604.8
+    x1: 199.8
+    y1: 610.8
+- page: 1
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 612.7
+    x1: 199.8
+    y1: 624.8
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 59.8
+    y0: 618.8
+    x1: 199.8
+    y1: 624.8
+- page: 1
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 630.7
+    x1: 200.3
+    y1: 642.8
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 60.3
+    y0: 636.8
+    x1: 200.3
+    y1: 642.8
+- page: 1
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 28.8
+    y0: 644.8
+    x1: 200.3
+    y1: 656.8
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 60.3
+    y0: 650.8
+    x1: 200.3
     y1: 656.8

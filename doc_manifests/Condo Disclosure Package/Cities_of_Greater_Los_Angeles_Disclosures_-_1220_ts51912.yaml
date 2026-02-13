@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:54'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:14'
 file: Cities_of_Greater_Los_Angeles_Disclosures_-_1220_ts51912.pdf
 folder: Condo Disclosure Package
 page_count: 2
@@ -11,14 +11,15 @@ summary:
   empty_widgets: 0
   total_entry_spaces: 9
   entry_categories:
-    entry_signature: 6
-    entry_blank: 3
+    entry_initial: 3
+    entry_date: 4
+    entry_blank: 2
   test_address_references: 0
 time_length_review: []
 field_map:
 - page: 1
   field: Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 175.1
     y0: 662.8
@@ -33,7 +34,7 @@ field_map:
     y1: 676.0
 - page: 1
   field: Seller's
-  category: entry_blank
+  category: entry_initial
   bbox:
     x0: 261.2
     y0: 662.8
@@ -48,7 +49,7 @@ field_map:
     y1: 676.0
 - page: 1
   field: Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 343.0
     y0: 662.8
@@ -62,60 +63,60 @@ field_map:
     x1: 420.5
     y1: 676.0
 - page: 2
-  field: Buyer
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 72.0
     y0: 578.0
-    x1: 238.5
+    x1: 273.1
     y1: 596.0
   region: lower
-  context: Buyer Date Seller Date Buyer
+  context: Buyer Date Seller Date
   ul_bbox:
     x0: 72.0
     y0: 580.0
     x1: 238.5
     y1: 586.0
 - page: 2
-  field: Seller
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 324.0
     y0: 578.0
-    x1: 490.5
+    x1: 525.1
     y1: 596.0
   region: lower
-  context: Buyer Date Seller Date Seller
+  context: Buyer Date Seller Date
   ul_bbox:
     x0: 324.0
     y0: 580.0
     x1: 490.5
     y1: 586.0
 - page: 2
-  field: Buyer
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 72.0
     y0: 626.0
-    x1: 238.5
+    x1: 273.1
     y1: 644.0
   region: lower
-  context: Buyer Date Seller Date Buyer
+  context: Buyer Date Seller Date
   ul_bbox:
     x0: 72.0
     y0: 628.0
     x1: 238.5
     y1: 634.0
 - page: 2
-  field: Seller
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
     x0: 324.0
     y0: 626.0
-    x1: 490.5
+    x1: 525.1
     y1: 644.0
   region: lower
-  context: Buyer Date Seller Date Seller
+  context: Buyer Date Seller Date
   ul_bbox:
     x0: 324.0
     y0: 628.0

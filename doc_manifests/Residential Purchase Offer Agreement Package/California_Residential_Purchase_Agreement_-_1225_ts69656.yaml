@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:11'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:18'
 file: California_Residential_Purchase_Agreement_-_1225_ts69656.pdf
 folder: Residential Purchase Offer Agreement Package
 page_count: 29
@@ -9,37 +9,22 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 259
+  total_entry_spaces: 282
   entry_categories:
-    entry_signature: 38
-    entry_date: 54
-    entry_license: 16
-    entry_blank: 85
+    entry_date: 53
+    entry_license: 12
+    entry_blank: 105
     entry_brokerage: 13
-    entry_dollar: 13
-    entry_days: 23
-    entry_percent: 5
+    entry_days: 6
+    entry_initial: 72
+    entry_dollar: 5
+    entry_signature: 4
     entry_address: 6
     entry_contact: 6
   test_address_references: 0
 time_length_review: []
 field_map:
 - page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 164.3
-    y0: 638.4
-    x1: 336.6
-    y1: 650.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 196.6
-    y0: 644.4
-    x1: 336.6
-    y1: 650.4
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -58,36 +43,6 @@ field_map:
   field: Date
   category: entry_date
   bbox:
-    x0: 476.6
-    y0: 638.4
-    x1: 576.0
-    y1: 650.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 500.6
-    y0: 644.4
-    x1: 576.0
-    y1: 650.4
-- page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 164.3
-    y0: 654.3
-    x1: 336.6
-    y1: 666.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 196.6
-    y0: 660.4
-    x1: 336.6
-    y1: 666.4
-- page: 1
-  field: Date
-  category: entry_date
-  bbox:
     x0: 336.6
     y0: 654.3
     x1: 498.1
@@ -98,21 +53,6 @@ field_map:
     x0: 336.6
     y0: 660.4
     x1: 476.6
-    y1: 666.4
-- page: 1
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 476.6
-    y0: 654.3
-    x1: 576.0
-    y1: 666.4
-  region: lower
-  context: Buyer Seller Landlord Tenant Date
-  ul_bbox:
-    x0: 500.6
-    y0: 660.4
-    x1: 576.0
     y1: 666.4
 - page: 1
   field: 'DRE Lic. #'
@@ -123,28 +63,12 @@ field_map:
     x1: 576.0
     y1: 683.4
   region: footer
-  context: 'Agent DRE Lic. # Real Estate Broker (Firm) Douglas Elliman of California,
-    Inc. 01947727'
+  context: 'Agent DRE Lic. # Real Estate Broker (Firm) Douglas Elliman of California, Inc. 01947727'
   ul_bbox:
     x0: 485.0
     y0: 677.4
     x1: 576.0
     y1: 683.4
-- page: 1
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 692.4
-    x1: 204.0
-    y1: 704.4
-  region: footer
-  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
-  ul_bbox:
-    x0: 49.0
-    y0: 698.4
-    x1: 204.0
-    y1: 704.4
 - page: 1
   field: 'DRE Lic. #'
   category: entry_license
@@ -176,6 +100,81 @@ field_map:
     x1: 576.0
     y1: 704.4
 - page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 164.3
+    y0: 638.4
+    x1: 336.6
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 644.4
+    x1: 336.6
+    y1: 650.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 638.4
+    x1: 576.0
+    y1: 650.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.6
+    y0: 644.4
+    x1: 576.0
+    y1: 650.4
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 164.3
+    y0: 654.3
+    x1: 336.6
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 196.6
+    y0: 660.4
+    x1: 336.6
+    y1: 666.4
+- page: 1
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 476.6
+    y0: 654.3
+    x1: 576.0
+    y1: 666.4
+  region: lower
+  context: Buyer Seller Landlord Tenant Date
+  ul_bbox:
+    x0: 500.6
+    y0: 660.4
+    x1: 576.0
+    y1: 666.4
+- page: 1
+  field: (Salesperson
+  category: entry_blank
+  bbox:
+    x0: 49.0
+    y0: 696.4
+    x1: 204.0
+    y1: 712.4
+  region: footer
+  context: 'By DRE Lic. # Date (Salesperson or Broker-Associate, if any)'
+  ul_bbox:
+    x0: 49.0
+    y0: 698.4
+    x1: 204.0
+    y1: 704.4
+- page: 1
   field: DRE
   category: entry_license
   bbox:
@@ -201,22 +200,6 @@ field_map:
   region: middle
   context: License Number ______________
 - page: 2
-  field: Seller's Brokerage Firm
-  category: entry_brokerage
-  bbox:
-    x0: 54.0
-    y0: 437.8
-    x1: 304.0
-    y1: 448.8
-  region: middle
-  context: 'Seller''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________
-    Is the broker of (check one): the sel'
-  ul_bbox:
-    x0: 139.0
-    y0: 442.8
-    x1: 448.6
-    y1: 448.8
-- page: 2
   field: License Number ______________
   category: entry_blank
   bbox:
@@ -226,22 +209,6 @@ field_map:
     y1: 467.7
   region: middle
   context: License Number ______________
-- page: 2
-  field: Seller's Agent
-  category: entry_brokerage
-  bbox:
-    x0: 54.0
-    y0: 458.8
-    x1: 303.1
-    y1: 469.9
-  region: middle
-  context: 'Seller''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________
-    Is (check one): the Seller''s Agent. (salespers'
-  ul_bbox:
-    x0: 104.3
-    y0: 463.9
-    x1: 447.8
-    y1: 469.9
 - page: 2
   field: License Number ______________
   category: entry_blank
@@ -253,22 +220,6 @@ field_map:
   region: lower
   context: License Number ______________
 - page: 2
-  field: Buyer's Brokerage Firm
-  category: entry_brokerage
-  bbox:
-    x0: 54.0
-    y0: 479.8
-    x1: 304.0
-    y1: 491.0
-  region: lower
-  context: 'Buyer''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________
-    Is the broker of (check one): the buye'
-  ul_bbox:
-    x0: 139.0
-    y0: 485.0
-    x1: 448.6
-    y1: 491.0
-- page: 2
   field: License Number ______________
   category: entry_blank
   bbox:
@@ -279,6 +230,54 @@ field_map:
   region: lower
   context: License Number ______________
 - page: 2
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 437.8
+    x1: 304.0
+    y1: 448.8
+  region: middle
+  context: 'Seller''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the sel'
+  ul_bbox:
+    x0: 139.0
+    y0: 442.8
+    x1: 448.6
+    y1: 448.8
+- page: 2
+  field: Seller's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 458.8
+    x1: 303.1
+    y1: 469.9
+  region: middle
+  context: 'Seller''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Seller''s Agent.
+    (salespers'
+  ul_bbox:
+    x0: 104.3
+    y0: 463.9
+    x1: 447.8
+    y1: 469.9
+- page: 2
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 54.0
+    y0: 479.8
+    x1: 304.0
+    y1: 491.0
+  region: lower
+  context: 'Buyer''s Brokerage Firm DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is the broker of (check one):
+    the buye'
+  ul_bbox:
+    x0: 139.0
+    y0: 485.0
+    x1: 448.6
+    y1: 491.0
+- page: 2
   field: Buyer's Agent
   category: entry_brokerage
   bbox:
@@ -287,13 +286,182 @@ field_map:
     x1: 303.5
     y1: 511.5
   region: lower
-  context: 'Buyer''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________
-    Is (check one): the Buyer''s Agent. (salesperson'
+  context: 'Buyer''s Agent DO NOT COMPLETE. SAMPLE ONLY License Number ______________ Is (check one): the Buyer''s Agent.
+    (salesperson'
   ul_bbox:
     x0: 105.0
     y0: 505.5
     x1: 448.6
     y1: 511.5
+- page: 3
+  field: THIS IS AN OFFER FROM
+  category: entry_blank
+  bbox:
+    x0: 72.0
+    y0: 101.1
+    x1: 322.0
+    y1: 113.4
+  region: header
+  context: "A. THIS IS AN OFFER FROM (\u201CBuyer\u201D). B. THE PROPERTY to be acquired is , situated in"
+  ul_bbox:
+    x0: 183.5
+    y0: 107.4
+    x1: 533.5
+    y1: 113.4
+- page: 3
+  field: to be acquired is
+  category: entry_blank
+  bbox:
+    x0: 141.8
+    y0: 112.1
+    x1: 391.8
+    y1: 124.4
+  region: header
+  context: B. THE PROPERTY to be acquired is , situated in (City), (County), California, (Zip Code),
+  ul_bbox:
+    x0: 214.5
+    y0: 118.4
+    x1: 529.5
+    y1: 124.4
+- page: 3
+  field: Seller's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 226.1
+    x1: 322.0
+    y1: 238.4
+  region: upper
+  context: 'Seller''s Brokerage Firm License Number Is the broker of (check one): the Seller; or both the Buyer and Seller
+    (Dual Agen'
+  ul_bbox:
+    x0: 175.2
+    y0: 232.4
+    x1: 425.2
+    y1: 238.4
+- page: 3
+  field: Seller's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 249.3
+    x1: 322.0
+    y1: 261.4
+  region: upper
+  context: 'Seller''s Agent License Number Is (check one): the Seller''s Agent. (Salesperson or broker associate); or both
+    the Buyer''s'
+  ul_bbox:
+    x0: 129.7
+    y0: 255.4
+    x1: 424.7
+    y1: 261.4
+- page: 3
+  field: Buyer's Brokerage Firm
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 272.1
+    x1: 322.0
+    y1: 284.4
+  region: upper
+  context: 'Buyer''s Brokerage Firm License Number Is the broker of (check one): the Buyer; or both the Buyer and Seller (Dual
+    Agent)'
+  ul_bbox:
+    x0: 176.0
+    y0: 278.4
+    x1: 426.0
+    y1: 284.4
+- page: 3
+  field: Buyer's Agent
+  category: entry_brokerage
+  bbox:
+    x0: 72.0
+    y0: 295.1
+    x1: 322.0
+    y1: 307.4
+  region: upper
+  context: 'Buyer''s Agent License Number Is (check one): the Buyer''s Agent (Salesperson or broker associate); or both the
+    Buyer''s an'
+  ul_bbox:
+    x0: 135.1
+    y0: 301.4
+    x1: 425.1
+    y1: 307.4
+- page: 3
+  field: 17 (or
+  category: entry_days
+  bbox:
+    x0: 272.2
+    y0: 575.8
+    x1: 317.5
+    y1: 586.6
+  region: lower
+  context: If FHA or VA checked, Deliver list of lender required repairs 17 (or ) Days after Acceptance
+  ul_bbox:
+    x0: 295.3
+    y0: 580.6
+    x1: 317.5
+    y1: 586.6
+- page: 3
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 721.8
+    x1: 330.3
+    y1: 732.6
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 1 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 726.6
+    x1: 330.3
+    y1: 732.6
+- page: 3
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 721.8
+    x1: 375.3
+    y1: 732.6
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 1 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 726.6
+    x1: 375.3
+    y1: 732.6
+- page: 3
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 491.9
+    y1: 732.6
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 1 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 726.6
+    x1: 491.9
+    y1: 732.6
+- page: 3
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 536.8
+    y1: 732.6
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 1 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 726.6
+    x1: 536.8
+    y1: 732.6
 - page: 3
   field: 'Prepared:'
   category: entry_date
@@ -310,38 +478,6 @@ field_map:
     x1: 199.5
     y1: 91.4
 - page: 3
-  field: THIS IS AN OFFER FROM
-  category: entry_blank
-  bbox:
-    x0: 72.0
-    y0: 101.1
-    x1: 322.0
-    y1: 113.4
-  region: header
-  context: A. THIS IS AN OFFER FROM (“Buyer”). B. THE PROPERTY to be acquired is ,
-    situated in
-  ul_bbox:
-    x0: 183.5
-    y0: 107.4
-    x1: 533.5
-    y1: 113.4
-- page: 3
-  field: to be acquired is
-  category: entry_blank
-  bbox:
-    x0: 141.8
-    y0: 112.1
-    x1: 391.8
-    y1: 124.4
-  region: header
-  context: B. THE PROPERTY to be acquired is , situated in (City), (County), California,
-    (Zip Code),
-  ul_bbox:
-    x0: 214.5
-    y0: 118.4
-    x1: 529.5
-    y1: 124.4
-- page: 3
   field: (City),
   category: entry_blank
   bbox:
@@ -350,7 +486,7 @@ field_map:
     x1: 238.5
     y1: 135.4
   region: upper
-  context: (City), (County), California, (Zip Code), Assessor's Parcel No(s). (“Property”).
+  context: "(City), (County), California, (Zip Code), Assessor's Parcel No(s). (\u201CProperty\u201D)."
   ul_bbox:
     x0: 72.0
     y0: 129.4
@@ -365,7 +501,7 @@ field_map:
     x1: 381.7
     y1: 135.4
   region: upper
-  context: (City), (County), California, (Zip Code), Assessor's Parcel No(s). (“Property”).
+  context: "(City), (County), California, (Zip Code), Assessor's Parcel No(s). (\u201CProperty\u201D)."
   ul_bbox:
     x0: 241.8
     y0: 129.4
@@ -380,7 +516,7 @@ field_map:
     x1: 527.8
     y1: 135.4
   region: upper
-  context: (City), (County), California, (Zip Code), Assessor's Parcel No(s). (“Property”).
+  context: "(City), (County), California, (Zip Code), Assessor's Parcel No(s). (\u201CProperty\u201D)."
   ul_bbox:
     x0: 467.8
     y0: 129.4
@@ -395,172 +531,13 @@ field_map:
     x1: 360.7
     y1: 155.1
   region: upper
-  context: Assessor's Parcel No(s). (“Property”). (Postal/Mailing address may be different
-    from city jurisdiction. Buyer is advised
+  context: "Assessor's Parcel No(s). (\u201CProperty\u201D). (Postal/Mailing address may be different from city jurisdiction.\
+    \ Buyer is advised"
   ul_bbox:
     x0: 172.7
     y0: 140.4
     x1: 522.7
     y1: 146.4
-- page: 3
-  field: Seller's Brokerage Firm
-  category: entry_brokerage
-  bbox:
-    x0: 72.0
-    y0: 226.1
-    x1: 322.0
-    y1: 238.4
-  region: upper
-  context: 'Seller''s Brokerage Firm License Number Is the broker of (check one):
-    the Seller; or both the Buyer and Seller (Dual Agen'
-  ul_bbox:
-    x0: 175.2
-    y0: 232.4
-    x1: 425.2
-    y1: 238.4
-- page: 3
-  field: . nse Number
-  category: entry_license
-  bbox:
-    x0: 500.0
-    y0: 226.4
-    x1: 576.0
-    y1: 238.4
-  region: middle
-  context: 'B. CONFIRMATION: The following agency relationships are hereby confirmed
-    for thi'
-  ul_bbox:
-    x0: 500.0
-    y0: 234.4
-    x1: 576.0
-    y1: 238.4
-- page: 3
-  field: Seller's Agent
-  category: entry_brokerage
-  bbox:
-    x0: 72.0
-    y0: 249.3
-    x1: 322.0
-    y1: 261.4
-  region: upper
-  context: 'Seller''s Agent License Number Is (check one): the Seller''s Agent. (Salesperson
-    or broker associate); or both the Buyer''s'
-  ul_bbox:
-    x0: 129.7
-    y0: 255.4
-    x1: 424.7
-    y1: 261.4
-- page: 3
-  field: nse Number and Seller's Agent
-  category: entry_license
-  bbox:
-    x0: 500.0
-    y0: 249.4
-    x1: 576.0
-    y1: 261.4
-  region: middle
-  context: 'Is the broker of (check one): the Seller; or both the Buyer and Seller
-    (Dual Age'
-  ul_bbox:
-    x0: 500.0
-    y0: 257.4
-    x1: 576.0
-    y1: 261.4
-- page: 3
-  field: Buyer's Brokerage Firm
-  category: entry_brokerage
-  bbox:
-    x0: 72.0
-    y0: 272.1
-    x1: 322.0
-    y1: 284.4
-  region: upper
-  context: 'Buyer''s Brokerage Firm License Number Is the broker of (check one): the
-    Buyer; or both the Buyer and Seller (Dual Agent)'
-  ul_bbox:
-    x0: 176.0
-    y0: 278.4
-    x1: 426.0
-    y1: 284.4
-- page: 3
-  field: License Number
-  category: entry_license
-  bbox:
-    x0: 500.0
-    y0: 272.4
-    x1: 576.0
-    y1: 284.4
-  region: middle
-  context: 'Is (check one): the Seller''s Agent. (Salesperson or broker associate);
-    or both t'
-  ul_bbox:
-    x0: 500.0
-    y0: 280.4
-    x1: 576.0
-    y1: 284.4
-- page: 3
-  field: Buyer's Agent
-  category: entry_brokerage
-  bbox:
-    x0: 72.0
-    y0: 295.1
-    x1: 322.0
-    y1: 307.4
-  region: upper
-  context: 'Buyer''s Agent License Number Is (check one): the Buyer''s Agent (Salesperson
-    or broker associate); or both the Buyer''s an'
-  ul_bbox:
-    x0: 135.1
-    y0: 301.4
-    x1: 425.1
-    y1: 307.4
-- page: 3
-  field: nse Number and Seller's Agent
-  category: entry_license
-  bbox:
-    x0: 500.0
-    y0: 295.4
-    x1: 576.0
-    y1: 307.4
-  region: middle
-  context: 'Is the broker of (check one): the Buyer; or both the Buyer and Seller
-    (Dual Agen'
-  ul_bbox:
-    x0: 500.0
-    y0: 303.4
-    x1: 576.0
-    y1: 307.4
-- page: 3
-  field: Purchase Price
-  category: entry_dollar
-  bbox:
-    x0: 278.9
-    y0: 397.5
-    x1: 434.7
-    y1: 409.5
-  region: middle
-  context: Term A 5, 5B (cash) Purchase Price $ All Cash C Of (CO ) D f A
-  ul_bbox:
-    x0: 278.9
-    y0: 405.5
-    x1: 434.7
-    y1: 409.5
-- page: 3
-  field: Close of Escrow Days
-  category: entry_days
-  bbox:
-    x0: 281.6
-    y0: 414.9
-    x1: 303.8
-    y1: 426.9
-  region: middle
-  context: A 5, 5B (cash) Purchase Price $ All Cash B Close Of Escrow (COE) Days after
-    Acce
-  ul_bbox:
-    x0: 281.6
-    y0: 422.9
-    x1: 303.8
-    y1: 426.9
 - page: 3
   field: (date)
   category: entry_date
@@ -577,22 +554,6 @@ field_map:
     x1: 360.4
     y1: 438.0
 - page: 3
-  field: Expiration of Offer Date
-  category: entry_date
-  bbox:
-    x0: 281.5
-    y0: 451.2
-    x1: 415.1
-    y1: 463.2
-  region: middle
-  context: C 32A Expiration of Offer 3 calendar days after all Buyer Signature(s)
-    or (date)
-  ul_bbox:
-    x0: 281.5
-    y0: 459.2
-    x1: 415.1
-    y1: 463.2
-- page: 3
   field: 5PM
   category: entry_blank
   bbox:
@@ -608,102 +569,6 @@ field_map:
     x1: 331.3
     y1: 474.3
 - page: 3
-  field: Purchase Price
-  category: entry_dollar
-  bbox:
-    x0: 278.9
-    y0: 476.4
-    x1: 332.4
-    y1: 488.4
-  region: middle
-  context: at 5PM or AM/ PM D(1) 5A(1) Initial Deposit Amount $ ( % of purchase price)
-    (% n
-  ul_bbox:
-    x0: 278.9
-    y0: 484.4
-    x1: 332.4
-    y1: 488.4
-- page: 3
-  field: '% of purchase price'
-  category: entry_percent
-  bbox:
-    x0: 337.2
-    y0: 476.4
-    x1: 363.9
-    y1: 488.4
-  region: middle
-  context: at 5PM or AM/ PM D(1) 5A(1) Initial Deposit Amount $ ( % of purchase price)
-    (% n
-  ul_bbox:
-    x0: 337.2
-    y0: 484.4
-    x1: 363.9
-    y1: 488.4
-- page: 3
-  field: Deposit Delivery Days
-  category: entry_days
-  bbox:
-    x0: 496.6
-    y0: 476.4
-    x1: 518.8
-    y1: 488.4
-  region: middle
-  context: at 5PM or AM/ PM D(1) 5A(1) Initial Deposit Amount $ ( % of purchase price)
-    (% n
-  ul_bbox:
-    x0: 496.6
-    y0: 484.4
-    x1: 518.8
-    y1: 488.4
-- page: 3
-  field: Increased Deposit
-  category: entry_dollar
-  bbox:
-    x0: 278.9
-    y0: 521.9
-    x1: 332.4
-    y1: 533.9
-  region: middle
-  context: D(2) 5A(2) Increased Deposit See attached Increased Deposit Addendum (C.A.R.
-    For
-  ul_bbox:
-    x0: 278.9
-    y0: 529.9
-    x1: 332.4
-    y1: 533.9
-- page: 3
-  field: '% of purchase price'
-  category: entry_percent
-  bbox:
-    x0: 337.2
-    y0: 521.9
-    x1: 363.9
-    y1: 533.9
-  region: middle
-  context: D(2) 5A(2) Increased Deposit See attached Increased Deposit Addendum (C.A.R.
-    For
-  ul_bbox:
-    x0: 337.2
-    y0: 529.9
-    x1: 363.9
-    y1: 533.9
-- page: 3
-  field: Interest Rate %
-  category: entry_percent
-  bbox:
-    x0: 334.3
-    y0: 541.9
-    x1: 361.0
-    y1: 553.9
-  region: middle
-  context: Interest Rate Points Fixed rate or Initial adjustable rate ● not to exceed
-    % ● B
-  ul_bbox:
-    x0: 334.3
-    y0: 549.9
-    x1: 361.0
-    y1: 553.9
-- page: 3
   field: up
   category: entry_blank
   bbox:
@@ -712,29 +577,12 @@ field_map:
     x1: 373.5
     y1: 562.8
   region: lower
-  context: 'Points ● Buyer to pay up to points to obtain the rate above Seller Financing
-    Other:'
+  context: "Points \u25CF Buyer to pay up to points to obtain the rate above Seller Financing Other:"
   ul_bbox:
     x0: 351.2
     y0: 556.8
     x1: 373.5
     y1: 562.8
-- page: 3
-  field: 17 (or
-  category: entry_days
-  bbox:
-    x0: 272.2
-    y0: 575.8
-    x1: 317.5
-    y1: 586.6
-  region: lower
-  context: If FHA or VA checked, Deliver list of lender required repairs 17 (or )
-    Days after Acceptance
-  ul_bbox:
-    x0: 295.3
-    y0: 580.6
-    x1: 317.5
-    y1: 586.6
 - page: 3
   field: Conventional
   category: entry_blank
@@ -744,77 +592,12 @@ field_map:
     x1: 575.4
     y1: 607.6
   region: lower
-  context: If FHA or VA checked, Deliver list of lender required repairs 17 (or )
-    Days after Acceptance
+  context: If FHA or VA checked, Deliver list of lender required repairs 17 (or ) Days after Acceptance
   ul_bbox:
     x0: 464.2
     y0: 580.6
     x1: 575.4
     y1: 586.6
-- page: 3
-  field: Additional Financed Amount
-  category: entry_dollar
-  bbox:
-    x0: 278.9
-    y0: 597.6
-    x1: 332.4
-    y1: 609.6
-  region: middle
-  context: 'lender required repairs E(2) 5C(2) Additional Financed Amount Interest
-    Rate $ ( '
-  ul_bbox:
-    x0: 278.9
-    y0: 605.6
-    x1: 332.4
-    y1: 609.6
-- page: 3
-  field: Interest Rate %
-  category: entry_percent
-  bbox:
-    x0: 337.2
-    y0: 597.6
-    x1: 363.9
-    y1: 609.6
-  region: middle
-  context: 'lender required repairs E(2) 5C(2) Additional Financed Amount Interest
-    Rate $ ( '
-  ul_bbox:
-    x0: 337.2
-    y0: 605.6
-    x1: 363.9
-    y1: 609.6
-- page: 3
-  field: Interest Rate %
-  category: entry_percent
-  bbox:
-    x0: 334.3
-    y0: 617.6
-    x1: 361.0
-    y1: 629.6
-  region: middle
-  context: Interest Rate Points Fixed rate or Initial adjustable rate ● not to exceed
-    % ● B
-  ul_bbox:
-    x0: 334.3
-    y0: 625.6
-    x1: 361.0
-    y1: 629.6
-- page: 3
-  field: Other Financing Type
-  category: entry_blank
-  bbox:
-    x0: 464.2
-    y0: 626.6
-    x1: 575.4
-    y1: 638.6
-  region: middle
-  context: Interest Rate Points Fixed rate or Initial adjustable rate ● not to exceed
-    % ● B
-  ul_bbox:
-    x0: 464.2
-    y0: 634.6
-    x1: 575.4
-    y1: 638.6
 - page: 3
   field: up
   category: entry_blank
@@ -824,43 +607,164 @@ field_map:
     x1: 373.5
     y1: 638.6
   region: lower
-  context: Points ● Buyer to pay up to points to obtain rate above
+  context: "Points \u25CF Buyer to pay up to points to obtain rate above"
   ul_bbox:
     x0: 351.2
     y0: 632.6
     x1: 373.5
     y1: 638.6
-- page: 3
-  field: PURCHASE PRICE TOTAL
+- page: 4
+  field: $
   category: entry_dollar
   bbox:
-    x0: 278.9
-    y0: 664.4
-    x1: 425.8
-    y1: 676.4
-  region: middle
-  context: E(3) 7A Occupancy Type Primary, or if checked, Secondary Investment F 5D
-    Balance
+    x0: 272.0
+    y0: 46.5
+    x1: 340.9
+    y1: 57.4
+  region: header
+  context: G(1) 5E Seller Credit to Buyer $ For closing costs ADDITIONAL SELLER CREDIT TERMS (does not include buyer broker
+    compens
   ul_bbox:
-    x0: 278.9
-    y0: 672.4
-    x1: 425.8
-    y1: 676.4
-- page: 3
-  field: PURCHASE PRICE TOTAL
+    x0: 278.6
+    y0: 51.4
+    x1: 340.9
+    y1: 57.4
+- page: 4
+  field: final purchase price AND, if applicable $
   category: entry_dollar
   bbox:
-    x0: 278.9
-    y0: 678.8
-    x1: 425.8
-    y1: 690.8
-  region: middle
-  context: F 5D Balance of Down Payment $ PURCHASE PRICE TOTAL $
+    x0: 272.5
+    y0: 93.5
+    x1: 470.0
+    y1: 104.5
+  region: header
+  context: Buyer's Broker final purchase price AND, if applicable $ OR, if checked $ .
   ul_bbox:
-    x0: 278.9
-    y0: 686.8
-    x1: 425.8
-    y1: 690.8
+    x0: 416.6
+    y0: 98.5
+    x1: 470.0
+    y1: 104.5
+- page: 4
+  field: 3 (or
+  category: entry_days
+  bbox:
+    x0: 362.5
+    y0: 119.9
+    x1: 405.6
+    y1: 130.7
+  region: upper
+  context: H(1) 5B Verification of All Cash (sufficient funds) Attached to the offer or 3 (or ) Days after Acceptance
+  ul_bbox:
+    x0: 383.3
+    y0: 124.7
+    x1: 405.6
+    y1: 130.7
+- page: 4
+  field: 3 (or
+  category: entry_days
+  bbox:
+    x0: 362.5
+    y0: 141.5
+    x1: 405.6
+    y1: 152.3
+  region: upper
+  context: H(2) 6A Verification of Down Payment and Closing Costs Attached to the offer or 3 (or ) Days after Acceptance
+  ul_bbox:
+    x0: 383.3
+    y0: 146.3
+    x1: 405.6
+    y1: 152.3
+- page: 4
+  field: 3 (or
+  category: entry_days
+  bbox:
+    x0: 362.5
+    y0: 163.1
+    x1: 405.6
+    y1: 173.9
+  region: upper
+  context: H(3) 6B Verification of Loan Application Attached to the offer or 3 (or ) Days after Acceptance Prequalification
+    Preappr
+  ul_bbox:
+    x0: 383.3
+    y0: 167.9
+    x1: 405.6
+    y1: 173.9
+- page: 4
+  field: $
+  category: entry_dollar
+  bbox:
+    x0: 138.5
+    y0: 281.2
+    x1: 236.4
+    y1: 292.0
+  region: upper
+  context: $ cancellation rights in FVAC.
+  ul_bbox:
+    x0: 147.4
+    y0: 286.0
+    x1: 236.4
+    y1: 292.0
+- page: 4
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 330.3
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 2 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 736.4
+    x1: 330.3
+    y1: 742.4
+- page: 4
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 375.3
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 2 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 736.4
+    x1: 375.3
+    y1: 742.4
+- page: 4
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 491.9
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 2 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 736.4
+    x1: 491.9
+    y1: 742.4
+- page: 4
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 536.8
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 2 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 736.4
+    x1: 536.8
+    y1: 742.4
 - page: 4
   field: 'Address:'
   category: entry_blank
@@ -891,22 +795,6 @@ field_map:
     y0: 22.4
     x1: 576.0
     y1: 28.4
-- page: 4
-  field: $
-  category: entry_dollar
-  bbox:
-    x0: 272.0
-    y0: 46.5
-    x1: 340.9
-    y1: 57.4
-  region: header
-  context: G(1) 5E Seller Credit to Buyer $ For closing costs ADDITIONAL SELLER CREDIT
-    TERMS (does not include buyer broker compens
-  ul_bbox:
-    x0: 278.6
-    y0: 51.4
-    x1: 340.9
-    y1: 57.4
 - page: 4
   field: 'compensation):'
   category: entry_blank
@@ -931,283 +819,13 @@ field_map:
     x1: 538.8
     y1: 95.5
   region: header
-  context: G(3) 18A Seller Payment to Compensate Buyer's Broker Seller agrees to pay
-    Buyer's Broker, out of transaction proceeds, %
+  context: G(3) 18A Seller Payment to Compensate Buyer's Broker Seller agrees to pay Buyer's Broker, out of transaction proceeds,
+    %
   ul_bbox:
     x0: 512.1
     y0: 89.5
     x1: 538.8
     y1: 95.5
-- page: 4
-  field: final purchase price AND, if applicable $
-  category: entry_dollar
-  bbox:
-    x0: 272.5
-    y0: 93.5
-    x1: 470.0
-    y1: 104.5
-  region: header
-  context: Buyer's Broker final purchase price AND, if applicable $ OR, if checked
-    $ .
-  ul_bbox:
-    x0: 416.6
-    y0: 98.5
-    x1: 470.0
-    y1: 104.5
-- page: 4
-  field: Broker Compensation
-  category: entry_dollar
-  bbox:
-    x0: 288.6
-    y0: 101.4
-    x1: 342.0
-    y1: 113.4
-  region: upper
-  context: 'G(3) 18A Seller Payment to Compensate Buyer''s Broker Seller agrees to
-    pay Buyer '
-  ul_bbox:
-    x0: 288.6
-    y0: 109.4
-    x1: 342.0
-    y1: 113.4
-- page: 4
-  field: 3 (or
-  category: entry_days
-  bbox:
-    x0: 362.5
-    y0: 119.9
-    x1: 405.6
-    y1: 130.7
-  region: upper
-  context: H(1) 5B Verification of All Cash (sufficient funds) Attached to the offer
-    or 3 (or ) Days after Acceptance
-  ul_bbox:
-    x0: 383.3
-    y0: 124.7
-    x1: 405.6
-    y1: 130.7
-- page: 4
-  field: 3 (or
-  category: entry_days
-  bbox:
-    x0: 362.5
-    y0: 141.5
-    x1: 405.6
-    y1: 152.3
-  region: upper
-  context: H(2) 6A Verification of Down Payment and Closing Costs Attached to the
-    offer or 3 (or ) Days after Acceptance
-  ul_bbox:
-    x0: 383.3
-    y0: 146.3
-    x1: 405.6
-    y1: 152.3
-- page: 4
-  field: 3 (or
-  category: entry_days
-  bbox:
-    x0: 362.5
-    y0: 163.1
-    x1: 405.6
-    y1: 173.9
-  region: upper
-  context: H(3) 6B Verification of Loan Application Attached to the offer or 3 (or
-    ) Days after Acceptance Prequalification Preappr
-  ul_bbox:
-    x0: 383.3
-    y0: 167.9
-    x1: 405.6
-    y1: 173.9
-- page: 4
-  field: Assignment Request Days
-  category: entry_days
-  bbox:
-    x0: 290.6
-    y0: 197.2
-    x1: 312.8
-    y1: 209.2
-  region: middle
-  context: I Intentionally Left Blank J 16 Final Verification of Condition 5 (or )
-    Days pri
-  ul_bbox:
-    x0: 290.6
-    y0: 205.2
-    x1: 312.8
-    y1: 209.2
-- page: 4
-  field: Assignment Request Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 211.6
-    x1: 317.3
-    y1: 223.6
-  region: middle
-  context: J 16 Final Verification of Condition 5 (or ) Days prior to COE K 23 Assignment
-    R
-  ul_bbox:
-    x0: 295.1
-    y0: 219.6
-    x1: 317.3
-    y1: 223.6
-- page: 4
-  field: Loan Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 240.4
-    x1: 317.3
-    y1: 252.4
-  region: middle
-  context: L CONTINGENCIES TIME TO REMOVE CONTINGENCIES CONTINGENCY REMOVED L(1) 8A
-    Loan(s)
-  ul_bbox:
-    x0: 295.1
-    y0: 248.4
-    x1: 317.3
-    y1: 252.4
-- page: 4
-  field: Loan Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 253.4
-    x1: 317.3
-    y1: 265.4
-  region: middle
-  context: L(1) 8A Loan(s) 17 (or ) Days after Acceptance No loan contingency L(2)
-    8B Appra
-  ul_bbox:
-    x0: 295.1
-    y0: 261.4
-    x1: 317.3
-    y1: 265.4
-- page: 4
-  field: $
-  category: entry_dollar
-  bbox:
-    x0: 138.5
-    y0: 281.2
-    x1: 236.4
-    y1: 292.0
-  region: upper
-  context: $ cancellation rights in FVAC.
-  ul_bbox:
-    x0: 147.4
-    y0: 286.0
-    x1: 236.4
-    y1: 292.0
-- page: 4
-  field: Investigation Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 297.1
-    x1: 317.3
-    y1: 309.1
-  region: middle
-  context: $ cancellation rights in FVAC. L(3) 8C, 12 Investigation of Property 17
-    (or ) Da
-  ul_bbox:
-    x0: 295.1
-    y0: 305.1
-    x1: 317.3
-    y1: 309.1
-- page: 4
-  field: Investigation Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 310.0
-    x1: 317.3
-    y1: 322.0
-  region: middle
-  context: L(3) 8C, 12 Investigation of Property 17 (or ) Days after Acceptance Information
-  ul_bbox:
-    x0: 295.1
-    y0: 318.0
-    x1: 317.3
-    y1: 322.0
-- page: 4
-  field: Insurance Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 346.0
-    x1: 317.3
-    y1: 358.0
-  region: middle
-  context: does NOT create cancellation rights, and applies even if contingencies
-    are remov
-  ul_bbox:
-    x0: 295.1
-    y0: 354.0
-    x1: 317.3
-    y1: 358.0
-- page: 4
-  field: Insurance Contingency Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 358.9
-    x1: 317.3
-    y1: 370.9
-  region: middle
-  context: L(4) 8D Insurance 17 (or ) Days after Acceptance L(5) 8E, 14A Review of
-    Seller D
-  ul_bbox:
-    x0: 295.1
-    y0: 366.9
-    x1: 317.3
-    y1: 370.9
-- page: 4
-  field: Title Report Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 381.0
-    x1: 317.3
-    y1: 393.0
-  region: middle
-  context: 'after Delivery, whichever is later L(6) 8F, 13A Preliminary ("Title")
-    Report 17 '
-  ul_bbox:
-    x0: 295.1
-    y0: 389.0
-    x1: 317.3
-    y1: 393.0
-- page: 4
-  field: Common Interest Disclosure Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 402.7
-    x1: 317.3
-    y1: 414.7
-  region: middle
-  context: 'after Delivery, whichever is later L(7) 8G, 11M Common Interest Disclosures
-    Per '
-  ul_bbox:
-    x0: 295.1
-    y0: 410.7
-    x1: 317.3
-    y1: 414.7
-- page: 4
-  field: Common Interest Disclosure Days
-  category: entry_days
-  bbox:
-    x0: 295.1
-    y0: 424.3
-    x1: 317.3
-    y1: 436.3
-  region: middle
-  context: Per Civil Code § 4525 or Agreement after Delivery, whichever is later L(8)
-    8H, 9
-  ul_bbox:
-    x0: 295.1
-    y0: 432.3
-    x1: 317.3
-    y1: 436.3
 - page: 4
   field: AM/
   category: entry_blank
@@ -1232,8 +850,8 @@ field_map:
     x1: 318.6
     y1: 525.6
   region: lower
-  context: days after COE (29 or fewer days) days after COE (30 or more days) fewer
-    days. C.A.R. Form RLAS attached if 30 or more d
+  context: days after COE (29 or fewer days) days after COE (30 or more days) fewer days. C.A.R. Form RLAS attached if 30
+    or more d
   ul_bbox:
     x0: 281.4
     y0: 519.6
@@ -1254,70 +872,97 @@ field_map:
     y0: 528.4
     x1: 303.6
     y1: 534.4
-- page: 4
-  field: Seller Document Delivery Days
-  category: entry_days
+- page: 5
+  field: Other
+  category: entry_blank
   bbox:
-    x0: 290.6
-    y0: 594.4
-    x1: 312.8
-    y1: 606.4
-  region: middle
-  context: N Documents/Fees/Compliance Time for Performance N(1) 14A Seller Delivery
-    of Doc
+    x0: 462.9
+    y0: 229.0
+    x1: 576.2
+    y1: 239.8
+  region: upper
+  context: Report, including tax information Other
   ul_bbox:
-    x0: 290.6
-    y0: 602.4
-    x1: 312.8
-    y1: 606.4
-- page: 4
-  field: Seller Document Delivery Days
-  category: entry_days
+    x0: 487.2
+    y0: 233.8
+    x1: 576.2
+    y1: 239.8
+- page: 5
+  field: cost not to exceed $
+  category: entry_dollar
   bbox:
-    x0: 290.6
-    y0: 608.8
-    x1: 312.8
-    y1: 620.8
-  region: middle
-  context: N(1) 14A Seller Delivery of Documents 7 (or ) Days after Acceptance N(2)
-    19B Sig
+    x0: 450.0
+    y0: 629.5
+    x1: 570.3
+    y1: 640.4
+  region: lower
+  context: 'Coverage includes, but is not limited to: cost not to exceed $ . Issued by: Click here to select your Service
+    Provider'
   ul_bbox:
-    x0: 290.6
-    y0: 616.8
-    x1: 312.8
-    y1: 620.8
-- page: 4
-  field: HOA Fees Days
-  category: entry_days
+    x0: 525.8
+    y0: 634.4
+    x1: 570.3
+    y1: 640.4
+- page: 5
+  field: Buyer's Initials
+  category: entry_initial
   bbox:
-    x0: 290.6
-    y0: 630.0
-    x1: 312.8
-    y1: 642.0
-  region: middle
-  context: Provisions and Instructions N(3) 11M(2) Time to pay fees for ordering HOA
-    Docume
+    x0: 234.0
+    y0: 732.0
+    x1: 330.3
+    y1: 743.0
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 3 OF 17) Buyer's Initials / Seller's Initials /
   ul_bbox:
-    x0: 290.6
-    y0: 638.0
-    x1: 312.8
-    y1: 642.0
-- page: 4
-  field: Smoke Alarm/CO Days
-  category: entry_days
+    x0: 294.7
+    y0: 737.0
+    x1: 330.3
+    y1: 743.0
+- page: 5
+  field: Buyer's Initials
+  category: entry_initial
   bbox:
-    x0: 290.6
-    y0: 650.9
-    x1: 312.8
-    y1: 662.9
-  region: middle
-  context: Documents N(4) 10B(1) Install smoke alarm(s), CO detector(s), water heater
-    braci
+    x0: 234.0
+    y0: 732.0
+    x1: 375.3
+    y1: 743.0
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 3 OF 17) Buyer's Initials / Seller's Initials /
   ul_bbox:
-    x0: 290.6
-    y0: 658.9
-    x1: 312.8
-    y1: 662.9
+    x0: 339.6
+    y0: 737.0
+    x1: 375.3
+    y1: 743.0
+- page: 5
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.0
+    x1: 491.9
+    y1: 743.0
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 3 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 737.0
+    x1: 491.9
+    y1: 743.0
+- page: 5
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.0
+    x1: 536.8
+    y1: 743.0
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 3 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 737.0
+    x1: 536.8
+    y1: 743.0
 - page: 5
   field: 'Address:'
   category: entry_blank
@@ -1348,36 +993,6 @@ field_map:
     y0: 21.4
     x1: 576.0
     y1: 27.4
-- page: 5
-  field: 'Additional Items Included: . . . . . P(2'
-  category: entry_blank
-  bbox:
-    x0: 281.3
-    y0: 139.7
-    x1: 419.3
-    y1: 151.7
-  region: upper
-  context: 'Additional Items Included: . . . . . P(2) E l d d It'
-  ul_bbox:
-    x0: 281.3
-    y0: 147.7
-    x1: 419.3
-    y1: 151.7
-- page: 5
-  field: 'Additional Items Included: . . . . . P(2'
-  category: entry_blank
-  bbox:
-    x0: 465.1
-    y0: 140.2
-    x1: 576.4
-    y1: 152.2
-  region: upper
-  context: 'Additional Items Included: . . . . . P(2) E l d d It'
-  ul_bbox:
-    x0: 465.1
-    y0: 148.2
-    x1: 576.4
-    y1: 152.2
 - page: 5
   field: Excluded
   category: entry_blank
@@ -1412,21 +1027,6 @@ field_map:
   field: Other
   category: entry_blank
   bbox:
-    x0: 462.9
-    y0: 229.0
-    x1: 576.2
-    y1: 239.8
-  region: upper
-  context: Report, including tax information Other
-  ul_bbox:
-    x0: 487.2
-    y0: 233.8
-    x1: 576.2
-    y1: 239.8
-- page: 5
-  field: Other
-  category: entry_blank
-  bbox:
     x0: 271.9
     y0: 229.0
     x1: 485.1
@@ -1453,36 +1053,20 @@ field_map:
     x1: 444.5
     y1: 248.7
 - page: 5
-  field: Seller
-  category: entry_signature
+  field: 'by:'
+  category: entry_blank
   bbox:
-    x0: 328.0
-    y0: 256.7
-    x1: 425.1
-    y1: 275.8
+    x0: 314.1
+    y0: 253.9
+    x1: 525.7
+    y1: 264.7
   region: upper
-  context: 'Provided by: Click here to select your Service Provider Seller'
+  context: 'Provided by: Click here to select your Service Provider'
   ul_bbox:
     x0: 328.0
     y0: 258.7
     x1: 572.8
     y1: 264.7
-- page: 5
-  field: License Number
-  category: entry_license
-  bbox:
-    x0: 368.9
-    y0: 265.7
-    x1: 444.5
-    y1: 277.7
-  region: middle
-  context: 'Provided by: Q(2) Optional Wildfire Disclosure Report Buyer Seller Both
-    Provided'
-  ul_bbox:
-    x0: 368.9
-    y0: 273.7
-    x1: 444.5
-    y1: 277.7
 - page: 5
   field: Provided
   category: entry_blank
@@ -1492,24 +1076,22 @@ field_map:
     x1: 301.6
     y1: 290.6
   region: upper
-  context: 'Provided by: Click here for Additional Report Click here to select Wildfire
-    Service Provider'
+  context: 'Provided by: Click here for Additional Report Click here to select Wildfire Service Provider'
   ul_bbox:
     x0: 128.4
     y0: 284.6
     x1: 257.5
     y1: 290.6
 - page: 5
-  field: Seller
-  category: entry_signature
+  field: 'by:'
+  category: entry_blank
   bbox:
-    x0: 318.7
-    y0: 282.6
-    x1: 425.1
-    y1: 302.8
+    x0: 305.3
+    y0: 279.8
+    x1: 516.4
+    y1: 290.6
   region: upper
-  context: 'Provided by: Click here for Additional Report Click here to select Wildfire
-    Service Provider Seller'
+  context: 'Provided by: Click here for Additional Report Click here to select Wildfire Service Provider'
   ul_bbox:
     x0: 318.7
     y0: 284.6
@@ -1546,16 +1128,15 @@ field_map:
     x1: 234.7
     y1: 315.9
 - page: 5
-  field: Seller
-  category: entry_signature
+  field: 'Holder:'
+  category: entry_blank
   bbox:
-    x0: 328.2
-    y0: 395.2
-    x1: 425.1
-    y1: 413.4
+    x0: 299.0
+    y0: 392.3
+    x1: 526.2
+    y1: 403.2
   region: middle
-  context: 'Escrow Holder: Q(8) 13 Owner''s title insurance policy Buyer Seller Both
-    Portfolio Escrow Seller'
+  context: 'Escrow Holder: Q(8) 13 Owner''s title insurance policy Buyer Seller Both Portfolio Escrow'
   ul_bbox:
     x0: 328.2
     y0: 397.2
@@ -1577,31 +1158,14 @@ field_map:
     x1: 577.1
     y1: 426.6
 - page: 5
-  field: License Number
-  category: entry_license
-  bbox:
-    x0: 368.9
-    y0: 459.0
-    x1: 444.5
-    y1: 471.0
-  region: middle
-  context: policy insuring Buyer's lender. Q(10) County transfer tax, fees Buyer Seller
-    Bot
-  ul_bbox:
-    x0: 368.9
-    y0: 467.0
-    x1: 444.5
-    y1: 471.0
-- page: 5
   field: Buyer
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 271.9
     y0: 584.1
     x1: 441.1
     y1: 603.5
   region: lower
-  context: ' Buyer'
   ul_bbox:
     x0: 271.9
     y0: 586.1
@@ -1638,38 +1202,6 @@ field_map:
     x1: 213.0
     y1: 618.4
 - page: 5
-  field: $
-  category: entry_dollar
-  bbox:
-    x0: 368.9
-    y0: 619.5
-    x1: 444.5
-    y1: 631.5
-  region: middle
-  context: Q(17) fees or costs Buyer Seller Both Q(18) 10C Home warranty plan chosen
-    by Buy
-  ul_bbox:
-    x0: 368.9
-    y0: 627.5
-    x1: 444.5
-    y1: 631.5
-- page: 5
-  field: cost not to exceed $
-  category: entry_dollar
-  bbox:
-    x0: 450.0
-    y0: 629.5
-    x1: 570.3
-    y1: 640.4
-  region: lower
-  context: 'Coverage includes, but is not limited to: cost not to exceed $ . Issued
-    by: Click here to select your Service Provider'
-  ul_bbox:
-    x0: 525.8
-    y0: 634.4
-    x1: 570.3
-    y1: 640.4
-- page: 5
   field: Issued
   category: entry_blank
   bbox:
@@ -1685,22 +1217,6 @@ field_map:
     x1: 257.5
     y1: 650.4
 - page: 5
-  field: 'by:'
-  category: entry_blank
-  bbox:
-    x0: 297.5
-    y0: 640.7
-    x1: 508.4
-    y1: 651.6
-  region: lower
-  context: 'Issued by: Buyer waives home warranty plan Click here to select your Service
-    Provider'
-  ul_bbox:
-    x0: 310.5
-    y0: 645.6
-    x1: 568.7
-    y1: 651.6
-- page: 5
   field: 'TERMS:'
   category: entry_blank
   bbox:
@@ -1715,38 +1231,21 @@ field_map:
     y0: 655.5
     x1: 257.5
     y1: 661.5
-- page: 6
-  field: 'Address:'
+- page: 5
+  field: 'by:'
   category: entry_blank
   bbox:
-    x0: 74.1
-    y0: 15.3
-    x1: 308.0
-    y1: 27.4
-  region: header
-  context: 'Property Address: Date: 4. PROPERTY ADDENDA AND ADVISORIES: (check all
-    that apply) , ,'
+    x0: 297.5
+    y0: 640.7
+    x1: 508.4
+    y1: 651.6
+  region: lower
+  context: 'Issued by: Buyer waives home warranty plan Click here to select your Service Provider'
   ul_bbox:
-    x0: 110.5
-    y0: 21.4
-    x1: 440.5
-    y1: 27.4
-- page: 6
-  field: 'Date:'
-  category: entry_date
-  bbox:
-    x0: 440.5
-    y0: 15.3
-    x1: 576.0
-    y1: 27.4
-  region: header
-  context: 'Property Address: Date: 4. PROPERTY ADDENDA AND ADVISORIES: (check all
-    that apply) , ,'
-  ul_bbox:
-    x0: 467.0
-    y0: 21.4
-    x1: 576.0
-    y1: 27.4
+    x0: 310.5
+    y0: 645.6
+    x1: 568.7
+    y1: 651.6
 - page: 6
   field: Other
   category: entry_blank
@@ -1756,8 +1255,8 @@ field_map:
     x1: 546.5
     y1: 111.4
   region: header
-  context: 'Mixed Use Purchase Addendum (C.A.R. Form MU-PA) Other B. OTHER ADDENDA:
-    This Agreement is subject to the terms contained'
+  context: 'Mixed Use Purchase Addendum (C.A.R. Form MU-PA) Other B. OTHER ADDENDA: This Agreement is subject to the terms
+    contained'
   ul_bbox:
     x0: 349.0
     y0: 105.4
@@ -1772,8 +1271,8 @@ field_map:
     x1: 206.0
     y1: 132.4
   region: upper
-  context: 'Addendum # (C.A.R. Form ADM) Short Sale Addendum (C.A.R. Form SSA) Back
-    Up Offer Addendum (C.A.R. Form BUO) Court Confir'
+  context: 'Addendum # (C.A.R. Form ADM) Short Sale Addendum (C.A.R. Form SSA) Back Up Offer Addendum (C.A.R. Form BUO) Court
+    Confir'
   ul_bbox:
     x0: 136.0
     y0: 126.4
@@ -1788,8 +1287,8 @@ field_map:
     x1: 297.5
     y1: 174.4
   region: upper
-  context: 'Other Other C. BUYER AND SELLER ADVISORIES: (Note: All Advisories below
-    are provided for reference purposes only and are'
+  context: 'Other Other C. BUYER AND SELLER ADVISORIES: (Note: All Advisories below are provided for reference purposes only
+    and are'
   ul_bbox:
     x0: 107.5
     y0: 168.4
@@ -1804,8 +1303,8 @@ field_map:
     x1: 546.5
     y1: 174.4
   region: upper
-  context: 'Other Other C. BUYER AND SELLER ADVISORIES: (Note: All Advisories below
-    are provided for reference purposes only and are'
+  context: 'Other Other C. BUYER AND SELLER ADVISORIES: (Note: All Advisories below are provided for reference purposes only
+    and are'
   ul_bbox:
     x0: 349.0
     y0: 168.4
@@ -1835,8 +1334,8 @@ field_map:
     x1: 297.5
     y1: 268.9
   region: upper
-  context: 'Other Other 5. ADDITIONAL TERMS AFFECTING PURCHASE PRICE: Buyer represents
-    that funds will be good when deposited with E'
+  context: 'Other Other 5. ADDITIONAL TERMS AFFECTING PURCHASE PRICE: Buyer represents that funds will be good when deposited
+    with E'
   ul_bbox:
     x0: 107.5
     y0: 262.9
@@ -1851,13 +1350,163 @@ field_map:
     x1: 546.5
     y1: 268.9
   region: upper
-  context: 'Other Other 5. ADDITIONAL TERMS AFFECTING PURCHASE PRICE: Buyer represents
-    that funds will be good when deposited with E'
+  context: 'Other Other 5. ADDITIONAL TERMS AFFECTING PURCHASE PRICE: Buyer represents that funds will be good when deposited
+    with E'
   ul_bbox:
     x0: 349.0
     y0: 262.9
     x1: 576.0
     y1: 268.9
+- page: 6
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 330.3
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 4 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.2
+    x1: 330.3
+    y1: 744.2
+- page: 6
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 375.3
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 4 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.2
+    x1: 375.3
+    y1: 744.2
+- page: 6
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 491.9
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 4 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.2
+    x1: 491.9
+    y1: 744.2
+- page: 6
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 536.8
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 4 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.2
+    x1: 536.8
+    y1: 744.2
+- page: 6
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 15.3
+    x1: 308.0
+    y1: 27.4
+  region: header
+  context: 'Property Address: Date: 4. PROPERTY ADDENDA AND ADVISORIES: (check all that apply) , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 21.4
+    x1: 440.5
+    y1: 27.4
+- page: 6
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 440.5
+    y0: 15.3
+    x1: 576.0
+    y1: 27.4
+  region: header
+  context: 'Property Address: Date: 4. PROPERTY ADDENDA AND ADVISORIES: (check all that apply) , ,'
+  ul_bbox:
+    x0: 467.0
+    y0: 21.4
+    x1: 576.0
+    y1: 27.4
+- page: 7
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 330.3
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 5 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 737.4
+    x1: 330.3
+    y1: 743.4
+- page: 7
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 375.3
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 5 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 737.4
+    x1: 375.3
+    y1: 743.4
+- page: 7
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 491.9
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 5 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 737.4
+    x1: 491.9
+    y1: 743.4
+- page: 7
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 536.8
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 5 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 737.4
+    x1: 536.8
+    y1: 743.4
 - page: 7
   field: 'Address:'
   category: entry_blank
@@ -1889,6 +1538,66 @@ field_map:
     x1: 576.0
     y1: 27.4
 - page: 8
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 330.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 6 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.4
+    x1: 330.3
+    y1: 744.4
+- page: 8
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 375.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 6 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.4
+    x1: 375.3
+    y1: 744.4
+- page: 8
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 491.9
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 6 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.4
+    x1: 491.9
+    y1: 744.4
+- page: 8
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 536.8
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 6 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.4
+    x1: 536.8
+    y1: 744.4
+- page: 8
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -1897,8 +1606,8 @@ field_map:
     x1: 308.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: C. INVESTIGATION OF PROPERTY: This Agreement is,
-    as specified in paragraph 3L(3) , contingent up'
+  context: 'Property Address: Date: C. INVESTIGATION OF PROPERTY: This Agreement is, as specified in paragraph 3L(3) , contingent
+    up'
   ul_bbox:
     x0: 110.5
     y0: 22.4
@@ -1913,13 +1622,73 @@ field_map:
     x1: 576.0
     y1: 37.4
   region: header
-  context: 'Property Address: Date: C. INVESTIGATION OF PROPERTY: This Agreement is,
-    as specified in paragraph 3L(3) , contingent up'
+  context: 'Property Address: Date: C. INVESTIGATION OF PROPERTY: This Agreement is, as specified in paragraph 3L(3) , contingent
+    up'
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 9
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 330.3
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 7 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 736.4
+    x1: 330.3
+    y1: 742.4
+- page: 9
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 731.5
+    x1: 375.3
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 7 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 736.4
+    x1: 375.3
+    y1: 742.4
+- page: 9
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 491.9
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 7 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 736.4
+    x1: 491.9
+    y1: 742.4
+- page: 9
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 731.5
+    x1: 536.8
+    y1: 742.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 7 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 736.4
+    x1: 536.8
+    y1: 742.4
 - page: 9
   field: 'Address:'
   category: entry_blank
@@ -1929,8 +1698,8 @@ field_map:
     x1: 308.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: (6) LEASED OR LIENED ITEMS AND SYSTEMS: Seller,
-    within the time specified in paragraph 3N(1), sh'
+  context: 'Property Address: Date: (6) LEASED OR LIENED ITEMS AND SYSTEMS: Seller, within the time specified in paragraph
+    3N(1), sh'
   ul_bbox:
     x0: 110.5
     y0: 22.4
@@ -1945,29 +1714,73 @@ field_map:
     x1: 576.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: (6) LEASED OR LIENED ITEMS AND SYSTEMS: Seller,
-    within the time specified in paragraph 3N(1), sh'
+  context: 'Property Address: Date: (6) LEASED OR LIENED ITEMS AND SYSTEMS: Seller, within the time specified in paragraph
+    3N(1), sh'
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
 - page: 10
-  field: 'Date:'
-  category: entry_date
+  field: Buyer's Initials
+  category: entry_initial
   bbox:
-    x0: 440.5
-    y0: 16.3
-    x1: 576.0
-    y1: 28.4
-  region: header
-  context: 'Property Address: Date: (3) Seller shall, within the time specified in
-    paragraph 3N(1) , provide “Supplemental Disclosur'
+    x0: 234.0
+    y0: 732.2
+    x1: 330.3
+    y1: 743.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 8 OF 17) Buyer's Initials / Seller's Initials /
   ul_bbox:
-    x0: 467.0
-    y0: 22.4
-    x1: 576.0
-    y1: 28.4
+    x0: 294.7
+    y0: 737.2
+    x1: 330.3
+    y1: 743.2
+- page: 10
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 732.2
+    x1: 375.3
+    y1: 743.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 8 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 737.2
+    x1: 375.3
+    y1: 743.2
+- page: 10
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.2
+    x1: 491.9
+    y1: 743.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 8 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 737.2
+    x1: 491.9
+    y1: 743.2
+- page: 10
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.2
+    x1: 536.8
+    y1: 743.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 8 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 737.2
+    x1: 536.8
+    y1: 743.2
 - page: 10
   field: Seller
   category: entry_blank
@@ -1977,14 +1790,14 @@ field_map:
     x1: 311.9
     y1: 37.4
   region: header
-  context: 'Property Address: Date: (3) Seller shall, within the time specified in
-    paragraph 3N(1) , provide “Supplemental Disclosur'
+  context: "Property Address: Date: (3) Seller shall, within the time specified in paragraph 3N(1) , provide \u201CSupplemental\
+    \ Disclosur"
   ul_bbox:
     x0: 110.5
     y0: 22.4
     x1: 440.5
     y1: 28.4
-- page: 11
+- page: 10
   field: 'Date:'
   category: entry_date
   bbox:
@@ -1993,13 +1806,73 @@ field_map:
     x1: 576.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: L. NATURAL AND ENVIRONMENTAL HAZARDS: Seller shall,
-    within the time specified in paragraph 3N(1)'
+  context: "Property Address: Date: (3) Seller shall, within the time specified in paragraph 3N(1) , provide \u201CSupplemental\
+    \ Disclosur"
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 11
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 330.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 9 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.4
+    x1: 330.3
+    y1: 744.4
+- page: 11
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 375.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 9 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.4
+    x1: 375.3
+    y1: 744.4
+- page: 11
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 491.9
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 9 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.4
+    x1: 491.9
+    y1: 744.4
+- page: 11
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 536.8
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 9 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.4
+    x1: 536.8
+    y1: 744.4
 - page: 11
   field: NATURAL
   category: entry_blank
@@ -2009,14 +1882,14 @@ field_map:
     x1: 311.7
     y1: 37.1
   region: header
-  context: 'Property Address: Date: L. NATURAL AND ENVIRONMENTAL HAZARDS: Seller shall,
-    within the time specified in paragraph 3N(1)'
+  context: 'Property Address: Date: L. NATURAL AND ENVIRONMENTAL HAZARDS: Seller shall, within the time specified in paragraph
+    3N(1)'
   ul_bbox:
     x0: 110.5
     y0: 22.4
     x1: 440.5
     y1: 28.4
-- page: 12
+- page: 11
   field: 'Date:'
   category: entry_date
   bbox:
@@ -2025,13 +1898,73 @@ field_map:
     x1: 576.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: B. CONDITI : Title is taken in its present condition
-    subject to all encumbrances, easements, cov'
+  context: 'Property Address: Date: L. NATURAL AND ENVIRONMENTAL HAZARDS: Seller shall, within the time specified in paragraph
+    3N(1)'
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 12
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 734.5
+    x1: 330.3
+    y1: 745.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 10 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 739.4
+    x1: 330.3
+    y1: 745.4
+- page: 12
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 734.5
+    x1: 375.3
+    y1: 745.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 10 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 739.4
+    x1: 375.3
+    y1: 745.4
+- page: 12
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 734.5
+    x1: 491.9
+    y1: 745.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 10 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 739.4
+    x1: 491.9
+    y1: 745.4
+- page: 12
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 734.5
+    x1: 536.8
+    y1: 745.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 10 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 739.4
+    x1: 536.8
+    y1: 745.4
 - page: 12
   field: CONDITI
   category: entry_blank
@@ -2041,13 +1974,89 @@ field_map:
     x1: 309.0
     y1: 35.4
   region: header
-  context: 'Property Address: Date: B. CONDITI : Title is taken in its present condition
-    subject to all encumbrances, easements, cov'
+  context: 'Property Address: Date: B. CONDITI : Title is taken in its present condition subject to all encumbrances, easements,
+    cov'
   ul_bbox:
     x0: 110.5
     y0: 22.4
     x1: 440.5
     y1: 28.4
+- page: 12
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: B. CONDITI : Title is taken in its present condition subject to all encumbrances, easements,
+    cov'
+  ul_bbox:
+    x0: 467.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 13
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 734.3
+    x1: 330.3
+    y1: 745.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 11 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 739.2
+    x1: 330.3
+    y1: 745.2
+- page: 13
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 734.3
+    x1: 375.3
+    y1: 745.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 11 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 739.2
+    x1: 375.3
+    y1: 745.2
+- page: 13
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 734.3
+    x1: 491.9
+    y1: 745.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 11 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 739.2
+    x1: 491.9
+    y1: 745.2
+- page: 13
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 734.3
+    x1: 536.8
+    y1: 745.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 11 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 739.2
+    x1: 536.8
+    y1: 745.2
 - page: 13
   field: 'Address:'
   category: entry_blank
@@ -2079,6 +2088,66 @@ field_map:
     x1: 576.0
     y1: 28.4
 - page: 14
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 330.3
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 12 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 737.4
+    x1: 330.3
+    y1: 743.4
+- page: 14
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 732.5
+    x1: 375.3
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 12 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 737.4
+    x1: 375.3
+    y1: 743.4
+- page: 14
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 491.9
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 12 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 737.4
+    x1: 491.9
+    y1: 743.4
+- page: 14
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 732.5
+    x1: 536.8
+    y1: 743.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 12 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 737.4
+    x1: 536.8
+    y1: 743.4
+- page: 14
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -2109,6 +2178,66 @@ field_map:
     x1: 576.0
     y1: 27.4
 - page: 15
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 330.3
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 13 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.2
+    x1: 330.3
+    y1: 744.2
+- page: 15
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.2
+    x1: 375.3
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 13 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.2
+    x1: 375.3
+    y1: 744.2
+- page: 15
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 491.9
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 13 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.2
+    x1: 491.9
+    y1: 744.2
+- page: 15
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 536.8
+    y1: 744.2
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 13 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.2
+    x1: 536.8
+    y1: 744.2
+- page: 15
   field: 'Address:'
   category: entry_blank
   bbox:
@@ -2117,8 +2246,8 @@ field_map:
     x1: 308.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: 20. SELECTION OF SERVICE PROVIDERS: Agents do
-    not guarantee the performance of any vendors, serv'
+  context: 'Property Address: Date: 20. SELECTION OF SERVICE PROVIDERS: Agents do not guarantee the performance of any vendors,
+    serv'
   ul_bbox:
     x0: 110.5
     y0: 22.4
@@ -2133,13 +2262,73 @@ field_map:
     x1: 576.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: 20. SELECTION OF SERVICE PROVIDERS: Agents do
-    not guarantee the performance of any vendors, serv'
+  context: 'Property Address: Date: 20. SELECTION OF SERVICE PROVIDERS: Agents do not guarantee the performance of any vendors,
+    serv'
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 16
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.8
+    x1: 330.3
+    y1: 744.7
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 14 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.7
+    x1: 330.3
+    y1: 744.7
+- page: 16
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.8
+    x1: 375.3
+    y1: 744.7
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 14 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.7
+    x1: 375.3
+    y1: 744.7
+- page: 16
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.8
+    x1: 491.9
+    y1: 744.7
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 14 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.7
+    x1: 491.9
+    y1: 744.7
+- page: 16
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.8
+    x1: 536.8
+    y1: 744.7
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 14 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.7
+    x1: 536.8
+    y1: 744.7
 - page: 16
   field: 'Address:'
   category: entry_blank
@@ -2149,8 +2338,8 @@ field_map:
     x1: 308.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: K. “Deliver”, “Delivered” or “Delivery” of documents,
-    unless Otherwise Agreed, means and shall b'
+  context: "Property Address: Date: K. \u201CDeliver\u201D, \u201CDelivered\u201D or \u201CDelivery\u201D of documents, unless\
+    \ Otherwise Agreed, means and shall b"
   ul_bbox:
     x0: 110.5
     y0: 22.4
@@ -2165,13 +2354,193 @@ field_map:
     x1: 576.0
     y1: 28.4
   region: header
-  context: 'Property Address: Date: K. “Deliver”, “Delivered” or “Delivery” of documents,
-    unless Otherwise Agreed, means and shall b'
+  context: "Property Address: Date: K. \u201CDeliver\u201D, \u201CDelivered\u201D or \u201CDelivery\u201D of documents, unless\
+    \ Otherwise Agreed, means and shall b"
   ul_bbox:
     x0: 467.0
     y0: 22.4
     x1: 576.0
     y1: 28.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 133.5
+    y0: 134.1
+    x1: 234.6
+    y1: 146.4
+  region: upper
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 199.6
+    y0: 140.4
+    x1: 234.6
+    y1: 146.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 133.5
+    y0: 134.1
+    x1: 277.1
+    y1: 146.4
+  region: upper
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 242.1
+    y0: 140.4
+    x1: 277.1
+    y1: 146.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 367.5
+    y0: 134.1
+    x1: 467.6
+    y1: 146.4
+  region: upper
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 432.6
+    y0: 140.4
+    x1: 467.6
+    y1: 146.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 367.5
+    y0: 134.1
+    x1: 510.1
+    y1: 146.4
+  region: upper
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 475.1
+    y0: 140.4
+    x1: 510.1
+    y1: 146.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 133.5
+    y0: 699.1
+    x1: 234.6
+    y1: 711.4
+  region: footer
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 199.6
+    y0: 705.4
+    x1: 234.6
+    y1: 711.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 133.5
+    y0: 699.1
+    x1: 277.1
+    y1: 711.4
+  region: footer
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 242.1
+    y0: 705.4
+    x1: 277.1
+    y1: 711.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 367.5
+    y0: 699.1
+    x1: 467.6
+    y1: 711.4
+  region: footer
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 432.6
+    y0: 705.4
+    x1: 467.6
+    y1: 711.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 367.5
+    y0: 699.1
+    x1: 510.1
+    y1: 711.4
+  region: footer
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 475.1
+    y0: 705.4
+    x1: 510.1
+    y1: 711.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 330.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 15 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 294.7
+    y0: 738.4
+    x1: 330.3
+    y1: 744.4
+- page: 17
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 234.0
+    y0: 733.5
+    x1: 375.3
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 15 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 339.6
+    y0: 738.4
+    x1: 375.3
+    y1: 744.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 491.9
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 15 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 738.4
+    x1: 491.9
+    y1: 744.4
+- page: 17
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.5
+    x1: 536.8
+    y1: 744.4
+  region: footer
+  context: RPA REVISED 12/25 (PAGE 15 OF 17) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 738.4
+    x1: 536.8
+    y1: 744.4
 - page: 17
   field: 'Address:'
   category: entry_blank
@@ -2202,66 +2571,6 @@ field_map:
     y0: 22.4
     x1: 576.0
     y1: 28.4
-- page: 17
-  field: Buyer's Initials
-  category: entry_signature
-  bbox:
-    x0: 133.5
-    y0: 134.1
-    x1: 234.6
-    y1: 146.4
-  region: upper
-  context: Buyer's Initials / Seller's Initials /
-  ul_bbox:
-    x0: 199.6
-    y0: 140.4
-    x1: 234.6
-    y1: 146.4
-- page: 17
-  field: Seller's Initials
-  category: entry_signature
-  bbox:
-    x0: 367.5
-    y0: 134.1
-    x1: 467.6
-    y1: 146.4
-  region: upper
-  context: Buyer's Initials / Seller's Initials /
-  ul_bbox:
-    x0: 432.6
-    y0: 140.4
-    x1: 467.6
-    y1: 146.4
-- page: 17
-  field: Buyer's Initials
-  category: entry_signature
-  bbox:
-    x0: 133.5
-    y0: 699.1
-    x1: 234.6
-    y1: 711.4
-  region: footer
-  context: Buyer's Initials / Seller's Initials /
-  ul_bbox:
-    x0: 199.6
-    y0: 705.4
-    x1: 234.6
-    y1: 711.4
-- page: 17
-  field: Seller's Initials
-  category: entry_signature
-  bbox:
-    x0: 367.5
-    y0: 699.1
-    x1: 467.6
-    y1: 711.4
-  region: footer
-  context: Buyer's Initials / Seller's Initials /
-  ul_bbox:
-    x0: 432.6
-    y0: 705.4
-    x1: 467.6
-    y1: 711.4
 - page: 18
   field: 'Address:'
   category: entry_blank
@@ -2316,8 +2625,8 @@ field_map:
     x1: 449.0
     y1: 246.9
   region: upper
-  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The
-    RPA has 17 pages. Buyer acknowledges receipt of, '
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The RPA has 17 pages. Buyer acknowledges receipt
+    of, '
   ul_bbox:
     x0: 329.0
     y0: 240.9
@@ -2332,8 +2641,8 @@ field_map:
     x1: 569.0
     y1: 254.9
   region: upper
-  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The
-    RPA has 17 pages. Buyer acknowledges receipt of, '
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The RPA has 17 pages. Buyer acknowledges receipt
+    of, '
   ul_bbox:
     x0: 454.0
     y0: 240.9
@@ -2363,8 +2672,7 @@ field_map:
     x1: 422.5
     y1: 310.9
   region: upper
-  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, (Signature)
-    By, Date:'
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, (Signature) By, Date:'
   ul_bbox:
     x0: 257.5
     y0: 304.9
@@ -2394,8 +2702,8 @@ field_map:
     x1: 422.5
     y1: 344.9
   region: middle
-  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, IF MORE
-    THAN TWO SIGNERS, USE Additional Signature Adde'
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, IF MORE THAN TWO SIGNERS, USE Additional Signature
+    Adde'
   ul_bbox:
     x0: 257.5
     y0: 338.9
@@ -2425,8 +2733,8 @@ field_map:
     x1: 449.0
     y1: 613.9
   region: lower
-  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The
-    RPA has 17 pages. Seller acknowledges receipt of,'
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The RPA has 17 pages. Seller acknowledges receipt
+    of,'
   ul_bbox:
     x0: 329.0
     y0: 607.9
@@ -2441,8 +2749,8 @@ field_map:
     x1: 569.0
     y1: 621.9
   region: lower
-  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The
-    RPA has 17 pages. Seller acknowledges receipt of,'
+  context: '(B) The name(s) of the Legally Authorized Signer(s) is/are: , . C. The RPA has 17 pages. Seller acknowledges receipt
+    of,'
   ul_bbox:
     x0: 454.0
     y0: 607.9
@@ -2472,8 +2780,7 @@ field_map:
     x1: 422.5
     y1: 677.9
   region: lower
-  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, (Signature)
-    By, Date:'
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, (Signature) By, Date:'
   ul_bbox:
     x0: 257.5
     y0: 671.9
@@ -2503,43 +2810,24 @@ field_map:
     x1: 422.5
     y1: 711.9
   region: footer
-  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, IF MORE
-    THAN TWO SIGNERS, USE Additional Signature Adde'
+  context: 'Printed Name of Legally Authorized Signer: Title, if applicable, IF MORE THAN TWO SIGNERS, USE Additional Signature
+    Adde'
   ul_bbox:
     x0: 257.5
     y0: 705.9
     x1: 422.5
     y1: 711.9
 - page: 19
-  field: 'Address:'
+  field: 'OFFER NOT ACCEPTED: ______/______ No Counter Offer is being made. This offer was'
   category: entry_blank
   bbox:
-    x0: 74.1
-    y0: 16.3
-    x1: 308.0
-    y1: 28.4
-  region: header
-  context: 'Property Address: Date: , ,'
-  ul_bbox:
-    x0: 110.5
-    y0: 22.4
-    x1: 440.5
-    y1: 28.4
-- page: 19
-  field: 'Date:'
-  category: entry_date
-  bbox:
-    x0: 440.5
-    y0: 16.3
-    x1: 576.0
-    y1: 28.4
-  region: header
-  context: 'Property Address: Date: , ,'
-  ul_bbox:
-    x0: 467.0
-    y0: 22.4
-    x1: 576.0
-    y1: 28.4
+    x0: 36.0
+    y0: 592.1
+    x1: 286.0
+    y1: 602.2
+  region: lower
+  context: 'OFFER NOT ACCEPTED: ______/______ No Counter Offer is being made. This offer was not accepted by Seller __________
+    (date'
 - page: 19
   field: Buyer's Brokerage Firm
   category: entry_brokerage
@@ -2549,73 +2837,12 @@ field_map:
     x1: 322.0
     y1: 122.4
   region: header
-  context: 'A. Buyer''s Brokerage Firm DRE Lic. # By DRE Lic. # Date Douglas Elliman
-    of California, Inc. 01947727'
+  context: 'A. Buyer''s Brokerage Firm DRE Lic. # By DRE Lic. # Date Douglas Elliman of California, Inc. 01947727'
   ul_bbox:
     x0: 168.7
     y0: 116.4
     x1: 423.7
     y1: 122.4
-- page: 19
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 72.0
-    y0: 123.3
-    x1: 205.1
-    y1: 135.4
-  region: upper
-  context: 'By DRE Lic. # Date By DRE Lic. # Date'
-  ul_bbox:
-    x0: 85.0
-    y0: 129.4
-    x1: 205.1
-    y1: 135.4
-- page: 19
-  field: DRE
-  category: entry_license
-  bbox:
-    x0: 205.0
-    y0: 123.3
-    x1: 353.6
-    y1: 135.4
-  region: upper
-  context: 'By DRE Lic. # Date By DRE Lic. # Date'
-  ul_bbox:
-    x0: 205.0
-    y0: 129.4
-    x1: 340.0
-    y1: 135.4
-- page: 19
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 72.0
-    y0: 136.4
-    x1: 205.1
-    y1: 148.4
-  region: upper
-  context: 'By DRE Lic. # Date Address City State Zip'
-  ul_bbox:
-    x0: 85.0
-    y0: 142.4
-    x1: 205.1
-    y1: 148.4
-- page: 19
-  field: DRE
-  category: entry_license
-  bbox:
-    x0: 205.0
-    y0: 136.4
-    x1: 353.6
-    y1: 148.4
-  region: upper
-  context: 'By DRE Lic. # Date Address City State Zip'
-  ul_bbox:
-    x0: 205.0
-    y0: 142.4
-    x1: 340.0
-    y1: 148.4
 - page: 19
   field: Address
   category: entry_address
@@ -2691,21 +2918,6 @@ field_map:
     y0: 168.4
     x1: 576.0
     y1: 174.4
-- page: 19
-  field: above
-  category: entry_contact
-  bbox:
-    x0: 292.6
-    y0: 200.1
-    x1: 514.6
-    y1: 212.4
-  region: upper
-  context: 'Designated Electronic Delivery Address(es): Email above or'
-  ul_bbox:
-    x0: 330.4
-    y0: 206.4
-    x1: 576.0
-    y1: 212.4
 - page: 19
   field: Seller's Brokerage Firm
   category: entry_brokerage
@@ -2722,66 +2934,6 @@ field_map:
     x1: 423.2
     y1: 244.4
 - page: 19
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 72.0
-    y0: 245.4
-    x1: 205.1
-    y1: 257.4
-  region: upper
-  context: 'By DRE Lic. # Date By DRE Lic. # Date'
-  ul_bbox:
-    x0: 85.0
-    y0: 251.4
-    x1: 205.1
-    y1: 257.4
-- page: 19
-  field: DRE
-  category: entry_license
-  bbox:
-    x0: 205.0
-    y0: 245.4
-    x1: 353.6
-    y1: 257.4
-  region: upper
-  context: 'By DRE Lic. # Date By DRE Lic. # Date'
-  ul_bbox:
-    x0: 205.0
-    y0: 251.4
-    x1: 340.0
-    y1: 257.4
-- page: 19
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 72.0
-    y0: 258.3
-    x1: 205.1
-    y1: 270.4
-  region: upper
-  context: 'By DRE Lic. # Date'
-  ul_bbox:
-    x0: 85.0
-    y0: 264.4
-    x1: 205.1
-    y1: 270.4
-- page: 19
-  field: DRE
-  category: entry_license
-  bbox:
-    x0: 205.0
-    y0: 258.3
-    x1: 353.6
-    y1: 270.4
-  region: upper
-  context: 'By DRE Lic. # Date'
-  ul_bbox:
-    x0: 205.0
-    y0: 264.4
-    x1: 340.0
-    y1: 270.4
-- page: 19
   field: Address
   category: entry_address
   bbox:
@@ -2857,24 +3009,8 @@ field_map:
     x1: 576.0
     y1: 299.4
 - page: 19
-  field: above
-  category: entry_contact
-  bbox:
-    x0: 441.4
-    y0: 326.1
-    x1: 576.0
-    y1: 338.4
-  region: middle
-  context: 'Designated Electronic Delivery Address(es) (To be filled out by Seller''s
-    Agent): Email above or'
-  ul_bbox:
-    x0: 477.9
-    y0: 332.4
-    x1: 576.0
-    y1: 338.4
-- page: 19
   field: Buyer's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 162.0
     y0: 374.5
@@ -2888,8 +3024,23 @@ field_map:
     x1: 258.3
     y1: 385.4
 - page: 19
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 162.0
+    y0: 374.5
+    x1: 303.3
+    y1: 385.4
+  region: middle
+  context: Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 267.6
+    y0: 379.4
+    x1: 303.3
+    y1: 385.4
+- page: 19
   field: Seller's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 303.3
     y0: 374.5
@@ -2903,19 +3054,19 @@ field_map:
     x1: 403.6
     y1: 385.4
 - page: 19
-  field: Seller's
-  category: entry_blank
+  field: Seller's Initials
+  category: entry_initial
   bbox:
-    x0: 267.6
+    x0: 303.3
     y0: 374.5
-    x1: 329.3
+    x1: 448.5
     y1: 385.4
   region: middle
   context: Buyer's Initials / Seller's Initials /
   ul_bbox:
-    x0: 267.6
+    x0: 412.9
     y0: 379.4
-    x1: 303.3
+    x1: 448.5
     y1: 385.4
 - page: 19
   field: a deposit in the amount of $
@@ -2926,77 +3077,13 @@ field_map:
     x1: 536.0
     y1: 418.4
   region: middle
-  context: Escrow Holder acknowledges receipt of a Copy of this Agreement, (if checked,
-    a deposit in the amount of $ ), Counter Off
+  context: Escrow Holder acknowledges receipt of a Copy of this Agreement, (if checked, a deposit in the amount of $ ), Counter
+    Off
   ul_bbox:
     x0: 476.0
     y0: 412.4
     x1: 536.0
     y1: 418.4
-- page: 19
-  field: numbers
-  category: entry_blank
-  bbox:
-    x0: 62.0
-    y0: 417.4
-    x1: 251.4
-    y1: 429.4
-  region: middle
-  context: Offer numbers and , and agrees to act as Escrow Holder subject to paragraph
-    19 of this Agreement, any supplemental escro
-  ul_bbox:
-    x0: 96.3
-    y0: 423.4
-    x1: 251.4
-    y1: 429.4
-- page: 19
-  field: escrow
-  category: entry_blank
-  bbox:
-    x0: 239.2
-    y0: 421.4
-    x1: 386.6
-    y1: 438.2
-  region: middle
-  context: Offer numbers and , and agrees to act as Escrow Holder subject to paragraph
-    19 of this Agreement, any supplemental escro
-  ul_bbox:
-    x0: 271.6
-    y0: 423.4
-    x1: 386.6
-    y1: 429.4
-- page: 19
-  field: advised
-  category: entry_blank
-  bbox:
-    x0: 107.1
-    y0: 441.4
-    x1: 316.4
-    y1: 453.4
-  region: middle
-  context: 'Escrow Holder is advised by that the date of Acceptance of the Agreement
-    is Escrow Holder Escrow #'
-  ul_bbox:
-    x0: 151.4
-    y0: 447.4
-    x1: 316.4
-    y1: 453.4
-- page: 19
-  field: Agreement
-  category: entry_date
-  bbox:
-    x0: 459.7
-    y0: 441.4
-    x1: 576.0
-    y1: 453.4
-  region: middle
-  context: 'Escrow Holder is advised by that the date of Acceptance of the Agreement
-    is Escrow Holder Escrow #'
-  ul_bbox:
-    x0: 511.4
-    y0: 447.4
-    x1: 576.0
-    y1: 453.4
 - page: 19
   field: Escrow Holder
   category: entry_blank
@@ -3028,21 +3115,6 @@ field_map:
     x1: 576.0
     y1: 466.4
 - page: 19
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 467.4
-    x1: 246.5
-    y1: 479.4
-  region: middle
-  context: By Date Address
-  ul_bbox:
-    x0: 49.0
-    y0: 473.4
-    x1: 254.0
-    y1: 479.4
-- page: 19
   field: Date
   category: entry_date
   bbox:
@@ -3056,6 +3128,264 @@ field_map:
     x0: 254.0
     y0: 473.4
     x1: 459.0
+    y1: 479.4
+- page: 19
+  field: 'Escrow Holder has the following license number #'
+  category: entry_license
+  bbox:
+    x0: 36.0
+    y0: 506.4
+    x1: 286.0
+    y1: 518.4
+  region: lower
+  context: 'Escrow Holder has the following license number # Department of Financial Protection and Innovation, Department
+    of Insura'
+  ul_bbox:
+    x0: 237.5
+    y0: 512.4
+    x1: 327.5
+    y1: 518.4
+- page: 19
+  field: Seller's Brokerage Firm presented this offer to Seller on
+  category: entry_brokerage
+  bbox:
+    x0: 255.0
+    y0: 550.1
+    x1: 505.0
+    y1: 562.4
+  region: lower
+  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer to Seller on (date). Agent or Seller Initials'
+  ul_bbox:
+    x0: 478.7
+    y0: 556.4
+    x1: 543.7
+    y1: 562.4
+- page: 19
+  field: 'Address:'
+  category: entry_blank
+  bbox:
+    x0: 74.1
+    y0: 16.3
+    x1: 308.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 110.5
+    y0: 22.4
+    x1: 440.5
+    y1: 28.4
+- page: 19
+  field: 'Date:'
+  category: entry_date
+  bbox:
+    x0: 440.5
+    y0: 16.3
+    x1: 576.0
+    y1: 28.4
+  region: header
+  context: 'Property Address: Date: , ,'
+  ul_bbox:
+    x0: 467.0
+    y0: 22.4
+    x1: 576.0
+    y1: 28.4
+- page: 19
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 205.0
+    y0: 123.3
+    x1: 353.6
+    y1: 135.4
+  region: upper
+  context: 'By DRE Lic. # Date By DRE Lic. # Date'
+  ul_bbox:
+    x0: 205.0
+    y0: 129.4
+    x1: 340.0
+    y1: 135.4
+- page: 19
+  field: Address
+  category: entry_blank
+  bbox:
+    x0: 85.0
+    y0: 140.4
+    x1: 205.1
+    y1: 159.4
+  region: upper
+  context: 'By DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 85.0
+    y0: 142.4
+    x1: 205.1
+    y1: 148.4
+- page: 19
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 205.0
+    y0: 136.4
+    x1: 353.6
+    y1: 148.4
+  region: upper
+  context: 'By DRE Lic. # Date Address City State Zip'
+  ul_bbox:
+    x0: 205.0
+    y0: 142.4
+    x1: 340.0
+    y1: 148.4
+- page: 19
+  field: above
+  category: entry_contact
+  bbox:
+    x0: 292.6
+    y0: 200.1
+    x1: 514.6
+    y1: 212.4
+  region: upper
+  context: 'Designated Electronic Delivery Address(es): Email above or'
+  ul_bbox:
+    x0: 330.4
+    y0: 206.4
+    x1: 576.0
+    y1: 212.4
+- page: 19
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 205.0
+    y0: 245.4
+    x1: 353.6
+    y1: 257.4
+  region: upper
+  context: 'By DRE Lic. # Date By DRE Lic. # Date'
+  ul_bbox:
+    x0: 205.0
+    y0: 251.4
+    x1: 340.0
+    y1: 257.4
+- page: 19
+  field: Address
+  category: entry_blank
+  bbox:
+    x0: 85.0
+    y0: 262.4
+    x1: 205.1
+    y1: 284.4
+  region: upper
+  context: 'By DRE Lic. # Date'
+  ul_bbox:
+    x0: 85.0
+    y0: 264.4
+    x1: 205.1
+    y1: 270.4
+- page: 19
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 205.0
+    y0: 258.3
+    x1: 353.6
+    y1: 270.4
+  region: upper
+  context: 'By DRE Lic. # Date'
+  ul_bbox:
+    x0: 205.0
+    y0: 264.4
+    x1: 340.0
+    y1: 270.4
+- page: 19
+  field: above
+  category: entry_contact
+  bbox:
+    x0: 441.4
+    y0: 326.1
+    x1: 576.0
+    y1: 338.4
+  region: middle
+  context: 'Designated Electronic Delivery Address(es) (To be filled out by Seller''s Agent): Email above or'
+  ul_bbox:
+    x0: 477.9
+    y0: 332.4
+    x1: 576.0
+    y1: 338.4
+- page: 19
+  field: numbers
+  category: entry_blank
+  bbox:
+    x0: 62.0
+    y0: 417.4
+    x1: 251.4
+    y1: 429.4
+  region: middle
+  context: Offer numbers and , and agrees to act as Escrow Holder subject to paragraph 19 of this Agreement, any supplemental
+    escro
+  ul_bbox:
+    x0: 96.3
+    y0: 423.4
+    x1: 251.4
+    y1: 429.4
+- page: 19
+  field: escrow
+  category: entry_blank
+  bbox:
+    x0: 239.2
+    y0: 421.4
+    x1: 386.6
+    y1: 438.2
+  region: middle
+  context: Offer numbers and , and agrees to act as Escrow Holder subject to paragraph 19 of this Agreement, any supplemental
+    escro
+  ul_bbox:
+    x0: 271.6
+    y0: 423.4
+    x1: 386.6
+    y1: 429.4
+- page: 19
+  field: advised
+  category: entry_blank
+  bbox:
+    x0: 107.1
+    y0: 441.4
+    x1: 316.4
+    y1: 453.4
+  region: middle
+  context: 'Escrow Holder is advised by that the date of Acceptance of the Agreement is Escrow Holder Escrow #'
+  ul_bbox:
+    x0: 151.4
+    y0: 447.4
+    x1: 316.4
+    y1: 453.4
+- page: 19
+  field: Agreement
+  category: entry_date
+  bbox:
+    x0: 459.7
+    y0: 441.4
+    x1: 576.0
+    y1: 453.4
+  region: middle
+  context: 'Escrow Holder is advised by that the date of Acceptance of the Agreement is Escrow Holder Escrow #'
+  ul_bbox:
+    x0: 511.4
+    y0: 447.4
+    x1: 576.0
+    y1: 453.4
+- page: 19
+  field: Address
+  category: entry_blank
+  bbox:
+    x0: 49.0
+    y0: 471.4
+    x1: 152.5
+    y1: 490.4
+  region: lower
+  context: By Date Address
+  ul_bbox:
+    x0: 49.0
+    y0: 473.4
+    x1: 254.0
     y1: 479.4
 - page: 19
   field: Date
@@ -3073,38 +3403,6 @@ field_map:
     x1: 576.0
     y1: 479.4
 - page: 19
-  field: 'Escrow Holder has the following license number #'
-  category: entry_license
-  bbox:
-    x0: 36.0
-    y0: 506.4
-    x1: 286.0
-    y1: 518.4
-  region: lower
-  context: 'Escrow Holder has the following license number # Department of Financial
-    Protection and Innovation, Department of Insura'
-  ul_bbox:
-    x0: 237.5
-    y0: 512.4
-    x1: 327.5
-    y1: 518.4
-- page: 19
-  field: Seller's Brokerage Firm presented this offer to Seller on
-  category: entry_brokerage
-  bbox:
-    x0: 255.0
-    y0: 550.1
-    x1: 505.0
-    y1: 562.4
-  region: lower
-  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer
-    to Seller on (date). Agent or Seller Initials'
-  ul_bbox:
-    x0: 478.7
-    y0: 556.4
-    x1: 543.7
-    y1: 562.4
-- page: 19
   field: 'OFFER:'
   category: entry_blank
   bbox:
@@ -3113,8 +3411,7 @@ field_map:
     x1: 205.0
     y1: 562.4
   region: lower
-  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer
-    to Seller on (date). Agent or Seller Initials'
+  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer to Seller on (date). Agent or Seller Initials'
   ul_bbox:
     x0: 160.0
     y0: 556.4
@@ -3129,25 +3426,72 @@ field_map:
     x1: 286.0
     y1: 562.4
   region: lower
-  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer
-    to Seller on (date). Agent or Seller Initials'
+  context: 'PRESENTATION OF OFFER: / Seller''s Brokerage Firm presented this offer to Seller on (date). Agent or Seller Initials'
   ul_bbox:
     x0: 207.5
     y0: 556.4
     x1: 252.5
     y1: 562.4
-- page: 19
-  field: 'OFFER NOT ACCEPTED: ______/______ No Counter Offer is being made. This offer
-    was'
-  category: entry_blank
+- page: 20
+  field: Date
+  category: entry_date
   bbox:
-    x0: 36.0
-    y0: 592.1
-    x1: 286.0
-    y1: 602.2
+    x0: 268.0
+    y0: 594.2
+    x1: 489.1
+    y1: 607.4
   region: lower
-  context: 'OFFER NOT ACCEPTED: ______/______ No Counter Offer is being made. This
-    offer was not accepted by Seller __________ (date'
+  context: Buyer Date
+  ul_bbox:
+    x0: 209.7
+    y0: 601.4
+    x1: 459.5
+    y1: 607.4
+- page: 20
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 611.3
+    x1: 489.1
+    y1: 624.4
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 209.7
+    y0: 618.4
+    x1: 459.5
+    y1: 624.4
+- page: 20
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 633.2
+    x1: 489.1
+    y1: 646.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 209.2
+    y0: 640.4
+    x1: 458.9
+    y1: 646.4
+- page: 20
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 268.0
+    y0: 650.2
+    x1: 489.1
+    y1: 663.4
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 209.2
+    y0: 657.4
+    x1: 458.9
+    y1: 663.4
 - page: 20
   field: dated
   category: entry_blank
@@ -3157,15 +3501,14 @@ field_map:
     x1: 125.9
     y1: 87.4
   region: header
-  context: dated , on property known as , (“Property”) in which is referred to as
-    (“Seller”) , ,
+  context: "dated , on property known as , (\u201CProperty\u201D) in which is referred to as (\u201CSeller\u201D) , ,"
   ul_bbox:
     x0: 64.9
     y0: 81.4
     x1: 125.9
     y1: 87.4
 - page: 20
-  field: (“Property”)
+  field: "(\u201CProperty\u201D)"
   category: entry_blank
   bbox:
     x0: 326.4
@@ -3173,8 +3516,7 @@ field_map:
     x1: 576.0
     y1: 87.4
   region: header
-  context: dated , on property known as , (“Property”) in which is referred to as
-    (“Seller”) , ,
+  context: "dated , on property known as , (\u201CProperty\u201D) in which is referred to as (\u201CSeller\u201D) , ,"
   ul_bbox:
     x0: 235.2
     y0: 81.4
@@ -3182,7 +3524,7 @@ field_map:
     y1: 87.4
 - page: 20
   field: Buyer
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 594.2
@@ -3196,23 +3538,8 @@ field_map:
     x1: 209.7
     y1: 607.4
 - page: 20
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 268.0
-    y0: 594.2
-    x1: 489.1
-    y1: 607.4
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 209.7
-    y0: 601.4
-    x1: 459.5
-    y1: 607.4
-- page: 20
   field: Buyer
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 611.3
@@ -3226,23 +3553,8 @@ field_map:
     x1: 209.7
     y1: 624.4
 - page: 20
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 268.0
-    y0: 611.3
-    x1: 489.1
-    y1: 624.4
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 209.7
-    y0: 618.4
-    x1: 459.5
-    y1: 624.4
-- page: 20
   field: Seller
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 633.2
@@ -3256,23 +3568,8 @@ field_map:
     x1: 209.2
     y1: 646.4
 - page: 20
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 268.0
-    y0: 633.2
-    x1: 489.1
-    y1: 646.4
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 209.2
-    y0: 640.4
-    x1: 458.9
-    y1: 646.4
-- page: 20
   field: Seller
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 650.2
@@ -3285,36 +3582,6 @@ field_map:
     y0: 657.4
     x1: 209.2
     y1: 663.4
-- page: 20
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 268.0
-    y0: 650.2
-    x1: 489.1
-    y1: 663.4
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 209.2
-    y0: 657.4
-    x1: 458.9
-    y1: 663.4
-- page: 22
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 196.3
-    x1: 262.5
-    y1: 209.4
-  region: upper
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 203.4
-    x1: 262.5
-    y1: 209.4
 - page: 22
   field: Date
   category: entry_date
@@ -3334,6 +3601,36 @@ field_map:
   field: Date
   category: entry_date
   bbox:
+    x0: 262.5
+    y0: 220.2
+    x1: 480.6
+    y1: 233.4
+  region: upper
+  context: Buyer Date
+  ul_bbox:
+    x0: 262.5
+    y0: 227.4
+    x1: 456.8
+    y1: 233.4
+- page: 22
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 196.3
+    x1: 262.5
+    y1: 209.4
+  region: upper
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 203.4
+    x1: 262.5
+    y1: 209.4
+- page: 22
+  field: Date
+  category: entry_date
+  bbox:
     x0: 456.8
     y0: 196.3
     x1: 576.0
@@ -3347,7 +3644,7 @@ field_map:
     y1: 209.4
 - page: 22
   field: Buyer
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 220.2
@@ -3359,21 +3656,6 @@ field_map:
     x0: 73.8
     y0: 227.4
     x1: 262.5
-    y1: 233.4
-- page: 22
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 262.5
-    y0: 220.2
-    x1: 480.6
-    y1: 233.4
-  region: upper
-  context: Buyer Date
-  ul_bbox:
-    x0: 262.5
-    y0: 227.4
-    x1: 456.8
     y1: 233.4
 - page: 22
   field: Date
@@ -3391,21 +3673,6 @@ field_map:
     x1: 576.0
     y1: 233.4
 - page: 24
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 77.8
-    x1: 229.2
-    y1: 90.9
-  region: header
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 84.9
-    x1: 229.2
-    y1: 90.9
-- page: 24
   field: Date
   category: entry_date
   bbox:
@@ -3421,21 +3688,6 @@ field_map:
     x1: 490.0
     y1: 90.9
 - page: 24
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 93.7
-    x1: 229.2
-    y1: 106.9
-  region: header
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 100.9
-    x1: 229.2
-    y1: 106.9
-- page: 24
   field: Date
   category: entry_date
   bbox:
@@ -3450,21 +3702,6 @@ field_map:
     y0: 100.9
     x1: 490.0
     y1: 106.9
-- page: 24
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 114.8
-    x1: 228.6
-    y1: 127.9
-  region: upper
-  context: Seller Date
-  ul_bbox:
-    x0: 73.2
-    y0: 121.9
-    x1: 228.6
-    y1: 127.9
 - page: 24
   field: Date
   category: entry_date
@@ -3480,21 +3717,6 @@ field_map:
     y0: 121.9
     x1: 489.5
     y1: 127.9
-- page: 24
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 130.8
-    x1: 228.6
-    y1: 143.9
-  region: upper
-  context: Seller Date
-  ul_bbox:
-    x0: 73.2
-    y0: 137.9
-    x1: 228.6
-    y1: 143.9
 - page: 24
   field: Date
   category: entry_date
@@ -3519,28 +3741,12 @@ field_map:
     x1: 286.0
     y1: 165.4
   region: upper
-  context: 'Buyer''s Brokerage Firm DRE Lic # Douglas Elliman of California, Inc.
-    01947727'
+  context: 'Buyer''s Brokerage Firm DRE Lic # Douglas Elliman of California, Inc. 01947727'
   ul_bbox:
     x0: 143.5
     y0: 159.4
     x1: 465.4
     y1: 165.4
-- page: 24
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 166.2
-    x1: 247.7
-    y1: 179.4
-  region: upper
-  context: 'By DRE Lic # Date'
-  ul_bbox:
-    x0: 50.5
-    y0: 173.4
-    x1: 383.5
-    y1: 179.4
 - page: 24
   field: 'DRE Lic #'
   category: entry_license
@@ -3572,21 +3778,6 @@ field_map:
     x1: 464.8
     y1: 202.4
 - page: 24
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 203.3
-    x1: 247.7
-    y1: 216.4
-  region: upper
-  context: 'By DRE Lic # Date'
-  ul_bbox:
-    x0: 50.5
-    y0: 210.4
-    x1: 383.5
-    y1: 216.4
-- page: 24
   field: 'DRE Lic #'
   category: entry_license
   bbox:
@@ -3600,6 +3791,96 @@ field_map:
     x0: 434.0
     y0: 210.4
     x1: 489.5
+    y1: 216.4
+- page: 24
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 77.8
+    x1: 229.2
+    y1: 90.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 84.9
+    x1: 229.2
+    y1: 90.9
+- page: 24
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 93.7
+    x1: 229.2
+    y1: 106.9
+  region: header
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 100.9
+    x1: 229.2
+    y1: 106.9
+- page: 24
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 114.8
+    x1: 228.6
+    y1: 127.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 121.9
+    x1: 228.6
+    y1: 127.9
+- page: 24
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 130.8
+    x1: 228.6
+    y1: 143.9
+  region: upper
+  context: Seller Date
+  ul_bbox:
+    x0: 73.2
+    y0: 137.9
+    x1: 228.6
+    y1: 143.9
+- page: 24
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 166.2
+    x1: 399.4
+    y1: 179.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 173.4
+    x1: 383.5
+    y1: 179.4
+- page: 24
+  field: DRE
+  category: entry_license
+  bbox:
+    x0: 183.5
+    y0: 203.3
+    x1: 399.4
+    y1: 216.4
+  region: upper
+  context: 'By DRE Lic # Date'
+  ul_bbox:
+    x0: 50.5
+    y0: 210.4
+    x1: 383.5
     y1: 216.4
 - page: 26
   field: Date
@@ -3615,21 +3896,6 @@ field_map:
     x0: 267.5
     y0: 594.4
     x1: 472.5
-    y1: 600.4
-- page: 26
-  field: Buyer/Tenant
-  category: entry_blank
-  bbox:
-    x0: 36.0
-    y0: 588.4
-    x1: 267.6
-    y1: 600.4
-  region: lower
-  context: Buyer/Tenant Date
-  ul_bbox:
-    x0: 92.5
-    y0: 594.4
-    x1: 267.6
     y1: 600.4
 - page: 26
   field: Date
@@ -3647,36 +3913,66 @@ field_map:
     x1: 472.5
     y1: 614.4
 - page: 26
-  field: Seller/Housing Provider
-  category: entry_signature
+  field: Date
+  category: entry_date
   bbox:
-    x0: 92.5
-    y0: 606.4
-    x1: 267.6
-    y1: 629.4
+    x0: 273.0
+    y0: 619.3
+    x1: 494.5
+    y1: 631.4
   region: lower
-  context: Buyer/Tenant Date Seller/Housing Provider
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 625.4
+    x1: 473.0
+    y1: 631.4
+- page: 26
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 633.4
+    x1: 494.5
+    y1: 645.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 639.4
+    x1: 473.0
+    y1: 645.4
+- page: 26
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 588.4
+    x1: 267.6
+    y1: 600.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 92.5
+    y0: 594.4
+    x1: 267.6
+    y1: 600.4
+- page: 26
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 602.4
+    x1: 267.6
+    y1: 614.4
+  region: lower
+  context: Buyer/Tenant Date
   ul_bbox:
     x0: 92.5
     y0: 608.4
     x1: 267.6
     y1: 614.4
 - page: 26
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 273.0
-    y0: 619.3
-    x1: 494.5
-    y1: 631.4
-  region: lower
-  context: Seller/Housing Provider Date
-  ul_bbox:
-    x0: 268.0
-    y0: 625.4
-    x1: 473.0
-    y1: 631.4
-- page: 26
   field: Provider
   category: entry_blank
   bbox:
@@ -3692,21 +3988,6 @@ field_map:
     x1: 268.0
     y1: 631.4
 - page: 26
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 273.0
-    y0: 633.4
-    x1: 494.5
-    y1: 645.4
-  region: lower
-  context: Seller/Housing Provider Date
-  ul_bbox:
-    x0: 268.0
-    y0: 639.4
-    x1: 473.0
-    y1: 645.4
-- page: 26
   field: Provider
   category: entry_blank
   bbox:
@@ -3721,21 +4002,6 @@ field_map:
     y0: 639.4
     x1: 268.0
     y1: 645.4
-- page: 27
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 593.3
-    x1: 237.5
-    y1: 606.4
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 71.0
-    y0: 600.4
-    x1: 237.5
-    y1: 606.4
 - page: 27
   field: Date
   category: entry_date
@@ -3750,6 +4016,36 @@ field_map:
     x0: 491.9
     y0: 600.4
     x1: 576.0
+    y1: 606.4
+- page: 27
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 468.0
+    y0: 613.2
+    x1: 576.0
+    y1: 626.4
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 491.9
+    y0: 620.4
+    x1: 576.0
+    y1: 626.4
+- page: 27
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 593.3
+    x1: 237.5
+    y1: 606.4
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 71.0
+    y0: 600.4
+    x1: 237.5
     y1: 606.4
 - page: 27
   field: Date
@@ -3768,7 +4064,7 @@ field_map:
     y1: 606.4
 - page: 27
   field: Buyer
-  category: entry_signature
+  category: entry_blank
   bbox:
     x0: 36.0
     y0: 613.2
@@ -3780,21 +4076,6 @@ field_map:
     x0: 71.0
     y0: 620.4
     x1: 237.5
-    y1: 626.4
-- page: 27
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 468.0
-    y0: 613.2
-    x1: 576.0
-    y1: 626.4
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 491.9
-    y0: 620.4
-    x1: 576.0
     y1: 626.4
 - page: 27
   field: Date
@@ -3825,21 +4106,6 @@ field_map:
     x0: 277.0
     y0: 585.4
     x1: 482.3
-    y1: 591.4
-- page: 28
-  field: Buyer/Tenant
-  category: entry_blank
-  bbox:
-    x0: 36.0
-    y0: 578.2
-    x1: 277.0
-    y1: 591.4
-  region: lower
-  context: Buyer/Tenant Date
-  ul_bbox:
-    x0: 104.9
-    y0: 585.4
-    x1: 277.0
     y1: 591.4
 - page: 28
   field: Date
@@ -3857,21 +4123,6 @@ field_map:
     x1: 482.3
     y1: 608.4
 - page: 28
-  field: Seller/Housing Provider
-  category: entry_signature
-  bbox:
-    x0: 104.9
-    y0: 600.4
-    x1: 277.0
-    y1: 623.4
-  region: lower
-  context: Buyer/Tenant Date Seller/Housing Provider
-  ul_bbox:
-    x0: 104.9
-    y0: 602.4
-    x1: 277.0
-    y1: 608.4
-- page: 28
   field: Date
   category: entry_date
   bbox:
@@ -3885,21 +4136,6 @@ field_map:
     x0: 288.6
     y0: 619.4
     x1: 482.8
-    y1: 625.4
-- page: 28
-  field: Provider
-  category: entry_blank
-  bbox:
-    x0: 104.5
-    y0: 612.2
-    x1: 288.6
-    y1: 625.4
-  region: lower
-  context: Seller/Housing Provider Date
-  ul_bbox:
-    x0: 149.8
-    y0: 619.4
-    x1: 288.6
     y1: 625.4
 - page: 28
   field: Date
@@ -3916,6 +4152,51 @@ field_map:
     y0: 636.4
     x1: 482.8
     y1: 642.4
+- page: 28
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 578.2
+    x1: 277.0
+    y1: 591.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 104.9
+    y0: 585.4
+    x1: 277.0
+    y1: 591.4
+- page: 28
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 595.2
+    x1: 277.0
+    y1: 608.4
+  region: lower
+  context: Buyer/Tenant Date
+  ul_bbox:
+    x0: 104.9
+    y0: 602.4
+    x1: 277.0
+    y1: 608.4
+- page: 28
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 104.5
+    y0: 612.2
+    x1: 288.6
+    y1: 625.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 149.8
+    y0: 619.4
+    x1: 288.6
+    y1: 625.4
 - page: 28
   field: Provider
   category: entry_blank
@@ -3945,21 +4226,6 @@ field_map:
     x0: 168.8
     y0: 406.4
     x1: 457.3
-    y1: 412.4
-- page: 29
-  field: Date
-  category: entry_date
-  bbox:
-    x0: 457.3
-    y0: 399.2
-    x1: 576.0
-    y1: 412.4
-  region: middle
-  context: Buyer/Seller/Landlord/Tenant Date
-  ul_bbox:
-    x0: 484.1
-    y0: 406.4
-    x1: 576.0
     y1: 412.4
 - page: 29
   field: Date
@@ -3976,6 +4242,21 @@ field_map:
     y0: 435.4
     x1: 457.3
     y1: 441.4
+- page: 29
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 457.3
+    y0: 399.2
+    x1: 576.0
+    y1: 412.4
+  region: middle
+  context: Buyer/Seller/Landlord/Tenant Date
+  ul_bbox:
+    x0: 484.1
+    y0: 406.4
+    x1: 576.0
+    y1: 412.4
 - page: 29
   field: Date
   category: entry_date

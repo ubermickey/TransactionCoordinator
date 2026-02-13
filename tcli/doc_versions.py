@@ -19,6 +19,13 @@ CAR_DIR = ROOT / "CAR Contract Packages"
 MANIFEST_DIR = ROOT / "doc_manifests"
 VERSION_DB = MANIFEST_DIR / "_versions.yaml"
 
+SIGNATURE_CATEGORIES = {
+    "signature_area",
+    "signature",
+    "entry_signature",
+    "entry_initial",
+}
+
 
 def file_hash(path: Path) -> str:
     """SHA-256 hash of a file."""
@@ -151,7 +158,13 @@ def field_locations(folder: str, filename: str, category: str = None, page: int 
     fields = m.get("field_map", [])
 
     if category:
-        fields = [f for f in fields if f.get("category") == category]
+        cat = (category or "").lower()
+        if cat in ("signature_area", "signature", "entry_signature"):
+            fields = [f for f in fields if (f.get("category") or "").lower() in SIGNATURE_CATEGORIES]
+        elif cat == "entry_initial":
+            fields = [f for f in fields if (f.get("category") or "").lower() == "entry_initial"]
+        else:
+            fields = [f for f in fields if (f.get("category") or "").lower() == cat]
     if page:
         fields = [f for f in fields if f.get("page") == page]
 
@@ -160,13 +173,20 @@ def field_locations(folder: str, filename: str, category: str = None, page: int 
 
 def signature_locations(folder: str, filename: str) -> list:
     """Get all signature locations for quick zoom-in."""
-    return field_locations(folder, filename, category="signature_area")
+    m = load_manifest(folder, filename)
+    return [
+        f for f in m.get("field_map", [])
+        if (f.get("category") or "").lower() in SIGNATURE_CATEGORIES
+    ]
 
 
 def date_locations(folder: str, filename: str) -> list:
     """Get all date/time-length fields for review."""
     m = load_manifest(folder, filename)
-    fields = [f for f in m.get("field_map", []) if f.get("category") in ("date", "date_area")]
+    fields = [
+        f for f in m.get("field_map", [])
+        if (f.get("category") or "").lower() in ("date", "date_area", "entry_date")
+    ]
     time_lengths = m.get("time_length_review", [])
     return {"date_fields": fields, "time_length_options": time_lengths}
 

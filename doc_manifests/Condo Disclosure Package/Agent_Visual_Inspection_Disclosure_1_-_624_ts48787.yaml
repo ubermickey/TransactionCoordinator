@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:56:54'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:13'
 file: Agent_Visual_Inspection_Disclosure_1_-_624_ts48787.pdf
 folder: Condo Disclosure Package
 page_count: 3
@@ -9,13 +9,14 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 30
+  total_entry_spaces: 33
   entry_categories:
     entry_address: 1
-    entry_signature: 4
-    entry_blank: 13
+    entry_initial: 4
+    entry_blank: 15
     entry_brokerage: 4
     entry_date: 8
+    entry_signature: 1
   test_address_references: 0
 time_length_review: []
 field_map:
@@ -36,7 +37,7 @@ field_map:
     y1: 111.1
 - page: 1
   field: Buyer's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 396.0
     y0: 721.8
@@ -48,6 +49,21 @@ field_map:
     x0: 456.7
     y0: 726.6
     x1: 487.9
+    y1: 732.6
+- page: 1
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 721.8
+    x1: 528.4
+    y1: 732.6
+  region: footer
+  context: AVID REVISED 6/24 (PAGE 1 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 497.2
+    y0: 726.6
+    x1: 528.4
     y1: 732.6
 - page: 1
   field: City
@@ -111,6 +127,36 @@ field_map:
     x1: 576.0
     y1: 159.1
 - page: 2
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 487.9
+    y1: 744.1
+  region: footer
+  context: AVID REVISED 6/24 (PAGE 2 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 456.7
+    y0: 738.1
+    x1: 487.9
+    y1: 744.1
+- page: 2
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 733.2
+    x1: 528.4
+    y1: 744.1
+  region: footer
+  context: AVID REVISED 6/24 (PAGE 2 OF 3) Buyer's Initials /
+  ul_bbox:
+    x0: 497.2
+    y0: 738.1
+    x1: 528.4
+    y1: 744.1
+- page: 2
   field: unit
   category: entry_blank
   bbox:
@@ -172,21 +218,6 @@ field_map:
     x1: 576.0
     y1: 420.6
 - page: 3
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 519.5
-    x1: 251.4
-    y1: 532.6
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 526.6
-    x1: 251.4
-    y1: 532.6
-- page: 3
   field: Date
   category: entry_date
   bbox:
@@ -201,21 +232,6 @@ field_map:
     y0: 526.6
     x1: 429.0
     y1: 532.6
-- page: 3
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 534.5
-    x1: 251.4
-    y1: 547.6
-  region: lower
-  context: Buyer Date
-  ul_bbox:
-    x0: 73.8
-    y0: 541.6
-    x1: 251.4
-    y1: 547.6
 - page: 3
   field: Date
   category: entry_date
@@ -246,21 +262,6 @@ field_map:
     y0: 619.6
     x1: 576.0
     y1: 625.6
-- page: 3
-  field: By
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 627.5
-    x1: 239.2
-    y1: 640.6
-  region: lower
-  context: By Date (Associate Licensee or Broker Signature)
-  ul_bbox:
-    x0: 50.5
-    y0: 634.6
-    x1: 239.2
-    y1: 640.6
 - page: 3
   field: Date
   category: entry_date
@@ -412,6 +413,21 @@ field_map:
     x1: 576.0
     y1: 391.6
 - page: 3
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 519.5
+    x1: 251.4
+    y1: 532.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 526.6
+    x1: 251.4
+    y1: 532.6
+- page: 3
   field: Date
   category: entry_date
   bbox:
@@ -426,6 +442,21 @@ field_map:
     y0: 526.6
     x1: 576.0
     y1: 532.6
+- page: 3
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 534.5
+    x1: 251.4
+    y1: 547.6
+  region: lower
+  context: Buyer Date
+  ul_bbox:
+    x0: 73.8
+    y0: 541.6
+    x1: 251.4
+    y1: 547.6
 - page: 3
   field: Date
   category: entry_date
@@ -456,6 +487,21 @@ field_map:
     y0: 602.6
     x1: 106.6
     y1: 608.6
+- page: 3
+  field: Broker
+  category: entry_signature
+  bbox:
+    x0: 50.5
+    y0: 632.6
+    x1: 276.1
+    y1: 650.6
+  region: lower
+  context: By Date (Associate Licensee or Broker Signature)
+  ul_bbox:
+    x0: 50.5
+    y0: 634.6
+    x1: 239.2
+    y1: 640.6
 - page: 3
   field: Date
   category: entry_date

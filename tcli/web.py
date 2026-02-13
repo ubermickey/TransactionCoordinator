@@ -698,7 +698,9 @@ def _get_manifest_sigs() -> dict:
             fields = m.get("field_map", [])
             sig_fields = [
                 f for f in fields
-                if f.get("category") in ("signature", "signature_area", "entry_signature")
+                if f.get("category") in (
+                    "signature", "signature_area", "entry_signature", "entry_initial"
+                )
             ]
             if not sig_fields:
                 continue
@@ -785,7 +787,10 @@ def _populate_sig_reviews(c, tid):
 
         for sf in mdata["sig_fields"]:
             field_name = sf.get("field", "")
-            is_initials = bool(re.search(r"initial", field_name, re.IGNORECASE))
+            cat = (sf.get("category") or "").lower()
+            is_initials = cat == "entry_initial" or bool(
+                re.search(r"initial", field_name, re.IGNORECASE)
+            )
             field_type = "initials" if is_initials else "signature"
             bbox = sf.get("bbox", {})
             filled = 1 if sf.get("filled") else 0
@@ -3814,6 +3819,9 @@ def init_features():
         {"name": "Contract Review", "category": "pdf", "files": ["web.py", "app.js", "engine.py"], "depends_on": ["Document Checklist", "Contract Annotation"]},
         {"name": "Cloud Usage Tracker", "category": "integrations", "files": ["db.py", "web.py", "app.js", "cloud_guard.py"], "depends_on": ["Transaction CRUD"]},
         {"name": "Cloud Approval Gate", "category": "security", "files": ["web.py", "cloud_guard.py", "app.js"], "depends_on": ["Cloud Usage Tracker"]},
+        {"name": "Signature+Initial Detector v3.1", "category": "pdf", "files": ["doc_analyzer.py", "doc_versions.py", "web.py"], "depends_on": ["Contract Annotation"]},
+        {"name": "Signature Fill Detection v2", "category": "signatures", "files": ["contract_scanner.py", "app.js"], "depends_on": ["Signature+Initial Detector v3.1"]},
+        {"name": "Detector QA Harness", "category": "pdf", "files": ["tcli/sandbox/test_signature_detector.py", "tcli/sandbox/test_contract_scanner.py", "scripts/benchmark_signature_detector.py"], "depends_on": ["Signature+Initial Detector v3.1"]},
     ]
     count = 0
     with db.conn() as c:

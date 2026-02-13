@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:21'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:20'
 file: Seller_Property_Questionnaire_-_1225_ts65092.pdf
 folder: SFR Disclosures Package
 page_count: 4
@@ -9,11 +9,11 @@ summary:
   total_form_widgets: 0
   filled_widgets: 0
   empty_widgets: 0
-  total_entry_spaces: 18
+  total_entry_spaces: 28
   entry_categories:
     entry_address: 1
-    entry_signature: 6
-    entry_blank: 7
+    entry_initial: 12
+    entry_blank: 11
     entry_date: 4
   test_address_references: 0
 time_length_review: []
@@ -36,7 +36,7 @@ field_map:
     y1: 172.1
 - page: 1
   field: Buyer's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 216.0
     y0: 722.2
@@ -50,8 +50,23 @@ field_map:
     x1: 312.3
     y1: 733.1
 - page: 1
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 216.0
+    y0: 722.2
+    x1: 357.3
+    y1: 733.1
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 1 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 321.6
+    y0: 727.1
+    x1: 357.3
+    y1: 733.1
+- page: 1
   field: Seller's Initials
-  category: entry_signature
+  category: entry_initial
   bbox:
     x0: 396.0
     y0: 722.2
@@ -63,6 +78,21 @@ field_map:
     x0: 456.3
     y0: 727.1
     x1: 491.9
+    y1: 733.1
+- page: 1
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 722.2
+    x1: 536.8
+    y1: 733.1
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 1 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 727.1
+    x1: 536.8
     y1: 733.1
 - page: 1
   field: described
@@ -143,6 +173,66 @@ field_map:
     x1: 549.9
     y1: 184.6
 - page: 2
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 216.0
+    y0: 745.7
+    x1: 312.3
+    y1: 756.6
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 2 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 276.7
+    y0: 750.6
+    x1: 312.3
+    y1: 756.6
+- page: 2
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 216.0
+    y0: 745.7
+    x1: 357.3
+    y1: 756.6
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 2 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 321.6
+    y0: 750.6
+    x1: 357.3
+    y1: 756.6
+- page: 2
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 745.7
+    x1: 491.9
+    y1: 756.6
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 2 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 750.6
+    x1: 491.9
+    y1: 756.6
+- page: 2
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 745.7
+    x1: 536.8
+    y1: 756.6
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 2 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 750.6
+    x1: 536.8
+    y1: 756.6
+- page: 2
   field: attached;
   category: entry_blank
   bbox:
@@ -172,21 +262,66 @@ field_map:
     y0: 283.9
     x1: 583.2
     y1: 289.9
-- page: 4
-  field: Seller
-  category: entry_signature
+- page: 3
+  field: Buyer's Initials
+  category: entry_initial
   bbox:
-    x0: 36.0
-    y0: 619.6
-    x1: 259.0
-    y1: 631.6
-  region: lower
-  context: Seller Date Seller Date
+    x0: 216.0
+    y0: 738.9
+    x1: 312.3
+    y1: 749.9
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 3 OF 4) Buyer's Initials / Seller's Initials /
   ul_bbox:
-    x0: 69.5
-    y0: 625.6
-    x1: 304.5
-    y1: 631.6
+    x0: 276.7
+    y0: 743.9
+    x1: 312.3
+    y1: 749.9
+- page: 3
+  field: Buyer's Initials
+  category: entry_initial
+  bbox:
+    x0: 216.0
+    y0: 738.9
+    x1: 357.3
+    y1: 749.9
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 3 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 321.6
+    y0: 743.9
+    x1: 357.3
+    y1: 749.9
+- page: 3
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 738.9
+    x1: 491.9
+    y1: 749.9
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 3 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 456.3
+    y0: 743.9
+    x1: 491.9
+    y1: 749.9
+- page: 3
+  field: Seller's Initials
+  category: entry_initial
+  bbox:
+    x0: 396.0
+    y0: 738.9
+    x1: 536.8
+    y1: 749.9
+  region: footer
+  context: SPQ REVISED 12/25 (PAGE 3 OF 4) Buyer's Initials / Seller's Initials /
+  ul_bbox:
+    x0: 501.3
+    y0: 743.9
+    x1: 536.8
+    y1: 749.9
 - page: 4
   field: Date
   category: entry_date
@@ -203,21 +338,6 @@ field_map:
     x1: 464.5
     y1: 631.6
 - page: 4
-  field: Seller
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 630.6
-    x1: 259.0
-    y1: 642.6
-  region: lower
-  context: Seller Date
-  ul_bbox:
-    x0: 69.5
-    y0: 636.6
-    x1: 304.5
-    y1: 642.6
-- page: 4
   field: Date
   category: entry_date
   bbox:
@@ -233,21 +353,6 @@ field_map:
     x1: 464.5
     y1: 642.6
 - page: 4
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 667.1
-    x1: 259.5
-    y1: 679.1
-  region: lower
-  context: Buyer Date Buyer Date
-  ul_bbox:
-    x0: 70.0
-    y0: 673.1
-    x1: 305.0
-    y1: 679.1
-- page: 4
   field: Date
   category: entry_date
   bbox:
@@ -263,21 +368,6 @@ field_map:
     x1: 465.0
     y1: 679.1
 - page: 4
-  field: Buyer
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 678.0
-    x1: 259.5
-    y1: 690.1
-  region: footer
-  context: Buyer Date
-  ul_bbox:
-    x0: 70.0
-    y0: 684.1
-    x1: 305.0
-    y1: 690.1
-- page: 4
   field: Date
   category: entry_date
   bbox:
@@ -291,4 +381,64 @@ field_map:
     x0: 305.0
     y0: 684.1
     x1: 465.0
+    y1: 690.1
+- page: 4
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 619.6
+    x1: 259.0
+    y1: 631.6
+  region: lower
+  context: Seller Date Seller Date
+  ul_bbox:
+    x0: 69.5
+    y0: 625.6
+    x1: 304.5
+    y1: 631.6
+- page: 4
+  field: Seller
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 630.6
+    x1: 259.0
+    y1: 642.6
+  region: lower
+  context: Seller Date
+  ul_bbox:
+    x0: 69.5
+    y0: 636.6
+    x1: 304.5
+    y1: 642.6
+- page: 4
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 667.1
+    x1: 259.5
+    y1: 679.1
+  region: lower
+  context: Buyer Date Buyer Date
+  ul_bbox:
+    x0: 70.0
+    y0: 673.1
+    x1: 305.0
+    y1: 679.1
+- page: 4
+  field: Buyer
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 678.0
+    x1: 259.5
+    y1: 690.1
+  region: footer
+  context: Buyer Date
+  ul_bbox:
+    x0: 70.0
+    y0: 684.1
+    x1: 305.0
     y1: 690.1

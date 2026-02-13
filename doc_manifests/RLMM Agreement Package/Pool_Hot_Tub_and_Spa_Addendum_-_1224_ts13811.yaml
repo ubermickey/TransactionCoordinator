@@ -1,5 +1,5 @@
-version: 3.0.0
-last_analyzed: '2026-02-04T18:57:03'
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:16'
 file: Pool_Hot_Tub_and_Spa_Addendum_-_1224_ts13811.pdf
 folder: RLMM Agreement Package
 page_count: 1
@@ -12,9 +12,8 @@ summary:
   total_entry_spaces: 15
   entry_categories:
     entry_address: 4
-    entry_signature: 4
     entry_date: 4
-    entry_blank: 3
+    entry_blank: 7
   test_address_references: 0
 time_length_review: []
 field_map:
@@ -83,21 +82,6 @@ field_map:
     x1: 514.9
     y1: 146.0
 - page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 562.3
-    x1: 270.3
-    y1: 575.5
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 76.0
-    y0: 569.5
-    x1: 270.3
-    y1: 575.5
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -113,21 +97,6 @@ field_map:
     x1: 464.5
     y1: 575.5
 - page: 1
-  field: Tenant
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 576.4
-    x1: 270.3
-    y1: 589.5
-  region: lower
-  context: Tenant Date
-  ul_bbox:
-    x0: 76.0
-    y0: 583.5
-    x1: 270.3
-    y1: 589.5
-- page: 1
   field: Date
   category: entry_date
   bbox:
@@ -142,21 +111,6 @@ field_map:
     y0: 583.5
     x1: 464.5
     y1: 589.5
-- page: 1
-  field: Housing Provider
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 593.4
-    x1: 286.0
-    y1: 606.5
-  region: lower
-  context: Housing Provider Date
-  ul_bbox:
-    x0: 121.5
-    y0: 600.5
-    x1: 299.2
-    y1: 606.5
 - page: 1
   field: Date
   category: entry_date
@@ -172,21 +126,6 @@ field_map:
     y0: 600.5
     x1: 465.6
     y1: 606.5
-- page: 1
-  field: Housing Provider
-  category: entry_signature
-  bbox:
-    x0: 36.0
-    y0: 607.3
-    x1: 286.0
-    y1: 620.5
-  region: lower
-  context: Housing Provider Date
-  ul_bbox:
-    x0: 121.5
-    y0: 614.5
-    x1: 299.2
-    y1: 620.5
 - page: 1
   field: Date
   category: entry_date
@@ -249,3 +188,63 @@ field_map:
     y0: 151.5
     x1: 441.9
     y1: 157.5
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 562.3
+    x1: 270.3
+    y1: 575.5
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 76.0
+    y0: 569.5
+    x1: 270.3
+    y1: 575.5
+- page: 1
+  field: Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 576.4
+    x1: 270.3
+    y1: 589.5
+  region: lower
+  context: Tenant Date
+  ul_bbox:
+    x0: 76.0
+    y0: 583.5
+    x1: 270.3
+    y1: 589.5
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 74.3
+    y0: 593.4
+    x1: 299.2
+    y1: 606.5
+  region: lower
+  context: Housing Provider Date
+  ul_bbox:
+    x0: 121.5
+    y0: 600.5
+    x1: 299.2
+    y1: 606.5
+- page: 1
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 74.3
+    y0: 607.3
+    x1: 299.2
+    y1: 620.5
+  region: lower
+  context: Housing Provider Date
+  ul_bbox:
+    x0: 121.5
+    y0: 614.5
+    x1: 299.2
+    y1: 620.5

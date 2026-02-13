@@ -40,11 +40,39 @@ TEST_ADDRESS = re.compile(r"123\s*Test\s*St\.?", re.I)
 # Footer attribution text — lines near these are structural
 FOOTER_TEXT = re.compile(r"Produced with|zipForm|Lone Wolf", re.I)
 
+# Initials labels that should map to entry_initial.
+INITIAL_LABEL_RE = re.compile(
+    r"^(buyer'?s?\s+initials?|seller'?s?\s+initials?|"
+    r"owner'?s?\s+initials?|tenant'?s?\s+initials?|"
+    r"housing\s+providers?\s+initials?|"
+    r"buyer'?s?/?tenant'?s?\s+initials?)$",
+    re.I,
+)
+
+# Generic short signature labels require stronger context checks.
+GENERIC_SIG_LABEL_RE = re.compile(
+    r"^(buyer|seller|tenant|landlord|by|housing\s+provider|"
+    r"rental\s+property\s+owner|guarantor|seller/housing\s+provider)$",
+    re.I,
+)
+SIG_CONTEXT_RE = re.compile(
+    r"signature|signer|printed\s+name|\(signature\)|"
+    r"\bdate\b|dre\s+lic|lic\.?\s*#|sign\s+here",
+    re.I,
+)
+NON_SIG_CONTEXT_RE = re.compile(
+    r"service\s+provider|wildfire\s+service|title\s+insurance\s+policy|"
+    r"owner'?s\s+title|portfolio\s+escrow|click\s+here|provided\s+by",
+    re.I,
+)
+
 
 def classify_field(name: str, label: str) -> str:
     """Classify a widget field as signature, date, address, or fillable."""
     combined = f"{name} {label}"
-    if re.search(r"signature|initial", combined, re.I):
+    if re.search(r"initial", combined, re.I):
+        return "entry_initial"
+    if re.search(r"signature", combined, re.I):
         return "entry_signature"
     if re.search(r"\bdate\b", combined, re.I):
         return "entry_date"
@@ -89,20 +117,15 @@ def _build_label_patterns():
         r"^("
         r"signature|"
         r"\(signature\)\s*by|"
-        r"buyer\s*$|seller\s*$|tenant\s*$|landlord\s*$|"
-        r"housing\s+provider\s*$|rental\s+property\s+owner\s*$|"
-        r"by\s*$|"
         r"printed\s+name\s+of|"
-        r"associate[- ]licensee|"
-        r"buyer/?tenant|seller/?housing\s+provider|"
-        r"buyer/?seller/?landlord/?tenant|"
-        r"tenant\s*\(signature\)|housing\s+provider\s*\(signature\)|"
         r"printed\s+name\s+of\s+legally\s+authorized\s+signer|"
         r"printed\s+name\s+of\s+buyer|printed\s+name\s+of\s+seller|"
         r"printed\s+name\s+of\s+owner|printed\s+name\s+of\s+tenant|"
         r"printed\s+name\s+of\s+housing\s+provider|"
         r"printed\s+name\s+of\s+rpo|"
-        r"guarantor|guarantor\s*\(print\s*name\)"
+        r"tenant\s*\(signature\)|housing\s+provider\s*\(signature\)|"
+        r"guarantor|guarantor\s*\(print\s*name\)|"
+        r"associate[- ]licensee"
         r")$"
     )
     add("entry_signature", "above", sig_labels, min_w=100)
@@ -115,11 +138,8 @@ def _build_label_patterns():
         min_w=100)
 
     # ── Initials: label LEFT of short underline ──
-    add("entry_signature", "right",
-        r"^(buyer'?s?\s+initials?|seller'?s?\s+initials?|"
-        r"owner'?s?\s+initials?|tenant'?s?\s+initials?|"
-        r"housing\s+providers?\s+initials?|"
-        r"buyer'?s?/?tenant'?s?\s+initials?)$",
+    add("entry_initial", "right",
+        INITIAL_LABEL_RE.pattern,
         min_w=15, max_w=60)
 
     # ── Date: label left or right of underline ──
@@ -319,12 +339,29 @@ def detect_entry_spaces(page) -> dict:
     # ── Step 2: Filter structural lines ──
     structural = set()  # indices of structural underlines
 
-    # 2a. Footer attribution lines: y > 740 and footer text nearby
+    # 2a. Footer attribution lines: y > 740 and footer text nearby.
+    # Keep footer initials slots; only strip true attribution lines.
     footer_text_on_page = any(
         FOOTER_TEXT.search(sp["text"]) for sp in all_spans
     )
+    initial_label_spans = [
+        sp for sp in all_spans
+        if INITIAL_LABEL_RE.search(sp["text"])
+    ]
+
+    def _is_initials_footer_slot(ul):
+        for sp in initial_label_spans:
+            sb = sp["bbox"]
+            s_y_mid = (sb[1] + sb[3]) / 2
+            if abs(s_y_mid - ul["y"]) > VERT_TOL + 2:
+                continue
+            gap = ul["x0"] - sb[2]
+            if -2 <= gap <= 260 and 15 <= ul["width"] <= 70:
+                return True
+        return False
+
     for i, ul in enumerate(underlines):
-        if ul["y"] > 740 and footer_text_on_page:
+        if ul["y"] > 740 and footer_text_on_page and not _is_initials_footer_slot(ul):
             structural.add(i)
 
     # 2b. Table column borders: lines sharing same x0 (within 2pt)
@@ -353,7 +390,8 @@ def detect_entry_spaces(page) -> dict:
             avg_w = sum(widths) / len(widths)
             if avg_w < 100:
                 for i in indices:
-                    structural.add(i)
+                    if not _is_initials_footer_slot(underlines[i]):
+                        structural.add(i)
 
     # 2c. Full-width separators: width > 60% page width
     for i, ul in enumerate(underlines):
@@ -460,6 +498,26 @@ def detect_entry_spaces(page) -> dict:
             return best_idx, underlines[best_idx]
         return None, None
 
+    def _find_initial_lines(span_bbox, min_w, max_w, max_slots=2):
+        """Find up to N short initials lines to the right of a label."""
+        sb = span_bbox
+        s_y_mid = (sb[1] + sb[3]) / 2
+        candidates = []
+        for i, ul in enumerate(underlines):
+            if i in structural or i in claimed:
+                continue
+            if ul["width"] < min_w:
+                continue
+            if max_w and ul["width"] > max_w:
+                continue
+            if abs(s_y_mid - ul["y"]) > VERT_TOL + 2:
+                continue
+            gap = ul["x0"] - sb[2]
+            if -2 <= gap <= 260:
+                candidates.append((gap, ul["x0"], i, ul))
+        candidates.sort(key=lambda x: (x[0], x[1]))
+        return [(i, ul) for _, _, i, ul in candidates[:max_slots]]
+
     # ── Helper: build bbox from label + underline ──
     def _build_bbox(label_bbox, ul, direction):
         """Build display bbox covering label + underline, with width caps."""
@@ -546,6 +604,38 @@ def detect_entry_spaces(page) -> dict:
 
             if not matched_text:
                 continue
+
+            if (pat["category"] == "entry_signature" and
+                    GENERIC_SIG_LABEL_RE.search(sp_lower)):
+                if NON_SIG_CONTEXT_RE.search(line_lower):
+                    continue
+                if not SIG_CONTEXT_RE.search(line_lower):
+                    continue
+
+            if pat["category"] == "entry_initial":
+                ul_pairs = _find_initial_lines(
+                    sp["bbox"], pat["min_w"], pat.get("max_w"), max_slots=2
+                )
+                if not ul_pairs:
+                    continue
+                for ul_idx, ul in ul_pairs:
+                    key = (round(ul["y"]), round(ul["x0"]))
+                    if key in seen_keys:
+                        continue
+                    seen_keys.add(key)
+                    claimed.add(ul_idx)
+                    bbox = _build_bbox(sp["bbox"], ul, pat["direction"])
+                    line_ctx = _get_context(ul)
+                    entries.append({
+                        "category": "entry_initial",
+                        "bbox": bbox_to_dict(bbox),
+                        "ul_bbox": bbox_to_dict((ul["x0"], ul["y"] - 4,
+                                                 ul["x1"], ul["y"] + 2)),
+                        "field": sp_text[:80],
+                        "context": line_ctx[:120],
+                        "region": _page_region(bbox, page_height),
+                    })
+                break
 
             # Found a label match — look for an underline
             ul_idx, ul = _find_line(
@@ -717,8 +807,8 @@ def detect_entry_spaces(page) -> dict:
             category = "entry_days"
         elif lw_text in ("signature", "sign"):
             category = "entry_signature"
-        elif lw_text in ("initial", "initials"):
-            category = "entry_signature"
+        elif lw_text in ("initials",):
+            category = "entry_initial"
         elif lw_text in ("dre", "lic", "license", "calbre", "caldre"):
             category = "entry_license"
         elif lw_text == "date":
@@ -729,6 +819,8 @@ def detect_entry_spaces(page) -> dict:
             category = "entry_dollar"
         elif lw_text == "%":
             category = "entry_percent"
+        elif re.search(r"\binitials\b", classify_text):
+            category = "entry_initial"
         elif re.search(r"signature|sign here", classify_text):
             category = "entry_signature"
         elif re.search(r"\bdate\b", classify_text):
@@ -857,7 +949,7 @@ def generate_manifest(analysis: dict, folder_name: str) -> dict:
     """Generate a YAML-ready manifest with version tracking."""
     s = analysis["summary"]
     manifest = {
-        "version": "3.0.0",
+        "version": "3.1.0",
         "last_analyzed": datetime.now().isoformat(timespec="seconds"),
         "file": analysis["file"],
         "folder": folder_name,

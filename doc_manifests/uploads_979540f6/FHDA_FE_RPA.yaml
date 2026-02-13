@@ -1,0 +1,138 @@
+version: 3.1.0
+last_analyzed: '2026-02-12T15:36:26'
+file: FHDA_FE RPA.pdf
+folder: uploads_979540f6
+page_count: 2
+status: complete
+issues: []
+summary:
+  total_form_widgets: 0
+  filled_widgets: 0
+  empty_widgets: 0
+  total_entry_spaces: 8
+  entry_categories:
+    entry_date: 4
+    entry_blank: 4
+  test_address_references: 0
+time_length_review: []
+field_map:
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 588.4
+    x1: 494.0
+    y1: 600.4
+  region: lower
+  context: Buyer/Tenant Date SAJIR FF LLC And/Or Assignee February 2, 2026
+  ul_bbox:
+    x0: 267.5
+    y0: 594.4
+    x1: 472.5
+    y1: 600.4
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 272.5
+    y0: 602.4
+    x1: 494.0
+    y1: 614.4
+  region: lower
+  context: Buyer/Tenant Date 2/3/2026
+  ul_bbox:
+    x0: 267.5
+    y0: 608.4
+    x1: 472.5
+    y1: 614.4
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 619.3
+    x1: 494.5
+    y1: 631.4
+  region: lower
+  context: Seller/Housing Provider Date Ruby Lotus Llc
+  ul_bbox:
+    x0: 268.0
+    y0: 625.4
+    x1: 473.0
+    y1: 631.4
+- page: 2
+  field: Date
+  category: entry_date
+  bbox:
+    x0: 273.0
+    y0: 633.4
+    x1: 494.5
+    y1: 645.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 268.0
+    y0: 639.4
+    x1: 473.0
+    y1: 645.4
+- page: 2
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 588.4
+    x1: 267.6
+    y1: 600.4
+  region: lower
+  context: Buyer/Tenant Date SAJIR FF LLC And/Or Assignee February 2, 2026
+  ul_bbox:
+    x0: 92.5
+    y0: 594.4
+    x1: 267.6
+    y1: 600.4
+- page: 2
+  field: Buyer/Tenant
+  category: entry_blank
+  bbox:
+    x0: 36.0
+    y0: 602.4
+    x1: 267.6
+    y1: 614.4
+  region: lower
+  context: Buyer/Tenant Date 2/3/2026
+  ul_bbox:
+    x0: 92.5
+    y0: 608.4
+    x1: 267.6
+    y1: 614.4
+- page: 2
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 619.3
+    x1: 268.0
+    y1: 631.4
+  region: lower
+  context: Seller/Housing Provider Date Ruby Lotus Llc
+  ul_bbox:
+    x0: 133.0
+    y0: 625.4
+    x1: 268.0
+    y1: 631.4
+- page: 2
+  field: Provider
+  category: entry_blank
+  bbox:
+    x0: 97.6
+    y0: 633.4
+    x1: 268.0
+    y1: 645.4
+  region: lower
+  context: Seller/Housing Provider Date
+  ul_bbox:
+    x0: 133.0
+    y0: 639.4
+    x1: 268.0
+    y1: 645.4

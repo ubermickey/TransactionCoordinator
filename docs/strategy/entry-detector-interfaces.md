@@ -63,3 +63,21 @@ When blocked by approval policy, cloud endpoints return `403`:
 - Cloud approval is required by default.
 - Approval is transaction-scoped and defaults to 30 minutes.
 - Cloud calls without `txn` context are blocked.
+
+## Entry Detector Categories
+
+The detector now emits a dedicated initials category:
+
+- `entry_signature`: Full signature lines and signer-name signature blocks.
+- `entry_initial`: Initials-only lines (buyer/seller/tenant/owner initials slots).
+
+### Compatibility Rules
+
+- Legacy signature filters (`signature_area`, `signature`, `entry_signature`) should include both
+  signature and initials categories for review surfaces that historically grouped them.
+- Direct filtering by `entry_initial` returns initials-only entries.
+
+### Fill-Detection Contract
+
+- `ul_bbox` is authoritative for wide signature/initial fields to avoid static label text.
+- Fill detection must strip label tokens before deciding `is_filled`.
