@@ -113,6 +113,45 @@ const get  = (p) => api(p);
 const post = (p, b) => api(p, { method: 'POST', body: b });
 const del  = (p) => api(p, { method: 'DELETE' });
 
+async function postForm(path, formData) {
+  try {
+    const res = await fetch(API + path, { method: 'POST', body: formData });
+    const data = await res.json();
+    if (!res.ok) return { _error: true, ...data };
+    return data;
+  } catch (err) {
+    return { _error: true, error: err.message };
+  }
+}
+
+function isCloudApprovalError(res) {
+  return !!(res && (res.code === 'cloud_approval_required' || res.requires_approval));
+}
+
+async function ensureCloudApproval(tid, attemptFn) {
+  let res = await attemptFn();
+  if (!isCloudApprovalError(res)) return res;
+  if (!tid) {
+    Toast.show('Select a transaction before using cloud features.', 'warning');
+    return res;
+  }
+
+  const ok = window.confirm(
+    'This action uses cloud services. Approve cloud use for this transaction for 30 minutes?'
+  );
+  if (!ok) return res;
+
+  const grant = await post(`/api/txns/${tid}/cloud-approval`, {
+    minutes: 30,
+    note: 'Approved from UI',
+  });
+  if (grant._error) return res;
+  Toast.show('Cloud approved for 30 minutes for this transaction.', 'info');
+
+  res = await attemptFn();
+  return res;
+}
+
 // ── Response Cache (TTL-based) for fast tab switches ──
 const _apiCache = new Map();
 const CACHE_TTL = 8000; // 8 seconds
@@ -224,8 +263,12 @@ const ChatPanel = (() => {
     const input = document.getElementById('chat-input');
     const text = (input.value || '').trim();
     if (!text) return;
+    if (!currentTxn) {
+      Toast.show('Select a transaction before using cloud chat.', 'warning');
+      return;
+    }
 
-    const tid = currentTxn || '_global';
+    const tid = currentTxn;
     if (!messages[tid]) messages[tid] = [];
     messages[tid].push({ role: 'user', content: text });
     input.value = '';
@@ -244,11 +287,11 @@ const ChatPanel = (() => {
     if (sendBtn) sendBtn.disabled = true;
 
     try {
-      const res = await post('/api/chat', {
+      const res = await ensureCloudApproval(currentTxn, () => post('/api/chat', {
         message: text,
         txn_id: currentTxn,
         history: (messages[tid] || []).slice(-10),
-      });
+      }));
       typing.remove();
       if (res._error) {
         messages[tid].push({ role: 'assistant', content: 'Sorry, I encountered an error. ' + (res.error || '') });
@@ -339,7 +382,7 @@ const CmdPalette = (() => {
           icon: '\uD83D\uDEE1', // shield
           label: g.name || g.gid,
           hint: `Gate \u00B7 ${g.gid}`,
-          action: () => { switchTab('gates'); },
+          action: () => { switchTab('compliance'); },
         });
       });
     }
@@ -351,7 +394,7 @@ const CmdPalette = (() => {
           icon: '\u23F0', // alarm clock
           label: d.name || d.did,
           hint: `Deadline \u00B7 ${d.did}`,
-          action: () => { switchTab('deadlines'); },
+          action: () => { switchTab('overview'); },
         });
       });
     }
@@ -449,7 +492,7 @@ const CmdPalette = (() => {
 
 const Shortcuts = (() => {
   let helpOpen = false;
-  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'signatures', '4': 'contingencies', '5': 'parties', '6': 'disclosures', '7': 'gates', '8': 'deadlines', '9': 'audit', '0': 'verify' };
+  const tabKeys = { '1': 'overview', '2': 'docs', '3': 'signatures', '4': 'contingencies', '5': 'parties', '6': 'compliance', '7': 'activity' };
 
   function isInput() {
     const tag = document.activeElement?.tagName;
@@ -527,7 +570,7 @@ const Shortcuts = (() => {
       return;
     }
 
-    // 1-5 - switch tabs
+    // 1-7 - switch tabs
     if (tabKeys[e.key] && currentTxn) {
       e.preventDefault();
       switchTab(tabKeys[e.key]);
@@ -714,7 +757,8 @@ const BugReporter = (() => {
 
 const PdfViewer = (() => {
   let pdfDoc = null;
-  let currentPage = 1;
+  let pdfjsApi = null;
+  let pdfjsLoadPromise = null;
   let totalPages = 1;
   let scale = 1.5;
   let fields = [];
@@ -724,147 +768,191 @@ const PdfViewer = (() => {
   let filename = '';
   let txnId = '';
   let activeFieldIdx = -1;
-  let pageWidth = 0;
-  let pageHeight = 0;
+  let visiblePage = 1;
+  let pageContainers = new Map();
+  let observer = null;
+
+  async function ensurePdfJs() {
+    if (pdfjsApi) return pdfjsApi;
+    if (typeof window.pdfjsLib !== 'undefined') {
+      pdfjsApi = window.pdfjsLib;
+    } else {
+      if (!pdfjsLoadPromise) {
+        pdfjsLoadPromise = import('/static/vendor/pdf.min.mjs')
+          .then((mod) => {
+            const lib = (mod && mod.default && mod.default.getDocument) ? mod.default : mod;
+            if (!lib || typeof lib.getDocument !== 'function')
+              throw new Error('pdf.js did not load correctly');
+            window.pdfjsLib = lib;
+            return lib;
+          })
+          .catch((err) => { pdfjsLoadPromise = null; throw err; });
+      }
+      pdfjsApi = await pdfjsLoadPromise;
+    }
+    if (pdfjsApi.GlobalWorkerOptions)
+      pdfjsApi.GlobalWorkerOptions.workerSrc = '/static/vendor/pdf.worker.min.mjs';
+    return pdfjsApi;
+  }
 
   function defaultStatus(f) {
     if (f.filled || f.value) return 'filled';
     const cat = (f.category || '').toLowerCase();
     if (cat === 'entry_days') return 'days';
-    // Mandatory categories
     if (cat === 'entry_signature' || cat === 'entry_license' || cat === 'entry_dollar') return 'empty';
-    // Dates: optional unless context has escrow/acceptance keywords
     if (cat === 'entry_date') return 'optional';
-    // Other blanks: check context for mandatory keywords
     const ctx = (f.context || '').toLowerCase();
     if (cat === 'entry_blank' && /purchase\s*price|deposit|escrow|acceptance|apn|parcel|city|county|zip|agent|broker|firm|buyer|seller|tenant|signature|initial/.test(ctx)) return 'empty';
     return 'optional';
   }
 
   async function open(f, fn, tid) {
-    folder = f;
-    filename = fn;
-    txnId = tid || '';
-    dirty = false;
-    activeFieldIdx = -1;
+    folder = f; filename = fn; txnId = tid || '';
+    dirty = false; activeFieldIdx = -1; visiblePage = 1;
 
     const backdrop = document.getElementById('pdf-viewer');
     backdrop.style.display = '';
     document.getElementById('pdf-viewer-title').textContent = filename.replace('.pdf', '');
 
-    // Init PDF.js worker
-    if (typeof pdfjsLib !== 'undefined') {
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js';
-    }
+    let pdfjs;
+    try { pdfjs = await ensurePdfJs(); }
+    catch (e) { Toast.show('PDF viewer unavailable: ' + e.message, 'error'); return; }
 
-    // Load fields + annotations + PDF in parallel
     const [fieldsData, annData] = await Promise.all([
-      get(`/api/doc-packages/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/fields`),
-      get(`/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}?txn=${encodeURIComponent(txnId)}`),
+      get('/api/doc-packages/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/fields'),
+      get('/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '?txn=' + encodeURIComponent(txnId)),
     ]);
 
     fields = fieldsData._error ? [] : fieldsData;
     const saved = (!annData._error && annData.annotations) ? annData.annotations : {};
-
-    // Build annotations: start with defaults, overlay saved
     annotations = {};
-    fields.forEach((f, i) => {
-      annotations[i] = saved[String(i)] || defaultStatus(f);
-    });
+    fields.forEach((fld, i) => { annotations[i] = saved[String(i)] || defaultStatus(fld); });
 
-    // Load PDF
     try {
-      const url = `/api/doc-packages/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/pdf`;
-      pdfDoc = await pdfjsLib.getDocument(url).promise;
+      const url = '/api/doc-packages/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/pdf';
+      pdfDoc = await pdfjs.getDocument(url).promise;
       totalPages = pdfDoc.numPages;
-      currentPage = 1;
-      await renderPage(currentPage);
+      await buildPages(totalPages);
     } catch (e) {
       Toast.show('Failed to load PDF: ' + e.message, 'error');
+      return;
     }
 
     renderSidebar();
+    renderNeedsReview();
     updatePageInfo();
   }
 
-  function close() {
-    if (dirty) {
-      saveAnnotations();
-    }
-    document.getElementById('pdf-viewer').style.display = 'none';
-    pdfDoc = null;
-    fields = [];
-    annotations = {};
-  }
-
-  async function renderPage(num) {
-    if (!pdfDoc) return;
-    const page = await pdfDoc.getPage(num);
-    const viewport = page.getViewport({ scale });
-    pageWidth = viewport.width;
-    pageHeight = viewport.height;
-
-    const canvas = document.getElementById('pdf-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-
-    await page.render({ canvasContext: ctx, viewport }).promise;
-    renderOverlay();
-    updatePageInfo();
-  }
-
-  function renderOverlay() {
-    const svg = document.getElementById('pdf-overlay');
-    const canvas = document.getElementById('pdf-canvas');
+  async function buildPages(n) {
     const wrap = document.getElementById('pdf-canvas-wrap');
+    wrap.textContent = '';
+    pageContainers.clear();
+    if (observer) observer.disconnect();
 
-    // Position SVG to overlay the canvas
-    const canvasRect = canvas.getBoundingClientRect();
-    const wrapRect = wrap.getBoundingClientRect();
-    const offsetLeft = canvasRect.left - wrapRect.left + wrap.scrollLeft;
-    const offsetTop = canvasRect.top - wrapRect.top + wrap.scrollTop;
+    const p1 = await pdfDoc.getPage(1);
+    const vp1 = p1.getViewport({ scale });
+    const phW = vp1.width, phH = vp1.height;
 
-    svg.setAttribute('width', canvas.width);
-    svg.setAttribute('height', canvas.height);
-    svg.style.left = offsetLeft + 'px';
-    svg.style.top = offsetTop + 'px';
-    svg.style.transform = 'translateX(0)'; // override the 50% centering
+    for (let i = 1; i <= n; i++) {
+      const div = document.createElement('div');
+      div.className = 'pdf-page-container';
+      div.dataset.page = i;
+      div.style.width = phW + 'px';
+      div.style.height = phH + 'px';
 
-    // Get page dimensions for coordinate mapping
-    // PDF coords: (0,0) at bottom-left. Viewport flips y.
-    // field bbox: { x0, y0, x1, y1 } in PDF points
-    // We need to scale based on rendered size vs page points
-    let svgHTML = '';
+      const canvas = document.createElement('canvas');
+      canvas.width = phW; canvas.height = phH;
+      div.appendChild(canvas);
+
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('class', 'pdf-page-overlay');
+      svg.setAttribute('width', phW);
+      svg.setAttribute('height', phH);
+      div.appendChild(svg);
+
+      const label = document.createElement('span');
+      label.className = 'pdf-page-label';
+      label.textContent = 'Page ' + i;
+      div.appendChild(label);
+
+      wrap.appendChild(div);
+      pageContainers.set(i, { div: div, canvas: canvas, svg: svg, rendered: false });
+    }
+
+    observer = new IntersectionObserver(function(entries) {
+      let maxRatio = 0, maxPage = visiblePage;
+      entries.forEach(function(entry) {
+        const pg = parseInt(entry.target.dataset.page);
+        if (entry.isIntersecting) lazyRenderPage(pg);
+        if (entry.intersectionRatio > maxRatio) {
+          maxRatio = entry.intersectionRatio;
+          maxPage = pg;
+        }
+      });
+      if (maxRatio > 0 && maxPage !== visiblePage) {
+        visiblePage = maxPage;
+        updatePageInfo();
+      }
+    }, { root: wrap, rootMargin: '200px 0px', threshold: [0, 0.1, 0.5, 1] });
+
+    pageContainers.forEach(function(pc) { observer.observe(pc.div); });
+
+    for (let i = 1; i <= Math.min(3, n); i++) await lazyRenderPage(i);
+  }
+
+  async function lazyRenderPage(pageNum) {
+    const pc = pageContainers.get(pageNum);
+    if (!pc || pc.rendered || !pdfDoc) return;
+
+    const page = await pdfDoc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: scale });
+
+    pc.canvas.width = viewport.width;
+    pc.canvas.height = viewport.height;
+    pc.div.style.width = viewport.width + 'px';
+    pc.div.style.height = viewport.height + 'px';
+
+    await page.render({ canvasContext: pc.canvas.getContext('2d'), viewport: viewport }).promise;
+    pc.rendered = true;
+    renderPageOverlay(pageNum);
+  }
+
+  function renderPageOverlay(pageNum) {
+    const pc = pageContainers.get(pageNum);
+    if (!pc) return;
+
+    pc.svg.setAttribute('width', pc.canvas.width);
+    pc.svg.setAttribute('height', pc.canvas.height);
 
     const PAD = 2;
-    fields.forEach((f, idx) => {
-      if (f.page !== currentPage) return;
+    const parts = [];
+    fields.forEach(function(f, idx) {
+      if (f.page !== pageNum) return;
       const bbox = f.bbox || {};
       if (!bbox.x0 && bbox.x0 !== 0) return;
-
       const x = (bbox.x0 - PAD) * scale;
       const y = (bbox.y0 - PAD) * scale;
       const w = (bbox.x1 - bbox.x0 + PAD * 2) * scale;
       const h = (bbox.y1 - bbox.y0 + PAD * 2) * scale;
-      const rx = 3; // rounded corners
-
       const status = annotations[idx] || 'optional';
       const isActive = idx === activeFieldIdx;
-      svgHTML += `<rect class="pdf-marker pdf-marker-${status}${isActive ? ' active' : ''}"
-        x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" ry="${rx}" data-idx="${idx}"/>`;
+      parts.push('<rect class="pdf-marker pdf-marker-' + status + (isActive ? ' active' : '') +
+        '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h +
+        '" rx="3" ry="3" data-idx="' + idx + '"/>');
     });
+    pc.svg.innerHTML = parts.join('');
 
-    svg.innerHTML = svgHTML;
-
-    // Click handlers
-    svg.querySelectorAll('.pdf-marker').forEach(el => {
-      el.addEventListener('click', (e) => {
+    pc.svg.querySelectorAll('.pdf-marker').forEach(function(el) {
+      el.addEventListener('click', function(e) {
         e.stopPropagation();
-        const idx = parseInt(el.getAttribute('data-idx'));
-        cycleStatus(idx);
+        cycleStatus(parseInt(el.getAttribute('data-idx')));
       });
+    });
+  }
+
+  function renderAllVisibleOverlays() {
+    pageContainers.forEach(function(pc, pgNum) {
+      if (pc.rendered) renderPageOverlay(pgNum);
     });
   }
 
@@ -872,7 +960,6 @@ const PdfViewer = (() => {
     const current = annotations[idx] || 'optional';
     const def = defaultStatus(fields[idx] || {});
     let next;
-
     if (current === 'ignored') {
       next = def;
     } else if (def === 'optional') {
@@ -882,21 +969,17 @@ const PdfViewer = (() => {
       next = 'ignored';
     }
 
-    // Apply to this field
     annotations[idx] = next;
-
-    // Also toggle identical fields (same field name + category)
     const f = fields[idx];
     if (f) {
       const fname = (f.field || '').toLowerCase();
       const fcat = (f.category || '').toLowerCase();
       if (fname) {
-        fields.forEach((other, otherIdx) => {
+        fields.forEach(function(other, otherIdx) {
           if (otherIdx === idx) return;
           if ((other.field || '').toLowerCase() === fname &&
-              (other.category || '').toLowerCase() === fcat) {
+              (other.category || '').toLowerCase() === fcat)
             annotations[otherIdx] = next;
-          }
         });
       }
     }
@@ -904,120 +987,220 @@ const PdfViewer = (() => {
     dirty = true;
     activeFieldIdx = idx;
 
-    // Persist immediately for audit trail
     if (txnId && f) {
-      post(`/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}`, {
+      post('/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename), {
         txn: txnId, field_idx: idx, status: next,
-        field_name: f.field || `Field ${idx}`,
+        field_name: f.field || ('Field ' + idx),
       });
     }
 
-    renderOverlay();
+    renderAllVisibleOverlays();
     renderSidebar();
+    renderNeedsReview();
+  }
+
+  function renderNeedsReview() {
+    const el = document.getElementById('pdf-needs-review');
+    if (!el) return;
+
+    const items = [];
+    fields.forEach(function(f, idx) {
+      const cat = (f.category || '').toLowerCase();
+      if (cat !== 'entry_signature') return;
+      const status = annotations[idx] || defaultStatus(f);
+      if (status === 'filled' || status === 'ignored') return;
+      items.push({ field: f, idx: idx });
+    });
+
+    if (items.length === 0) {
+      const hasSigs = fields.some(function(f) {
+        return (f.category || '').toLowerCase() === 'entry_signature';
+      });
+      el.textContent = '';
+      if (hasSigs) {
+        const done = document.createElement('div');
+        done.className = 'pdf-needs-review-done';
+        done.textContent = 'All signatures verified';
+        el.appendChild(done);
+      }
+      return;
+    }
+
+    // Build header
+    el.textContent = '';
+    const hdr = document.createElement('div');
+    hdr.className = 'pdf-needs-review-header';
+    hdr.textContent = 'Needs Review ';
+    const badge = document.createElement('span');
+    badge.className = 'pdf-needs-review-count';
+    badge.textContent = items.length;
+    hdr.appendChild(badge);
+    el.appendChild(hdr);
+
+    items.forEach(function(item) {
+      const row = document.createElement('div');
+      row.className = 'pdf-review-item';
+      row.dataset.idx = item.idx;
+
+      const check = document.createElement('span');
+      check.className = 'pdf-review-check';
+      row.appendChild(check);
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'pdf-field-name';
+      nameSpan.textContent = item.field.field || item.field.label || ('Field ' + item.idx);
+      nameSpan.title = nameSpan.textContent;
+      row.appendChild(nameSpan);
+
+      const pgSpan = document.createElement('span');
+      pgSpan.className = 'pdf-field-cat';
+      pgSpan.textContent = 'p' + (item.field.page || 1);
+      row.appendChild(pgSpan);
+
+      row.addEventListener('click', function() { scrollToField(item.idx); });
+      el.appendChild(row);
+    });
   }
 
   function renderSidebar() {
-    // Stats
     const statsEl = document.getElementById('pdf-sidebar-stats');
     const counts = { filled: 0, empty: 0, optional: 0, days: 0, ignored: 0 };
-    Object.values(annotations).forEach(s => { counts[s] = (counts[s] || 0) + 1; });
-    statsEl.innerHTML = `
-      <span class="stat-item"><span class="stat-dot" style="background:#34c759"></span>${counts.filled}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ff3b30"></span>${counts.empty}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ffcc00"></span>${counts.optional}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#ff8c00"></span>${counts.days}</span>
-      <span class="stat-item"><span class="stat-dot" style="background:#8e8e93;opacity:0.5"></span>${counts.ignored}</span>
-    `;
+    Object.values(annotations).forEach(function(s) { counts[s] = (counts[s] || 0) + 1; });
 
-    // Group fields by page
+    statsEl.textContent = '';
+    [['#34c759', counts.filled], ['#ff3b30', counts.empty], ['#ffcc00', counts.optional],
+     ['#ff8c00', counts.days], ['#8e8e93', counts.ignored]].forEach(function(pair) {
+      const item = document.createElement('span');
+      item.className = 'stat-item';
+      const dot = document.createElement('span');
+      dot.className = 'stat-dot';
+      dot.style.background = pair[0];
+      if (pair[0] === '#8e8e93') dot.style.opacity = '0.5';
+      item.appendChild(dot);
+      item.appendChild(document.createTextNode(pair[1]));
+      statsEl.appendChild(item);
+    });
+
     const listEl = document.getElementById('pdf-sidebar-list');
     const byPage = {};
-    fields.forEach((f, idx) => {
+    fields.forEach(function(f, idx) {
       const p = f.page || 1;
       if (!byPage[p]) byPage[p] = [];
-      byPage[p].push({ field: f, idx });
+      byPage[p].push({ field: f, idx: idx });
     });
 
-    let html = '';
-    Object.keys(byPage).sort((a, b) => a - b).forEach(p => {
-      html += `<div class="pdf-sidebar-page-header">Page ${p}</div>`;
-      byPage[p].forEach(({ field, idx }) => {
-        const status = annotations[idx] || 'optional';
-        const name = field.field || field.label || `Field ${idx}`;
-        const cat = field.category || '';
-        const isActive = idx === activeFieldIdx;
-        html += `<div class="pdf-field-item${isActive ? ' active' : ''}" data-idx="${idx}" data-page="${p}">
-          <span class="pdf-field-dot ${status}"></span>
-          <span class="pdf-field-name" title="${esc(name)}">${esc(name)}</span>
-          ${cat ? `<span class="pdf-field-cat">${esc(cat)}</span>` : ''}
-        </div>`;
-      });
-    });
-    listEl.innerHTML = html;
+    listEl.textContent = '';
+    Object.keys(byPage).sort(function(a, b) { return a - b; }).forEach(function(p) {
+      const pgHdr = document.createElement('div');
+      pgHdr.className = 'pdf-sidebar-page-header';
+      if (parseInt(p) === visiblePage) pgHdr.className += ' active';
+      pgHdr.textContent = 'Page ' + p;
+      listEl.appendChild(pgHdr);
 
-    // Click to navigate
-    listEl.querySelectorAll('.pdf-field-item').forEach(el => {
-      el.addEventListener('click', () => {
-        const idx = parseInt(el.dataset.idx);
-        const page = parseInt(el.dataset.page);
-        activeFieldIdx = idx;
-        if (page !== currentPage) {
-          currentPage = page;
-          renderPage(currentPage).then(() => renderSidebar());
-        } else {
-          renderOverlay();
-          renderSidebar();
+      byPage[p].forEach(function(entry) {
+        const status = annotations[entry.idx] || 'optional';
+        const name = entry.field.field || entry.field.label || ('Field ' + entry.idx);
+        const cat = entry.field.category || '';
+        const isActive = entry.idx === activeFieldIdx;
+
+        const row = document.createElement('div');
+        row.className = 'pdf-field-item' + (isActive ? ' active' : '');
+        row.dataset.idx = entry.idx;
+        row.dataset.page = p;
+
+        const dot = document.createElement('span');
+        dot.className = 'pdf-field-dot ' + status;
+        row.appendChild(dot);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'pdf-field-name';
+        nameSpan.title = name;
+        nameSpan.textContent = name;
+        row.appendChild(nameSpan);
+
+        if (cat) {
+          const catSpan = document.createElement('span');
+          catSpan.className = 'pdf-field-cat';
+          catSpan.textContent = cat;
+          row.appendChild(catSpan);
         }
+
+        row.addEventListener('click', function() { scrollToField(entry.idx); });
+        listEl.appendChild(row);
       });
     });
+  }
+
+  function scrollToField(idx) {
+    const f = fields[idx];
+    if (!f) return;
+    const pg = f.page || 1;
+    const pc = pageContainers.get(pg);
+    if (!pc) return;
+    activeFieldIdx = idx;
+    lazyRenderPage(pg).then(function() {
+      pc.div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      renderAllVisibleOverlays();
+      renderSidebar();
+      renderNeedsReview();
+    });
+  }
+
+  function scrollToPage(num) {
+    if (num < 1 || num > totalPages) return;
+    const pc = pageContainers.get(num);
+    if (pc) pc.div.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   async function saveAnnotations() {
     if (Object.keys(annotations).length === 0) return;
     const res = await post(
-      `/api/field-annotations/${encodeURIComponent(folder)}/${encodeURIComponent(filename)}/bulk`,
+      '/api/field-annotations/' + encodeURIComponent(folder) + '/' + encodeURIComponent(filename) + '/bulk',
       { txn: txnId, annotations: Object.fromEntries(
-        Object.entries(annotations).map(([k, v]) => [String(k), v])
+        Object.entries(annotations).map(function(e) { return [String(e[0]), e[1]]; })
       )}
     );
-    if (!res._error) {
-      dirty = false;
-      Toast.show('Annotations saved', 'success');
-    }
+    if (!res._error) { dirty = false; Toast.show('Annotations saved', 'success'); }
   }
 
   function updatePageInfo() {
-    document.getElementById('pdf-page-info').textContent = `${currentPage} / ${totalPages}`;
-    document.getElementById('pdf-zoom-level').textContent = `${Math.round(scale * 100)}%`;
+    document.getElementById('pdf-page-info').textContent = visiblePage + ' / ' + totalPages;
+    document.getElementById('pdf-zoom-level').textContent = Math.round(scale * 100) + '%';
   }
 
-  function prevPage() {
-    if (currentPage > 1) { currentPage--; renderPage(currentPage); }
-  }
+  function prevPage() { scrollToPage(visiblePage - 1); }
+  function nextPage() { scrollToPage(visiblePage + 1); }
+  function zoomIn() { setScale(Math.min(scale + 0.25, 4)); }
+  function zoomOut() { setScale(Math.max(scale - 0.25, 0.5)); }
 
-  function nextPage() {
-    if (currentPage < totalPages) { currentPage++; renderPage(currentPage); }
-  }
-
-  function zoomIn() {
-    scale = Math.min(scale + 0.25, 4);
-    renderPage(currentPage);
-  }
-
-  function zoomOut() {
-    scale = Math.max(scale - 0.25, 0.5);
-    renderPage(currentPage);
+  function setScale(newScale) {
+    const wrap = document.getElementById('pdf-canvas-wrap');
+    const scrollRatio = wrap.scrollHeight > 0 ? wrap.scrollTop / wrap.scrollHeight : 0;
+    scale = newScale;
+    pageContainers.forEach(function(pc) { pc.rendered = false; });
+    buildPages(totalPages).then(function() {
+      wrap.scrollTop = scrollRatio * wrap.scrollHeight;
+      updatePageInfo();
+    });
   }
 
   function fitWidth() {
     const wrap = document.getElementById('pdf-canvas-wrap');
     if (!pdfDoc || !wrap) return;
-    pdfDoc.getPage(currentPage).then(page => {
+    pdfDoc.getPage(1).then(function(page) {
       const vp = page.getViewport({ scale: 1 });
-      const available = wrap.clientWidth - 32;
-      scale = available / vp.width;
-      renderPage(currentPage);
+      setScale((wrap.clientWidth - 32) / vp.width);
     });
+  }
+
+  function close() {
+    if (dirty) saveAnnotations();
+    document.getElementById('pdf-viewer').style.display = 'none';
+    var wrap = document.getElementById('pdf-canvas-wrap');
+    if (wrap) wrap.textContent = '';
+    if (observer) { observer.disconnect(); observer = null; }
+    pageContainers.clear();
+    pdfDoc = null; fields = []; annotations = {};
   }
 
   function init() {
@@ -1028,16 +1211,9 @@ const PdfViewer = (() => {
     document.getElementById('pdf-zoom-out').addEventListener('click', zoomOut);
     document.getElementById('pdf-fit').addEventListener('click', fitWidth);
     document.getElementById('pdf-save-ann').addEventListener('click', saveAnnotations);
-
-    // Reposition overlay on scroll
-    document.getElementById('pdf-canvas-wrap').addEventListener('scroll', () => {
-      if (document.getElementById('pdf-viewer').style.display !== 'none') {
-        renderOverlay();
-      }
-    });
   }
 
-  return { open, close, init };
+  return { open: open, close: close, init: init };
 })();
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -1056,11 +1232,8 @@ const ReviewMode = (() => {
     { id: 'signatures',    name: 'Signatures',    isTxn: true },
     { id: 'contingencies', name: 'Contingencies', isTxn: true },
     { id: 'parties',       name: 'Parties',       isTxn: true },
-    { id: 'disclosures',   name: 'Disclosures',   isTxn: true },
-    { id: 'gates',         name: 'Gates',         isTxn: true },
-    { id: 'deadlines',     name: 'Deadlines',     isTxn: true },
-    { id: 'audit',         name: 'Audit',         isTxn: true },
-    { id: 'verify',        name: 'Verify',        isTxn: true },
+    { id: 'compliance',    name: 'Compliance',    isTxn: true },
+    { id: 'activity',      name: 'Activity',      isTxn: true },
   ];
 
   function currentPage() { return PAGES[pageIdx]; }
@@ -1535,11 +1708,8 @@ function switchTab(tab) {
     signatures: renderSignatures,
     contingencies: renderContingencies,
     parties: renderParties,
-    disclosures: renderDisclosures,
-    gates: renderGates,
-    deadlines: renderDeadlines,
-    audit: renderAudit,
-    verify: renderVerify,
+    compliance: renderGates,
+    activity: renderAudit,
   };
   (render[tab] || render.overview)();
 }
@@ -1746,7 +1916,7 @@ async function renderOverview() {
       </div>`;
     });
     if (blockingGates.length > 0) {
-      html += `<div class="attention-item attention-soon" onclick="switchTab('gates')" style="cursor:pointer">
+      html += `<div class="attention-item attention-soon" onclick="switchTab('compliance')" style="cursor:pointer">
         <span class="attention-icon">\u2610</span>
         <span>${blockingGates.length} compliance item${blockingGates.length > 1 ? 's' : ''} blocking phase advance</span>
       </div>`;
@@ -1805,26 +1975,118 @@ async function renderOverview() {
     ${_ring(contPct, contTotal ? 'var(--accent)' : 'var(--green)', `${removedCont.length}/${contTotal}`, 'Contingencies', 'contingencies')}
   </div>`;
 
-  // ── Quick Actions ──
-  html += `<div class="card quick-actions">
-    <div class="card-title">Quick Actions</div>
-    <div class="quick-actions-grid">
-      <button class="quick-action-btn" onclick="triggerUpload()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Upload PDF
+  // ── Transaction Schedule ──
+  const scheduleData = await getCached(`/api/txns/${currentTxn}/closing-plan`);
+  const schedule = !scheduleData._error ? scheduleData : {};
+  const daysToClose = schedule.days_to_close;
+  const pendingSigs = (schedule.pending_signatures || []).length;
+  const activeContCount = (schedule.active_contingencies || []).length;
+  const nextContDeadline = (schedule.active_contingencies || []).find(c => c.deadline_date);
+
+  html += `<div class="card schedule-card">
+    <div class="card-title">Transaction Schedule</div>
+    <div class="schedule-stats">
+      <div class="schedule-stat">
+        <span class="schedule-stat-value ${daysToClose !== null && daysToClose <= 7 ? 'urgent' : ''}">${daysToClose !== null ? daysToClose : '--'}</span>
+        <span class="schedule-stat-label">Days to Close</span>
+        ${schedule.coe_date ? `<span class="schedule-stat-sub">${esc(schedule.coe_date)}</span>` : ''}
+      </div>
+      <div class="schedule-stat">
+        <span class="schedule-stat-value ${activeContCount > 0 ? 'active' : ''}">${activeContCount}</span>
+        <span class="schedule-stat-label">Active Contingencies</span>
+        ${nextContDeadline ? `<span class="schedule-stat-sub">Next: ${esc(nextContDeadline.deadline_date)}</span>` : ''}
+      </div>
+      <div class="schedule-stat">
+        <span class="schedule-stat-value ${pendingSigs > 0 ? 'pending' : ''}">${pendingSigs}</span>
+        <span class="schedule-stat-label">Pending Signatures</span>
+      </div>
+    </div>
+  </div>`;
+
+  // ── Agenda — unified timeline of deadlines + contingency expirations + COE ──
+  const dlData = await getCached(`/api/txns/${currentTxn}/deadlines`);
+  const dls = (!dlData._error && Array.isArray(dlData)) ? dlData : [];
+  const agendaItems = [];
+
+  // Add deadlines
+  dls.forEach(d => {
+    if (d.due) agendaItems.push({ type: 'deadline', name: d.name, date: d.due, days: d.days_remaining, status: d.status });
+  });
+
+  // Add contingency expirations
+  contItems.filter(c => c.status === 'active' && c.deadline_date).forEach(c => {
+    agendaItems.push({ type: 'contingency', name: c.name, date: c.deadline_date, days: c.days_remaining, status: c.status });
+  });
+
+  // Add COE as milestone
+  const txnData = t.data || {};
+  const coeDate = (txnData.dates || {}).close_of_escrow;
+  if (coeDate) {
+    const coeDays = Math.ceil((new Date(coeDate) - new Date()) / 86400000);
+    agendaItems.push({ type: 'milestone', name: 'Close of Escrow', date: coeDate, days: coeDays, status: 'pending' });
+  }
+
+  agendaItems.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+  if (agendaItems.length > 0) {
+    const _urgCls = (days) => {
+      if (days === null || days === undefined) return '';
+      if (days < 0) return 'overdue';
+      if (days <= 1) return 'urgent';
+      if (days <= 5) return 'soon';
+      return 'ok';
+    };
+    const typeIcons = { deadline: '\u23F3', contingency: '\u25CB', milestone: '\u2B50' };
+    html += `<div class="card">
+      <div class="card-title">Agenda</div>
+      <div class="agenda-list">
+        ${agendaItems.slice(0, 15).map(a => {
+          const uc = _urgCls(a.days);
+          return `<div class="agenda-item ${uc}">
+            <span class="agenda-icon">${typeIcons[a.type] || '\u23F3'}</span>
+            <span class="agenda-date">${esc(a.date)}</span>
+            <span class="agenda-name">${esc(a.name)}</span>
+            <span class="agenda-days days-pill ${uc}">${a.days !== null && a.days !== undefined ? a.days + 'd' : '--'}</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ── Quick Actions (collapsible) ──
+  const actionsCollapsed = localStorage.getItem('quickActionsCollapsed') === 'true';
+  html += `<div class="card quick-actions ${actionsCollapsed ? 'collapsed' : ''}" id="quick-actions-card">
+    <div class="card-title-row">
+      <span class="card-title">Quick Actions</span>
+      <button class="collapse-toggle" onclick="toggleActionsCollapsed()" title="${actionsCollapsed ? 'Expand quick actions' : 'Collapse quick actions'}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="${actionsCollapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15'}"/>
+        </svg>
       </button>
-      <button class="quick-action-btn" onclick="switchTab('signatures')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-        Signatures
-      </button>
-      <button class="quick-action-btn" onclick="switchTab('contingencies')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Contingencies
-      </button>
-      <button class="quick-action-btn" onclick="switchTab('parties')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Parties
-      </button>
+    </div>
+    <div class="quick-actions-content">
+      <div class="quick-actions-grid">
+        <button class="quick-action-btn" onclick="triggerUpload()" title="Upload a PDF document">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload PDF
+        </button>
+        <button class="quick-action-btn" onclick="switchTab('signatures')" title="View signature status">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+          Signatures
+        </button>
+        <button class="quick-action-btn" onclick="switchTab('contingencies')" title="Manage contingency periods">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Contingencies
+        </button>
+        <button class="quick-action-btn" onclick="switchTab('parties')" title="View transaction parties">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Parties
+        </button>
+        <button class="quick-action-btn" onclick="showClosingPlan()" title="View closing plan checklist">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          Closing Plan
+        </button>
+      </div>
     </div>
   </div>`;
 
@@ -1837,7 +2099,7 @@ async function renderOverview() {
         ${blockingGates.slice(0, 8).map(g => `<div class="blocking-gate-item">
           <span class="blocking-gate-icon">\u2610</span>
           <span class="blocking-gate-name">${esc(g.name || g.gid)}</span>
-          <button class="btn btn-primary btn-sm" onclick="switchTab('gates')">Review</button>
+          <button class="btn btn-primary btn-sm" onclick="switchTab('compliance')">Review</button>
         </div>`).join('')}
         ${blockingGates.length > 8 ? `<div style="font-size:12px;color:var(--text-secondary);padding:4px 0">+ ${blockingGates.length - 8} more</div>` : ''}
       </div>
@@ -1881,7 +2143,7 @@ async function renderOverview() {
           return `<div class="dash-missing-item">
             <span class="dash-missing-icon">\u26D4</span>
             <span class="dash-missing-code">${esc(code)}</span>
-            <span class="dash-missing-name">${d ? esc(d.name) : esc(code)}</span>
+            <span class="dash-missing-name clickable-doc" onclick="openDocPdf('${esc(code)}')">${d ? esc(d.name) : esc(code)}</span>
             <button class="btn btn-ghost btn-sm" onclick="triggerUploadFor('${esc(code)}')">Upload</button>
           </div>`;
         }).join('')}
@@ -1908,7 +2170,7 @@ async function renderOverview() {
             <span class="activity-time">${esc(r.ts || '')}</span>
           </div>`).join('')}
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="switchTab('audit')" style="margin-top:4px">View Full Audit</button>
+      <button class="btn btn-ghost btn-sm" onclick="switchTab('activity')" style="margin-top:4px">View Full Audit</button>
     </div>`;
   }
 
@@ -1973,11 +2235,141 @@ async function advancePhase() {
     Toast.show('Phase advanced successfully', 'success');
     await selectTxn(currentTxn);
     loadTxns();
+  } else if (res.blockers) {
+    showAdvanceBlockersModal(res.blockers);
   } else if (res.blocking && res.blocking.length > 0) {
     Toast.show('Cannot advance — ' + res.blocking.length + ' blocking gate(s): ' + res.blocking.slice(0, 3).join(', '), 'warning');
   } else {
     Toast.show('Cannot advance phase', 'warning');
   }
+}
+
+function toggleActionsCollapsed() {
+  const card = document.getElementById('quick-actions-card');
+  if (!card) return;
+  const isCollapsed = card.classList.toggle('collapsed');
+  localStorage.setItem('quickActionsCollapsed', isCollapsed);
+  // Update toggle icon
+  const svg = card.querySelector('.collapse-toggle svg polyline');
+  if (svg) {
+    svg.setAttribute('points', isCollapsed ? '6 9 12 15 18 9' : '18 15 12 9 6 15');
+  }
+  const btn = card.querySelector('.collapse-toggle');
+  if (btn) {
+    btn.title = isCollapsed ? 'Expand quick actions' : 'Collapse quick actions';
+  }
+}
+
+async function showClosingPlan() {
+  if (!currentTxn) return;
+  const data = await get(`/api/txns/${currentTxn}/closing-plan`);
+  if (data._error) return;
+
+  const t = txnCache[currentTxn] || {};
+  const modal = document.getElementById('closing-plan-modal');
+  const body = document.getElementById('closing-plan-body');
+  if (!modal || !body) return;
+
+  let html = '';
+
+  // Days to close countdown
+  const daysToClose = data.days_to_close;
+  const countdownClass = daysToClose !== null && daysToClose <= 7 ? 'urgent' : (daysToClose !== null && daysToClose <= 14 ? 'soon' : '');
+  html += `<div class="closing-countdown ${countdownClass}">
+    <div class="closing-countdown-value">${daysToClose !== null ? daysToClose : '--'}</div>
+    <div class="closing-countdown-label">Days to Close${data.coe_date ? ` (${esc(data.coe_date)})` : ''}</div>
+  </div>`;
+
+  // Active Contingencies
+  const conts = data.active_contingencies || [];
+  if (conts.length > 0) {
+    html += `<div class="closing-section">
+      <h4>Active Contingencies (${conts.length})</h4>
+      <ul class="closing-list">
+        ${conts.map(c => `<li class="closing-item cont">
+          <span class="closing-item-icon">\u25CB</span>
+          <span class="closing-item-name">${esc(c.name)}</span>
+          ${c.deadline_date ? `<span class="closing-item-date">${esc(c.deadline_date)}</span>` : ''}
+        </li>`).join('')}
+      </ul>
+    </div>`;
+  }
+
+  // Pending Documents
+  const docs = data.pending_docs || [];
+  if (docs.length > 0) {
+    const byUrgency = { required: [], received: [] };
+    docs.forEach(d => {
+      if (d.status === 'required') byUrgency.required.push(d);
+      else byUrgency.received.push(d);
+    });
+    html += `<div class="closing-section">
+      <h4>Pending Documents (${docs.length})</h4>`;
+    if (byUrgency.required.length > 0) {
+      html += `<div class="closing-subsection"><span class="closing-subsection-label">Not Yet Received</span>
+        <ul class="closing-list">${byUrgency.required.slice(0, 10).map(d => `<li class="closing-item doc required">
+          <span class="closing-item-icon">\u26D4</span>
+          <span class="closing-item-code">${esc(d.code)}</span>
+          <span class="closing-item-name">${esc(d.name)}</span>
+        </li>`).join('')}</ul>
+        ${byUrgency.required.length > 10 ? `<div class="closing-more">+ ${byUrgency.required.length - 10} more</div>` : ''}
+      </div>`;
+    }
+    if (byUrgency.received.length > 0) {
+      html += `<div class="closing-subsection"><span class="closing-subsection-label">Awaiting Verification</span>
+        <ul class="closing-list">${byUrgency.received.slice(0, 5).map(d => `<li class="closing-item doc received">
+          <span class="closing-item-icon">\u23F3</span>
+          <span class="closing-item-code">${esc(d.code)}</span>
+          <span class="closing-item-name">${esc(d.name)}</span>
+        </li>`).join('')}</ul>
+        ${byUrgency.received.length > 5 ? `<div class="closing-more">+ ${byUrgency.received.length - 5} more</div>` : ''}
+      </div>`;
+    }
+    html += `</div>`;
+  }
+
+  // Pending Signatures
+  const sigs = data.pending_signatures || [];
+  if (sigs.length > 0) {
+    html += `<div class="closing-section">
+      <h4>Pending Signatures (${sigs.length})</h4>
+      <ul class="closing-list">
+        ${sigs.slice(0, 8).map(s => `<li class="closing-item sig">
+          <span class="closing-item-icon">\u270D</span>
+          <span class="closing-item-name">${esc(s.field_name)}</span>
+          <span class="closing-item-sub">${esc(s.doc_code)} p.${s.page}</span>
+        </li>`).join('')}
+      </ul>
+      ${sigs.length > 8 ? `<div class="closing-more">+ ${sigs.length - 8} more</div>` : ''}
+    </div>`;
+  }
+
+  // Blocking Compliance Items
+  const gates = data.blocking_gates || [];
+  if (gates.length > 0) {
+    html += `<div class="closing-section">
+      <h4>Compliance Items (${gates.length})</h4>
+      <ul class="closing-list">
+        ${gates.slice(0, 6).map(g => `<li class="closing-item gate">
+          <span class="closing-item-icon">\u2610</span>
+          <span class="closing-item-name">${esc(g.name || g.gid)}</span>
+        </li>`).join('')}
+      </ul>
+      ${gates.length > 6 ? `<div class="closing-more">+ ${gates.length - 6} more</div>` : ''}
+    </div>`;
+  }
+
+  if (!conts.length && !docs.length && !sigs.length && !gates.length) {
+    html += `<div class="closing-empty">\u2705 All clear! Ready to close.</div>`;
+  }
+
+  body.innerHTML = html;
+  modal.style.display = '';
+}
+
+function closeClosingPlan() {
+  const modal = document.getElementById('closing-plan-modal');
+  if (modal) modal.style.display = 'none';
 }
 
 async function toggleFlag(flag, value) {
@@ -2041,6 +2433,13 @@ async function _uploadFile(file) {
       const ext = data.rpa_extraction;
       const prov = ext.acceptance_provisional ? ' (provisional)' : '';
       Toast.show(`RPA analyzed: acceptance ${ext.acceptance_date}${prov}, COE ${ext.coe_date}. Deadlines & contingencies populated.`, 'success');
+      // Show waived contingencies
+      if (ext.contingencies_waived) {
+        const waived = Object.entries(ext.contingencies_waived)
+          .map(([type, status]) => `${type} (${status})`)
+          .join(', ');
+        Toast.show(`Contingencies auto-detected as not required: ${waived}`, 'info');
+      }
     }
     // Invalidate cache + refresh
     invalidateCache(`/api/txns/${currentTxn}`);
@@ -2082,82 +2481,195 @@ let _docsData = [];
 
 async function renderDocs() {
   showSkeleton('table');
-  const docs = await get(`/api/txns/${currentTxn}/docs`);
+  const [docs, discRes, verifyData] = await Promise.all([
+    get(`/api/txns/${currentTxn}/docs`),
+    get(`/api/txns/${currentTxn}/disclosures`),
+    get('/api/contracts'),
+  ]);
   if (docs._error) return;
   _docsData = docs;
+  _discData = (!discRes._error && discRes.items) ? discRes.items : [];
+  _discSummary = (!discRes._error && discRes.summary) ? discRes.summary : {};
 
   // Cache for command palette
   if (txnCache[currentTxn]) txnCache[currentTxn]._docs = docs;
 
   const el = $('#tab-content');
 
+  // Upload drop zone
+  let html = `<div class="docs-upload-zone" id="docs-drop-zone">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+    <span>Drop PDF here or <button class="btn btn-primary btn-sm" onclick="triggerUpload()">Browse</button></span>
+  </div>`;
+
   if (docs.length === 0) {
-    el.innerHTML = `<div class="card" style="text-align:center;padding:32px">
+    html += `<div class="card" style="text-align:center;padding:32px">
       <p style="color:var(--text-secondary);margin-bottom:12px">No documents tracked yet. Select a brokerage on the transaction to auto-populate, or upload documents directly.</p>
-      <button class="btn btn-primary" onclick="triggerUpload()">Upload PDF</button>
     </div>`;
-    return;
+  } else {
+    // Gather filter values
+    const phases = [...new Set(docs.map(d => d.phase))];
+    const statuses = [...new Set(docs.map(d => d.status))];
+
+    html += `<div class="filter-bar" id="docs-filter">
+      <input type="text" placeholder="Search documents..." id="docs-search">
+      <select id="docs-phase-filter">
+        <option value="">All Phases</option>
+        ${phases.map(p => `<option value="${p}">${esc(formatPhase(p))}</option>`).join('')}
+      </select>
+      <select id="docs-status-filter">
+        <option value="">All Statuses</option>
+        ${statuses.map(s => `<option value="${s}">${s}</option>`).join('')}
+      </select>
+    </div>`;
+
+    // Stats
+    const stats = {};
+    docs.forEach(d => { stats[d.status] = (stats[d.status] || 0) + 1; });
+    const total = docs.length;
+    const recv = (stats.received || 0) + (stats.verified || 0);
+    html += `<div class="summary-bar">
+      <span><span class="count">${total}</span> total</span>
+      <span><span class="count">${recv}</span> received</span>
+      <span><span class="count">${stats.verified || 0}</span> verified</span>
+      <span><span class="count">${stats.required || 0}</span> required</span>
+      <span><span class="count">${stats.na || 0}</span> N/A</span>
+      <span class="bulk-actions">
+        ${stats.received ? `<button class="btn btn-accent btn-sm" onclick="startVerifyAllWorkflow()">Review & Verify All (${stats.received})</button>` : ''}
+      </span>
+    </div>`;
+
+    html += '<div id="docs-table-area"></div>';
   }
 
-  // Gather filter values
-  const phases = [...new Set(docs.map(d => d.phase))];
-  const statuses = [...new Set(docs.map(d => d.status))];
-
-  let html = `<div class="filter-bar" id="docs-filter">
-    <input type="text" placeholder="Search documents..." id="docs-search">
-    <select id="docs-phase-filter">
-      <option value="">All Phases</option>
-      ${phases.map(p => `<option value="${p}">${esc(formatPhase(p))}</option>`).join('')}
-    </select>
-    <select id="docs-status-filter">
-      <option value="">All Statuses</option>
-      ${statuses.map(s => `<option value="${s}">${s}</option>`).join('')}
-    </select>
-    <button class="btn btn-primary btn-sm" onclick="triggerUpload()">Upload PDF</button>
+  // ── Contract Verification (collapsible) ──
+  const verifyItems = (!verifyData._error && verifyData.items) ? verifyData.items : [];
+  const verifyOpen = verifyItems.length > 0;
+  html += `<div class="collapsible-section" id="docs-verify-section">
+    <button class="collapsible-toggle ${verifyOpen ? 'open' : ''}" onclick="toggleCollapsible(this)">
+      <svg class="collapsible-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Contract Verification</span>
+      <span class="collapsible-count">${verifyItems.length} contracts</span>
+    </button>
+    <div class="collapsible-content" ${verifyOpen ? '' : 'style="display:none"'}>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="btn btn-primary btn-sm" onclick="verifyScan()">Scan Contracts</button>
+      </div>
+      <div id="docs-verify-list"></div>
+    </div>
   </div>`;
 
-  // Stats
-  const stats = {};
-  docs.forEach(d => { stats[d.status] = (stats[d.status] || 0) + 1; });
-  const total = docs.length;
-  const recv = (stats.received || 0) + (stats.verified || 0);
-  html += `<div class="summary-bar">
-    <span><span class="count">${total}</span> total</span>
-    <span><span class="count">${recv}</span> received</span>
-    <span><span class="count">${stats.verified || 0}</span> verified</span>
-    <span><span class="count">${stats.required || 0}</span> required</span>
-    <span><span class="count">${stats.na || 0}</span> N/A</span>
-    <span class="bulk-actions">
-      ${stats.received ? `<button class="btn btn-success btn-sm" onclick="bulkVerify()">Verify All (${stats.received})</button>` : ''}
-    </span>
+  // ── Contract Review (collapsible) ──
+  html += `<div class="collapsible-section" id="docs-review-section">
+    <button class="collapsible-toggle" onclick="toggleCollapsible(this)">
+      <svg class="collapsible-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Contract Review</span>
+      <span class="collapsible-count" id="review-count">—</span>
+    </button>
+    <div class="collapsible-content" style="display:none">
+      <p class="text-muted" style="margin-bottom:10px;font-size:13px">
+        Clause-by-clause analysis against CA RPA playbook standards. Flags risk levels, clause interactions, and missing items.
+      </p>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm" onclick="runContractReview()" id="btn-run-review">Review Uploaded Contract</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadContractReviews()">View Past Reviews</button>
+      </div>
+      <div id="contract-review-results"></div>
+    </div>
   </div>`;
 
-  html += '<div id="docs-table-area"></div>';
+  // ── Disclosures (collapsible) ──
+  const discOpen = _discData.length > 0;
+  const ds = _discSummary;
+  html += `<div class="collapsible-section" id="docs-disc-section">
+    <button class="collapsible-toggle ${discOpen ? 'open' : ''}" onclick="toggleCollapsible(this)">
+      <svg class="collapsible-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      <span>Disclosures</span>
+      <span class="collapsible-count">${ds.total || 0} items</span>
+    </button>
+    <div class="collapsible-content" ${discOpen ? '' : 'style="display:none"'}>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="btn btn-primary btn-sm" onclick="openDiscForm()">+ Add Disclosure</button>
+      </div>
+      <div class="disc-add-form card" id="disc-add-form" style="display:none">
+        <div class="card-title">Add Disclosure</div>
+        <div class="field-row">
+          <label class="field-label">Type
+            <select id="disc-type">${DISC_TYPES.map(d => `<option value="${d.value}">${d.label}</option>`).join('')}</select>
+          </label>
+          <label class="field-label">Due Date <input type="date" id="disc-due-date"></label>
+        </div>
+        <label class="field-label">Notes <textarea id="disc-notes" rows="2" placeholder="Optional notes..."></textarea></label>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn btn-primary btn-sm" onclick="submitDisc()">Add</button>
+          <button class="btn btn-ghost btn-sm" onclick="closeDiscForm()">Cancel</button>
+        </div>
+      </div>
+      <div id="docs-disc-list"></div>
+    </div>
+  </div>`;
+
+  // Hidden verify workflow area
+  html += '<div id="verify-workflow" style="display:none"></div>';
+
   el.innerHTML = html;
 
-  // Load PDF package map then render table
-  await _ensurePdfMap();
-  renderDocsTable(docs);
+  // Render doc table
+  if (docs.length > 0) {
+    await _ensurePdfMap();
+    renderDocsTable(docs);
+  }
 
-  // Attach filter listeners
+  // Render verify contract list inline
+  if (verifyItems.length > 0) {
+    _verifyContracts = verifyItems;
+    document.getElementById('docs-verify-list').innerHTML = _buildVerifyContractListHTML(verifyItems);
+  }
+
+  // Render disclosures inline
+  if (_discData.length > 0) {
+    document.getElementById('docs-disc-list').innerHTML = _buildDiscListHTML(_discData);
+  }
+
+  // Attach drop zone
+  const dropZone = document.getElementById('docs-drop-zone');
+  if (dropZone) {
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', async e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type === 'application/pdf') {
+        await _uploadFile(file);
+        renderDocs();
+      } else {
+        Toast.show('Please drop a PDF file', 'warning');
+      }
+    });
+  }
+
+  // Attach filter listeners (only if doc list is rendered)
   const searchEl = document.getElementById('docs-search');
   const phaseEl = document.getElementById('docs-phase-filter');
   const statusEl = document.getElementById('docs-status-filter');
-  const filterFn = () => {
-    const q = searchEl.value.toLowerCase();
-    const p = phaseEl.value;
-    const s = statusEl.value;
-    const filtered = _docsData.filter(d => {
-      if (q && !d.name.toLowerCase().includes(q) && !d.code.toLowerCase().includes(q)) return false;
-      if (p && d.phase !== p) return false;
-      if (s && d.status !== s) return false;
-      return true;
-    });
-    renderDocsTable(filtered);
-  };
-  searchEl.addEventListener('input', filterFn);
-  phaseEl.addEventListener('change', filterFn);
-  statusEl.addEventListener('change', filterFn);
+  if (searchEl && phaseEl && statusEl) {
+    const filterFn = () => {
+      const q = searchEl.value.toLowerCase();
+      const p = phaseEl.value;
+      const s = statusEl.value;
+      const filtered = _docsData.filter(d => {
+        if (q && !d.name.toLowerCase().includes(q) && !d.code.toLowerCase().includes(q)) return false;
+        if (p && d.phase !== p) return false;
+        if (s && d.status !== s) return false;
+        return true;
+      });
+      renderDocsTable(filtered);
+    };
+    searchEl.addEventListener('input', filterFn);
+    phaseEl.addEventListener('change', filterFn);
+    statusEl.addEventListener('change', filterFn);
+  }
 }
 
 // PDF package map: { normalized_name: { folder, file } }
@@ -2274,7 +2786,9 @@ function renderDocsTable(docs) {
     el.addEventListener('click', e => {
       e.preventDefault();
       if (el.classList.contains('doc-no-pdf')) {
-        Toast.show('No PDF uploaded yet for this document. Use Upload to add it.', 'info');
+        const code = el.dataset.code;
+        Toast.show('No PDF uploaded yet — opening upload dialog', 'info');
+        triggerUploadFor(code);
         return;
       }
       PdfViewer.open(el.dataset.folder, el.dataset.file, currentTxn || '');
@@ -2284,22 +2798,176 @@ function renderDocsTable(docs) {
 
 function docActions(d) {
   if (d.status === 'verified') {
-    return `<span class="doc-status-icon verified" title="Verified">\u2705</span> <button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','unverify')">Unverify</button>`;
+    return `<span class="doc-status-icon verified" title="Verified">\u2705</span> <button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','unverify')" title="Revert to received">Unverify</button> <button class="btn btn-ghost btn-sm" onclick="docAction('${currentTxn}','${d.code}','reset')" title="Reset to required">Reset</button>`;
   }
-  if (d.status === 'na') return '<span class="doc-status-icon na" title="N/A">&mdash;</span>';
+  if (d.status === 'na') {
+    return `<span class="doc-status-icon na" title="N/A">&mdash;</span> <button class="btn btn-ghost btn-sm" onclick="docAction('${currentTxn}','${d.code}','reset')" title="Reset to required">Reset</button>`;
+  }
   let btns = '';
   if (d.status === 'required') {
     btns += `<span class="doc-status-icon missing" title="Not received">\u26D4</span>`;
-    btns += `<button class="btn btn-primary btn-sm" onclick="triggerUploadFor('${esc(d.code)}')">Upload</button>`;
+    btns += `<button class="btn btn-primary btn-sm" onclick="triggerUploadFor('${esc(d.code)}')" title="Upload this document">Upload</button>`;
   }
   if (d.status === 'received') {
     btns += `<span class="doc-status-icon received" title="Received">\uD83D\uDC4D</span>`;
-    btns += `<button class="btn btn-success btn-sm" onclick="docAction('${currentTxn}','${d.code}','verify')">Verify</button>`;
+    const hasFile = d.folder && d.filename;
+    if (hasFile) {
+      btns += `<button class="btn btn-accent btn-sm" onclick="docReview('${esc(d.code)}','${esc(d.folder)}','${esc(d.filename)}')" title="Open PDF to review">Review</button>`;
+    }
+    btns += `<button class="btn btn-success btn-sm" onclick="docAction('${currentTxn}','${d.code}','verify')" title="Confirm document is complete">Verify</button>`;
+    btns += `<button class="btn btn-ghost btn-sm" onclick="docAction('${currentTxn}','${d.code}','reset')" title="Reset to required">Reset</button>`;
   }
-  if (d.status !== 'na') {
-    btns += `<button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','na')">N/A</button>`;
+  if (d.status !== 'na' && d.status !== 'received') {
+    btns += `<button class="btn btn-muted btn-sm" onclick="docAction('${currentTxn}','${d.code}','na')" title="Mark as not applicable">N/A</button>`;
   }
   return btns;
+}
+
+// Open PDF for review before verification
+function docReview(code, folder, filename) {
+  _pendingVerifyCode = code;
+  PdfViewer.open(folder, filename, currentTxn || '');
+}
+let _pendingVerifyCode = null;
+
+// Global: open a document's PDF by code — tries uploaded file, then package map
+function openDocPdf(code) {
+  if (!currentTxn) return;
+  const docs = _docsData || [];
+  const d = docs.find(x => x.code === code);
+  if (d && d.folder && d.filename) {
+    PdfViewer.open(d.folder, d.filename, currentTxn);
+    return;
+  }
+  const pdf = _findPdf(d ? d.name : code, code);
+  if (pdf) {
+    PdfViewer.open(pdf.folder, pdf.file, currentTxn);
+    return;
+  }
+  // No PDF found — offer to upload
+  triggerUploadFor(code);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  BULK REVIEW MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+
+const BulkReview = (() => {
+  let queue = [];       // Array of {code, folder, filename, name} to review
+  let currentIdx = 0;
+  let active = false;
+
+  function start(docs) {
+    // Filter to docs that have files (received status with folder/filename)
+    queue = docs.filter(d => d.status === 'received' && d.folder && d.filename)
+      .map(d => ({ code: d.code, folder: d.folder, filename: d.filename, name: d.name }));
+
+    if (queue.length === 0) {
+      Toast.show('No documents to review', 'info');
+      return;
+    }
+
+    currentIdx = 0;
+    active = true;
+    _showBar();
+    _openCurrent();
+  }
+
+  function _showBar() {
+    const bar = document.getElementById('pdf-review-bar');
+    bar.style.display = '';
+    _updateBar();
+  }
+
+  function _hideBar() {
+    const bar = document.getElementById('pdf-review-bar');
+    bar.style.display = 'none';
+  }
+
+  function _updateBar() {
+    document.getElementById('pdf-review-idx').textContent = currentIdx + 1;
+    document.getElementById('pdf-review-total').textContent = queue.length;
+    const doc = queue[currentIdx];
+    document.getElementById('pdf-review-docname').textContent = doc ? doc.name : '';
+  }
+
+  function _openCurrent() {
+    if (currentIdx >= queue.length) {
+      _finish();
+      return;
+    }
+    const doc = queue[currentIdx];
+    _updateBar();
+    PdfViewer.open(doc.folder, doc.filename, currentTxn || '');
+  }
+
+  async function verify() {
+    if (!active || currentIdx >= queue.length) return;
+    const doc = queue[currentIdx];
+
+    // Mark as verified
+    const res = await post(`/api/txns/${currentTxn}/docs/${doc.code}/verify`, {});
+    if (!res._error) {
+      Toast.show(`✓ ${doc.name} verified`, 'success');
+    }
+
+    // Advance to next
+    currentIdx++;
+    if (currentIdx < queue.length) {
+      _openCurrent();
+    } else {
+      _finish();
+    }
+  }
+
+  function skip() {
+    if (!active || currentIdx >= queue.length) return;
+    const doc = queue[currentIdx];
+    Toast.show(`Skipped ${doc.name}`, 'info');
+
+    currentIdx++;
+    if (currentIdx < queue.length) {
+      _openCurrent();
+    } else {
+      _finish();
+    }
+  }
+
+  function cancel() {
+    active = false;
+    queue = [];
+    _hideBar();
+    PdfViewer.close();
+    Toast.show('Review cancelled', 'info');
+    // Refresh docs list
+    invalidateCache(`/api/txns/${currentTxn}`);
+    invalidateCache('/api/dashboard');
+    renderDocs();
+  }
+
+  function _finish() {
+    active = false;
+    queue = [];
+    _hideBar();
+    PdfViewer.close();
+    Toast.show('Review complete!', 'success');
+    // Refresh docs list
+    invalidateCache(`/api/txns/${currentTxn}`);
+    invalidateCache('/api/dashboard');
+    renderDocs();
+  }
+
+  function isActive() { return active; }
+
+  return { start, verify, skip, cancel, isActive };
+})();
+
+// Start bulk verification workflow
+async function startVerifyAllWorkflow() {
+  if (!currentTxn) return;
+  const docs = await get(`/api/txns/${currentTxn}/docs`);
+  if (docs._error) return;
+  BulkReview.start(docs);
 }
 
 // Upload targeting a specific doc code
@@ -2320,7 +2988,8 @@ function triggerUploadFor(code) {
 async function docAction(tid, code, action) {
   const res = await post(`/api/txns/${tid}/docs/${code}/${action}`, {});
   if (res._error) return;
-  Toast.show(`Document ${code} ${action === 'receive' ? 'received' : action === 'verify' ? 'verified' : action === 'unverify' ? 'unverified' : 'marked N/A'}`, 'success');
+  const actionLabel = { receive: 'received', verify: 'verified', unverify: 'unverified', na: 'marked N/A', reset: 'reset to required' }[action] || action;
+  Toast.show(`Document ${code} ${actionLabel}`, 'success');
   invalidateCache(`/api/txns/${tid}`);
   invalidateCache('/api/dashboard');
   renderDocs();
@@ -2422,7 +3091,7 @@ function renderGatesList(gates) {
           <div style="display:flex;gap:8px;align-items:center">
             <span class="type-badge ${g.type}">${g.type}</span>
             <span class="badge badge-${isVerified ? 'verified' : 'pending'}">${g.status}</span>
-            ${!isVerified ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();verifyGate('${g.gid}')">Verify</button>` : ''}
+            ${!isVerified ? `<button class="btn btn-success btn-sm" onclick="event.stopPropagation();verifyGate('${g.gid}')" title="Mark compliance item as complete">Verify</button>` : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();resetGate('${g.gid}')" title="Reset to pending">Reset</button>`}
           </div>
         </div>
         <div class="gate-detail">
@@ -2450,6 +3119,19 @@ async function verifyGate(gid) {
   const res = await post(`/api/txns/${currentTxn}/gates/${gid}/verify`);
   if (res._error) return;
   Toast.show(`Gate ${gid} verified`, 'success');
+  renderGates();
+  const t = await get(`/api/txns/${currentTxn}`);
+  if (!t._error) {
+    txnCache[currentTxn] = t;
+    loadTxns();
+  }
+}
+
+async function resetGate(gid) {
+  const res = await post(`/api/txns/${currentTxn}/gates/${gid}/reset`);
+  if (res._error) return;
+  Toast.show(`Gate ${gid} reset to pending`, 'success');
+  invalidateCache(`/api/txns/${currentTxn}`);
   renderGates();
   const t = await get(`/api/txns/${currentTxn}`);
   if (!t._error) {
@@ -3069,12 +3751,14 @@ async function renderContingencies() {
 
   // Summary bar
   const s = _contSummary;
+  const waivedCount = (s.waived || 0) + (s.not_required || 0);
   html += `<div class="cont-summary">
     <div class="cont-summary-item"><span class="cont-summary-val">${s.total || 0}</span><span class="cont-summary-lbl">Total</span></div>
     <div class="cont-summary-item"><span class="cont-summary-val cont-active">${s.active || 0}</span><span class="cont-summary-lbl">Active</span></div>
     <div class="cont-summary-item"><span class="cont-summary-val cont-removed">${s.removed || 0}</span><span class="cont-summary-lbl">Removed</span></div>
+    ${waivedCount > 0 ? `<div class="cont-summary-item"><span class="cont-summary-val cont-waived">${waivedCount}</span><span class="cont-summary-lbl">Not Required</span></div>` : ''}
     <div class="cont-summary-item"><span class="cont-summary-val cont-overdue">${s.overdue || 0}</span><span class="cont-summary-lbl">Overdue</span></div>
-    <button class="btn btn-primary btn-sm" onclick="openContModal()">+ Add</button>
+    <button class="btn btn-primary btn-sm" onclick="openContModal()" title="Add a contingency manually">+ Add</button>
   </div>`;
 
   if (_contData.length === 0) {
@@ -3094,23 +3778,29 @@ function renderContList(items) {
 
   area.innerHTML = items.map(item => {
     const urgencyCls = { overdue: 'cont-overdue', urgent: 'cont-urgent', soon: 'cont-soon', ok: 'cont-ok' }[item.urgency] || '';
-    const statusCls = { active: 'cont-status-active', removed: 'cont-status-removed', waived: 'cont-status-waived', expired: 'cont-status-expired' }[item.status] || '';
+    const statusCls = { active: 'cont-status-active', removed: 'cont-status-removed', waived: 'cont-status-waived', not_required: 'cont-status-not-required', expired: 'cont-status-expired' }[item.status] || '';
     const isActive = item.status === 'active';
+    const isNotRequired = item.status === 'waived' || item.status === 'not_required';
 
     // Progress bar computation
     const totalDays = item.default_days || 17;
     const elapsed = totalDays - (item.days_remaining || 0);
     const pct = Math.min(100, Math.max(0, (elapsed / totalDays) * 100));
 
-    let html = `<div class="cont-card ${urgencyCls}">
+    // Status display text
+    const statusText = item.status === 'not_required' ? 'NOT REQUIRED' : esc(item.status).toUpperCase();
+    const notRequiredReason = isNotRequired && item.notes ? item.notes.replace(/\[Auto-detected.*?\]/g, '').trim() : '';
+
+    let html = `<div class="cont-card ${urgencyCls} ${isNotRequired ? 'cont-not-required' : ''}">
       <div class="cont-card-header">
         <div class="cont-card-title">
           <span class="cont-type-icon">${contIcon(item.type)}</span>
           <span class="cont-name">${esc(item.name || item.type)}</span>
-          <span class="cont-status-badge ${statusCls}">${esc(item.status).toUpperCase()}</span>
+          <span class="cont-status-badge ${statusCls}">${statusText}</span>
         </div>
         <div class="cont-deadline-info">
-          ${item.deadline_date ? `<span class="cont-deadline-date">${esc(item.deadline_date)}</span>` : ''}
+          ${item.deadline_date && !isNotRequired ? `<span class="cont-deadline-date">${esc(item.deadline_date)}</span>` : ''}
+          ${isNotRequired ? `<span class="cont-auto-detected">\u2713 Auto-detected from documents</span>` : ''}
         </div>
       </div>`;
 
@@ -3137,7 +3827,7 @@ function renderContList(items) {
     // Metadata row
     html += `<div class="cont-meta-row">`;
     if (item.related_gate) {
-      html += `<span class="cont-gate-link" onclick="switchTab('gates')">${esc(item.related_gate)}</span>`;
+      html += `<span class="cont-gate-link" onclick="switchTab('compliance')">${esc(item.related_gate)}</span>`;
     }
     if (item.related_deadline) {
       html += `<span class="cont-dl-link">${esc(item.related_deadline)}</span>`;
@@ -3153,6 +3843,20 @@ function renderContList(items) {
     }
     html += `</div>`;
 
+    // Inspection Checklist (investigation contingencies)
+    if (item.type === 'investigation' && (item.items_total > 0 || isActive)) {
+      const itemsDone = item.items_done || 0;
+      const itemsTotal = item.items_total || 0;
+      html += `<div class="cont-items-section">
+        <button class="cont-items-toggle" onclick="event.stopPropagation();toggleContItems(${item.id})">
+          <svg class="collapsible-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          Inspection Checklist
+          <span class="cont-items-count">${itemsDone}/${itemsTotal}</span>
+        </button>
+        <div class="cont-items-list" id="cont-items-${item.id}" style="display:none"></div>
+      </div>`;
+    }
+
     // Actions
     if (isActive) {
       html += `<div class="cont-actions">
@@ -3165,6 +3869,79 @@ function renderContList(items) {
     html += `</div>`;
     return html;
   }).join('');
+}
+
+// ── Inspection Checklist Functions ─────────────────────────────────────────
+
+async function toggleContItems(cid) {
+  const el = document.getElementById('cont-items-' + cid);
+  if (!el) return;
+  const toggle = el.previousElementSibling;
+  const isHidden = el.style.display === 'none';
+  el.style.display = isHidden ? '' : 'none';
+  if (toggle) toggle.classList.toggle('open', isHidden);
+  if (isHidden) await loadContItems(cid);
+}
+
+async function loadContItems(cid) {
+  const el = document.getElementById('cont-items-' + cid);
+  if (!el) return;
+  const items = await get(`/api/txns/${currentTxn}/contingencies/${cid}/items`);
+  if (items._error) return;
+
+  let html = items.map(item => {
+    const isDone = item.status === 'complete';
+    const statusBadge = { pending: '', scheduled: '<span class="cont-item-badge scheduled">SCHEDULED</span>', complete: '<span class="cont-item-badge complete">DONE</span>', waived: '<span class="cont-item-badge waived">WAIVED</span>' }[item.status] || '';
+    return `<div class="cont-item ${isDone ? 'cont-item-done' : ''}">
+      <label class="cont-item-check">
+        <input type="checkbox" ${isDone ? 'checked' : ''} onchange="contItemToggle(${cid},${item.id},this.checked)">
+        <span class="cont-item-name">${esc(item.name)}</span>
+      </label>
+      ${statusBadge}
+      ${item.inspector ? `<span class="cont-item-inspector">${esc(item.inspector)}</span>` : ''}
+      ${item.scheduled_date ? `<span class="cont-item-date">${esc(item.scheduled_date)}</span>` : ''}
+      <button class="btn btn-ghost btn-sm cont-item-edit" onclick="editContItem(${cid},${item.id})" title="Edit">&#9998;</button>
+    </div>`;
+  }).join('');
+
+  html += `<div class="cont-item-add">
+    <input type="text" id="cont-item-new-${cid}" placeholder="Add custom inspection..." class="cont-item-input">
+    <button class="btn btn-primary btn-sm" onclick="addContItem(${cid})">+ Add</button>
+  </div>`;
+
+  el.innerHTML = html;
+}
+
+async function contItemToggle(cid, iid, checked) {
+  const status = checked ? 'complete' : 'pending';
+  await api(`/api/txns/${currentTxn}/contingencies/${cid}/items/${iid}`, {
+    method: 'PUT', body: { status }
+  });
+  loadContItems(cid);
+}
+
+async function addContItem(cid) {
+  const input = document.getElementById('cont-item-new-' + cid);
+  const name = (input?.value || '').trim();
+  if (!name) return;
+  await post(`/api/txns/${currentTxn}/contingencies/${cid}/items`, { name });
+  input.value = '';
+  loadContItems(cid);
+}
+
+async function editContItem(cid, iid) {
+  const inspector = prompt('Inspector name (leave blank to skip):');
+  if (inspector === null) return;
+  const scheduled = prompt('Scheduled date (YYYY-MM-DD, leave blank to skip):');
+  const body = {};
+  if (inspector) body.inspector = inspector;
+  if (scheduled) body.scheduled_date = scheduled;
+  if (Object.keys(body).length > 0) {
+    await api(`/api/txns/${currentTxn}/contingencies/${cid}/items/${iid}`, {
+      method: 'PUT', body
+    });
+    loadContItems(cid);
+  }
 }
 
 function contIcon(type) {
@@ -3256,6 +4033,15 @@ async function renderParties() {
   if (parties._error) return;
   _partiesData = parties;
 
+  // Auto-populate: if there are placeholder parties (TBD), try to fill from signatures
+  const hasPlaceholders = parties.some(p => p.name && p.name.includes('(TBD)'));
+  if (hasPlaceholders) {
+    await _autoPopulatePartiesFromSigs(parties);
+    // Re-fetch after auto-populate
+    const updated = await get(`/api/txns/${currentTxn}/parties`);
+    if (!updated._error) _partiesData = updated;
+  }
+
   const el = $('#tab-content');
 
   // Summary counts by role
@@ -3268,7 +4054,8 @@ async function renderParties() {
       <option value="">All Roles</option>
       ${PARTY_ROLES.filter(r => byRole[r.value]).map(r => `<option value="${r.value}">${r.label} (${byRole[r.value]})</option>`).join('')}
     </select>
-    <button class="btn btn-primary btn-sm" onclick="openPartyForm()">+ Add Party</button>
+    <button class="btn btn-ghost btn-sm" onclick="detectPartiesFromSigs()" title="Detect parties from signature fields">Import from Signatures</button>
+    <button class="btn btn-primary btn-sm" onclick="openPartyForm()" title="Add a new party manually">+ Add Party</button>
   </div>`;
 
   html += `<div class="summary-bar">
@@ -3357,8 +4144,8 @@ function renderPartiesList(parties) {
             ${p.company ? `<div class="party-company">${esc(p.company)}</div>` : ''}
           </div>
           <div class="party-actions">
-            <button class="btn btn-muted btn-sm" onclick="editParty(${p.id})">Edit</button>
-            <button class="btn btn-danger btn-sm" onclick="deleteParty(${p.id})">Delete</button>
+            <button class="btn btn-muted btn-sm" onclick="editParty(${p.id})" title="Edit party details">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteParty(${p.id})" title="Remove this party">Delete</button>
           </div>
         </div>
         <div class="party-details">
@@ -3427,6 +4214,108 @@ async function deleteParty(pid) {
   const res = await del(`/api/txns/${currentTxn}/parties/${pid}`);
   if (res._error) return;
   Toast.show('Party removed', 'info');
+  renderParties();
+}
+
+async function _autoPopulatePartiesFromSigs(existingParties) {
+  // Silently auto-populate placeholder parties from signature fields
+  const res = await get(`/api/txns/${currentTxn}/signatures/detected-parties`);
+  if (res._error || !res.detected || res.detected.length === 0) return;
+
+  // Find which roles have placeholders that need filling
+  const placeholderRoles = new Set();
+  existingParties.forEach(p => {
+    if (p.name && p.name.includes('(TBD)')) {
+      placeholderRoles.add(p.role);
+    }
+  });
+
+  // Build parties to import - only for roles that have placeholders
+  const toImport = [];
+  res.detected.forEach(d => {
+    if (placeholderRoles.has(d.role)) {
+      // Use actual detected name if available, otherwise role label
+      const name = d.suggested_name || d.role_label;
+      toImport.push({ role: d.role, name: name });
+    }
+  });
+
+  if (toImport.length === 0) return;
+
+  // Import silently
+  const importRes = await post(`/api/txns/${currentTxn}/parties/import`, { parties: toImport });
+  if (!importRes._error && importRes.imported && importRes.imported.length > 0) {
+    Toast.show(`Auto-populated ${importRes.imported.length} parties from documents`, 'success');
+  }
+}
+
+async function detectPartiesFromSigs() {
+  if (!currentTxn) return;
+  const res = await get(`/api/txns/${currentTxn}/signatures/detected-parties`);
+  if (res._error) return;
+
+  const detected = res.detected || [];
+  if (detected.length === 0) {
+    Toast.show('No party roles detected from signature fields', 'info');
+    return;
+  }
+
+  // Build confirmation modal content
+  let html = `<div class="import-parties-modal">
+    <p style="margin-bottom:12px">Detected ${detected.length} party role(s) from signature fields:</p>
+    <div class="import-parties-list">`;
+  detected.forEach((d, i) => {
+    html += `<div class="import-party-item">
+      <input type="checkbox" id="import-party-${i}" checked>
+      <label for="import-party-${i}">
+        <strong>${esc(d.role_label)}</strong>
+        <span class="import-party-source">from: ${esc(d.source_fields.slice(0, 2).join(', '))}</span>
+      </label>
+      <input type="text" class="import-party-name" value="${esc(d.suggested_name)}" data-role="${esc(d.role)}" placeholder="Name">
+    </div>`;
+  });
+  html += `</div>
+    <div style="margin-top:16px;display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeImportPartiesModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmImportParties()">Import Selected</button>
+    </div>
+  </div>`;
+
+  // Show in a simple modal overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'import-parties-overlay';
+  overlay.className = 'modal-backdrop';
+  overlay.style.display = '';
+  overlay.innerHTML = `<div class="modal" style="width:480px"><div class="modal-header"><h3>Import Parties from Signatures</h3><button class="modal-close" onclick="closeImportPartiesModal()">&times;</button></div><div class="modal-body">${html}</div></div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeImportPartiesModal() {
+  const overlay = document.getElementById('import-parties-overlay');
+  if (overlay) overlay.remove();
+}
+
+async function confirmImportParties() {
+  const items = document.querySelectorAll('#import-parties-overlay .import-party-item');
+  const parties = [];
+  items.forEach((item, i) => {
+    const checkbox = item.querySelector(`#import-party-${i}`);
+    const nameInput = item.querySelector('.import-party-name');
+    if (checkbox && checkbox.checked && nameInput) {
+      parties.push({ role: nameInput.dataset.role, name: nameInput.value.trim() });
+    }
+  });
+
+  if (parties.length === 0) {
+    Toast.show('No parties selected', 'warning');
+    return;
+  }
+
+  const res = await post(`/api/txns/${currentTxn}/parties/import`, { parties });
+  if (res._error) return;
+
+  closeImportPartiesModal();
+  Toast.show(`Imported ${res.imported.length} parties`, 'success');
   renderParties();
 }
 
@@ -3567,21 +4456,21 @@ async function submitDisc() {
   if (res._error) return;
   Toast.show('Disclosure added', 'success');
   closeDiscForm();
-  renderDisclosures();
+  renderDocs();
 }
 
 async function discReceive(did) {
   const res = await post(`/api/txns/${currentTxn}/disclosures/${did}/receive`);
   if (res._error) return;
   Toast.show('Disclosure marked received', 'success');
-  renderDisclosures();
+  renderDocs();
 }
 
 async function discReview(did) {
   const res = await post(`/api/txns/${currentTxn}/disclosures/${did}/review`);
   if (res._error) return;
   Toast.show('Disclosure reviewed', 'success');
-  renderDisclosures();
+  renderDocs();
 }
 
 async function discWaive(did) {
@@ -3589,31 +4478,244 @@ async function discWaive(did) {
   const res = await post(`/api/txns/${currentTxn}/disclosures/${did}/waive`);
   if (res._error) return;
   Toast.show('Disclosure waived', 'info');
-  renderDisclosures();
+  renderDocs();
+}
+
+// ── Collapsible Sections ──────────────────────────────────────────────────
+
+function toggleCollapsible(btn) {
+  btn.classList.toggle('open');
+  const content = btn.nextElementSibling;
+  content.style.display = content.style.display === 'none' ? '' : 'none';
+}
+
+// ── Inline Verify Contract List Builder ──────────────────────────────────
+
+function _buildVerifyContractListHTML(items) {
+  const groups = {};
+  items.forEach(c => { const k = c.scenario || 'default'; if (!groups[k]) groups[k] = []; groups[k].push(c); });
+  let html = '';
+  Object.entries(groups).forEach(([scenario, contracts]) => {
+    html += `<div class="verify-scenario-group"><div class="verify-scenario-header">${esc(scenario.replace(/-/g, ' '))}</div>`;
+    contracts.forEach(c => {
+      const pct = c.total_fields ? Math.round((c.verified_count / c.total_fields) * 100) : 0;
+      const statusCls = c.status === 'verified' ? 'verified' : (c.unfilled_mandatory > 0 ? 'has-mandatory' : '');
+      const displayName = c.filename.replace('.pdf', '').replace(/_/g, ' ');
+      html += `<div class="verify-contract-card ${statusCls}" data-cid="${c.id}">
+        <div class="verify-contract-top">
+          <span class="verify-contract-name" title="${esc(c.filename)}">${esc(displayName)}</span>
+          <span class="badge badge-${c.status}">${c.status}</span>
+        </div>
+        <div class="verify-contract-meta">
+          <span class="verify-field-count">${c.total_fields} fields</span>
+          <span style="color:var(--green)">${c.filled_fields} filled</span>
+          ${c.unfilled_mandatory > 0 ? `<span style="color:var(--red)">${c.unfilled_mandatory} unfilled mandatory</span>` : ''}
+        </div>
+        <div class="verify-progress-bar"><div class="verify-progress-fill" style="width:${pct}%"></div></div>
+        <div class="verify-contract-actions">
+          <button class="btn btn-danger btn-sm" onclick="verifyStartGuided(${c.id},'quick')">Quick Scan</button>
+          <button class="btn btn-primary btn-sm" onclick="verifyStartGuided(${c.id},'review')">Standard Review</button>
+          <button class="btn btn-muted btn-sm" onclick="verifyStartGuided(${c.id},'full')">Full Verification</button>
+          <button class="btn btn-success btn-sm" onclick="verifyAllFilled(${c.id})">Auto-verify Filled</button>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  return html;
+}
+
+// ── Inline Disclosure List Builder ───────────────────────────────────────
+
+function _buildDiscListHTML(items) {
+  return items.map(item => {
+    const urgencyCls = { overdue: 'disc-overdue', urgent: 'disc-urgent', soon: 'disc-soon', ok: 'disc-ok', none: '' }[item.urgency] || '';
+    const statusCls = { pending: 'disc-status-pending', ordered: 'disc-status-ordered', received: 'disc-status-received', reviewed: 'disc-status-reviewed', waived: 'disc-status-waived', na: 'disc-status-waived' }[item.status] || '';
+    const isPending = item.status === 'pending' || item.status === 'ordered';
+    const isReceived = item.status === 'received';
+
+    let html = `<div class="disc-card ${urgencyCls}">
+      <div class="disc-card-header">
+        <div class="disc-card-title">
+          <span class="disc-name">${esc(item.name || item.type)}</span>
+          <span class="disc-status-badge ${statusCls}">${esc(item.status).toUpperCase()}</span>
+        </div>
+        <div class="disc-dates">
+          ${item.due_date ? `<span class="disc-due">Due: ${esc(item.due_date)}</span>` : ''}
+          ${item.days_until_due !== null ? `<span class="disc-days-pill ${urgencyCls}">${item.days_until_due}d</span>` : ''}
+        </div>
+      </div>`;
+    html += '<div class="disc-meta-row">';
+    if (item.responsible) {
+      const rName = PARTY_ROLES.find(r => r.value === item.responsible)?.label || item.responsible;
+      html += `<span class="disc-responsible">Responsible: ${esc(rName)}</span>`;
+    }
+    if (item.received_date) html += `<span class="disc-date">Received: ${esc(item.received_date)}</span>`;
+    if (item.reviewed_date) html += `<span class="disc-date">Reviewed: ${esc(item.reviewed_date)}</span>`;
+    if (item.notes) html += `<span class="disc-note">"${esc(item.notes)}"</span>`;
+    html += '</div>';
+    html += '<div class="disc-actions">';
+    if (isPending) {
+      html += `<button class="btn btn-warning btn-sm" onclick="discReceive(${item.id})">Mark Received</button>`;
+      html += `<button class="btn btn-muted btn-sm" onclick="discWaive(${item.id})">Waive / N/A</button>`;
+    }
+    if (isReceived) {
+      html += `<button class="btn btn-success btn-sm" onclick="discReview(${item.id})">Mark Reviewed</button>`;
+    }
+    html += '</div></div>';
+    return html;
+  }).join('');
+}
+
+// ── Advance Blockers Modal ───────────────────────────────────────────────
+
+function showAdvanceBlockersModal(blockers) {
+  const body = document.getElementById('advance-blockers-body');
+  if (!body) return;
+  let html = '';
+
+  // Gates
+  if (blockers.gates && blockers.gates.length > 0) {
+    html += `<div class="blocker-group">
+      <h4>Compliance Gates (${blockers.gates.length})</h4>
+      ${blockers.gates.map(g => `<div class="blocker-item">
+        <div class="blocker-item-info">
+          <span class="blocker-item-id">${esc(g.gid)}</span>
+          <span class="blocker-item-name">${esc(g.name)}</span>
+        </div>
+        <div class="blocker-actions">
+          <button class="btn btn-success btn-sm" onclick="verifyGate('${esc(g.gid)}');closeAdvanceBlockersModal()">Verify</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Missing docs
+  if (blockers.missing_docs && blockers.missing_docs.length > 0) {
+    html += `<div class="blocker-group">
+      <h4>Missing Documents (${blockers.missing_docs.length})</h4>
+      ${blockers.missing_docs.map(d => `<div class="blocker-item">
+        <div class="blocker-item-info">
+          <span class="blocker-item-id">${esc(d.code)}</span>
+          <span class="blocker-item-name clickable-doc" onclick="openDocPdf('${esc(d.code)}')">${esc(d.name)}</span>
+        </div>
+        <div class="blocker-actions">
+          <button class="btn btn-primary btn-sm" onclick="triggerUploadFor('${esc(d.code)}');closeAdvanceBlockersModal()">Upload</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Open contingencies
+  if (blockers.open_contingencies && blockers.open_contingencies.length > 0) {
+    html += `<div class="blocker-group">
+      <h4>Active Contingencies (${blockers.open_contingencies.length})</h4>
+      ${blockers.open_contingencies.map(c => `<div class="blocker-item">
+        <div class="blocker-item-info">
+          <span class="blocker-item-name">${esc(c.name)}</span>
+          ${c.deadline_date ? `<span class="blocker-item-sub">Due: ${esc(c.deadline_date)}</span>` : ''}
+        </div>
+        <div class="blocker-actions">
+          <button class="btn btn-success btn-sm" onclick="contRemove(${c.id});closeAdvanceBlockersModal()">Remove</button>
+          <button class="btn btn-muted btn-sm" onclick="contWaive(${c.id});closeAdvanceBlockersModal()">Waive</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Unsigned fields
+  if (blockers.unsigned_fields && blockers.unsigned_fields.length > 0) {
+    html += `<div class="blocker-group">
+      <h4>Unsigned Fields (${blockers.unsigned_fields.length})</h4>
+      ${blockers.unsigned_fields.map(u => `<div class="blocker-item">
+        <div class="blocker-item-info">
+          <span class="blocker-item-name">${esc(u.field_name)}</span>
+          <span class="blocker-item-sub">${esc(u.doc_code)}</span>
+        </div>
+        <div class="blocker-actions">
+          <button class="btn btn-primary btn-sm" onclick="closeAdvanceBlockersModal();switchTab('signatures')">Go to Signatures</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  // Contacts
+  if (blockers.parties && blockers.parties.length > 0) {
+    html += `<div class="blocker-group blocker-contacts">
+      <h4>Quick Contacts</h4>
+      ${blockers.parties.map(p => `<div class="blocker-contact">
+        <span class="blocker-contact-role">${esc(p.role.replace(/_/g, ' '))}</span>
+        <span class="blocker-contact-name">${esc(p.name)}</span>
+        ${p.email ? `<a href="mailto:${esc(p.email)}" class="btn btn-ghost btn-sm">Email</a>` : ''}
+        ${p.phone ? `<a href="tel:${esc(p.phone)}" class="btn btn-ghost btn-sm">Call</a>` : ''}
+      </div>`).join('')}
+    </div>`;
+  }
+
+  if (!html) {
+    html = '<p style="color:var(--text-secondary);padding:16px">No specific blockers identified. Check compliance gates.</p>';
+  }
+
+  body.innerHTML = html;
+  document.getElementById('advance-blockers-modal').style.display = '';
+}
+
+function closeAdvanceBlockersModal() {
+  const modal = document.getElementById('advance-blockers-modal');
+  if (modal) modal.style.display = 'none';
 }
 
 // ── Audit Tab ───────────────────────────────────────────────────────────────
 
 async function renderAudit() {
   showSkeleton('table');
-  const logs = await get(`/api/txns/${currentTxn}/audit`);
-  if (logs._error) return;
+  const [logs, cloudEvents] = await Promise.all([
+    get(`/api/txns/${currentTxn}/audit`),
+    get(`/api/txns/${currentTxn}/cloud-events?limit=100`),
+  ]);
+  if (logs._error && cloudEvents._error) return;
   const el = $('#tab-content');
+  let html = '';
 
-  if (logs.length === 0) {
-    el.innerHTML = '<div class="card"><p style="color:var(--text-secondary)">No audit entries.</p></div>';
-    return;
+  if (!cloudEvents._error) {
+    const items = Array.isArray(cloudEvents) ? cloudEvents : [];
+    if (items.length) {
+      html += '<div class="card"><div class="card-title">Cloud Activity</div><ul class="audit-list">';
+      items.forEach(e => {
+        const outcome = (e.outcome || 'blocked').toLowerCase();
+        const bg = outcome === 'success' ? '#34c759' : (outcome === 'error' ? '#ff3b30' : '#ff9500');
+        html += `<li class="audit-item">
+          <span class="audit-ts">${esc(e.created_at || '')}</span>
+          <span class="audit-action">${esc(e.service || 'cloud')}/${esc(e.operation || '')}</span>
+          <span class="audit-detail">
+            <span style="display:inline-block;padding:1px 8px;border-radius:999px;background:${bg};color:white;font-size:11px;font-weight:600;margin-right:8px">${esc(outcome)}</span>
+            ${esc(e.error || e.endpoint || '')}
+          </span>
+        </li>`;
+      });
+      html += '</ul></div>';
+    } else {
+      html += '<div class="card"><div class="card-title">Cloud Activity</div><p style="color:var(--text-secondary)">No cloud usage events yet.</p></div>';
+    }
   }
 
-  let html = '<div class="card"><ul class="audit-list">';
-  logs.forEach(e => {
-    html += `<li class="audit-item">
-      <span class="audit-ts">${esc(e.ts || '')}</span>
-      <span class="audit-action">${esc(e.action)}</span>
-      <span class="audit-detail">${esc(e.detail || '')}</span>
-    </li>`;
-  });
-  html += '</ul></div>';
+  if (!logs._error && Array.isArray(logs) && logs.length) {
+    html += '<div class="card"><div class="card-title">Audit Trail</div><ul class="audit-list">';
+    logs.forEach(e => {
+      html += `<li class="audit-item">
+        <span class="audit-ts">${esc(e.ts || '')}</span>
+        <span class="audit-action">${esc(e.action)}</span>
+        <span class="audit-detail">${esc(e.detail || '')}</span>
+      </li>`;
+    });
+    html += '</ul></div>';
+  } else if (!logs._error) {
+    html += '<div class="card"><div class="card-title">Audit Trail</div><p style="color:var(--text-secondary)">No audit entries.</p></div>';
+  }
+
+  if (!html) {
+    html = '<div class="card"><p style="color:var(--text-secondary)">No activity available.</p></div>';
+  }
   el.innerHTML = html;
 }
 
@@ -3625,24 +4727,26 @@ let _verifyContracts = [];
 let _verifyActiveContract = null;
 let _verifyFields = [];
 let _verifyIdx = 0;
+let _verifyStats = {};
+let _verifyMode = 'review';
+let _verifyKeyHandler = null;
 
 async function renderVerify() {
   const el = $('#tab-content');
   el.innerHTML = `
     <div class="card" style="margin-bottom:12px">
       <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
-        <span>Contract Verification Workflow</span>
+        <span>Contract Verification</span>
         <button class="btn btn-primary btn-sm" onclick="verifyScan()">Scan Contracts</button>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);margin:4px 0 0">
-        Scan PDFs to detect filled/empty fields, then review unfilled mandatory entries with screenshots.
+        Guided field-by-field verification with zoomed screenshots and keyboard shortcuts.
       </p>
     </div>
     <div id="verify-summary"></div>
     <div id="verify-contract-list"></div>
     <div id="verify-workflow" style="display:none"></div>`;
 
-  // Load contracts
   const data = await get('/api/contracts');
   if (data._error || !data.items || data.items.length === 0) {
     document.getElementById('verify-summary').innerHTML =
@@ -3664,41 +4768,17 @@ function renderVerifySummary(data) {
 
   document.getElementById('verify-summary').innerHTML = `
     <div class="verify-stats-bar">
-      <div class="verify-stat">
-        <span class="verify-stat-num">${s.total}</span>
-        <span class="verify-stat-label">Contracts</span>
-      </div>
-      <div class="verify-stat">
-        <span class="verify-stat-num">${totalFields}</span>
-        <span class="verify-stat-label">Total Fields</span>
-      </div>
-      <div class="verify-stat filled">
-        <span class="verify-stat-num">${filledFields}</span>
-        <span class="verify-stat-label">Filled</span>
-      </div>
-      <div class="verify-stat mandatory">
-        <span class="verify-stat-num">${unfilledMand}</span>
-        <span class="verify-stat-label">Unfilled Mandatory</span>
-      </div>
-      <div class="verify-stat verified-stat">
-        <span class="verify-stat-num">${verified}</span>
-        <span class="verify-stat-label">Verified</span>
-      </div>
-      <div class="verify-stat">
-        <span class="verify-stat-num">${s.unverified}</span>
-        <span class="verify-stat-label">Unverified</span>
-      </div>
+      <div class="verify-stat"><span class="verify-stat-num">${s.total}</span><span class="verify-stat-label">Contracts</span></div>
+      <div class="verify-stat"><span class="verify-stat-num">${totalFields}</span><span class="verify-stat-label">Total Fields</span></div>
+      <div class="verify-stat filled"><span class="verify-stat-num">${filledFields}</span><span class="verify-stat-label">Filled</span></div>
+      <div class="verify-stat mandatory"><span class="verify-stat-num">${unfilledMand}</span><span class="verify-stat-label">Unfilled Mandatory</span></div>
+      <div class="verify-stat verified-stat"><span class="verify-stat-num">${verified}</span><span class="verify-stat-label">Verified</span></div>
     </div>`;
 }
 
 function renderVerifyContractList(items) {
-  // Group by scenario
   const groups = {};
-  items.forEach(c => {
-    const k = c.scenario || 'default';
-    if (!groups[k]) groups[k] = [];
-    groups[k].push(c);
-  });
+  items.forEach(c => { const k = c.scenario || 'default'; if (!groups[k]) groups[k] = []; groups[k].push(c); });
 
   let html = '';
   Object.entries(groups).forEach(([scenario, contracts]) => {
@@ -3715,23 +4795,20 @@ function renderVerifyContractList(items) {
         </div>
         <div class="verify-contract-meta">
           <span class="verify-field-count">${c.total_fields} fields</span>
-          <span style="color:#34c759">${c.filled_fields} filled</span>
-          ${c.unfilled_mandatory > 0 ? `<span style="color:#ff3b30">${c.unfilled_mandatory} unfilled mandatory</span>` : ''}
-          ${c.unfilled_optional > 0 ? `<span style="color:#ffcc00">${c.unfilled_optional} optional</span>` : ''}
+          <span style="color:var(--green)">${c.filled_fields} filled</span>
+          ${c.unfilled_mandatory > 0 ? `<span style="color:var(--red)">${c.unfilled_mandatory} unfilled mandatory</span>` : ''}
         </div>
-        <div class="verify-progress-bar">
-          <div class="verify-progress-fill" style="width:${pct}%"></div>
-        </div>
+        <div class="verify-progress-bar"><div class="verify-progress-fill" style="width:${pct}%"></div></div>
         <div class="verify-contract-actions">
-          <button class="btn btn-primary btn-sm" onclick="verifyStartWorkflow(${c.id})">Review Unfilled</button>
-          <button class="btn btn-success btn-sm" onclick="verifyAllFilled(${c.id})">Auto-verify Filled</button>
-          <a href="/api/contracts/${c.id}/annotated-pdf" target="_blank" class="btn btn-muted btn-sm">View Annotated PDF</a>
+          <button class="btn btn-danger btn-sm" onclick="verifyStartGuided(${c.id},'quick')" title="Review mandatory unfilled fields only">Quick Scan</button>
+          <button class="btn btn-primary btn-sm" onclick="verifyStartGuided(${c.id},'review')" title="Review all unfilled fields">Standard Review</button>
+          <button class="btn btn-muted btn-sm" onclick="verifyStartGuided(${c.id},'full')" title="Review every single field">Full Verification</button>
+          <button class="btn btn-success btn-sm" onclick="verifyAllFilled(${c.id})" title="Auto-verify all scanner-detected filled fields">Auto-verify Filled</button>
         </div>
       </div>`;
     });
     html += '</div>';
   });
-
   document.getElementById('verify-contract-list').innerHTML = html;
 }
 
@@ -3740,46 +4817,349 @@ async function verifyScan() {
   const res = await post('/api/contracts/scan', { target: 'all' });
   if (res._error) return;
   Toast.show(`Scanned ${res.scanned} contracts, ${res.total_fields} fields (${res.unfilled_mandatory} unfilled mandatory)`, 'success');
-  renderVerify();
+  renderDocs();
 }
+
+// ── Contract Review (Clause-Level Analysis) ──────────────────────────────────
+
+async function runContractReview() {
+  if (!currentTxn) return Toast.show('No transaction selected', 'error');
+  const btn = document.getElementById('btn-run-review');
+  const el = document.getElementById('contract-review-results');
+  if (!el) return;
+
+  // Let user pick: upload a file or review from existing uploaded docs
+  const hasDocs = _docsData && _docsData.some(d => d.file_path);
+  let body = {};
+
+  if (hasDocs) {
+    // Find the first doc that has an uploaded file (prefer RPA)
+    const rpa = _docsData.find(d => d.file_path && /rpa/i.test(d.code));
+    const anyDoc = _docsData.find(d => d.file_path);
+    const doc = rpa || anyDoc;
+    if (!doc) return Toast.show('No uploaded documents found', 'error');
+    body = { doc_code: doc.code };
+    el.textContent = '';
+    const loadDiv = document.createElement('div');
+    loadDiv.className = 'review-loading';
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    const loadText = document.createElement('span');
+    loadText.textContent = 'Reviewing ' + (doc.name || doc.code) + '... This takes 15-30 seconds.';
+    loadDiv.append(spinner, loadText);
+    el.appendChild(loadDiv);
+  } else {
+    // No uploaded docs — prompt file upload
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf';
+    input.onchange = async () => {
+      if (!input.files[0]) return;
+      el.textContent = '';
+      const loadDiv = document.createElement('div');
+      loadDiv.className = 'review-loading';
+      const spinner = document.createElement('div');
+      spinner.className = 'spinner';
+      const loadText = document.createElement('span');
+      loadText.textContent = 'Reviewing ' + input.files[0].name + '... This takes 15-30 seconds.';
+      loadDiv.append(spinner, loadText);
+      el.appendChild(loadDiv);
+      btn.disabled = true;
+      try {
+        const formData = new FormData();
+        formData.append('file', input.files[0]);
+        const result = await ensureCloudApproval(
+          currentTxn,
+          () => postForm('/api/txns/' + currentTxn + '/review-contract', formData),
+        );
+        if (result._error || result.error) {
+          el.textContent = '';
+          const errDiv = document.createElement('div');
+          errDiv.className = 'alert alert-error';
+          errDiv.textContent = result.error;
+          el.appendChild(errDiv);
+        } else {
+          renderContractReview(result);
+        }
+      } catch (e) {
+        el.textContent = '';
+        const errDiv = document.createElement('div');
+        errDiv.className = 'alert alert-error';
+        errDiv.textContent = 'Review failed: ' + e.message;
+        el.appendChild(errDiv);
+      }
+      btn.disabled = false;
+    };
+    input.click();
+    return;
+  }
+
+  btn.disabled = true;
+  try {
+    const result = await ensureCloudApproval(
+      currentTxn,
+      () => post('/api/txns/' + currentTxn + '/review-contract', body),
+    );
+    if (result._error || result.error) {
+      el.textContent = '';
+      const errDiv = document.createElement('div');
+      errDiv.className = 'alert alert-error';
+      errDiv.textContent = result.error || 'Review failed';
+      el.appendChild(errDiv);
+    } else {
+      renderContractReview(result);
+    }
+  } catch (e) {
+    el.textContent = '';
+    const errDiv = document.createElement('div');
+    errDiv.className = 'alert alert-error';
+    errDiv.textContent = 'Review failed: ' + e.message;
+    el.appendChild(errDiv);
+  }
+  btn.disabled = false;
+}
+
+function _createReviewClauseEl(cl, riskColors) {
+  const r = cl.risk || 'GREEN';
+  const div = document.createElement('div');
+  div.className = 'review-clause review-clause-' + r.toLowerCase();
+
+  const header = document.createElement('div');
+  header.className = 'review-clause-header';
+  const dot = document.createElement('span');
+  dot.className = 'risk-dot';
+  dot.style.background = riskColors[r] || '#34c759';
+  const areaEl = document.createElement('strong');
+  areaEl.textContent = cl.area || '';
+  const tag = document.createElement('span');
+  tag.className = 'risk-tag risk-tag-' + r.toLowerCase();
+  tag.textContent = r;
+  header.append(dot, areaEl, tag);
+
+  const finding = document.createElement('div');
+  finding.className = 'review-clause-finding';
+  finding.textContent = cl.finding || '';
+
+  div.append(header, finding);
+
+  if (cl.standard) {
+    const std = document.createElement('div');
+    std.className = 'review-clause-standard';
+    const stdB = document.createElement('strong');
+    stdB.textContent = 'Standard: ';
+    std.append(stdB, document.createTextNode(cl.standard));
+    div.appendChild(std);
+  }
+  if (cl.suggestion) {
+    const sug = document.createElement('div');
+    sug.className = 'review-clause-suggestion';
+    const sugB = document.createElement('strong');
+    sugB.textContent = 'Suggestion: ';
+    sug.append(sugB, document.createTextNode(cl.suggestion));
+    div.appendChild(sug);
+  }
+  return div;
+}
+
+function renderContractReview(review) {
+  const el = document.getElementById('contract-review-results');
+  if (!el) return;
+  el.textContent = '';
+
+  const riskColors = { RED: '#ff3b30', YELLOW: '#f5a623', GREEN: '#34c759' };
+  const riskLabels = { RED: 'High Risk', YELLOW: 'Review Needed', GREEN: 'Standard' };
+  const risk = review.overall_risk || 'GREEN';
+
+  const report = document.createElement('div');
+  report.className = 'review-report';
+
+  // Executive summary + overall risk badge
+  const summaryHeader = document.createElement('div');
+  summaryHeader.className = 'review-summary-header';
+  const badge = document.createElement('span');
+  badge.className = 'risk-badge risk-' + risk.toLowerCase();
+  badge.textContent = riskLabels[risk] || risk;
+  const summaryText = document.createElement('p');
+  summaryText.className = 'review-executive-summary';
+  summaryText.textContent = review.executive_summary || '';
+  summaryHeader.append(badge, summaryText);
+  report.appendChild(summaryHeader);
+
+  // Clause-by-clause
+  const clauses = review.clauses || [];
+  if (clauses.length) {
+    const clauseSection = document.createElement('div');
+    clauseSection.className = 'review-clauses';
+    const clauseH = document.createElement('h4');
+    clauseH.style.margin = '16px 0 8px';
+    clauseH.textContent = 'Clause Analysis (' + clauses.length + ')';
+    clauseSection.appendChild(clauseH);
+    const sorted = [...clauses].sort((a, b) => {
+      const order = { RED: 0, YELLOW: 1, GREEN: 2 };
+      return (order[a.risk] || 2) - (order[b.risk] || 2);
+    });
+    for (const cl of sorted) {
+      clauseSection.appendChild(_createReviewClauseEl(cl, riskColors));
+    }
+    report.appendChild(clauseSection);
+  }
+
+  // Interaction warnings
+  const interactions = review.interactions || [];
+  if (interactions.length) {
+    const ixSection = document.createElement('div');
+    ixSection.className = 'review-interactions';
+    const ixH = document.createElement('h4');
+    ixH.style.margin = '16px 0 8px';
+    ixH.textContent = 'Clause Interactions (' + interactions.length + ')';
+    ixSection.appendChild(ixH);
+    for (const ix of interactions) {
+      ixSection.appendChild(_createReviewClauseEl({
+        area: ix.condition || '',
+        risk: ix.risk || 'YELLOW',
+        finding: ix.explanation || '',
+        suggestion: ix.suggestion || null,
+      }, riskColors));
+    }
+    report.appendChild(ixSection);
+  }
+
+  // Missing items
+  const missing = review.missing_items || [];
+  if (missing.length) {
+    const missSection = document.createElement('div');
+    missSection.className = 'review-missing';
+    const missH = document.createElement('h4');
+    missH.style.margin = '16px 0 8px';
+    missH.textContent = 'Missing Items (' + missing.length + ')';
+    missSection.appendChild(missH);
+    const ul = document.createElement('ul');
+    ul.className = 'review-missing-list';
+    for (const m of missing) {
+      const li = document.createElement('li');
+      li.textContent = m;
+      ul.appendChild(li);
+    }
+    missSection.appendChild(ul);
+    report.appendChild(missSection);
+  }
+
+  el.appendChild(report);
+
+  // Update section count
+  const countEl = document.getElementById('review-count');
+  if (countEl) {
+    const reds = clauses.filter(c => c.risk === 'RED').length;
+    const yellows = clauses.filter(c => c.risk === 'YELLOW').length;
+    countEl.textContent = reds > 0 ? reds + ' high risk' : yellows > 0 ? yellows + ' to review' : 'All clear';
+  }
+}
+
+async function loadContractReviews() {
+  if (!currentTxn) return;
+  const el = document.getElementById('contract-review-results');
+  if (!el) return;
+  el.textContent = '';
+  const loadDiv = document.createElement('div');
+  loadDiv.className = 'review-loading';
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner';
+  loadDiv.append(spinner, document.createTextNode(' Loading...'));
+  el.appendChild(loadDiv);
+  const reviews = await get('/api/txns/' + currentTxn + '/contract-reviews');
+  if (reviews._error || !reviews.length) {
+    el.textContent = '';
+    const p = document.createElement('p');
+    p.className = 'text-muted';
+    p.style.padding = '8px';
+    p.textContent = 'No reviews yet.';
+    el.appendChild(p);
+    return;
+  }
+  // Show the most recent review
+  renderContractReview(reviews[0]);
+}
+
+// ── Contract Verification helpers ────────────────────────────────────────────
 
 async function verifyAllFilled(cid) {
   const res = await post(`/api/contracts/${cid}/verify-filled`);
   if (res._error) return;
   Toast.show(`Auto-verified ${res.verified} filled fields`, 'success');
-  renderVerify();
+  renderDocs();
 }
 
-async function verifyStartWorkflow(cid) {
+// ── Guided Verification Agent ────────────────────────────────────────────────
+
+async function verifyStartGuided(cid, mode) {
   _verifyActiveContract = cid;
   _verifyIdx = 0;
+  _verifyMode = mode;
 
-  const data = await get(`/api/contracts/${cid}/fields/unfilled`);
+  const data = await get(`/api/contracts/${cid}/fields/verify-queue?mode=${mode}`);
   if (data._error) return;
 
   _verifyFields = data.fields;
-  const ct = data.contract;
+  _verifyStats = data.stats;
 
   if (_verifyFields.length === 0) {
-    Toast.show('All fields verified or filled', 'success');
+    Toast.show('No fields to review in this mode', 'success');
     return;
   }
 
-  // Switch to workflow view
-  document.getElementById('verify-contract-list').style.display = 'none';
+  // Hide docs content, show workflow
+  const docsVerify = document.getElementById('docs-verify-section');
+  if (docsVerify) docsVerify.style.display = 'none';
+  // Also try old IDs for backward compat
+  const vcl = document.getElementById('verify-contract-list');
+  if (vcl) vcl.style.display = 'none';
+  const vs = document.getElementById('verify-summary');
+  if (vs) vs.style.display = 'none';
   const wf = document.getElementById('verify-workflow');
   wf.style.display = '';
+
+  // Preload first crop image
+  const firstField = _verifyFields[0];
+  new Image().src = `/api/contracts/${cid}/fields/${firstField.id}/crop?zoom=3&padding=40`;
+
+  // Install keyboard handler
+  _verifyKeyHandler = _handleVerifyKeys;
+  document.addEventListener('keydown', _verifyKeyHandler);
 
   renderVerifyStep();
 }
 
+function _handleVerifyKeys(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  const f = _verifyFields[_verifyIdx];
+  if (!f) return;
+
+  switch (e.key.toLowerCase()) {
+    case 'y': case '1': e.preventDefault(); verifyFieldAction(f.id, 'verified'); break;
+    case 'n': case 'f': case '2': e.preventDefault(); verifyFieldAction(f.id, 'flagged'); break;
+    case 'i': case '3': e.preventDefault(); verifyFieldAction(f.id, 'ignored'); break;
+    case 's': case ' ': case 'arrowright': e.preventDefault(); verifySkip(); break;
+    case 'arrowleft': e.preventDefault(); verifyPrev(); break;
+    case 'escape': case 'q': e.preventDefault(); verifyExitWorkflow(); break;
+  }
+}
+
 function renderVerifyStep() {
   const wf = document.getElementById('verify-workflow');
+
+  // Complete state
   if (_verifyIdx >= _verifyFields.length) {
     wf.innerHTML = `
-      <div class="card" style="text-align:center;padding:40px">
-        <h3 style="color:#34c759">All unfilled fields reviewed!</h3>
-        <button class="btn btn-primary" onclick="verifyExitWorkflow()">Back to Contracts</button>
+      <div class="vg-complete">
+        <div class="vg-complete-icon">&#10003;</div>
+        <h2>Verification Complete</h2>
+        <p>${_verifyFields.length} fields reviewed</p>
+        <div class="vg-complete-stats">
+          <span>Total: ${_verifyStats.total}</span>
+          <span style="color:var(--green)">Verified: ${_verifyStats.verified}</span>
+          ${_verifyStats.flagged > 0 ? `<span style="color:var(--red)">Flagged: ${_verifyStats.flagged}</span>` : ''}
+        </div>
+        <button class="btn btn-primary" onclick="verifyExitWorkflow()" style="margin-top:20px">Done</button>
       </div>`;
     return;
   }
@@ -3788,34 +5168,91 @@ function renderVerifyStep() {
   const total = _verifyFields.length;
   const num = _verifyIdx + 1;
   const pct = Math.round((num / total) * 100);
-  const catLabel = (f.category || '').replace(/_/g, ' ');
-  const mandLabel = f.mandatory ? '<span style="color:#ff3b30;font-weight:700">MANDATORY</span>' : '<span style="color:#ffcc00">Optional</span>';
+
+  const catLabel = (f.category || '').replace(/^entry_/, '').toUpperCase();
+  const isMandatory = f.mandatory;
+  const isFilled = f.is_filled;
+
+  // Detection status
+  let detectBadge;
+  if (isFilled) {
+    detectBadge = '<span class="vg-detect vg-detect-filled">FILLED</span>';
+  } else if (isMandatory) {
+    detectBadge = '<span class="vg-detect vg-detect-empty-mandatory">EMPTY - MANDATORY</span>';
+  } else {
+    detectBadge = '<span class="vg-detect vg-detect-empty">EMPTY</span>';
+  }
+
+  // Field status if already verified/flagged
+  let statusBadge = '';
+  if (f.status === 'verified') statusBadge = '<span class="vg-detect" style="background:var(--green);color:#fff">VERIFIED</span>';
+  else if (f.status === 'flagged') statusBadge = '<span class="vg-detect" style="background:var(--red);color:#fff">FLAGGED</span>';
+  else if (f.status === 'ignored') statusBadge = '<span class="vg-detect" style="background:var(--text-secondary);color:#fff">IGNORED</span>';
+
+  // Mode label
+  const modeLabels = { quick: 'Quick Scan', review: 'Standard Review', full: 'Full Verification' };
+
+  // Preload next image
+  if (_verifyIdx + 1 < total) {
+    const nextF = _verifyFields[_verifyIdx + 1];
+    new Image().src = `/api/contracts/${_verifyActiveContract}/fields/${nextF.id}/crop?zoom=3&padding=40`;
+  }
 
   wf.innerHTML = `
-    <div class="verify-wf-header">
-      <button class="btn btn-ghost btn-sm" onclick="verifyExitWorkflow()">&larr; Back</button>
-      <span class="verify-wf-progress">${num} / ${total}</span>
-      <div class="verify-progress-bar" style="flex:1;margin:0 16px">
-        <div class="verify-progress-fill" style="width:${pct}%"></div>
+    <div class="vg-header">
+      <div class="vg-header-left">
+        <button class="btn btn-ghost btn-sm" onclick="verifyExitWorkflow()" title="Exit (Esc)">&#x2715; Exit</button>
+        <span class="vg-mode-badge">${modeLabels[_verifyMode]}</span>
+      </div>
+      <div class="vg-header-center">
+        <span class="vg-counter">${num} of ${total}</span>
+      </div>
+      <div class="vg-header-right">
+        <span class="vg-page-badge">Page ${f.page}</span>
       </div>
     </div>
-    <div class="verify-wf-card">
-      <div class="verify-wf-meta">
-        <span>Page ${f.page}</span>
-        <span class="verify-wf-cat">${esc(catLabel)}</span>
-        ${mandLabel}
+    <div class="vg-progress"><div class="vg-progress-fill" style="width:${pct}%"></div></div>
+
+    <div class="vg-body">
+      <div class="vg-field-info">
+        <div class="vg-field-name">${esc(f.field_name || f.label || 'Unnamed field')}</div>
+        <div class="vg-badges">
+          <span class="vg-cat-badge vg-cat-${(f.category||'').replace('entry_','')}">${catLabel}</span>
+          ${detectBadge}
+          ${statusBadge}
+        </div>
+        ${f.notes ? `<div class="vg-notes">${esc(f.notes)}</div>` : ''}
       </div>
-      <div class="verify-wf-field-name">${esc(f.field_name || 'Unnamed field')}</div>
-      <div class="verify-wf-crop">
-        <img src="/api/contracts/${_verifyActiveContract}/fields/${f.id}/crop"
-             alt="Field crop" class="verify-crop-img"
-             onerror="this.src='';this.alt='Crop unavailable'">
+
+      <div class="vg-crop-container">
+        <img src="/api/contracts/${_verifyActiveContract}/fields/${f.id}/crop?zoom=3&padding=40"
+             alt="Field ${num}" class="vg-crop-img"
+             onerror="this.alt='Crop unavailable'; this.style.minHeight='100px'">
       </div>
-      <div class="verify-wf-actions">
-        <button class="btn btn-success" onclick="verifyFieldAction(${f.id},'verified')">Verified OK</button>
-        <button class="btn btn-warning" onclick="verifyFieldAction(${f.id},'flagged')">Flag for Review</button>
-        <button class="btn btn-muted" onclick="verifyFieldAction(${f.id},'ignored')">Ignore</button>
-        <button class="btn btn-ghost" onclick="verifySkip()">Skip</button>
+
+      <div class="vg-actions">
+        <button class="btn btn-success vg-action-btn" onclick="verifyFieldAction(${f.id},'verified')">
+          <span class="vg-action-key">Y</span> Verified
+        </button>
+        <button class="btn btn-danger vg-action-btn" onclick="verifyFieldAction(${f.id},'flagged')">
+          <span class="vg-action-key">F</span> Flag Missing
+        </button>
+        <button class="btn btn-muted vg-action-btn" onclick="verifyFieldAction(${f.id},'ignored')">
+          <span class="vg-action-key">I</span> N/A
+        </button>
+        <button class="btn btn-ghost vg-action-btn" onclick="verifySkip()">
+          <span class="vg-action-key">&rarr;</span> Skip
+        </button>
+      </div>
+
+      <div class="vg-nav">
+        <button class="btn btn-ghost btn-sm" onclick="verifyPrev()" ${_verifyIdx === 0 ? 'disabled' : ''}>
+          &larr; Previous
+        </button>
+        <span class="vg-shortcut-hint">Y=Verify  F=Flag  I=N/A  Space=Skip  Esc=Exit</span>
+        <button class="btn btn-ghost btn-sm" onclick="verifySkip()">
+          Next &rarr;
+        </button>
       </div>
     </div>`;
 }
@@ -3823,6 +5260,9 @@ function renderVerifyStep() {
 async function verifyFieldAction(fid, status) {
   const res = await post(`/api/contracts/${_verifyActiveContract}/fields/${fid}/verify`, { status });
   if (!res._error) {
+    // Update local stats
+    if (status === 'verified' || status === 'ignored') _verifyStats.verified++;
+    if (status === 'flagged') _verifyStats.flagged++;
     _verifyIdx++;
     renderVerifyStep();
   }
@@ -3833,12 +5273,24 @@ function verifySkip() {
   renderVerifyStep();
 }
 
+function verifyPrev() {
+  if (_verifyIdx > 0) {
+    _verifyIdx--;
+    renderVerifyStep();
+  }
+}
+
 function verifyExitWorkflow() {
-  document.getElementById('verify-workflow').style.display = 'none';
-  document.getElementById('verify-contract-list').style.display = '';
+  // Remove keyboard handler
+  if (_verifyKeyHandler) {
+    document.removeEventListener('keydown', _verifyKeyHandler);
+    _verifyKeyHandler = null;
+  }
+  const wf = document.getElementById('verify-workflow');
+  if (wf) wf.style.display = 'none';
   _verifyActiveContract = null;
   _verifyFields = [];
-  renderVerify();
+  renderDocs();
 }
 
 // ── Modal ───────────────────────────────────────────────────────────────────
@@ -3869,12 +5321,21 @@ const SidebarTools = (() => {
       }
       _fileInput.click();
     },
-    'scan': () => { if (currentTxn) switchTab('verify'); },
+    'verify': () => {
+      if (!currentTxn) return;
+      switchTab('docs');
+      setTimeout(() => {
+        const btn = document.querySelector('#docs-verify-section .collapsible-toggle');
+        if (btn && !btn.classList.contains('open')) toggleCollapsible(btn);
+        const sect = document.getElementById('docs-verify-section');
+        if (sect) sect.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+    },
     'send-sig': () => { if (currentTxn) switchTab('signatures'); },
     'request-docs': () => { if (currentTxn) switchTab('docs'); },
-    'add-deadline': () => { if (currentTxn) switchTab('deadlines'); },
+    'add-deadline': () => { if (currentTxn) switchTab('overview'); },
     'add-party': () => { if (currentTxn) switchTab('parties'); },
-    'compliance': () => { if (currentTxn) switchTab('gates'); },
+    'compliance': () => { if (currentTxn) switchTab('compliance'); },
     'report': () => { if (currentTxn) switchTab('overview'); },
   };
 

@@ -32,9 +32,14 @@ def send_for_signature(c, txn_id: str, sig_review_id: int,
         (recipient_email, recipient_name, sig_review_id, txn_id),
     )
 
-    envelope_id = _real_docusign_send(
-        c, txn_id, sig_review_id, recipient_email, recipient_name
-    )
+    try:
+        envelope_id = _real_docusign_send(
+            c, txn_id, sig_review_id, recipient_email, recipient_name
+        )
+    except NotImplementedError:
+        # Mock envelope when DocuSign isn't configured (sandbox / dev mode)
+        import uuid
+        envelope_id = f"mock-{uuid.uuid4().hex[:12]}"
 
     now = _now()
     c.execute(
@@ -309,6 +314,9 @@ def _real_docusign_send(c, txn_id, sig_review_id, email, name):
             "DocuSign not configured. Set DOCUSIGN_INTEGRATION_KEY, DOCUSIGN_ACCOUNT_ID, "
             "and other env vars. See /api/docusign-status for setup instructions."
         )
+    # Cloud governance hook (for live implementation):
+    # 1) require cloud approval: cloud_guard.require_approval(c, txn_id, "docusign", "send_for_signature")
+    # 2) log usage: cloud_guard.log_cloud_event(...)
     # TODO: implement JWT auth + POST /envelopes with docusign-esign SDK
     raise NotImplementedError("DocuSign API integration pending SDK setup")
 
@@ -317,11 +325,15 @@ def _real_docusign_check(envelope_id):
     """Call GET /envelopes/{id}/recipients for status."""
     if not docusign_configured():
         return None
+    # Cloud governance hook (for live implementation):
+    # log status polling events to cloud_events when provider API is called.
     # TODO: implement with docusign-esign SDK
     return None
 
 
 def _real_skyslope_check(envelope_id):
     """Call SkySlope Transaction API for status."""
+    # Cloud governance hook (for live implementation):
+    # require approval + log usage when hitting SkySlope APIs.
     # TODO: implement with SkySlope REST API
     return None

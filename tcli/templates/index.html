@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Transaction Coordinator</title>
   <link rel="stylesheet" href="/static/app.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
   <header class="topbar">
@@ -29,35 +27,35 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-tools" id="sidebar-tools">
         <div class="sidebar-section-label">Actions</div>
-        <button class="tool-btn" id="tool-upload" data-tool="upload" disabled>
+        <button class="tool-btn" id="tool-upload" data-tool="upload" disabled title="Upload a PDF document to this transaction">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           <span>Upload Document</span>
         </button>
-        <button class="tool-btn" id="tool-scan" data-tool="scan" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          <span>Scan Contract</span>
+        <button class="tool-btn" id="tool-verify" data-tool="verify" disabled title="Verify contract fields and signatures">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Verify Contract</span>
         </button>
-        <button class="tool-btn" id="tool-send-sig" data-tool="send-sig" disabled>
+        <button class="tool-btn" id="tool-send-sig" data-tool="send-sig" disabled title="Send documents for electronic signature">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           <span>Send for Signature</span>
         </button>
-        <button class="tool-btn" id="tool-request-docs" data-tool="request-docs" disabled>
+        <button class="tool-btn" id="tool-request-docs" data-tool="request-docs" disabled title="Request missing documents from parties">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           <span>Request Documents</span>
         </button>
-        <button class="tool-btn" id="tool-add-deadline" data-tool="add-deadline" disabled>
+        <button class="tool-btn" id="tool-add-deadline" data-tool="add-deadline" disabled title="Add a custom deadline to track">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           <span>Add Deadline</span>
         </button>
-        <button class="tool-btn" id="tool-add-party" data-tool="add-party" disabled>
+        <button class="tool-btn" id="tool-add-party" data-tool="add-party" disabled title="Add a party to this transaction">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
           <span>Add Party</span>
         </button>
-        <button class="tool-btn" id="tool-compliance" data-tool="compliance" disabled>
+        <button class="tool-btn" id="tool-compliance" data-tool="compliance" disabled title="Run compliance verification check">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Compliance Check</span>
         </button>
-        <button class="tool-btn" id="tool-report" data-tool="report" disabled>
+        <button class="tool-btn" id="tool-report" data-tool="report" disabled title="Generate transaction status report">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
           <span>Status Report</span>
         </button>
@@ -92,11 +90,8 @@
           <button class="tab" data-tab="signatures">Signatures</button>
           <button class="tab" data-tab="contingencies">Contingencies</button>
           <button class="tab" data-tab="parties">Parties</button>
-          <button class="tab" data-tab="disclosures">Disclosures</button>
-          <button class="tab" data-tab="gates">Gates</button>
-          <button class="tab" data-tab="deadlines">Deadlines</button>
-          <button class="tab" data-tab="audit">Audit</button>
-          <button class="tab" data-tab="verify">Verify</button>
+          <button class="tab" data-tab="compliance">Compliance</button>
+          <button class="tab" data-tab="activity">Activity</button>
         </nav>
         <div class="tab-content" id="tab-content"></div>
       </div>
@@ -251,6 +246,16 @@
           <button id="pdf-close" class="pdf-viewer-close">&times;</button>
         </div>
       </div>
+      <!-- Bulk review mode bar -->
+      <div class="pdf-review-bar" id="pdf-review-bar" style="display:none">
+        <span class="pdf-review-progress">Document <span id="pdf-review-idx">1</span> of <span id="pdf-review-total">5</span></span>
+        <span class="pdf-review-docname" id="pdf-review-docname"></span>
+        <div class="pdf-review-actions">
+          <button class="btn btn-ghost btn-sm" onclick="BulkReview.skip()" title="Skip without verifying">Skip</button>
+          <button class="btn btn-success btn-sm" onclick="BulkReview.verify()" title="Verify document and continue to next">✓ Verify</button>
+          <button class="btn btn-muted btn-sm" onclick="BulkReview.cancel()" title="Exit review workflow">Cancel Review</button>
+        </div>
+      </div>
       <div class="pdf-viewer-body">
         <div class="pdf-viewer-sidebar" id="pdf-sidebar">
           <div class="pdf-sidebar-header">Fields</div>
@@ -261,11 +266,11 @@
             <span class="pdf-legend ignored"></span> Ignored
           </div>
           <div class="pdf-sidebar-stats" id="pdf-sidebar-stats"></div>
+          <div class="pdf-needs-review" id="pdf-needs-review"></div>
           <div class="pdf-sidebar-list" id="pdf-sidebar-list"></div>
         </div>
         <div class="pdf-viewer-canvas-wrap" id="pdf-canvas-wrap">
-          <canvas id="pdf-canvas"></canvas>
-          <svg id="pdf-overlay" class="pdf-overlay"></svg>
+          <!-- Page containers injected dynamically by PdfViewer.open() -->
         </div>
       </div>
     </div>
@@ -390,6 +395,35 @@
     </div>
   </div>
 
+  <!-- Closing Plan Modal -->
+  <div class="modal-backdrop" id="closing-plan-modal" style="display:none">
+    <div class="modal closing-plan-modal" style="width:520px;max-height:85vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h3>Closing Plan</h3>
+        <button class="modal-close" onclick="closeClosingPlan()">&times;</button>
+      </div>
+      <div class="modal-body" id="closing-plan-body" style="overflow-y:auto;flex:1"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeClosingPlan()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advance Blockers Modal -->
+  <div class="modal-backdrop" id="advance-blockers-modal" style="display:none">
+    <div class="modal" style="width:580px;max-height:85vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <h3>Phase Advance Blocked</h3>
+        <button class="modal-close" onclick="closeAdvanceBlockersModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="advance-blockers-body" style="overflow-y:auto;flex:1"></div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeAdvanceBlockersModal()">Close</button>
+        <button class="btn btn-primary" onclick="closeAdvanceBlockersModal();switchTab('compliance')">Go to Compliance</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Keyboard Shortcuts Overlay -->
   <div class="shortcuts-overlay" id="shortcuts-overlay">
     <div class="shortcuts-dialog">
@@ -404,10 +438,8 @@
         <div class="shortcut-row"><span>Signatures Tab</span><kbd>3</kbd></div>
         <div class="shortcut-row"><span>Contingencies Tab</span><kbd>4</kbd></div>
         <div class="shortcut-row"><span>Parties Tab</span><kbd>5</kbd></div>
-        <div class="shortcut-row"><span>Disclosures Tab</span><kbd>6</kbd></div>
-        <div class="shortcut-row"><span>Gates Tab</span><kbd>7</kbd></div>
-        <div class="shortcut-row"><span>Deadlines Tab</span><kbd>8</kbd></div>
-        <div class="shortcut-row"><span>Audit Tab</span><kbd>9</kbd></div>
+        <div class="shortcut-row"><span>Compliance Tab</span><kbd>6</kbd></div>
+        <div class="shortcut-row"><span>Activity Tab</span><kbd>7</kbd></div>
         <div class="shortcut-row"><span>Close Panel</span><kbd>Esc</kbd></div>
         <div class="shortcut-row"><span>Show This Help</span><kbd>?</kbd></div>
       </div>
